@@ -9,7 +9,7 @@
 - **Owner**: [Your Name]
 - **Role**: [Principal PM / Director / Group PM]
 - **Timezone**: America/Chicago
-- **Version**: 1.5.2 (Privacy Core & PRD Authoring Mesh)
+- **Version**: 1.5.3 (Architecture Transparency Framework)
 
 ---
 
@@ -160,4 +160,4 @@
 
 ---
 
-_Beats Product Management Antigravity Brain v1.5.2_
+_Beats Product Management Antigravity Brain v1.5.3_

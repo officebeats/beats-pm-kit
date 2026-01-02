@@ -1,43 +1,83 @@
 # Beats PM Antigravity Brain - Git Ignore
 
-# 1. Global Excludes
+# 1. Global Dev Excludes
 .DS_Store
 Thumbs.db
 node_modules/
 .env
 package-lock.json
+*.log
 
-# 2. Roots (Old & New Data Hubs)
-/BUGS/
-/CRITICAL/
-/PEOPLE/
-/PROJECTS/
-/DATA/
-/RESEARCH/
-/_INBOX/
-/MEETINGS/
-/00-DROP-FILES-HERE-00/
-/vault/
-/tracking/
+# 2. Privacy Lockdown: Data & Active Work
+# We ignore all .md files in data-heavy directories to protect company details.
+# We explicitly KEEP the folder structure via .gitkeep and templates.
 
-# 3. Preservation (Keep the system core)
+# Root Data Hubs
+/00-DROP-FILES-HERE-00/**/*.md
+!/00-DROP-FILES-HERE-00/.gitkeep
+
+/_INBOX/**/*.md
+!/_INBOX/.gitkeep
+
+/DATA/**/*.md
+!/DATA/.gitkeep
+
+/RESEARCH/**/*.md
+!/RESEARCH/.gitkeep
+
+/MEETINGS/**/*.md
+!/MEETINGS/.gitkeep
+
+/BUGS/**/*.md
+!/BUGS/.gitkeep
+
+/CRITICAL/**/*.md
+!/CRITICAL/.gitkeep
+
+/PEOPLE/**/*.md
+!/PEOPLE/.gitkeep
+
+/PROJECTS/**/*.md
+!/PROJECTS/.gitkeep
+
+# Core Tracking & Memory (Ignore active content, keep templates)
+/tracking/**/*.md
 !/tracking/**/.gitkeep
-!/vault/**/.gitkeep
 !/tracking/**/*_TEMPLATE.md
+
+/vault/**/*.md
+!/vault/**/.gitkeep
+!/vault/**/*_TEMPLATE.md
+
+# 3. User Identity & Config
+# This contains the user's specific workflow details/roles
+SETTINGS.md
+
+# 4. System Logic & Professional Mesh (KEEP THESE)
+!/system/
+!/system/**/*.gitkeep
+!/system/agents/*.md
+!/system/scripts/*.sh
+!/system/prompts/*.md
+
+# Ignore system temporary/inbox data
+/system/inbox/
+/system/logs/
+/system/queue/
+/system/backups/
+
+# 5. System Templates (THE CORE PRODUCT)
 !/TEMPLATES/
 !/TEMPLATES/*.md
 
-# 4. Settings
-SETTINGS.md
+# 6. Documentation & Examples
+!/docs/
+!/examples/
+!/README.md
+!/START-HERE-FTUE.md
 
-# 5. Cockpit
-cockpit/node_modules/
-cockpit/dist/
-cockpit/.env
-
-# 6. System Logic (Track these)
-!/system/
-system/inbox/
-system/logs/
-system/queue/
-system/backups/
+# 7. Cockpit UI (KEEP THESE)
+!/cockpit/
+cockpit/**/node_modules/
+cockpit/**/dist/
+cockpit/**/.env
