@@ -92,6 +92,7 @@ The Brain uses **Zero-Friction Routing**. You don't need to know which agent is 
 | **📥 The Requirements Translator** | | |
 | `#paste` | **Magic Import** | Pulls whatever is on your Clipboard (Files, Images, or Text) into the system. |
 | `#process` | Logic Commit | Tells agents to analyze, move, and organize everything currently in your "Drop Zone". |
+| `#prd` | Document Author | Translates strategy into a high-fidelity PRD (Executive Logic + Eng Specs). |
 | `#feature` | Strategic Asks | Documents a new feature request or strategic improvement with Source Truth. |
 | `#task` | General Action | Captures a general task or action item for project tracking. |
 | `#braindump` | Random Thoughts | Parks unstructured thoughts in `BRAIN_DUMP.md` for later triage. |

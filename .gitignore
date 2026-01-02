@@ -1,48 +1,43 @@
-# Git Ignore
-# Block everything by default in sensitive folders, except templates
+# Beats PM Antigravity Brain - Git Ignore
 
-# 1. Settings
-SETTINGS.md
-
-# 2. Trackers (Ignore active, keep templates)
-BUGS/*.md
-!BUGS/*_TEMPLATE.md
-
-CRITICAL/*.md
-!CRITICAL/*_TEMPLATE.md
-
-PROJECTS/*.md
-!PROJECTS/*_TEMPLATE.md
-
-PEOPLE/*.md
-!PEOPLE/*_TEMPLATE.md
-
-# 3. Products (Ignore context files, keep readme/templates)
-PRODUCTS/*.md
-!PRODUCTS/README.md
-!PRODUCTS/*_TEMPLATE.md
-# Keep examples if explicitly tracked (git handles this, but good to be explicit if we wanted)
-
-# 4. Data / Inbox / Meetings
-_INBOX/**/*
-!_INBOX/.gitkeep
-
-MEETINGS/**/*.md
-!MEETINGS/**/.gitkeep
-!MEETINGS/**/*_TEMPLATE.md
-
-00-drop-files-here-00/*
-!00-drop-files-here-00/.gitkeep
-RESEARCH/*
-!RESEARCH/.gitkeep
-!RESEARCH/*_TEMPLATE.md
-STRATEGY/*
-!STRATEGY/.gitkeep
-!STRATEGY/*_TEMPLATE.md
-FEATURES/*
-!FEATURES/.gitkeep
-!FEATURES/*_TEMPLATE.md
-
-# 5. System
+# 1. Global Excludes
 .DS_Store
 Thumbs.db
+node_modules/
+.env
+package-lock.json
+
+# 2. Roots (Old & New Data Hubs)
+/BUGS/
+/CRITICAL/
+/PEOPLE/
+/PROJECTS/
+/DATA/
+/RESEARCH/
+/_INBOX/
+/MEETINGS/
+/00-DROP-FILES-HERE-00/
+/vault/
+/tracking/
+
+# 3. Preservation (Keep the system core)
+!/tracking/**/.gitkeep
+!/vault/**/.gitkeep
+!/tracking/**/*_TEMPLATE.md
+!/TEMPLATES/
+!/TEMPLATES/*.md
+
+# 4. Settings
+SETTINGS.md
+
+# 5. Cockpit
+cockpit/node_modules/
+cockpit/dist/
+cockpit/.env
+
+# 6. System Logic (Track these)
+!/system/
+system/inbox/
+system/logs/
+system/queue/
+system/backups/

@@ -46,6 +46,7 @@ _The Visual Processor will analyze the scene (Text vs UI) and route accordingly.
 | `#bug [text]`      | tracking/bugs/bugs-master.md         | Bug Chaser               |
 | `#task [text]`     | tracking/projects/                   | Direct                   |
 | `#feature [text]`  | tracking/feedback/feature-requests/  | Direct                   |
+| `#prd [text]`      | vault/products/prds/                 | **PRD Author Agent**     |
 | `#delegate [text]` | tracking/people/delegated-tasks.md   | Delegation Manager       |
 | `#ux [text]`       | tracking/people/ux-tasks.md          | UX Collaborator          |
 | `#eng [text]`      | tracking/people/engineering-items.md | Engineering Collaborator |

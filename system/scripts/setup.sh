@@ -14,6 +14,7 @@ declare -a files=(
     "tracking/people/stakeholders_TEMPLATE.md:tracking/people/stakeholders.md"
     "tracking/people/ux-tasks_TEMPLATE.md:tracking/people/ux-tasks.md"
     "tracking/people/delegated-tasks_TEMPLATE.md:tracking/people/delegated-tasks.md"
+    "TEMPLATES/PRD_TEMPLATE.md:vault/products/PRD_TEMPLATE.md"
 )
 
 # Loop and copy
