@@ -145,5 +145,5 @@ After processing, always show:
 
 ---
 
-*Connected to the Beats PM Brain Mesh v1.3.0*
+*Connected to the Beats PM Brain Mesh v1.5.0*
 ```
