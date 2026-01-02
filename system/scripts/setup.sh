@@ -13,6 +13,7 @@ declare -a files=(
     "tracking/people/engineering-items_TEMPLATE.md:tracking/people/engineering-items.md"
     "tracking/people/stakeholders_TEMPLATE.md:tracking/people/stakeholders.md"
     "tracking/people/ux-tasks_TEMPLATE.md:tracking/people/ux-tasks.md"
+    "tracking/people/delegated-tasks_TEMPLATE.md:tracking/people/delegated-tasks.md"
 )
 
 # Loop and copy

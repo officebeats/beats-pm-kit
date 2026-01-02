@@ -46,6 +46,7 @@ _The Visual Processor will analyze the scene (Text vs UI) and route accordingly.
 | `#bug [text]`      | tracking/bugs/bugs-master.md         | Bug Chaser               |
 | `#task [text]`     | tracking/projects/                   | Direct                   |
 | `#feature [text]`  | tracking/feedback/feature-requests/  | Direct                   |
+| `#delegate [text]` | tracking/people/delegated-tasks.md   | Delegation Manager       |
 | `#ux [text]`       | tracking/people/ux-tasks.md          | UX Collaborator          |
 | `#eng [text]`      | tracking/people/engineering-items.md | Engineering Collaborator |
 | `#braindump [txt]` | BRAIN_DUMP.md               | **Daily Synthesizer**    |
@@ -53,6 +54,7 @@ _The Visual Processor will analyze the scene (Text vs UI) and route accordingly.
 | `#clipboard`       | (Staging: All)              | **Requirements Router**  |
 | `#paste`           | (Alias for #clipboard)      | **Requirements Router**  |
 | `#process`         | (Commit Staging)            | **Orchestrator**         |
+| `#release`         | (Version + Tag + Notes)     | **System Maintenance**   |
 | `#help`            | (Display)                   | **System Guide**         |
 | `#update`          | (Execute)                   | **System Maintenance**   |
 
@@ -87,4 +89,4 @@ _The Visual Processor will analyze the scene (Text vs UI) and route accordingly.
 
 ---
 
-_Connected to the Beats PM Brain Mesh v1.5.0_
+_Connected to the Beats PM Brain Mesh v1.5.1_

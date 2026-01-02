@@ -61,6 +61,7 @@ PARALLEL SCAN:
 ├── tracking/people/engineering-items.md   → Eng items waiting
 ├── tracking/people/ux-tasks.md            → UX items waiting
 ├── tracking/people/stakeholders.md        → Updates due
+├── tracking/people/delegated-tasks.md     → Handoff items to check
 ├── tracking/projects/projects-master.md   → Project status
 ├── system/queue/needs-clarification.md → Items needing input
 ├── 00-DROP-FILES-HERE-00/        → New drops & items pinned via #clipboard
@@ -77,7 +78,8 @@ PARALLEL SCAN:
 3. ⚡ Now bugs approaching escalation
 4. 🔴 Stale items (48+ hrs no update)
 5. 🚧 Blocked items
-6. 📤 Stakeholder updates due
+6. 📤 Delegated items (approaching deadline)
+7. 📤 Stakeholder updates due
 7. 🔧 Engineering items waiting for input
 8. 🎨 UX items waiting for input
 9. 📅 Calendar events (from SETTINGS.md)
