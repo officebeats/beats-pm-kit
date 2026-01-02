@@ -118,7 +118,7 @@ gemini --system-instruction "system/agents/stakeholder-manager.md"
 
 3. **Use @ mentions** to reference specific files:
    ```
-   @tracking/critical/boss-requests.md show me open items
+   @5. Trackers/critical/boss-requests.md show me open items
    ```
 
 ---

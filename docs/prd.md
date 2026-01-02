@@ -62,18 +62,18 @@ The **Kernel (`KERNEL.md`)** is the system's "operating system." It governs agen
 
 - **Authority**: High-stakes request management for VIPs defined in `SETTINGS.md`.
 - **SLA Rules (Hard-Coded)**:
-  - **Acknowledge Phase**: Capture to `tracking/critical/boss-requests.md` with a `🔥 Critical` default priority.
+  - **Acknowledge Phase**: Capture to `5. Trackers/critical/boss-requests.md` with a `🔥 Critical` default priority.
   - **The 48h Update Rule**: If no update is logged in the "Updates" column for 48 hours, autonomously generate a `🟠 Stale` alert in the next Brief.
-  - **Escalation**: If SLAs (Acknowledge <4h, Update <48h) are breached, move item to `tracking/critical/escalations.md`.
+  - **Escalation**: If SLAs (Acknowledge <4h, Update <48h) are breached, move item to `5. Trackers/critical/escalations.md`.
 
 ### 3.2 Bug Chaser (The "Stability Guard")
 
 - **SLA Policy Matrix**:| Priority    | Chase Cadence | Escalation Threshold             |
   | :---------- | :------------ | :------------------------------- |
-  | 🔥 Critical | Every 8 hours | 48 hours (Move to `tracking/critical/`) |
+  | 🔥 Critical | Every 8 hours | 48 hours (Move to `5. Trackers/critical/`) |
   | ⚡ Now      | Bi-daily      | 72 hours                         |
   | 📌 Next     | Weekly        | 14 days                          |
-- **Autonomous Action**: Scan `tracking/bugs/bugs-master.md` and autonomously draft chase-messages for engineering leads in `tracking/bugs/chase-log.md`.
+- **Autonomous Action**: Scan `5. Trackers/bugs/bugs-master.md` and autonomously draft chase-messages for engineering leads in `5. Trackers/bugs/chase-log.md`.
 
 ### 3.3 Task Manager (The "State Harmonizer")
 
@@ -84,8 +84,8 @@ The **Kernel (`KERNEL.md`)** is the system's "operating system." It governs agen
 
 ### 3.4 Engineering & UX Collaborators
 
-- **Engineering (`engineering-collaborator.md`)**: Convert feedback into "Technical Spikes" (🔬) or "Architecture Decisions" (🏗️) in `tracking/people/engineering-items.md`.
-- **UX (`ux-collaborator.md`)**: Track Discovery (🔍), Wireframes (📐), and Mockups (🎨) in `tracking/people/ux-tasks.md`. Link screenshots/Figma URLs directly to tasks.
+- **Engineering (`engineering-collaborator.md`)**: Convert feedback into "Technical Spikes" (🔬) or "Architecture Decisions" (🏗️) in `5. Trackers/people/engineering-items.md`.
+- **UX (`ux-collaborator.md`)**: Track Discovery (🔍), Wireframes (📐), and Mockups (🎨) in `5. Trackers/people/ux-tasks.md`. Link screenshots/Figma URLs directly to tasks.
 
 ---
 
@@ -109,7 +109,7 @@ The **Kernel (`KERNEL.md`)** is the system's "operating system." It governs agen
 ### 4.3 Strategy Synthesizer (The "PFC")
 
 - **Pattern Recognition**: Identify clusters of feature requests or recurring bug hotspots.
-- **Outputs**: Maintain the Decision Log and create **Opportunity Cards** in `tracking/strategy/opportunities/`.
+- **Outputs**: Maintain the Decision Log and create **Opportunity Cards** in `5. Trackers/strategy/opportunities/`.
 
 ---
 
@@ -117,13 +117,13 @@ The **Kernel (`KERNEL.md`)** is the system's "operating system." It governs agen
 
 Agents MUST preserve schema integrity for all Markdown trackers.
 
-### 5.1 `tracking/bugs/bugs-master.md` Schema
+### 5.1 `5. Trackers/bugs/bugs-master.md` Schema
 
 | ID    | Status  | Priority | Product   | Description | Reporter | Date Logged  |
 | :---- | :------ | :------- | :-------- | :---------- | :------- | :----------- |
 | B-XXX | `[ ]` | 🔥       | [Product] | [Context]   | [Name]   | [YYYY-MM-DD] |
 
-### 5.2 `tracking/critical/boss-requests.md` Schema
+### 5.2 `5. Trackers/critical/boss-requests.md` Schema
 
 | ID     | Request   | Stakeholder | Deadline | Status  | Last Update      |
 | :----- | :-------- | :---------- | :------- | :------ | :--------------- |

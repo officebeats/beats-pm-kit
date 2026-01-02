@@ -9,75 +9,29 @@ package-lock.json
 *.log
 
 # 2. Privacy Lockdown: Data & Active Work
-# We ignore all .md files in data-heavy directories to protect company details.
-# We explicitly KEEP the folder structure via .gitkeep and templates.
-
-# Root Data Hubs
-/00-DROP-FILES-HERE-00/**/*.md
-!/00-DROP-FILES-HERE-00/.gitkeep
-
-/_INBOX/**/*.md
-!/_INBOX/.gitkeep
-
-/DATA/**/*.md
-!/DATA/.gitkeep
-
-/RESEARCH/**/*.md
-!/RESEARCH/.gitkeep
-
-/MEETINGS/**/*.md
-!/MEETINGS/.gitkeep
-
-/BUGS/**/*.md
-!/BUGS/.gitkeep
-
-/CRITICAL/**/*.md
-!/CRITICAL/.gitkeep
-
-/PEOPLE/**/*.md
-!/PEOPLE/.gitkeep
-
-/PROJECTS/**/*.md
-!/PROJECTS/.gitkeep
-
-# Core Tracking & Memory (Ignore active content, keep templates)
-/tracking/**/*.md
-!/tracking/**/.gitkeep
-!/tracking/**/*_TEMPLATE.md
-
-/vault/**/*.md
-!/vault/**/.gitkeep
-!/vault/**/*_TEMPLATE.md
+# Numbered folders (User Data) - Protect .md files, preserve hierarchy
+/0. Incoming/**/*.md
+!/0. Incoming/.gitkeep
+/1. Company/**/*.md
+!/1. Company/.gitkeep
+/2. Products/**/*.md
+!/2. Products/.gitkeep
+/3. Meetings/**/*.md
+!/3. Meetings/.gitkeep
+/4. People/**/*.md
+!/4. People/.gitkeep
+/5. Trackers/**/*.md
+!/5. Trackers/.gitkeep
 
 # 3. User Identity & Config
-# This contains the user's specific workflow details/roles
 SETTINGS.md
 
 # 4. System Logic & Professional Mesh (KEEP THESE)
-!/system/
-!/system/**/*.gitkeep
-!/system/agents/*.md
-!/system/scripts/*.sh
-!/system/prompts/*.md
+!/Beats-PM-System/
+Beats-PM-System/system/inbox/
+Beats-PM-System/system/logs/
+Beats-PM-System/system/queue/
+Beats-PM-System/system/backups/
 
-# Ignore system temporary/inbox data
-/system/inbox/
-/system/logs/
-/system/queue/
-/system/backups/
-
-# 5. System Templates (THE CORE PRODUCT)
-!/TEMPLATES/
-!/TEMPLATES/*.md
-
-# 6. Documentation & Examples
-!/docs/
-!/examples/
+# 5. Documentation
 !/README.md
-!/START-HERE-FTUE.md
-
-# 7. Cockpit UI (KEEP THESE)
-!/cockpit/
-cockpit/**/node_modules/
-cockpit/**/dist/
-cockpit/**/.env

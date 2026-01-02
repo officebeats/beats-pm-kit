@@ -62,7 +62,7 @@ Example prompts:
 ```
 Based on the daily-synthesizer agent, generate my morning brief
 
-Look at tracking/critical/boss-requests.md and tell me what's overdue
+Look at 5. Trackers/critical/boss-requests.md and tell me what's overdue
 
 Process this transcript and extract action items:
 [paste transcript]

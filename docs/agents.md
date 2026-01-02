@@ -47,7 +47,7 @@ When a user opens this folder in Antigravity, read this file first to understand
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │              ORGANIZED FILES ACROSS SYSTEM                      │
-│     (tracking/critical/, tracking/bugs/, tracking/people/, tracking/projects/, tracking/strategy/, etc.)    │
+│     (5. Trackers/critical/, 5. Trackers/bugs/, 5. Trackers/people/, 5. Trackers/projects/, 5. Trackers/strategy/, etc.)    │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -100,12 +100,12 @@ When a user pastes a meeting transcript, Antigravity can:
 
 | Command           | Routes To                   | Agent                    |
 | ----------------- | --------------------------- | ------------------------ |
-| `#boss [text]`    | tracking/critical/boss-requests.md   | Boss Tracker             |
-| `#bug [text]`     | tracking/bugs/bugs-master.md         | Bug Chaser               |
-| `#task [text]`    | tracking/projects/                   | Requirements Translator  |
-| `#feature [text]` | tracking/feedback/feature-requests/  | Requirements Translator  |
-| `#ux [text]`      | tracking/people/ux-tasks.md          | UX Collaborator          |
-| `#eng [text]`     | tracking/people/engineering-items.md | Engineering Collaborator |
+| `#boss [text]`    | 5. Trackers/critical/boss-requests.md   | Boss Tracker             |
+| `#bug [text]`     | 5. Trackers/bugs/bugs-master.md         | Bug Chaser               |
+| `#task [text]`    | 5. Trackers/projects/                   | Requirements Translator  |
+| `#feature [text]` | 5. Trackers/feedback/feature-requests/  | Requirements Translator  |
+| `#ux [text]`      | 5. Trackers/people/ux-tasks.md          | UX Collaborator          |
+| `#eng [text]`     | 5. Trackers/people/engineering-items.md | Engineering Collaborator |
 | `#note [text]`    | \system/inbox/notes/              | Requirements Translator  |
 
 ### Meeting/Transcript Commands
@@ -161,12 +161,12 @@ beats-pm-antigravity-brain/
 │
 ├── system/inbox/                ← Drop zone for raw input
 ├── system/queue/                ← Items needing user input
-├── tracking/critical/              ← Boss requests, escalations
-├── tracking/bugs/                  ← Bug tracking
-├── tracking/feedback/              ← Feature requests
-├── tracking/people/                ← Stakeholders, team tasks
-├── tracking/projects/              ← Active projects
-├── tracking/strategy/              ← Opportunities, decisions
+├── 5. Trackers/critical/              ← Boss requests, escalations
+├── 5. Trackers/bugs/                  ← Bug tracking
+├── 5. Trackers/feedback/              ← Feature requests
+├── 5. Trackers/people/                ← Stakeholders, team tasks
+├── 5. Trackers/projects/              ← Active projects
+├── 5. Trackers/strategy/              ← Opportunities, decisions
 ├── vault/meetings/              ← Briefs, meeting notes
 └── TEMPLATES/             ← Reusable templates
 ```

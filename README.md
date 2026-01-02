@@ -69,12 +69,17 @@ You aren't just talking to one AI. You have a mesh of specialized "experts" work
 
 ## 📂 Simplified Organization (v1.4.0)
 
-We've tidied up the brain so you only see what matters. Everything is organized into four main areas:
+### 📂 Folder Organization
 
-- **`00-DROP-FILES-HERE-00`**: Your digital front door. Throw anything in here to have the AI process it.
-- **`🚀 tracking/`**: Your active lists. This is where your Bugs, Project Tasks, and Boss Requests live.
-- **`📚 vault/`**: Your long-term memory. Completed meeting notes, product research, and historical data.
-- **`🛠️ system/`**: The "engine under the hood." You rarely need to go in here; it's where the AI's logic lives.
+The brain is organized into a human-centric numbered hierarchy, designed for clear navigation:
+
+- **`0. Incoming/`**: The "Landing Zone." Where `#paste`, `#screenshot`, and raw clippings land for triage.
+- **`1. Company/`**: Strategic HQ. OKRs, North Star, Branding, and Corporate Strategy.
+- **`2. Products/`**: Portfolio view. Separate folders for each product line (e.g., `Route-Exchange`).
+- **`3. Meetings/`**: External Memory. All transcripts, daily briefs, and recursive recaps.
+- **`4. People/`**: Relationship CRM. Dedicated dossiers per stakeholder/teammate.
+- **`5. Trackers/`**: The Engine. Master lists for Bugs, Boss Requests, Projects, and Delegated Tasks.
+- **`Beats-PM-System/`**: Technical Core. Contains all agents, logic, and scripts (Hidden from daily use). You rarely need to go in here; it's where the AI's logic lives.
 
 ---
 

@@ -8,13 +8,14 @@ zs# System Kernel (Universal Orchestration Protocol)
 | --------------------------- | ------------------------ | -------------------------------------------------------- |
 | **Task Manager**            | Task Lifecycle Owner     | Tasks need tracking, brain dump triage, or clarification |
 | **Requirements Translator** | Input Router             | New raw info arrives (text, images, files)               |
-| **Meeting Synthesizer**     | Meeting Parser           | Transcripts, notes, or recordings are provided           |
-| **Boss Tracker**            | Critical Request Manager | Boss/VIP is mentioned or asks for something              |
-| **Bug Chaser**              | Quality Manager          | Bugs, errors, outages, or "it's broken" detected         |
-| **Strategy Synthesizer**    | Pattern Recognizer       | Deep insights, trends, or strategic questions arise      |
-| **Visual Processor**        | The Eyes (OCR + Scene)   | **Screenshots**, images, or diagrams are provided        |
-| **Delegation Manager**     | Accountability Expert    | Tasks are assigned to others via `#delegate`             |
-| **Product Context**         | Knowledge Base           | Input is vague; checks `vault/products/*.md` to infer product  |
+| **Daily Synthesizer**     | The Pulse (Briefs)       | User asks for current status or `#day` / `#eod`          |
+| **Reqs Translator**      | The Filter (Intake)      | Any new unstructured input or `#paste` in `0. Incoming/` |
+| **Meeting Synthesizer**   | The Scribe (Strategy)    | Large text/transcripts pasted into `3. Meetings/`        |
+| **Bug Chaser**              | Quality Manager          | Bugs, errors, or "it's broken" in `5. Trackers/`         |
+| **Strategy Synthesizer**    | Pattern Recognizer       | Strategy items in `1. Company/` or `2. Products/`        |
+| **Visual Processor**        | The Eyes (OCR + Scene)   | Images/diagrams in `0. Incoming/`                        |
+| **Delegation Manager**     | Accountability Expert    | Tasks assigned in `5. Trackers/delegated-tasks.md`       |
+| **Product Context**         | Knowledge Base           | Input is vague; checks `2. Products/[alias]/*.md`       |
 
 ---
 
@@ -44,7 +45,7 @@ This keeps the initial context window lean and fast.
         1. Summarize all "New Features" since the last tag using the Strategic Extraction framework.
         2. Auto-increment version (patch unless breaking change detected).
         3. Use `gh release create` headlessly with generated notes.
-    - **Privacy & Integrity Protocol**: Agents MUST NOT stage or push any files from `vault/`, `tracking/`, or `MEETINGS/` (except `*_TEMPLATE.md` or `.gitkeep`) to GitHub. All company-specific data, PRDs, and transcripts are strictly LOCAL.
+    - **Privacy & Integrity Protocol**: Agents MUST NOT stage or push any files from `vault/`, `5. Trackers/`, or `MEETINGS/` (except `*_TEMPLATE.md` or `.gitkeep`) to GitHub. All company-specific data, PRDs, and transcripts are strictly LOCAL.
 4.  **Escalation**: Any agent detecting "Urgent", "Production Down", or Boss Asks must **immediately** fan out to `Boss Tracker` and `Bug Chaser` (Critical).
 5.  **Data Integrity (Source Truth)**: When extracting a feature or protection logic from a conversation, **YOU MUST PRESERVE THE RAW TEXT**. Never summarize away the original context. Always append the verbatim source to the final artifact.
 6.  **Guidance**: If input is `#help`, "what can I do?", or user seems lost, route to `Requirements Translator` to display the **Command Menu** and read out the Next Steps from `ACTION_PLAN.md`.

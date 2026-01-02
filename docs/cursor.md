@@ -45,9 +45,9 @@ Use `@` to reference specific files in your prompts:
 ```
 @system/agents/daily-synthesizer.md Generate my morning brief
 
-@tracking/critical/boss-requests.md What's overdue?
+@5. Trackers/critical/boss-requests.md What's overdue?
 
-@tracking/bugs/bugs-master.md Show me P0 bugs
+@5. Trackers/bugs/bugs-master.md Show me P0 bugs
 ```
 
 ---
@@ -62,8 +62,8 @@ You are helping me manage my PM work using the Beats PM Antigravity Brain system
 Key files to be aware of:
 - system/agents/ contains AI agent prompts for different PM functions
 - SETTINGS.md contains my personal configuration
-- tracking/critical/ contains boss requests and escalations
-- tracking/bugs/ contains bug tracking
+- 5. Trackers/critical/ contains boss requests and escalations
+- 5. Trackers/bugs/ contains bug tracking
 - system/inbox/ is where I drop raw items to be processed
 
 When I use # commands, process them according to the agent definitions.
