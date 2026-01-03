@@ -107,17 +107,52 @@ Create consolidated summary with:
 - Open Questions
 - Items Created (with IDs and locations)
 
+### Step 5: AUTO-EXTRACT TO TRACKERS (CRITICAL)
+
+**This is the most important step.** After parsing, automatically add items to the appropriate trackers:
+
+| Item Type | Target Tracker | Action |
+| :--- | :--- | :--- |
+| **Action Items (Ernesto)** | `5. Trackers/projects/tasks-master.md` | Append new row |
+| **Boss Requests** | `5. Trackers/critical/boss-requests.md` | Append with deadline |
+| **Delegated Items** | `5. Trackers/projects/delegated-tasks.md` | Track with owner |
+| **Open Questions** | Meeting summary only | Include for follow-up |
+| **Notable Quotes** | `3. Meetings/quote-index.md` | Append to table |
+
+**Format for tasks-master.md:**
+```
+| [Task description] | [Project] | [Priority emoji] | [Due date] | 🆕 New |
+```
+
+**Do NOT ask for confirmation.** Execute immediately. The user can review trackers after.
+
 ---
 
 ## Output Locations
 
 | Type | Location |
 |------|----------|
+| **Raw Transcripts** | `3. Meetings/transcripts/[YYYY-MM-DD]-[subject]-raw.md` |
 | 1:1 Notes | `3. Meetings/1-on-1s/[YYYY-MM-DD]-[person].md` |
 | Standup Notes | `3. Meetings/standups/[YYYY-MM-DD]-standup.md` |
 | Stakeholder Reviews | `3. Meetings/stakeholder-reviews/[YYYY-MM-DD]-[subject].md` |
 | Customer Calls | `3. Meetings/customer-calls/[YYYY-MM-DD]-[company].md` |
 | General Meetings | `3. Meetings/general/[YYYY-MM-DD]-[subject].md` |
+
+### Quote Extraction
+
+When processing transcripts, **extract notable quotes** and append to `3. Meetings/quote-index.md`:
+
+| Date | Speaker | Topic | Quote | Source |
+| :--- | :--- | :--- | :--- | :--- |
+| 2026-01-03 | Leadership | Planning | "We need BCG-quality deliverables" | transcripts/2026-01-03-planning-raw.md |
+
+**Criteria for notable quotes**:
+- Decisions or commitments made
+- Strategic direction statements
+- Requirements or specifications
+- Deadlines or milestones mentioned
+- Quotes the user might want to reference later
 
 ---
 

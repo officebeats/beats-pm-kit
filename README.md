@@ -67,7 +67,7 @@ You aren't just talking to one AI. You have a mesh of specialized "experts" work
 
 ---
 
-## 📂 Simplified Organization (v1.4.0)
+## 📂 Simplified Organization (v2.0.0)
 
 ### 📂 Folder Organization
 

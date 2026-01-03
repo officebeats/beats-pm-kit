@@ -65,7 +65,7 @@ PARALLEL SCAN:
 ├── 5. Trackers/projects/projects-master.md → Project status
 ├── system/queue/needs-clarification.md   → Items needing input
 ├── 0. Incoming/                          → New drops & items pinned via #clipboard
-├── _INBOX/*                              → Unprocessed items
+├── 0. Incoming/_INBOX/*                  → Unprocessed items (Legacy alias)
 └── Beats-PM-System/TEMPLATES/SETTINGS_TEMPLATE.md → Calendar, working hours
 ```
 

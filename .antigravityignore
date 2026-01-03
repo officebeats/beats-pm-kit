@@ -1,31 +1,60 @@
 # Antigravity Ignore
-# Prevent the AI from indexing/reading these files to avoid polluting context window with huge data dumps
-# unless explicitly asked.
-
-node_modules/
-.git/
-.ds_store
-Thumbs.db
-
 # ========================================
 # PERFORMANCE OPTIMIZATION
-# These folders are excluded from initial indexing to speed up hydration.
-# The AI will read them on-demand when you explicitly reference them.
+# ========================================
+# These patterns control what the AI indexes on startup.
+# Goal: Keep context window lean, load data on-demand.
+#
+# NOTE: This does NOT prevent access—the AI can still
+# read these files when explicitly asked.
 # ========================================
 
-# Raw data drops (can be 100KB+)
-00-drop-files-here-00/*
-!00-drop-files-here-00/.gitkeep
+# Standard dev excludes
+node_modules/
+.git/
+.DS_Store
+Thumbs.db
 
-# Inbox contains large CSV/text dumps
-_INBOX/
+# ----------------------------------------
+# LARGE DATA FOLDERS (Exclude from initial indexing)
+# ----------------------------------------
+# These can contain 100KB+ of data and pollute the context.
+# The AI will read them on-demand when you reference them.
 
-# Data folder for exports and backups
-DATA/
+# Raw intake - now accessible for visual AI processing
+# /0. Incoming/**
+# !/0. Incoming/.gitkeep
 
-# Old meeting briefs can pile up
-MEETINGS/
+# Archived briefs (old data, load on demand)
+/3. Meetings/archive/**
+!/3. Meetings/archive/.gitkeep
 
-# We generally WANT Antigravity to read SETTINGS.md and Trackers to function.
-# So we DO NOT ignore the active tracker files here.
+# Raw transcripts (large files, but we need write access)
+# NOTE: Transcripts are stored here but excluded from *initial* indexing by the AI
+# The AI can still read/write on demand
+# /3. Meetings/transcripts/**
+# !/3. Meetings/transcripts/.gitkeep
 
+# ----------------------------------------
+# ACTIVE WORKING FILES (ALWAYS ACCESSIBLE)
+# ----------------------------------------
+# These are intentionally NOT ignored so the system works:
+# - SETTINGS.md (user config)
+# - KERNEL.md (routing rules)
+# - STATUS.md (current state)
+# - 5. Trackers/ (bugs, boss-requests, projects)
+# - 1-4 Company/Products/Meetings/People (accessible on demand)
+
+# ----------------------------------------
+# LEGACY FOLDERS (DELETED - IGNORE IF PRESENT)
+# ----------------------------------------
+/BUGS/
+/CRITICAL/
+/DATA/
+/MEETINGS/
+/PEOPLE/
+/PROJECTS/
+/STRATEGY/
+/_INBOX/
+/_QUEUE/
+/00-DROP-FILES-HERE-00/

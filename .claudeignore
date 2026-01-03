@@ -1,18 +1,43 @@
 # Claude Ignore
-# Prevent Claude Code from reading these files
+# ========================================
+# Controls what Claude Code can read.
+# ========================================
+# NOTE: This does NOT affect Antigravity or Gemini CLI.
+# It only applies when using Claude Code.
+# ========================================
 
+# Standard dev excludes
 node_modules/
 .git/
-.ds_store
+.DS_Store
 Thumbs.db
 
-# If you want Claude to be purely structural and not see your private data:
-# Uncomment the below lines.
-# But usually, you want the AI to see your bugs/tasks to help you managed them.
+# ----------------------------------------
+# LARGE DATA FOLDERS (Optional performance optimization)
+# ----------------------------------------
+# Uncomment to exclude large intake folders from Claude indexing:
+# /0. Incoming/**
 
-# SETTINGS.md
-# BUGS/
-# CRITICAL/
-# PROJECTS/
-# PEOPLE/
-# PRODUCTS/
+# ----------------------------------------
+# ACTIVE WORKING FILES (ACCESSIBLE)
+# ----------------------------------------
+# Claude CAN read these to help you manage your PM work:
+# - SETTINGS.md
+# - KERNEL.md
+# - STATUS.md
+# - 5. Trackers/
+# - 1-4 Company/Products/Meetings/People
+
+# ----------------------------------------
+# LEGACY FOLDERS (DELETED - IGNORE IF PRESENT)
+# ----------------------------------------
+/BUGS/
+/CRITICAL/
+/DATA/
+/MEETINGS/
+/PEOPLE/
+/PROJECTS/
+/STRATEGY/
+/_INBOX/
+/_QUEUE/
+/00-DROP-FILES-HERE-00/

@@ -57,6 +57,12 @@ This keeps the initial context window lean and fast.
 9.  **Hybrid Triage (The Parking Lot)**:
     - **Clear/Actionable**: Execute immediately (e.g., "Remind me to call Mom" -> logs task).
     - **Unclear/Random**: If input is a random thought, vague idea, or not immediately actionable, **DO NOT FORCE IT** or ask 20 questions. Instead, log it to `BRAIN_DUMP.md` and tell the user: "Parked in Brain Dump for later."
+10. **Transcript Auto-Detection**: If user pastes a large block of text (>500 words) containing conversational patterns (e.g., speaker labels like "Name:", timestamps, multiple participants, call/meeting language), **automatically trigger Meeting Synthesizer** without requiring `#transcript`. Signs to detect:
+    - Speaker labels (e.g., "John:", "Speaker 1:", "[00:05:32]")
+    - Multiple back-and-forth exchanges
+    - Meeting-related keywords ("meeting", "call", "sync", "let's discuss")
+    - Timestamps or duration markers
+    - **Action**: Save raw to `3. Meetings/transcripts/`, extract quotes to `quote-index.md`, create summary.
 
 ---
 
@@ -64,13 +70,17 @@ This keeps the initial context window lean and fast.
 
 To handle multiple inputs (files, screenshots, text) for a single intent:
 
-1.  **Staging**: Use `#clipboard`, `#screenshot`, or `#paste` to "pin" items from your OS clipboard into `00-DROP-FILES-HERE-00/`.
-2.  **Aggregation**: The system will collect all items in the drop zone until a processing trigger is detected.
-3.  **Processing Trigger**:
+1.  **`#paste` Command**: Triggers clipboard ingestion. On macOS, run `pbpaste` to read clipboard content directly.
+    - **Action**: Execute `pbpaste` and process the output.
+    - **Transcripts**: Auto-detected by speaker labels, timestamps, conversational patterns → triggers Meeting Synthesizer
+    - **Notes/Text**: Routed to Requirements Translator for processing
+    - **Screenshots**: If clipboard contains image reference, triggers Visual Processor
+2.  **Auto-Detect (No Command)**: If user just pastes a large block (>500 words) with conversational patterns, AI auto-detects and processes without needing `#paste`.
+3.  **Staging for Files**: For actual files (screenshots, images), drop into `0. Incoming/` folder.
+4.  **Processing Trigger**:
     - An explicit `#process` command.
     - A message that provides context for the staged items (e.g., "Review these screenshots for bugs").
-4.  **Action**: Upon receiving these commands, the **Requirements Translator** MUST execute the `capture-clipboard.ps1` script to ingest the data.
-5.  **Cleanup**: Once processed, items in `00-DROP-FILES-HERE-00/` are moved to the appropriate company directory in `2. Products/[Company]/[Product]/` or `0. Incoming/archive/`.
+5.  **Cleanup**: Once processed, items in `0. Incoming/` are moved to the appropriate directory.
 
 ---
 
@@ -108,6 +118,26 @@ The System should nudge the user intelligently based on context:
 2.  **Stale State Detection**:
     - If user says "Hi" after >24h silence: "Welcome back. Want a summary of what you missed or a fresh plan for today?"
     - If no criticals tracked for 48h: "Things seem quiet. Anything critical on your mind?"
+
+---
+
+## 🎼 Gemini CLI Conductor Integration
+
+The PM Brain leverages **Gemini CLI Conductor** for context-driven development:
+
+| File | Purpose |
+| :--- | :--- |
+| `.gemini/context.md` | Full system architecture, folder structure, agent inventory |
+| `.gemini/style-guide.md` | Markdown conventions, tracker formats |
+| `.gemini/workflow-preferences.md` | Behavior settings (verbosity, confirmations, error handling) |
+| `.gemini/templates/` | Spec templates for features and bug fixes |
+
+**Commands**:
+- `/conductor:setup` — Already configured via `.gemini/context.md`
+- `/conductor:newTrack` — Create specs using templates
+- `/conductor:implement` — Execute plan with AI
+
+This ensures persistent context across sessions, reduced hallucinations, and consistent style.
 
 ---
 

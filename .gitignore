@@ -1,51 +1,110 @@
 # Beats PM Antigravity Brain - Git Ignore
+# ========================================
+# SKELETON PRIVACY STRATEGY
+# ========================================
+# Goal: Share folder STRUCTURE, never share CONTENT.
+# - All processed files in 0-5 folders are ignored.
+# - .gitkeep files preserve the folder structure in git.
+# - System logic (Beats-PM-System, KERNEL.md) is versioned.
+# ========================================
 
-# 1. Global Dev Excludes
+# ----------------------------------------
+# 1. GLOBAL DEV EXCLUDES
+# ----------------------------------------
 .DS_Store
 Thumbs.db
 node_modules/
 .env
+.env.*
 package-lock.json
 *.log
 
-# 2. Privacy Lockdown: User Data Folders (FULL PROTECTION)
-# Strategy: Ignore EVERYTHING inside these folders, but recursively allow .gitkeep files.
+# ----------------------------------------
+# 2. PROCESSED DATA FOLDERS (FULL PRIVACY)
+# ----------------------------------------
+# Strategy: Ignore ALL files in these folders, keep directories.
+# The pattern "folder/**" ignores all contents recursively.
+# The pattern "!folder/**/" preserves directory structure.
+# The pattern "!folder/**/.gitkeep" preserves .gitkeep files.
 
-/0. Incoming/*
-!/0. Incoming/*
-/0. Incoming/*/*
-!/0. Incoming/*/.gitkeep
+# 0. Incoming (raw intake)
+/0. Incoming/**
+!/0. Incoming/**/
+!/0. Incoming/**/.gitkeep
 
-/1. Company/*
-!/1. Company/**/.gitkeep
+# 35. 1. Company (profiles, communications, strategy)
+# SENSITIVE: Contains client names in folder structure.
+/1. Company/**
 
-/2. Products/*
-!/2. Products/**/.gitkeep
+# 40. 2. Products (PRDs, initiatives, bugs)
+# SENSITIVE: Contains product/client names in folder structure.
+/2. Products/**
 
-/3. Meetings/*
+# 3. Meetings (notes, briefs, transcripts)
+/3. Meetings/**
+!/3. Meetings/**/
 !/3. Meetings/**/.gitkeep
 
-/4. People/*
+# 4. People (stakeholder directory)
+/4. People/**
+!/4. People/**/
 !/4. People/**/.gitkeep
 
-/5. Trackers/*
-!/5. Trackers/*
-/5. Trackers/*/*
-!/5. Trackers/*/.gitkeep
+# 5. Trackers (bugs, boss-requests, projects)
+/5. Trackers/**
+!/5. Trackers/**/
+!/5. Trackers/**/.gitkeep
 
-/00-DROP-FILES-HERE-00/*
-!/00-DROP-FILES-HERE-00/**/.gitkeep
+# ----------------------------------------
+# 3. USER CONFIGURATION (SENSITIVE)
+# ----------------------------------------
+# SETTINGS.md contains personal info (boss name, team, email).
+# Keep it local, share the template instead.
+/SETTINGS.md
+/STATUS.md
+/ACTION_PLAN.md
 
-
-# 3. User Identity & Config
-SETTINGS.md
-
-# 4. System Logic & Professional Mesh (KEEP THESE)
-!/Beats-PM-System/
-Beats-PM-System/system/inbox/
-Beats-PM-System/system/logs/
-Beats-PM-System/system/queue/
-Beats-PM-System/system/backups/
-
-# 5. Documentation
+# ----------------------------------------
+# 4. SYSTEM LOGIC (VERSIONED - KEEP THESE)
+# ----------------------------------------
+# Core system files to share
+!/KERNEL.md
 !/README.md
+!/.gitignore
+!/.antigravityignore
+
+# Beats-PM-System is the public template
+!/Beats-PM-System/
+
+# But exclude runtime/transient data within it
+/Beats-PM-System/system/inbox/**
+!/Beats-PM-System/system/inbox/.gitkeep
+/Beats-PM-System/system/logs/**
+!/Beats-PM-System/system/logs/.gitkeep
+/Beats-PM-System/system/queue/**
+!/Beats-PM-System/system/queue/.gitkeep
+/Beats-PM-System/system/backups/**
+!/Beats-PM-System/system/backups/.gitkeep
+
+# ----------------------------------------
+# 5. GEMINI CLI CONDUCTOR CONTEXT
+# ----------------------------------------
+# Context files are safe to share (no sensitive data).
+!/.gemini/
+!/.gemini/**
+/.gemini/session-memory.md
+
+# ----------------------------------------
+# 6. LEGACY FOLDERS (SHOULD BE DELETED)
+# ----------------------------------------
+# If any of these still exist, ignore them.
+/BUGS/
+/CRITICAL/
+/DATA/
+/MEETINGS/
+/PEOPLE/
+/PROJECTS/
+/STRATEGY/
+/_INBOX/
+/_QUEUE/
+/00-DROP-FILES-HERE-00/

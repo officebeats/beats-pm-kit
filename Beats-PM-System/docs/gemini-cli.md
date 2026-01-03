@@ -123,4 +123,56 @@ gemini --system-instruction "system/agents/stakeholder-manager.md"
 
 ---
 
+## 🎼 Using Gemini CLI Conductor
+
+The PM Brain is pre-configured for **Conductor**, Google's context-driven development extension.
+
+### Context Files (Already Set Up)
+
+| File | Purpose |
+| :--- | :--- |
+| `.gemini/context.md` | System architecture, folder structure, agents |
+| `.gemini/style-guide.md` | Markdown conventions |
+| `.gemini/workflow-preferences.md` | Behavior settings |
+| `.gemini/templates/` | Feature and bug-fix spec templates |
+
+### Conductor Commands
+
+| Command | Action |
+| :--- | :--- |
+| `/conductor:setup` | Already done via `.gemini/context.md` |
+| `/conductor:newTrack` | Create a new spec for a feature or bug fix |
+| `/conductor:implement` | Execute the plan |
+
+### Benefits
+
+- **Persistent Memory**: Context survives across sessions.
+- **Reduced Hallucinations**: AI understands your folder structure and conventions.
+- **Consistent Style**: Follows your tracker formats and Markdown patterns.
+
+---
+
+## 📂 Session Memory (Per-Session Persistence)
+
+Use the `--context-file` flag for persistent session state that survives terminal restarts:
+
+```bash
+gemini --context-file .gemini/session-memory.md
+```
+
+This creates a dedicated read/write memory for the session. The agent can persist notes, focus areas, and quick references across restarts.
+
+---
+
+## 🗄️ Archive Rotation
+
+Old daily briefs are auto-archived to `3. Meetings/archive/` to prevent context bloat. The archive folder is excluded from initial AI indexing but can be accessed on demand.
+
+**Manual archive command:**
+```bash
+mv "3. Meetings/daily-briefs/2025-*" "3. Meetings/archive/"
+```
+
+---
+
 _Need help? Open an issue at [github.com/officebeats/beats-pm-antigravity-brain](https://github.com/officebeats/beats-pm-antigravity-brain)_
