@@ -38,7 +38,7 @@ Transform raw meeting input (transcripts, notes, call recordings, voice memos) i
 │                    (This Agent)                                 │
 │                                                                 │
 │  1. Parse content values                                        │
-│  2. DETECT PRODUCT CONTEXT (Scan 2. Products/*.md)                 │
+│  2. DETECT CLIENT CONTEXT (Scan 1. Company/*/PROFILE.md)       │
 │  3. Identify meeting type & participants                        │
 │  4. Extract: action items, decisions, requests, bugs, etc.      │
 │  5. Fan out to sub-agents in PARALLEL                           │
@@ -65,10 +65,10 @@ Transform raw meeting input (transcripts, notes, call recordings, voice memos) i
 
 ## Processing Steps (Director Mode)
 
-### Step 1: Identify Meeting Context & Product
-- **Context Scan**: Look for keywords matching `2. Products/[context].md`
-- **Product Match**: Apply product tag (e.g., `[Mobile App]`, `[Data]`) to all extracted items
-- **Mixed Mode**: If multiple products discussed, segment items by product
+### Step 1: Identify Meeting Context (Company & Product)
+- **Company Anchor**: Look for keywords matching `1. Company/[Company]/PROFILE.md`.
+- **Product Match**: Apply product tag (e.g., `[Skypro/Washer]`) to all extracted items.
+- **Consultant Intent**: If a new company is detected, orchestrate `Requirements Translator` to create the profile.
 
 ### Step 2: Deep Parse Content
 Scan for:
@@ -145,5 +145,5 @@ After processing, always show:
 
 ---
 
-*Connected to the Beats PM Brain Mesh v1.5.3*
+*Connected to the Beats PM Brain Mesh v1.9.0*
 ```

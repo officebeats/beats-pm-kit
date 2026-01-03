@@ -15,7 +15,7 @@ zs# System Kernel (Universal Orchestration Protocol)
 | **Strategy Synthesizer**    | Pattern Recognizer     | Strategy items in `1. Company/` or `2. Products/`        |
 | **Visual Processor**        | The Eyes (OCR + Scene) | Images/diagrams in `0. Incoming/`                        |
 | **Delegation Manager**      | Accountability Expert  | Tasks assigned in `5. Trackers/delegated-tasks.md`       |
-| **Product Context**         | Knowledge Base         | Input is vague; checks `2. Products/[alias]/*.md`        |
+| **Product Context**         | Knowledge Base         | Checks `2. Products/[Company]/[Product]/*.md`            |
 
 ---
 
@@ -26,8 +26,8 @@ zs# System Kernel (Universal Orchestration Protocol)
 | Phase          | What to Load                                                                           |
 | -------------- | -------------------------------------------------------------------------------------- |
 | **Startup**    | `KERNEL.md`, `SETTINGS.md`, `STATUS.md` only                                           |
-| **On Trigger** | Read the specific `system/agents/*.md` file when that agent is invoked                 |
-| **On Demand**  | Read `system/inbox/`, `vault/data/`, `vault/meetings/` only when explicitly referenced |
+| **On Trigger** | Read the specific `Beats-PM-System/system/agents/*.md` file when that agent is invoked |
+| **On Demand**  | Read `0. Incoming/`, `2. Products/`, `3. Meetings/` only when explicitly referenced    |
 
 This keeps the initial context window lean and fast.
 
@@ -40,12 +40,15 @@ This keeps the initial context window lean and fast.
 3.  **Context Resolution**:
     - If input is "#bug checkout failed" → Check `vault/products/*.md` for "checkout" keyword.
     - If found in "Mobile App", route to Bug Chaser with context: `Product: Mobile App`.
+    - **Consultant Mode (v1.9.0)**:
+      - **Company Anchor Rule**: Any new project, product, or meeting MUST be anchored to a folder in `1. Company/[Company]`.
+      - **Organic Creation**: If a [Company] isn't recognized, agents MUST create `1. Company/[Company]/PROFILE.md` before proceeding with technical specs.
     - **Strategic Extraction Protocol**: If input mentions "Roadmap", "Strategy", or "Features", the agents MUST use the standardized **"Concept / Requirements / User Journey / Questions & Tasks"** framework for all documentation. This is a system-wide standard for all products.
     - **Strategic Release Protocol**: When `#release` is triggered, the system MUST:
       1. Summarize all "New Features" since the last tag using the Strategic Extraction framework.
       2. Auto-increment version (patch unless breaking change detected).
       3. Use `gh release create` headlessly with generated notes.
-    - **Privacy & Integrity Protocol**: Agents MUST NOT stage or push any files from `vault/`, `5. Trackers/`, or `MEETINGS/` (except `*_TEMPLATE.md` or `.gitkeep`) to GitHub. All company-specific data, PRDs, and transcripts are strictly LOCAL.
+    - **Privacy & Integrity Protocol**: Agents MUST NOT stage or push any files from `1. Company/`, `2. Products/`, `3. Meetings/`, `4. People/` or `5. Trackers/` (except templates or `.gitkeep`) to GitHub. All company-specific data, PRDs, and transcripts are strictly LOCAL.
 4.  **Escalation**: Any agent detecting "Urgent", "Production Down", or Boss Asks must **immediately** fan out to `Boss Tracker` and `Bug Chaser` (Critical).
 5.  **Data Integrity (Source Truth)**: When extracting a feature or protection logic from a conversation, **YOU MUST PRESERVE THE RAW TEXT**. Never summarize away the original context. Always append the verbatim source to the final artifact.
 6.  **Guidance**: If input is `#help`, "what can I do?", or user seems lost, route to `Requirements Translator` to display the **Command Menu** and read out the Next Steps from `ACTION_PLAN.md`.
@@ -67,7 +70,7 @@ To handle multiple inputs (files, screenshots, text) for a single intent:
     - An explicit `#process` command.
     - A message that provides context for the staged items (e.g., "Review these screenshots for bugs").
 4.  **Action**: Upon receiving these commands, the **Requirements Translator** MUST execute the `capture-clipboard.ps1` script to ingest the data.
-5.  **Cleanup**: Once processed, items in `00-DROP-FILES-HERE-00/` are moved to the appropriate product directory in `vault/data/` or `system/inbox/archive/`.
+5.  **Cleanup**: Once processed, items in `00-DROP-FILES-HERE-00/` are moved to the appropriate company directory in `2. Products/[Company]/[Product]/` or `0. Incoming/archive/`.
 
 ---
 

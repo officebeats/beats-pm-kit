@@ -1,6 +1,6 @@
 {
   "name": "@officebeats/beats-pm-antigravity-brain",
-  "version": "1.7.5",
+  "version": "1.9.0",
   "description": "Autonomous AI operating system for Product Managers. Local-first neural mesh with vision, synthesis, and pattern recognition.",
   "publishConfig": {
     "access": "public"

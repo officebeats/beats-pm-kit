@@ -32,9 +32,9 @@ _The Visual Processor will analyze the scene (Text vs UI) and route accordingly.
 
 **Trigger**: Input contains product keywords or context.
 
-1. **Scan**: Check `Beats-PM-System/templates/SETTINGS_TEMPLATE.md` (Portfolio) and `2. Products/*/Product.md` (Context DNA).
-2. **Tag**: Append `[Product]` to the item context.
-3. **Inherit**: If input is vague ("fix the header"), apply the last known or most likely product context.
+1. **Scan**: Check `Beats-PM-System/templates/SETTINGS_TEMPLATE.md` (Portfolio) and `1. Company/*/PROFILE.md` (Client Context).
+2. **Anchor**: If a company is detected (e.g., Skypro), prioritize paths like `1. Company/[Company]/` and `2. Products/[Company]/`.
+3. **Inherit**: If input is vague, apply the active client context.
 
 ---
 
@@ -45,8 +45,8 @@ _The Visual Processor will analyze the scene (Text vs UI) and route accordingly.
 | `#boss [text]`     | 5. Trackers/critical/boss-requests.md   | Boss Tracker             |
 | `#bug [text]`      | 5. Trackers/bugs/bugs-master.md         | Bug Chaser               |
 | `#task [text]`     | 5. Trackers/projects/                   | Direct                   |
-| `#feature [text]`  | 2. Products/[alias]/Features/           | Direct                   |
-| `#prd [text]`      | 2. Products/[alias]/Features/           | **PRD Author Agent**     |
+| `#feature [text]`  | 2. Products/[Company]/[Product]/specs/  | Direct                   |
+| `#prd [text]`      | 2. Products/[Company]/[Product]/specs/  | **PRD Author Agent**     |
 | `#delegate [text]` | 5. Trackers/delegated-tasks.md          | Delegation Manager       |
 | `#ux [text]`       | 5. Trackers/people/ux-tasks.md          | UX Collaborator          |
 | `#eng [text]`      | 5. Trackers/people/engineering-items.md | Engineering Collaborator |
@@ -90,4 +90,4 @@ _The Visual Processor will analyze the scene (Text vs UI) and route accordingly.
 
 ---
 
-_Connected to the Beats PM Brain Mesh v1.7.1_
+_Connected to the Beats PM Brain Mesh v1.9.0_
