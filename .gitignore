@@ -20,8 +20,8 @@ package-lock.json
 !/3. Meetings/.gitkeep
 /4. People/**
 !/4. People/.gitkeep
-/5. Trackers/**
-!/5. Trackers/.gitkeep
+/5. Trackers/*
+!/5. Trackers/**/.gitkeep
 /00-DROP-FILES-HERE-00/**
 !/00-DROP-FILES-HERE-00/.gitkeep
 
