@@ -32,16 +32,6 @@ package-lock.json
 /00-DROP-FILES-HERE-00/*
 !/00-DROP-FILES-HERE-00/**/.gitkeep
 
-# Also protect legacy/alternate named folders
-/_INBOX/**
-!/_INBOX/.gitkeep
-/DATA/**
-!/DATA/.gitkeep
-/RESEARCH/**
-!/RESEARCH/.gitkeep
-/MEETINGS/**
-!/MEETINGS/.gitkeep
-
 
 # 3. User Identity & Config
 SETTINGS.md

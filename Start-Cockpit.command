@@ -6,7 +6,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Start Server
 echo "Starting Server..."
-cd "$DIR/cockpit/server"
+cd "$DIR/Beats-PM-System/cockpit/server"
 npm install > /dev/null 2>&1
 npm start &
 SERVER_PID=$!
@@ -14,7 +14,7 @@ SERVER_PID=$!
 # Start Client (Dev Mode for now, or serve from server if built)
 # For better UX in dev, we'll start the vite dev server
 echo "Starting Client..."
-cd "$DIR/cockpit/client"
+cd "$DIR/Beats-PM-System/cockpit/client"
 npm install > /dev/null 2>&1
 npm run dev &
 CLIENT_PID=$!
