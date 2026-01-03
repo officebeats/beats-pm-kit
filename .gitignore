@@ -9,21 +9,28 @@ package-lock.json
 *.log
 
 # 2. Privacy Lockdown: User Data Folders (FULL PROTECTION)
-# Track parent folders via .gitkeep, but ignore ALL contents (subfolders + files)
-/0. Incoming/**
-!/0. Incoming/.gitkeep
-/1. Company/**
-!/1. Company/.gitkeep
-/2. Products/**
-!/2. Products/.gitkeep
-/3. Meetings/**
-!/3. Meetings/.gitkeep
-/4. People/**
-!/4. People/.gitkeep
+# Strategy: Ignore EVERYTHING inside these folders, but recursively allow .gitkeep files.
+
+/0. Incoming/*
+!/0. Incoming/**/.gitkeep
+
+/1. Company/*
+!/1. Company/**/.gitkeep
+
+/2. Products/*
+!/2. Products/**/.gitkeep
+
+/3. Meetings/*
+!/3. Meetings/**/.gitkeep
+
+/4. People/*
+!/4. People/**/.gitkeep
+
 /5. Trackers/*
 !/5. Trackers/**/.gitkeep
-/00-DROP-FILES-HERE-00/**
-!/00-DROP-FILES-HERE-00/.gitkeep
+
+/00-DROP-FILES-HERE-00/*
+!/00-DROP-FILES-HERE-00/**/.gitkeep
 
 # Also protect legacy/alternate named folders
 /_INBOX/**
