@@ -4,6 +4,13 @@
 
 ---
 
+## Leadership Alignment
+
+- **Origin Industries**: [e.g. Finance, Retail, Automotive]
+- **Resonance Analogies**: [e.g. "Supply Chain", "Just-in-Time"]
+
+---
+
 ## System
 
 - **Owner**: [Your Name]

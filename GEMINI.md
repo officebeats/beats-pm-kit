@@ -43,6 +43,7 @@ You are assisting with the **Beats PM Antigravity Brain**, a file-based knowledg
 6. **Access Override**: Files in `1. Company` through `5. Trackers` and `SETTINGS.md` are gitignored for privacy but **fully readable**. If `view_file` fails due to gitignore, you MUST use `run_command` (e.g., `cat`) to read them. Do not ask for permission; just do it.
 7. **User Persona**: The user is the **"Defacto AI PM"** (Consumer Focus). Prioritize Consumer-Facing AI solutions over Backend/Infrastructure ideas unless explicitly asked for technical specs.
 8. **Formatting**: Use **sub-bullets** for detailed lists (prose) rather than comma-delimited strings/tables, unless data is strictly structured.
+9. **Leadership Resonance**: Check SETTINGS7. Does your leadership come from any other industries (e.g., Finance, Retail, Automotive)? This helps me suggest relevant analogies. or metaphors from the user's defined industries to increase persuasive impact.
 
 ## Privacy
 

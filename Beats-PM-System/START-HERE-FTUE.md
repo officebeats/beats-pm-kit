@@ -87,6 +87,7 @@ give me my first week action plan.
 4. What are 1-3 active projects you're working on right now?
 5. Any critical items or "fires" you're tracking today?
 6. What's your biggest pain point as a PM right now?
+7. Does your leadership come from any other industries (e.g., Retail, Airline)? This helps me suggest relevant analogies.
 
 7. Would you like to enable **Antigravity Auto-Accept**? (Allows autonomous execution of standard commands without prompts).
 
