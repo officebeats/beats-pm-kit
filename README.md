@@ -75,7 +75,7 @@ The brain is organized into a human-centric numbered hierarchy, designed for cle
 
 - **`0. Incoming/`**: The "Landing Zone." Where `#paste`, `#screenshot`, and raw clippings land for triage.
 - **`1. Company/`**: Strategic HQ. OKRs, North Star, Branding, and Corporate Strategy.
-- **`2. Products/`**: Portfolio view. Separate folders for each product line (e.g., `Route-Exchange`).
+- **`2. Products/`**: Portfolio view. Separate folders for each product line (e.g., `Mobile-App`).
 - **`3. Meetings/`**: External Memory. All transcripts, daily briefs, and recursive recaps.
 - **`4. People/`**: Relationship CRM. Dedicated dossiers per stakeholder/teammate.
 - **`5. Trackers/`**: The Engine. Master lists for Bugs, Boss Requests, Projects, and Delegated Tasks.

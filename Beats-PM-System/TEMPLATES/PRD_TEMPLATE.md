@@ -1,6 +1,6 @@
 # 📄 PRD: [Feature Name]
 
-**Product**: Route Exchange  
+**Product**: [Product Name]  
 **Status**: Draft / Under Review / Approved  
 **Owner**: [Lead Name]  
 **Priority**: 🔥 Critical / ⚡ Now  
