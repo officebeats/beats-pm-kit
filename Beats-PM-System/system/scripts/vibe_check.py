@@ -63,6 +63,7 @@ def main():
     # 4. Check Extensions
     print_cyan("\nOptional Power-Ups:")
     check_extension("iml1s.antigravity-plus", "Antigravity Plus")
+    check_extension("jlcodes.antigravity-cockpit", "Antigravity Cockpit")
 
     print_cyan("\n--- Check Complete ---")
 

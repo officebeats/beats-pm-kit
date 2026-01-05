@@ -39,6 +39,11 @@ EXTENSIONS = [
         "id": "iml1s.antigravity-plus",
         "name": "Antigravity Plus (UI & Feature Enhancements)",
         "url": None
+    },
+    {
+        "id": "jlcodes.antigravity-cockpit",
+        "name": "Antigravity Cockpit (Management Dashboard)",
+        "url": None
     }
 ]
 

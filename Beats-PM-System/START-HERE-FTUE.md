@@ -89,12 +89,14 @@ give me my first week action plan.
 6. What's your biggest pain point as a PM right now?
 
 7. Would you like to enable **Antigravity Plus**? (Adds UI enhancements and extra PM productivity features).
+8. Would you like to enable **Antigravity Cockpit**? (Adds a dedicated management dashboard for your brain).
 
 After I answer:
 1. Generate my complete SETTINGS.md file
 2. Create starter entries for my current projects
 3. **Handle Extensions**:
    - If I said 'yes' to Antigravity Plus, execute: `antigravity --install-extension iml1s.antigravity-plus`.
+   - If I said 'yes' to Antigravity Cockpit, execute: `antigravity --install-extension jlcodes.antigravity-cockpit`.
 4. **DISPLAY** the full "First Week Action Plan" right here in the chat
 5. Show me the 5 most useful commands to start with
 6. Offer to generate my first morning brief

@@ -127,6 +127,18 @@ A companion extension that adds extra productivity tools and interface improveme
 antigravity --install-extension iml1s.antigravity-plus
 ```
 
+### [Antigravity Cockpit](https://open-vsx.org/vscode/item?itemName=jlcodes.antigravity-cockpit)
+
+**Management Dashboard.**
+
+A powerful dashboard for managing your PM brain, tracking metrics, and visualizing your product portfolio directly within the interface.
+
+**Manual Installation**:
+
+```bash
+antigravity --install-extension jlcodes.antigravity-cockpit
+```
+
 ---
 
 ## 🔒 Privacy First
