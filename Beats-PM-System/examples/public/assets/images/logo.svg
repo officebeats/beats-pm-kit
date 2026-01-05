@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120">
+    <defs>
+        <style>
+            .text { font-family: Arial, sans-serif; font-weight: 900; fill: #1a1a1a; }
+            .subtext { font-family: Arial, sans-serif; font-weight: 700; fill: #007cc2; letter-spacing: 0.5px; }
+            .swoosh { fill: #007cc2; }
+        </style>
+    </defs>
+    
+    <!-- Swoosh -->
+    <path class="swoosh" d="M20,80 C20,80 50,20 200,10 C300,5 380,20 380,20 C380,20 300,30 200,40 C100,50 60,95 60,95 L20,80 Z" />
+    
+    <!-- Main Text -->
+    <text x="50" y="85" font-size="60" class="text" letter-spacing="-2">Sky</text>
+    <text x="180" y="85" font-size="60" class="text" letter-spacing="-2">Pro</text>
+    <text x="310" y="55" font-size="12" class="text">®</text>
+    
+    <!-- Underline -->
+    <rect x="80" y="95" width="280" height="3" fill="#007cc2" />
+    
+    <!-- Subtext -->
+    <text x="220" y="110" font-size="10" text-anchor="middle" class="subtext">World Leader in</text>
+    <text x="220" y="122" font-size="10" text-anchor="middle" class="subtext">Automated Window & Facade Cleaning Technology</text>
+</svg>

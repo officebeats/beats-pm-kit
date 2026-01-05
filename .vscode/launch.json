@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Edge",
+      "request": "launch",
+      "type": "pwa-msedge",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Launch Chrome",
+      "request": "launch",
+      "type": "pwa-chrome",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Open Index.html (Edge)",
+      "type": "pwa-msedge",
+      "request": "launch",
+      "file": "${workspaceFolder}/2. Products/skypro/website_candidate/index.html"
+    },
+    {
+      "name": "Open Index.html (Chrome)",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "file": "${workspaceFolder}/2. Products/skypro/website_candidate/index.html"
+    }
+  ]
+}

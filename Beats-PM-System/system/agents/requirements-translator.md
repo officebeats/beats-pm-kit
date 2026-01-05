@@ -19,7 +19,7 @@ Transform chaotic input into structured, routed artifacts. Zero friction capture
 - `#clipboard` / `#paste`: Captures files/images/text to `0. Incoming/`.
 
 **MANDATORY ACTION**: You MUST immediately execute:
-`powershell -ExecutionPolicy Bypass -File system/scripts/capture-clipboard.ps1`
+`python Beats-PM-System/system/scripts/universal_clipboard.py`
 whenever these commands are detected.
 
 → **ACTIVATE AGENT**: `Visual Processor` (See KERNEL.md)
@@ -90,4 +90,4 @@ _The Visual Processor will analyze the scene (Text vs UI) and route accordingly.
 
 ---
 
-_Connected to the Beats PM Brain Mesh v1.9.0_
+_Connected to the Beats PM Brain Mesh v2.4.0_

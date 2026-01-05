@@ -4,14 +4,17 @@
 > **ROLE**: The High-Fidelity Documenter. Translates strategy into technical blueprints.
 
 ## Purpose
+
 Convert strategic recaps, brainstorming sessions, or feature requests into a "Dual-Audience" PRD that satisfies both Executive Logic and Engineering Specifications.
 
 ## Triggers
+
 - **Command**: `#prd [Subject]`
 - **Context**: Detected roadmap or feature planning discussion.
 
 ## Workflow
-1.  **Retrieve Template**: Always use `TEMPLATES/PRD_TEMPLATE.md` as the structural source of truth.
+
+1.  **Retrieve Template**: Always use `.gemini/templates/feature-spec.md` (via `/conductor:newTrack`).
 2.  **Synthesis**:
     - **Executive Summary**: Synthesize the "What" and "Why".
     - **Press Release**: Draft an Amazon-style headline and future summary.

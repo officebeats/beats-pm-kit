@@ -13,14 +13,14 @@ Transform raw meeting input (transcripts, notes, call recordings, voice memos) i
 
 ## Triggers
 
-| Command       | Use Case                                  |
-| ------------- | ----------------------------------------- |
-| `#transcript` | Paste a call transcript or recording text |
-| `#meeting`    | Paste hand-crafted meeting notes          |
-| `#call`       | Quick capture from a call                 |
-| `#notes`      | Raw notes dump                            |
-| `#1on1`       | 1:1 meeting notes                         |
-| `#standup`    | Standup notes                             |
+| Command       | Use Case                                                                     |
+| ------------- | ---------------------------------------------------------------------------- |
+| `#transcript` | Paste a call transcript or recording text -> Applies `/conductor:transcript` |
+| `#meeting`    | Paste hand-crafted meeting notes                                             |
+| `#call`       | Quick capture from a call                                                    |
+| `#notes`      | Raw notes dump                                                               |
+| `#1on1`       | 1:1 meeting notes                                                            |
+| `#standup`    | Standup notes                                                                |
 
 ---
 
@@ -121,7 +121,9 @@ Create consolidated summary with:
 
 **Format for tasks-master.md:**
 ```
+
 | [Task description] | [Project] | [Priority emoji] | [Due date] | 🆕 New |
+
 ```
 
 **Do NOT ask for confirmation.** Execute immediately. The user can review trackers after.
@@ -180,5 +182,5 @@ After processing, always show:
 
 ---
 
-*Connected to the Beats PM Brain Mesh v1.9.0*
+*Connected to the Beats PM Brain Mesh v2.4.0*
 ```

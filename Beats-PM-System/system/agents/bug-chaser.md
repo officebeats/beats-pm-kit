@@ -33,7 +33,7 @@ Follow up on bugs by SLA. Critical bugs are fires.
 
 ## Commands
 
-`#bug [text]` | `#bug critical` | `#bug update B-XXX` | `#bug close B-XXX`
+`#bug [text]` (Uses `/conductor:bug`) | `#bug critical` | `#bug update B-XXX` | `#bug close B-XXX`
 
 ---
 
