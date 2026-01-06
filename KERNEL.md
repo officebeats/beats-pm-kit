@@ -92,8 +92,12 @@ To maintain data integrity, agents MUST abide by the following boundary checks. 
 
 To handle multiple inputs (files, screenshots, text) for a single intent:
 
-1.  **`#paste` Command**: Triggers clipboard ingestion. On macOS, run `pbpaste` to read clipboard content directly.
-    - **Action**: Execute `pbpaste` and process the output.
+1.  **`#paste` Command**: Triggers clipboard ingestion. **Cross-Platform Execution**:
+    - **macOS**: `pbpaste`
+    - **Windows**: `powershell -command "Get-Clipboard"`
+    - **Linux**: `xclip -selection clipboard -o`
+    - **Universal (Preferred)**: `python Beats-PM-System/system/scripts/universal_clipboard.py`
+    - **Agent Rule**: Detect OS via `uname` (Unix) or `$env:OS` (Windows) and route accordingly, OR use the universal Python script for guaranteed parity.
     - **Transcripts**: Auto-detected by speaker labels, timestamps, conversational patterns → triggers Meeting Synthesizer
     - **Notes/Text**: Routed to Requirements Translator for processing
     - **Screenshots**: If clipboard contains image reference, triggers Visual Processor
@@ -103,6 +107,25 @@ To handle multiple inputs (files, screenshots, text) for a single intent:
     - An explicit `#process` command.
     - A message that provides context for the staged items (e.g., "Review these screenshots for bugs").
 5.  **Cleanup**: Once processed, items in `0. Incoming/staging/` are moved to the appropriate directory in `2. Products/[Company]/[Product]/` or `0. Incoming/archive/`.
+
+---
+
+## 🖥️ Cross-Platform Script Invocation Rules
+
+To ensure consistent behavior across macOS, Windows, and Linux:
+
+| Script Type | macOS/Linux | Windows |
+| :--- | :--- | :--- |
+| **Python** | `python3 <script>.py` | `python <script>.py` |
+| **Shell** | `bash <script>.sh` or `./<script>.sh` | N/A (use `.ps1` equivalent) |
+| **PowerShell** | N/A | `powershell -File <script>.ps1` |
+
+**Agent Rules**:
+1.  **Prefer Python**: For any new script, use Python for cross-platform parity.
+2.  **Path Separators**: Always use forward slashes (`/`) in paths. Git Bash and most tools handle this on Windows.
+3.  **Line Endings**: All `.md`, `.py`, `.sh` files should use LF (Unix) line endings. Enforced via `.gitattributes`.
+4.  **Environment Variable**: `BRAIN_ROOT` can be set to override the default brain location (see `SETTINGS.md`).
+
 
 ---
 
@@ -141,8 +164,27 @@ To ensure continuity across "weeks, months, years", the system uses **Immutable 
 
 3.  **`SESSION_MEMORY.md`** (Root):
     - **Trigger**: End of every session.
-    - **Format**: "Last Known State" summary.
+    - **Format**: "Last Known State" summary + OS context.
     - **Goal**: Instant "Hot Start" for the next session.
+
+4.  **`quote-index.md`** (in `3. Meetings/`):
+    - **Trigger**: Every transcript processed.
+    - **Format**: Date | Speaker | Quote | Source File.
+    - **Goal**: Searchable, grep-friendly verbatim quote archive.
+
+### 🗂️ Tiered Memory System (Hot / Warm / Cold)
+
+To manage context window size and long-term storage, transcripts and notes are tiered by age:
+
+| Tier | Location | Criteria | Contents |
+| :--- | :--- | :--- | :--- |
+| **Hot** | `3. Meetings/transcripts/` | < 30 days old | Full raw transcript + extraction manifest |
+| **Warm** | `3. Meetings/summaries/` | 30–90 days old | Summary + quote-index entries only |
+| **Cold** | `3. Meetings/archive/` | > 90 days old | Raw transcript (compressed) + metadata |
+
+**Agent Rule**: When referencing old transcripts, check `quote-index.md` first. Only expand to full transcript if quote-level context is insufficient.
+
+**Automation**: The `vacuum.py` script can auto-archive based on file modification date.
 
 ---
 
