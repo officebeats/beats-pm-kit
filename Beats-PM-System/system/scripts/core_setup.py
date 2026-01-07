@@ -81,39 +81,9 @@ def install_extension_headless(ext_name, ext_url, ext_id):
             print(f"\033[91m  [!] Failed to install {ext_name} from gallery: {e}\033[0m")
             return False
             
-def check_and_install_cloudflared():
-    system = platform.system()
-    print_cyan(f"\n🌐 Checking Cloudflare Tunnel (Remote Access support)...")
-    
-    try:
-        subprocess.run(["cloudflared", "--version"], capture_output=True, check=True)
-        print_gray("  [skip] cloudflared (Already installed)")
-        return True
-    except:
-        print_yellow("  [!] cloudflared is missing. This is required for Remote Mobile Access.")
-        response = input("  [?] Would you like to install it now? (y/n): ").strip().lower()
-        if response == 'y':
-            try:
-                if system == "Windows":
-                    print_cyan("  [+] Installing cloudflared via winget...")
-                    subprocess.run(["winget", "install", "cloudflare.cloudflared"], check=True)
-                elif system == "Darwin": # macOS
-                    print_cyan("  [+] Installing cloudflared via brew...")
-                    subprocess.run(["brew", "install", "cloudflared"], check=True)
-                else:
-                    print_yellow("  [!] Manual installation required for this OS.")
-                    print_yellow("  [!] Visit: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/")
-                    return False
-                print_green("  [✓] cloudflared installed successfully.")
-                return True
-            except Exception as e:
-                print(f"\033[91m  [!] Failed to install cloudflared: {e}\033[0m")
-                return False
-        return False
-
 def main():
     system = platform.system()
-    print_cyan(f"🧠 Hydrating Antigravity Brain v2.4.4 ({system})...")
+    print_cyan(f"🧠 Hydrating Antigravity Brain v2.5.0 ({system})...")
 
     # 1. Create Directories
     for d in DIRECTORIES:
@@ -143,10 +113,7 @@ def main():
     print_cyan("\n✅ Brain is ready. Your privacy is secured.")
     print_yellow("Active files are ignored by git. You can now add your real data.")
 
-    # 3. External Binaries
-    check_and_install_cloudflared()
-
-    # 4. Optional Extensions
+    # 3. Optional Extensions
     print_cyan("\n🚀 Optional Power-Ups:")
     for ext in EXTENSIONS:
         if not check_extension_installed(ext["id"]):

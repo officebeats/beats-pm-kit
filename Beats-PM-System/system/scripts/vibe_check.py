@@ -41,7 +41,6 @@ def main():
     check_cmd("git", "Git")
     check_cmd("gh", "GitHub CLI")
     check_cmd("npm.cmd" if system == "Windows" else "npm", "Node/NPM")
-    check_cmd("cloudflared", "Cloudflare Tunnel")
 
     # 2. Check File Structure
     print_cyan("\nCore Infrastructure:")

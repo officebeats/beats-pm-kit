@@ -114,18 +114,18 @@ To handle multiple inputs (files, screenshots, text) for a single intent:
 
 To ensure consistent behavior across macOS, Windows, and Linux:
 
-| Script Type | macOS/Linux | Windows |
-| :--- | :--- | :--- |
-| **Python** | `python3 <script>.py` | `python <script>.py` |
-| **Shell** | `bash <script>.sh` or `./<script>.sh` | N/A (use `.ps1` equivalent) |
-| **PowerShell** | N/A | `powershell -File <script>.ps1` |
+| Script Type    | macOS/Linux                           | Windows                         |
+| :------------- | :------------------------------------ | :------------------------------ |
+| **Python**     | `python3 <script>.py`                 | `python <script>.py`            |
+| **Shell**      | `bash <script>.sh` or `./<script>.sh` | N/A (use `.ps1` equivalent)     |
+| **PowerShell** | N/A                                   | `powershell -File <script>.ps1` |
 
 **Agent Rules**:
+
 1.  **Prefer Python**: For any new script, use Python for cross-platform parity.
 2.  **Path Separators**: Always use forward slashes (`/`) in paths. Git Bash and most tools handle this on Windows.
 3.  **Line Endings**: All `.md`, `.py`, `.sh` files should use LF (Unix) line endings. Enforced via `.gitattributes`.
 4.  **Environment Variable**: `BRAIN_ROOT` can be set to override the default brain location (see `SETTINGS.md`).
-
 
 ---
 
@@ -163,6 +163,7 @@ To ensure continuity across "weeks, months, years", the system uses **Immutable 
     - **Goal**: Zero hallucination on "Who handles Grace?".
 
 3.  **`SESSION_MEMORY.md`** (Root):
+
     - **Trigger**: End of every session.
     - **Format**: "Last Known State" summary + OS context.
     - **Goal**: Instant "Hot Start" for the next session.
@@ -176,11 +177,11 @@ To ensure continuity across "weeks, months, years", the system uses **Immutable 
 
 To manage context window size and long-term storage, transcripts and notes are tiered by age:
 
-| Tier | Location | Criteria | Contents |
-| :--- | :--- | :--- | :--- |
-| **Hot** | `3. Meetings/transcripts/` | < 30 days old | Full raw transcript + extraction manifest |
-| **Warm** | `3. Meetings/summaries/` | 30–90 days old | Summary + quote-index entries only |
-| **Cold** | `3. Meetings/archive/` | > 90 days old | Raw transcript (compressed) + metadata |
+| Tier     | Location                   | Criteria       | Contents                                  |
+| :------- | :------------------------- | :------------- | :---------------------------------------- |
+| **Hot**  | `3. Meetings/transcripts/` | < 30 days old  | Full raw transcript + extraction manifest |
+| **Warm** | `3. Meetings/summaries/`   | 30–90 days old | Summary + quote-index entries only        |
+| **Cold** | `3. Meetings/archive/`     | > 90 days old  | Raw transcript (compressed) + metadata    |
 
 **Agent Rule**: When referencing old transcripts, check `quote-index.md` first. Only expand to full transcript if quote-level context is insufficient.
 

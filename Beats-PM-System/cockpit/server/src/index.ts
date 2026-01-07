@@ -5,7 +5,6 @@ import path from "path";
 import fs from "fs";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { TunnelManager } from "./tunnel";
 
 const app = express();
 const httpServer = createServer(app);
@@ -16,25 +15,31 @@ const io = new Server(httpServer, {
   },
 });
 
-const tunnel = new TunnelManager();
-
 const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
 
 // --- Configuration ---
-// Use process.cwd() if running from root, fallback to relative logic
-const BRAIN_ROOT = process.cwd().includes("beats-pm-antigravity-brain")
-  ? process.cwd()
-  : path.resolve(__dirname, "../../../../");
+// Improved logic to find the brain root (where KERNEL.md lives)
+function findBrainRoot(startDir: string): string {
+  let current = startDir;
+  while (current !== path.parse(current).root) {
+    if (fs.existsSync(path.join(current, "KERNEL.md"))) {
+      return current;
+    }
+    current = path.dirname(current);
+  }
+  return startDir; // Fallback
+}
 
+const BRAIN_ROOT = findBrainRoot(process.cwd());
 const STAGING_ROOT = path.join(BRAIN_ROOT, "0. Incoming", "staging");
 const ACTION_PLAN = path.join(BRAIN_ROOT, "ACTION_PLAN.md");
 const KERNEL_DOC = path.join(BRAIN_ROOT, "KERNEL.md");
 
-console.log(`🧠 Neural Root: ${BRAIN_ROOT}`);
-console.log(`📂 Staging at: ${STAGING_ROOT}`);
+console.log(`[Neural Link] Root: ${BRAIN_ROOT}`);
+console.log(`[Neural Link] Staging: ${STAGING_ROOT}`);
 
 const INBOX_DIR = path.join(STAGING_ROOT, "inbox");
 const REQUESTS_DIR = path.join(INBOX_DIR, "requests");
@@ -247,29 +252,6 @@ app.get("/api/history", (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed history" });
   }
-});
-
-// 5. Tunnel Control
-app.get("/api/tunnel/status", (req, res) => {
-  res.json(tunnel.getStatus());
-});
-
-app.post("/api/tunnel/start", async (req, res) => {
-  try {
-    const url = await tunnel.start(PORT);
-    io.emit("tunnel-status", { status: "live", url });
-    res.json({ success: true, url });
-  } catch (error: any) {
-    console.error("Tunnel failed:", error);
-    io.emit("tunnel-status", { status: "error", error: error.message });
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.post("/api/tunnel/stop", async (req, res) => {
-  await tunnel.stop();
-  io.emit("tunnel-status", { status: "off", url: null });
-  res.json({ success: true });
 });
 
 httpServer.listen(PORT, () => {
