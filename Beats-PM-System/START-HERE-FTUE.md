@@ -89,17 +89,13 @@ give me my first week action plan.
 6. What's your biggest pain point as a PM right now?
 
 7. Would you like to enable **Antigravity Auto-Accept**? (Allows autonomous execution of standard commands without prompts).
-8. Would you like to enable **Antigravity Cockpit**? (Adds a dedicated management dashboard for your brain).
-9. Would you like to enable **Mobile Remote Access**? (Installs Cloudflare Tunnel to control your brain from your phone).
 
 After I answer:
 1. Generate my complete SETTINGS.md file
 2. Create starter entries for my current projects
 3. **Handle Extensions & Dependencies**:
    - If I said 'yes' to Antigravity Auto-Accept, execute: `antigravity --install-extension pesosz.antigravity-auto-accept`.
-   - If I said 'yes' to Antigravity Cockpit, execute: `antigravity --install-extension jlcodes.antigravity-cockpit`.
-   - If I said 'yes' to Mobile Remote Access, execute: `winget install cloudflare.cloudflared` (on Windows) or `brew install cloudflared` (on macOS).
-4. **DISPLAY** the full "First Week Action Plan" right here in the chat
+4. **DISPLAY** those full "First Week Action Plan" right here in the chat
 5. Show me the 5 most useful commands to start with
 6. Offer to generate my first morning brief
 

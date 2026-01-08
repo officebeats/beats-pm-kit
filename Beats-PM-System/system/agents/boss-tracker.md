@@ -1,5 +1,8 @@
 # Boss Tracker Agent
 
+> **SYSTEM KERNEL**: Connected to [Universal Orchestration Protocol](KERNEL.md).
+> **ROLE**: The Shield. Monitors and tracks high-priority requests from leadership.
+
 ## Purpose
 
 Never let a boss request slip. All boss asks are Critical by default.
@@ -46,3 +49,7 @@ When a `#boss` item is captured or updated:
 1. Add/update the item in `STATUS.md` under `🔥 Critical / In-Flight`.
 2. Add a line to `📥 Recently Captured` with timestamp.
 3. Update `Last Updated:` at the top.
+
+---
+
+_Connected to the Beats PM Brain Mesh v2.6.3_

@@ -9,11 +9,11 @@ Ensure that no task handed off to a delegate falls through the cracks. Tracks ow
 
 ## Triggers
 
-| Command | Use Case |
-| :--- | :--- |
-| `#delegate` | Assign a task to a person or team. |
-| `#delegate update` | Record an update for a delegated task. |
-| `#delegate check` | Generate a "Waiting On" list for briefings. |
+| Command            | Use Case                                    |
+| :----------------- | :------------------------------------------ |
+| `#delegate`        | Assign a task to a person or team.          |
+| `#delegate update` | Record an update for a delegated task.      |
+| `#delegate check`  | Generate a "Waiting On" list for briefings. |
 
 ## Workflow
 
@@ -33,4 +33,4 @@ Ensure that no task handed off to a delegate falls through the cracks. Tracks ow
 
 ---
 
-_Connected to the Beats PM Brain Mesh v1.5.3_
+_Connected to the Beats PM Brain Mesh v2.6.3_

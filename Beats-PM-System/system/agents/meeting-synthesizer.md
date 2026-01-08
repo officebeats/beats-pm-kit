@@ -70,7 +70,12 @@ Transform raw meeting input (transcripts, notes, call recordings, voice memos) i
 - **Product Match**: Apply product tag (e.g., `[Company/Product]`) to all extracted items.
 - **Consultant Intent**: If a new company is detected, orchestrate `Requirements Translator` to create the profile.
 
-### Step 2: Deep Parse Content
+### Step 2: Deep Parse Content & Context Load
+**Antigravity Efficiency Protocol**:
+- If the Product is known (e.g., "Mobile App"), use the **Context Loader** to ingest all product context in one shot:
+  `python Beats-PM-System/system/scripts/context_loader.py "2. Products/MyCompany/Mobile App"`
+- This allows you to reference existing bugs and features in the same context window, preventing duplicates.
+
 Scan for:
 - ✅ Action items (with owner if mentioned)
 - 🔥 Boss requests or asks
@@ -92,9 +97,11 @@ Scan for:
         6. **Follow-ups/Tasks**: Specific actions or ownership assigned to this pillar.
     - **Structure**: Group these as sub-bullets under each high-level pillar in the output markdown.
 
-### Step 3: Parallel Agent Execution
-**CRITICAL**: Execute all sub-agents in parallel.
-- Pass the **Product Context** to each agent so items are filed correctly.
+### Step 3: Parallel Agent Execution (Simultaneous Processing)
+**CRITICAL OPTIMIZATION**: You MUST execute tool calls in PARALLEL.
+- When creating tracker items (Step 5), do NOT wait for one write to finish before starting the next.
+- Set `waitForPreviousTools: false` for all `write_to_file` or `replace_file_content` calls in this batch.
+- **Example**: Log a bug, update the task master, and creating the summary SHOULD occur in the same turn.
 
 ### Step 4: Generate Meeting Summary
 Create consolidated summary with:
@@ -182,5 +189,5 @@ After processing, always show:
 
 ---
 
-*Connected to the Beats PM Brain Mesh v2.4.0*
+*Connected to the Beats PM Brain Mesh v2.6.3*
 ```

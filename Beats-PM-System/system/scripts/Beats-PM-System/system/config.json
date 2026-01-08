@@ -1,0 +1,74 @@
+{
+  "system": {
+    "version": "2.6.3",
+    "name": "Beats PM System"
+  },
+  "paths": {
+    "root": null,
+    "staging": "0. Incoming/staging",
+    "trackers": "5. Trackers",
+    "archive": "5. Trackers/archive",
+    "meetings": "3. Meetings",
+    "people": "4. People",
+    "company": "1. Company",
+    "products": "2. Products",
+    "templates": "Beats-PM-System/TEMPLATES",
+    "agents": "Beats-PM-System/system/agents",
+    "scripts": "Beats-PM-System/system/scripts",
+    "utils": "Beats-PM-System/system/utils"
+  },
+  "files": {
+    "kernel": "KERNEL.md",
+    "settings": "SETTINGS.md",
+    "readme": "README.md",
+    "mesh_config": "Beats-PM-System/system/agents/mesh.toml",
+    "action_plan": "ACTION_PLAN.md",
+    "brain_dump": "0. Incoming/BRAIN_DUMP.md",
+    "status": "STATUS.md"
+  },
+  "directories": {
+    "required": [
+      "0. Incoming/staging",
+      "0. Incoming/archive",
+      "1. Company",
+      "2. Products",
+      "3. Meetings/transcripts",
+      "3. Meetings/daily-briefs",
+      "3. Meetings/weekly-digests",
+      "4. People",
+      "5. Trackers/bugs",
+      "5. Trackers/critical",
+      "5. Trackers/projects",
+      "5. Trackers/archive"
+    ]
+  },
+  "templates": {
+    "settings": "Beats-PM-System/TEMPLATES/SETTINGS_TEMPLATE.md",
+    "bug_report": "Beats-PM-System/TEMPLATES/bug-report.md",
+    "boss_request": "Beats-PM-System/TEMPLATES/boss-request.md",
+    "meeting_notes": "Beats-PM-System/TEMPLATES/meeting-notes.md",
+    "feature_request": "Beats-PM-System/TEMPLATES/feature-request.md",
+    "prd": "Beats-PM-System/TEMPLATES/PRD_TEMPLATE.md",
+    "product_context": "Beats-PM-System/TEMPLATES/product-context.md"
+  },
+  "trackers": {
+    "bugs_master": "5. Trackers/bugs/bugs-master.md",
+    "boss_requests": "5. Trackers/critical/boss-requests.md",
+    "escalations": "5. Trackers/critical/escalations.md",
+    "projects_master": "5. Trackers/projects/projects-master.md",
+    "delegated_tasks": "5. Trackers/projects/delegated-tasks.md",
+    "engineering_items": "5. Trackers/people/engineering-items.md",
+    "ux_tasks": "5. Trackers/people/ux-tasks.md"
+  },
+  "ai": {
+    "default_model": "gemini-3-flash-preview",
+    "mesh_config_path": "Beats-PM-System/system/agents/mesh.toml"
+  },
+  "extensions": [
+    {
+      "id": "pesosz.antigravity-auto-accept",
+      "name": "Antigravity Auto-Accept (Autonomous Execution)",
+      "url": null
+    }
+  ]
+}

@@ -53,8 +53,13 @@ To maintain data integrity, agents MUST abide by the following boundary checks. 
 ## 🔄 Universal Routing Rules
 
 1.  **Direct the specific to the expert**: Don't try to parse a bug in the Meeting Synthesizer; extract it and hand it to the `Bug Chaser`.
-2.  **Parallel Execution**: If multiple intents are found, trigger all relevant agents simultaneously.
-3.  **Context Resolution**:
+2.  **Parallel Execution (Fan-Out Protocol)**:
+    - **Rule**: If multiple intents are detected in a single input (e.g., meeting notes containing both a "Bug" and a "Task"), the system MUST trigger the `Bug Chaser` and `Task Manager` simultaneously.
+    - **Goal**: Reduce latency by executing non-dependent tasks in parallel.
+3.  **Gemini-Native Context Optimization**:
+    - **Rule**: When analyzing `0. Incoming/staging` or performing `#strategy` lookups, read ALL relevant files in a single context window. Do not iterate files one-by-one.
+    - **Capability**: Leverage the 1M+ token window. Use `python Beats-PM-System/system/scripts/context_loader.py [Path]` to ingest full directories (e.g., `2. Products/`) in a single pass.
+4.  **Context Resolution**:
     - If input is "#bug checkout failed" → Check `vault/products/*.md` for "checkout" keyword.
     - If found in "Mobile App", route to Bug Chaser with context: `Product: Mobile App`.
     - **Consultant Mode (v1.9.0)**:
@@ -65,21 +70,21 @@ To maintain data integrity, agents MUST abide by the following boundary checks. 
       2. Auto-increment version (patch unless breaking change detected).
       3. Use `gh release create` headlessly with generated notes.
     - **Privacy & Integrity Protocol**: Agents MUST NOT stage or push any files from `1. Company/`, `2. Products/`, `3. Meetings/`, `4. People/` or `5. Trackers/` (except templates or `.gitkeep`) to GitHub. All company-specific data, PRDs, and transcripts are strictly LOCAL.
-4.  **Escalation**: Any agent detecting "Urgent", "Production Down", or Boss Asks must **immediately** fan out to `Boss Tracker` and `Bug Chaser` (Critical).
-5.  **Data Integrity (Source Truth)**: When extracting a feature or protection logic from a conversation, **YOU MUST PRESERVE THE RAW TEXT**. Never summarize away the original context. Always append the verbatim source to the final artifact.
-6.  **Guidance**: If input is `#help`, "what can I do?", or user seems lost, route to `Requirements Translator` to display the **Command Menu** and read out the Next Steps from `ACTION_PLAN.md`.
-7.  **System Updates**: If input is `#update` or "update the system", execute `git pull` followed by `python Beats-PM-System/system/scripts/core_setup.py` and `python Beats-PM-System/system/scripts/vibe_check.py` to ensure platform parity and report outcome.
-8.  **System Diagnostics**: If input is `#vibe` or "vibe check", execute `python Beats-PM-System/system/scripts/vibe_check.py` and report the status.
-9.  **Succinct Context**: If input is `#day`, `#status`, `#latest`, `#info`, or "where was I at?", trigger `Daily Synthesizer`. **Output must be succinct, fluff-free, and table-based.**
-10. **Hybrid Triage (The Parking Lot)**:
+5.  **Escalation**: Any agent detecting "Urgent", "Production Down", or Boss Asks must **immediately** fan out to `Boss Tracker` and `Bug Chaser` (Critical).
+6.  **Data Integrity (Source Truth)**: When extracting a feature or protection logic from a conversation, **YOU MUST PRESERVE THE RAW TEXT**. Never summarize away the original context. Always append the verbatim source to the final artifact.
+7.  **Guidance**: If input is `#help`, "what can I do?", or user seems lost, route to `Requirements Translator` to display the **Command Menu** and read out the Next Steps from `ACTION_PLAN.md`.
+8.  **System Updates**: If input is `#update`, execute `git pull` followed by `python Beats-PM-System/system/scripts/core_setup.py`. **Note**: `core_setup.py` automatically chain-executes `vibe_check.py` to enforce the latest intelligence model (e.g., Gemini 3 Flash).
+9.  **System Diagnostics**: If input is `#vibe` or "vibe check", execute `python Beats-PM-System/system/scripts/vibe_check.py` and report the status.
+10. **Succinct Context**: If input is `#day`, `#status`, `#latest`, `#info`, or "where was I at?", trigger `Daily Synthesizer`. **Output must be succinct, fluff-free, and table-based.**
+11. **Hybrid Triage (The Parking Lot)**:
     - **Clear/Actionable**: Execute immediately (e.g., "Remind me to call Mom" -> logs task).
     - **Unclear/Random**: If input is a random thought, vague idea, or not immediately actionable, **DO NOT FORCE IT** or ask 20 questions. Instead, log it to `BRAIN_DUMP.md` and tell the user: "Parked in Brain Dump for later."
-11. **Memory Janitor Rule (Optimization)**:
+12. **Memory Janitor Rule (Optimization)**:
     - **Trigger**: When `STATUS.md` or any Active Tracker exceeds 500 lines.
     - **Action**: Move all "Completed" or "Done" items older than 7 days to `5. Trackers/archive/`.
     - **Optimization**: Run `python Beats-PM-System/system/scripts/vacuum.py` to auto-clean trackers.
     - **Goal**: Keep active context tokens low for maximum speed and accuracy.
-12. **Transcript Auto-Detection**: If user pastes a large block of text (>500 words) containing conversational patterns (e.g., speaker labels like "Name:", timestamps, multiple participants, call/meeting language), **automatically trigger Meeting Synthesizer** without requiring `#transcript`. Signs to detect:
+13. **Transcript Auto-Detection**: If user pastes a large block of text (>500 words) containing conversational patterns (e.g., speaker labels like "Name:", timestamps, multiple participants, call/meeting language), **automatically trigger Meeting Synthesizer** without requiring `#transcript`. Signs to detect:
     - Speaker labels (e.g., "John:", "Speaker 1:", "[00:05:32]")
     - Multiple back-and-forth exchanges
     - Meeting-related keywords ("meeting", "call", "sync", "let's discuss")
@@ -206,43 +211,46 @@ The System should nudge the user intelligently based on context:
 
 ---
 
-65: - **Action**: Save raw to `3. Meetings/transcripts/` => **MUST apply `.gemini/templates/transcript-extraction.md`** to generate the analysis.
+## 🎼 Gemini CLI Conductor-First Protocol
 
-14. **Bug Chaser**: Quality Manager => **MUST apply `.gemini/templates/bug-report.md`** for any new intake.
+**Rule**: The PM Brain operates on a **"Conductor-First-Always"** basis.
+**Effect**: For _any_ structured artifact creation, you MUST load and apply the corresponding template from `.gemini/templates/`.
 
-## 🎼 Gemini CLI Conductor Integration
+### 🚨 Template Enforcement Table
 
-The PM Brain leverages **Gemini CLI Conductor** for context-driven development.
-**CRITICAL**: You (The Agent) must **AUTO-SELECT** these templates based on input type. Do not wait for user commands.
+| Intent Detected  | Required Template                            | Auto-Trigger Logic                             |
+| :--------------- | :------------------------------------------- | :--------------------------------------------- |
+| **Bug / Issue**  | `.gemini/templates/bug-report.md`            | Input has "error", "crash", "fix", or `#bug`.  |
+| **Fix Spec**     | `.gemini/templates/bug-fix-spec.md`          | User asks to _solve_ a specific bug.           |
+| **New Feature**  | `.gemini/templates/feature-request.md`       | Input has "idea", "build", or `#feature`.      |
+| **Feature Spec** | `.gemini/templates/feature-spec.md`          | User asks to _detail_ or _spec out_ a feature. |
+| **Transcript**   | `.gemini/templates/transcript-extraction.md` | Large block of conversational text.            |
+| **Strategy**     | `.gemini/templates/strategy-memo.md`         | Input has "pivot", "roadmap", "vision".        |
+| **Weekly**       | `.gemini/templates/weekly-review.md`         | Input is `#weekly` or "summarize week".        |
 
-| File                              | Purpose                                                      |
-| :-------------------------------- | :----------------------------------------------------------- |
-| `.gemini/context.md`              | Full system architecture, folder structure, agent inventory  |
-| `.gemini/style-guide.md`          | Markdown conventions, tracker formats                        |
-| `.gemini/workflow-preferences.md` | Behavior settings (verbosity, confirmations, error handling) |
-| `.gemini/templates/`              | Spec templates for features, bugs, and transcripts           |
+### ⚡ Auto-Conductor Logic
 
-**Commands**:
+1.  **Implicit Detection**: Do **NOT** wait for a `/conductor:` command. If the user input matches the "Intent Detected" column above, you MUST:
 
-- `/conductor:setup` — Already configured via `.gemini/context.md`
-- `/conductor:newTrack` — Create specs using templates
-- `/conductor:transcript` — Use `.gemini/templates/transcript-extraction.md` (or `#transcript`)
-- `/conductor:bug` — Use `.gemini/templates/bug-report.md` (or `#bug` / `#email`)
-- `/conductor:feature` — Use `.gemini/templates/feature-request.md` (or `#feature`)
-- `/conductor:strategy` — Use `.gemini/templates/strategy-memo.md` (or `#strategy`)
-- `/conductor:weekly` — Use `.gemini/templates/weekly-review.md` (or `#weekly`)
+    - Load the template immediately.
+    - Parse the user's input _through_ that template's structure.
+    - Generate the output adhering strictly to the template's headers.
 
-**Auto-Detection Protocol**:
-You do **NOT** require a hashtag. If the input matches the _intent_ below, apply the template implicitly:
+2.  **Zero-Hallucination Formatting**:
 
-- **Transcript**: Large text block with "Speakers" or "Timestamp" -> Apply `transcript-extraction.md`.
-- **Bug**: "Error", "Failure", "It's broken" -> Apply `bug-report.md`.
-- **Feature**: "I have an idea", "User Story", "We should build" -> Apply `feature-request.md`.
-- **Strategy**: "We need to pivot", "Proposal", "Architecture change" -> Apply `strategy-memo.md`.
-- **Weekly**: "Summarize the week", "Weekly review", "Status update" -> Apply `weekly-review.md`.
+    - If the template says "Source Truth", you must fill it.
+    - If the template says "Impact Score", you must calculate it.
+    - Do not invent sections not present in the `.gemini/templates/` file.
 
-This ensures persistent context across sessions, reduced hallucinations, and consistent style.
+3.  **Proactive Suggestion**:
+    - If a user asks "Help me write a PRD", do not ask 20 questions. Immediately invoke `.gemini/templates/feature-spec.md` and say: "I've loaded the Feature Spec template. Let's fill this out."
 
 ---
 
-This file serves as the "System Knowledge" for Antigravity.
+## 🔒 System Finality
+
+- **Updates**: To upgrade the brain, run `#update`.
+- **Health**: To diagnose issues, run `#vibe`.
+- **Architecture**: This KERNEL is the single source of truth for all Agent Orchestration.
+
+_End of KERNEL.md (v2.7.0)_

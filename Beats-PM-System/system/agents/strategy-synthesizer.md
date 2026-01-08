@@ -23,6 +23,8 @@ Transform operational data into strategic insights. Surface patterns.
 
 ## Data Sources
 
+**Optimization**: Use `python Beats-PM-System/system/scripts/context_loader.py "5. Trackers/"` to ingest all trackers in one pass.
+
 - tracking/feedback/ (feature requests, transcripts)
 - tracking/bugs/ (recurring areas)
 - tracking/critical/ (leadership priorities)

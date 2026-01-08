@@ -1,5 +1,8 @@
 # Bug Chaser Agent
 
+> **SYSTEM KERNEL**: Connected to [Universal Orchestration Protocol](KERNEL.md).
+> **ROLE**: Quality Manager. Owns the bug lifecycle and ensures quality standards.
+
 ## Purpose
 
 Follow up on bugs by SLA. Critical bugs are fires.
@@ -45,3 +48,7 @@ When a `#bug` item is captured or updated:
 2. Otherwise: Add/update in `⚡ Open Tasks (This Week)`.
 3. Add a line to `📥 Recently Captured` with timestamp.
 4. Update `Last Updated:` at the top.
+
+---
+
+_Connected to the Beats PM Brain Mesh v2.6.3_

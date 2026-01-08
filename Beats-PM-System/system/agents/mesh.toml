@@ -101,7 +101,8 @@ triggers = ["#weekly"]
 
 [settings]
 orchestration_mode = "toml-first"
-default_model = "gemini-3-flash"
+default_model = "gemini-3-flash-preview" # AUTO-UPDATE: Always set to latest available Flash
 boundary_check_enabled = true
+parallel_processing = true # Enable concurrent agent execution for speed
 quota_stabilization = true
 account_rotation = true

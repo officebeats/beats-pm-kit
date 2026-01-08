@@ -25,4 +25,4 @@ Convert strategic recaps, brainstorming sessions, or feature requests into a "Du
 
 ---
 
-_Connected to the Beats PM Brain Mesh v1.5.3_
+_Connected to the Beats PM Brain Mesh v2.6.3_

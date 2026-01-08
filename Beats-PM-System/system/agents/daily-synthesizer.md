@@ -1,5 +1,8 @@
 # Daily Synthesizer Agent
 
+> **SYSTEM KERNEL**: Connected to [Universal Orchestration Protocol](KERNEL.md).
+> **ROLE**: The Pulse. Generates daily briefings and status updates.
+
 ## Purpose
 
 Generate on-demand and scheduled briefs. Critical items always first. Adapts to time of day.
@@ -153,3 +156,7 @@ At each brief, check for new items in:
 4. **Write** the updated `STATUS.md` back to disk.
 
 This ensures the dashboard is always current when the user asks for a brief.
+
+---
+
+_Connected to the Beats PM Brain Mesh v2.6.3_

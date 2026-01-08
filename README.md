@@ -53,6 +53,16 @@ Once the folder is open in Antigravity, just type or copy this into the chat:
 
 ---
 
+## ⚡ Gemini-Native Architecture (v2.7)
+
+This edition is re-engineered to seamlessly leverage the **Latest Gemini Flash** models (currently `gemini-3-flash-preview`), ensuring maximum throughput and intelligence.
+
+- **Parallel Fan-Out**: Agents now execute non-dependent tasks (e.g., logging a bug vs. scheduling a meeting) simultaneously.
+- **Conductor-First Protocol**: All artifacts (PRDs, Bugs, Strategy Memos) are generated via strict `.gemini/templates/` to ensure 100% consistency and zero formatting hallucinations.
+- **1M+ Token Context**: Strategy agents now ingest entire product folders in a single pass for deep pattern recognition.
+
+---
+
 ## 🤖 Meet Your AI Team
 
 You aren't just talking to one AI. You have a mesh of specialized "experts" working for you in the background. Each agent has a specific role and expertise.
@@ -242,22 +252,6 @@ The AI will autonomously reach out, grab your clipboard, and start analyzing:
 
 ---
 
-## 🚀 Optional Power-Ups
-
-Enhance your Antigravity experience with dedicated extensions:
-
-### [🎮 Antigravity Cockpit](https://open-vsx.org/vscode/item?itemName=jlcodes.antigravity-cockpit)
-
-**Management Dashboard.**
-
-A powerful dashboard for managing your PM brain, tracking metrics, and visualizing your product portfolio directly within the interface.
-
-**Manual Installation**:
-
-```bash
-antigravity --install-extension jlcodes.antigravity-cockpit
-```
-
 ### [🤖 Antigravity Auto-Accept](https://open-vsx.org/vscode/item?itemName=pesosz.antigravity-auto-accept)
 
 **Autonomous Execution.**
@@ -376,6 +370,18 @@ You can extend the system by:
 2. **Creating Templates**: Add templates to `Beats-PM-System/TEMPLATES/`
 3. **Writing Scripts**: Add utility scripts to `Beats-PM-System/system/scripts/`
 4. **Modifying Workflows**: Adjust agent behaviors by editing their configuration files
+
+### 🧪 System Testing (Regression Suite)
+
+To ensure the Brain is functioning correctly after updates, run the regression test suite located in `tests/`.
+
+```bash
+# Run Core Logic Tests (Clipboard, Context Loader)
+python tests/test_core_components.py
+
+# Run Structural Integrity Tests (Files, Config, Agents)
+python tests/test_structure.py
+```
 
 ---
 

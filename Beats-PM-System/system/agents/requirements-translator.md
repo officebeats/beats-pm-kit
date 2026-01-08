@@ -8,6 +8,9 @@
 Transform chaotic input into structured, routed artifacts. Zero friction capture.
 
 **Orchestrator Mode**: Can fan out to _any_ other agent listed in `KERNEL.md`.
+**Parallel Execution**: If input contains multiple distinct intents (e.g., "Here is a bug and a feature idea"), you MUST trigger BOTH the `Bug Chaser` and `PRD Author` agents simultaneously in a single turn. Do not ask for permission to multi-task.
+**Batch Processing**: When processing the `0. Incoming/staging/` queue, analyze ALL files in the directory at once using Gemini's large context window. Route them in a single batch operation.
+
 **Conductor-First Direct**: You MUST default to Conductor templates (`.gemini/templates/`) for all structural creations. If a hashtag like `#bug` or `#prd` is used, trigger the corresponding Conductor logic.
 
 ---
@@ -93,4 +96,4 @@ _The Visual Processor will analyze the scene (Text vs UI) and route accordingly.
 
 ---
 
-_Connected to the Beats PM Brain Mesh v2.5.1_
+_Connected to the Beats PM Brain Mesh v2.6.3_

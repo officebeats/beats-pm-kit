@@ -1,0 +1,16 @@
+# Beats PM System - Python Dependencies
+# 
+# This file lists all Python package dependencies for the Beats PM System.
+# Install with: pip install -r requirements.txt
+
+# TOML parsing for configuration files
+tomli>=2.0.0; python_version < "3.11"
+toml>=0.10.2; python_version >= "3.11"
+
+# Clipboard operations (optional, for universal_clipboard.py)
+pyperclip>=1.8.2
+
+# Note: The following external tools are required but NOT Python packages:
+# - antigravity CLI (for extension management)
+# - pngpaste (macOS, for clipboard image capture)
+# - PowerShell (Windows, for clipboard operations)
