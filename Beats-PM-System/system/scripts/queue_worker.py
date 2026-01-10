@@ -9,7 +9,6 @@ import sys
 import time
 import json
 import traceback
-import importlib.util
 
 # Paths
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -43,20 +42,12 @@ def process_job(job_file):
         job_type = job_data.get('type')
         print(f"  Type: {job_type}")
         
-        # Dispatch logic (Simple synchronous dispatch for now)
-        # In a real dynamic system, we'd load handlers based on type
-        # For MVP, we just simulate work or call specific scripts
-        
+        # Dispatch based on job type
         if job_type == 'transcript_archive':
-            # Example: Triggering the vacuum archive function
-            # We import it dynamically to avoid circular deps
             from system.scripts import vacuum
             vacuum.archive_transcripts()
-            
         elif job_type == 'echo':
-            # Test job
             print(f"  Echo: {job_data.get('payload')}")
-            
         else:
             raise ValueError(f"Unknown job type: {job_type}")
             
@@ -81,11 +72,10 @@ def run_worker_loop():
     setup_directories()
     
     while True:
-        # Check for files
         files = [f for f in os.listdir(PENDING_DIR) if f.endswith('.json')]
         
         if not files:
-            time.sleep(2) # Wait if idle
+            time.sleep(2)
             continue
             
         # Process oldest file first (simple FIFO)

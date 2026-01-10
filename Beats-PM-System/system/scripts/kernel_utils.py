@@ -6,7 +6,6 @@ Replaces loose text instructions in KERNEL.md with executable logic.
 """
 
 import os
-import sys
 from typing import List, Optional, Tuple
 
 # Mock utils imports for now to ensure standalone validity if utils missing
@@ -98,8 +97,6 @@ def get_suggested_template(intent: str) -> Optional[str]:
         "strategy": ".gemini/templates/strategy-memo.md",
         "weekly": ".gemini/templates/weekly-review.md"
     }
-    
-    # fuzzy matching could go here, but strict key for now
     return mapping.get(intent)
 
 
@@ -129,16 +126,18 @@ def get_active_context(project_name: str, context_file: str) -> str:
     # Stop when we see another "# "
     
     for line in lines:
-        if line.strip().startswith(f"# {project_name}") or line.strip().startswith(f"## {project_name}"):
+        is_project_header = (
+            line.strip().startswith(f"# {project_name}") or 
+            line.strip().startswith(f"## {project_name}")
+        )
+        is_new_section = line.startswith("# ") or line.startswith("## ")
+        
+        if is_project_header:
             capture = True
             active_lines.append(line)
-            continue
-            
-        if capture:
-            # Check for generic boundary (next h1 or h2)
-            if line.startswith("# ") or line.startswith("## "):
-                capture = False
-            else:
-                active_lines.append(line)
+        elif capture and is_new_section:
+            capture = False
+        elif capture:
+            active_lines.append(line)
                 
     return "".join(active_lines)
