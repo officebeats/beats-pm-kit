@@ -8,8 +8,8 @@
 
 [![Made for Antigravity](https://img.shields.io/badge/Made%20for-Antigravity-blueviolet?style=for-the-badge&logo=google)](https://antigravity.google/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/yourusername/beats-pm-antigravity-brain?style=for-the-badge&logo=github)](https://github.com/yourusername/beats-pm-antigravity-brain)
-[![GitHub Issues](https://img.shields.io/github/issues/yourusername/beats-pm-antigravity-brain?style=for-the-badge&logo=github)](https://github.com/yourusername/beats-pm-antigravity-brain/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/officebeats/beats-pm-antigravity-brain?style=for-the-badge&logo=github)](https://github.com/officebeats/beats-pm-antigravity-brain)
+[![GitHub Issues](https://img.shields.io/github/issues/officebeats/beats-pm-antigravity-brain?style=for-the-badge&logo=github)](https://github.com/officebeats/beats-pm-antigravity-brain/issues)
 
 </div>
 
@@ -38,7 +38,7 @@ Download this project as a ZIP file and drag the extracted folder directly into 
 > **Advanced:** Or clone directly into your workspace:
 >
 > ```bash
-> git clone https://github.com/yourusername/beats-pm-antigravity-brain.git
+> git clone https://github.com/officebeats/beats-pm-antigravity-brain.git
 > ```
 
 ### 🎯 Step 3: Run the Wizard
@@ -54,6 +54,7 @@ Once the folder is open in Antigravity, just type or copy this into the chat:
 ---
 
 ---
+
 ## ⚡ Gemini-Native Architecture (v3.0.0 - Skills Protocol)
 
 This edition is re-engineered as a **Skills-First Orchestration** system. It leverages the latest **Gemini CLI Agent Skills** protocol for maximum efficiency, modularity, and speed.
