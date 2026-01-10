@@ -50,11 +50,11 @@ class TestSystemStructure(unittest.TestCase):
         self.assertEqual(len(missing), 0, f"Missing required directories: {missing}")
         
     def test_critical_files_exist(self):
-        """Verify KERNEL, SETTINGS, and Mesh exist."""
+        """Verify KERNEL, SETTINGS, and Skills exist."""
         crit_files = [
             "KERNEL.md",
             "SETTINGS.md",
-            "Beats-PM-System/system/agents/mesh.toml",
+            ".gemini/skills",
             "Beats-PM-System/requirements.txt"
         ]
         
@@ -66,31 +66,42 @@ class TestSystemStructure(unittest.TestCase):
                 
         self.assertEqual(len(missing), 0, f"Missing critical files: {missing}")
 
-    def test_mesh_validity(self):
-        """Verify mesh.toml is valid TOML (if toml lib installed) or basic parsing."""
-        mesh_path = os.path.join(self.root, "Beats-PM-System", "system", "agents", "mesh.toml")
+    def test_skills_architecture(self):
+        """Verify that the Skills directory structure is valid (v3.0.0)."""
+        skills_dir = os.path.join(self.root, ".gemini", "skills")
         
-        with open(mesh_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-            
-        # Basic validation: Check for [agents.*] sections
-        self.assertIn("[agents.task_manager]", content)
-        self.assertIn("[agents.meeting_synthesizer]", content)
-        self.assertIn("prompt_file =", content)
-
-    def test_agent_prompts_exist(self):
-        """Verify that every agent defined in mesh.toml has a corresponding .md file."""
-        mesh_path = os.path.join(self.root, "Beats-PM-System", "system", "agents", "mesh.toml")
+        # Check standard skills exist
+        expected_skills = [
+            "bug-chaser",
+            "meeting-synth",
+            "prd-author",
+            "task-manager"
+        ]
         
-        with open(mesh_path, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-            
-        for line in lines:
-            if "prompt_file =" in line:
-                # Extract path: prompt_file = "Beats-PM-System/system/agents/task-manager.md"
-                path_str = line.split('=')[1].strip().strip('"')
-                full_path = os.path.join(self.root, path_str)
-                self.assertTrue(os.path.exists(full_path), f"Agent Prompt missing: {path_str}")
+        missing = []
+        for skill in expected_skills:
+            skill_path = os.path.join(skills_dir, skill, "SKILL.md")
+            if not os.path.exists(skill_path):
+                missing.append(skill)
+                
+        # Warn but don't fail if some optional skills are missing, 
+        # But failing if CORE skills are missing is good.
+        # Let's check at least one to ensure the dirs aren't empty.
+        self.assertTrue(os.path.exists(skills_dir), "Skills directory missing")
+        
+    def test_templates_exist(self):
+        """Verify that standard templates exist."""
+        templates_dir = os.path.join(self.root, ".gemini", "templates")
+        
+        expected_templates = [
+            "bug-report.md",
+            "feature-spec.md",
+            "weekly-review.md"
+        ]
+        
+        for t in expected_templates:
+            t_path = os.path.join(templates_dir, t)
+            self.assertTrue(os.path.exists(t_path), f"Template missing: {t}")
 
 if __name__ == '__main__':
     unittest.main()

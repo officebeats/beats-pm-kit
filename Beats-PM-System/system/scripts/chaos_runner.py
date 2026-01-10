@@ -1,7 +1,21 @@
+"""
+Chaos Runner Script
+
+Simulates edge cases and validates system resilience.
+"""
+
 import os
 import time
+from typing import Callable, Any
 
-def run_test(name, action):
+def run_test(name: str, action: Callable[[], Any]) -> None:
+    """
+    Run a specific test case and print the result.
+    
+    Args:
+        name: Name of the test
+        action: Callable function to execute
+    """
     print(f"Running Test: {name}...")
     try:
         action()
@@ -9,19 +23,22 @@ def run_test(name, action):
     except Exception as e:
         print(f"❌ {name} Failed: {str(e)}")
 
-def test_syntax_sanitization():
+def test_syntax_sanitization() -> None:
+    """Test if we can break the markdown table in bugs-master.md."""
     # Test if we can break the markdown table in bugs-master.md
     bad_input = "| Malicious | Pipe | Injection |"
     # We simulate the agent writing this to the tracker
     # Expected: The system should handle the pipe or escape it
     pass 
 
-def test_naming_collision():
+def test_naming_collision() -> None:
+    """Test handling of duplicate naming scenarios."""
     # Setup: Create two Marks in Sethings (Simulated)
     # Success: Requirements translator asks "Mark S or Mark D?"
     pass
 
-def test_concurrent_integrity():
+def test_concurrent_integrity() -> None:
+    """Test system behavior under concurrent write load."""
     # Simulate multiple file writes in a tight loop
     pass
 

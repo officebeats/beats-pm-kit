@@ -22,7 +22,7 @@ from utils.subprocess_helper import check_extension_installed, install_extension
 from utils.config import get_config, get_required_directories, get_extensions
 
 
-def create_directories():
+def create_directories() -> None:
     """Create required directory structure."""
     directories = get_required_directories()
     
@@ -34,7 +34,7 @@ def create_directories():
                 print_error(f"Failed to create directory {directory}/")
 
 
-def copy_templates():
+def copy_templates() -> None:
     """Copy template files to their target locations."""
     templates = [
         {
@@ -80,7 +80,7 @@ def copy_templates():
             print_gray(f"[skip] {dst} (Exists)")
 
 
-def install_extensions():
+def install_extensions() -> None:
     """Prompt user to install optional extensions."""
     extensions = get_extensions()
     
@@ -102,7 +102,7 @@ def install_extensions():
                 install_extension(ext_id, ext_name, ext_url)
 
 
-def run_vibe_check():
+def run_vibe_check() -> None:
     """Run the vibe check script to validate the system."""
     print_cyan("\n🔍 Verifying Intelligence Model...")
     
@@ -114,10 +114,11 @@ def run_vibe_check():
         print_warning("Warning: vibe_check.py not found. Model validation skipped.")
 
 
-def main():
+def main() -> None:
     """Main entry point for core setup."""
     system = get_system()
-    print_cyan(f"🧠 Hydrating Antigravity Brain v2.6.3 ({system})...")
+    version = get_config('system.version', 'Unknown')
+    print_cyan(f"🧠 Hydrating Antigravity Brain v{version} ({system})...")
     
     # 1. Create directories
     create_directories()

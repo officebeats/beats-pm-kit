@@ -11,22 +11,23 @@ The PM Brain now operates on the **Gemini CLI Skills Protocol**. Specialized log
 3.  **Efficiency**: This keeps the base context window minimal (low token usage) and maximizes processing speed by loading expertise only when needed.
 
 ### 🛠️ Core Skills Inventory
-| Expert Role | Skill ID | Trigger Keywords |
-| :--- | :--- | :--- |
-| **Meeting Synth** | `meeting-synth` | `#transcript`, `#meeting`, `#notes` |
-| **Bug Chaser** | `bug-chaser` | `#bug`, `#triage`, `#sla` |
-| **PRD Author** | `prd-author` | `#prd`, `#spec`, `#feature` |
-| **Task Manager** | `task-manager` | `#task`, `#plan`, `#clarify` |
-| **Daily Synth** | `daily-synth` | `#day`, `#morning`, `#lunch`, `#eod` |
-| **Strategy Synth** | `strategy-synth` | `#strategy`, `#vision`, `#market` |
-| **Weekly Synth** | `weekly-synth` | `#weekly`, `#monthly`, `#rollup` |
-| **Visual Processor**| `visual-processor`| Images, `#screenshot`, `#paste` |
-| **Boss Tracker** | `boss-tracker` | `#boss`, `#urgent`, `#critical` |
-| **Eng Collaborator** | `engineering-collab`| `#eng`, `#tech`, `#spike` |
-| **UX Collaborator** | `ux-collab` | `#ux`, `#design`, `#wireframe` |
-| **Stakeholder Mgr** | `stakeholder-mgr` | `#stakeholder`, `#update`, `#partner`|
-| **Delegation Mgr** | `delegation-manager`| `#delegate`, `#followup`, `#handoff`|
-| **Req Translator** | `requirements-translator`| `#concept`, `#ideation`, `#braindump`|
+
+| Expert Role          | Skill ID                  | Trigger Keywords                      |
+| :------------------- | :------------------------ | :------------------------------------ |
+| **Meeting Synth**    | `meeting-synth`           | `#transcript`, `#meeting`, `#notes`   |
+| **Bug Chaser**       | `bug-chaser`              | `#bug`, `#triage`, `#sla`             |
+| **PRD Author**       | `prd-author`              | `#prd`, `#spec`, `#feature`           |
+| **Task Manager**     | `task-manager`            | `#task`, `#plan`, `#clarify`          |
+| **Daily Synth**      | `daily-synth`             | `#day`, `#morning`, `#lunch`, `#eod`  |
+| **Strategy Synth**   | `strategy-synth`          | `#strategy`, `#vision`, `#market`     |
+| **Weekly Synth**     | `weekly-synth`            | `#weekly`, `#monthly`, `#rollup`      |
+| **Visual Processor** | `visual-processor`        | Images, `#screenshot`, `#paste`       |
+| **Boss Tracker**     | `boss-tracker`            | `#boss`, `#urgent`, `#critical`       |
+| **Eng Collaborator** | `engineering-collab`      | `#eng`, `#tech`, `#spike`             |
+| **UX Collaborator**  | `ux-collab`               | `#ux`, `#design`, `#wireframe`        |
+| **Stakeholder Mgr**  | `stakeholder-mgr`         | `#stakeholder`, `#update`, `#partner` |
+| **Delegation Mgr**   | `delegation-manager`      | `#delegate`, `#followup`, `#handoff`  |
+| **Req Translator**   | `requirements-translator` | `#concept`, `#ideation`, `#braindump` |
 
 ---
 
@@ -45,22 +46,32 @@ The PM Brain now operates on the **Gemini CLI Skills Protocol**. Specialized log
     - **Execution**: Prefer `/conductor:[template]` logic over ad-hoc markdown generation.
     - **Verification**: If a template exists for the intent (Bug, Feature, Strategy, Weekly, Transcript), you MUST use it. Failure to use the standardized template is a system violation.
 
-## 🛑 Boundary Rules (STOP_EXECUTION Protocol)
+## 🛑 Boundary Rules (Hard Kernel Enforcement)
 
-To maintain data integrity, agents MUST abide by the following boundary checks. If a condition is not met, the agent MUST use `STOP_EXECUTION` and prompt the user.
+To maintain data integrity, the agent MUST run the following checks. If any check returns `False`, usage is strictly forbidden.
 
-1.  **PRD Integrity Rule**:
-    - **Trigger**: Any attempt to generate or finalize a PRD (via `#prd` or `#feature`).
-    - **Check**: The PRD MUST have an assigned **Engineering Partner** (e.g., Mitesh) and a **Product Alias** (e.g., `mvp`, `ftue`).
-    - **Failure**: "Action Halted: PRD missing critical metadata (Eng Partner or Product Alias). Please specify before I continue."
-2.  **Company Anchor Rule**:
-    - **Trigger**: Any new project, product, or meeting.
-    - **Check**: MUST be anchored to a folder in `1. Company/[Company]`.
-    - **Failure**: "Action Halted: No Company Anchor found. Create `1. Company/[Company]/` first."
-3.  **Privacy Rule**:
-    - **Trigger**: `git stage`, `git push`.
-    - **Check**: No files from Folders 1-5 (except templates).
-    - **Failure**: Block the command and notify user.
+### 1. Company Anchor Rule
+
+> **Rule**: Any new project, product, or meeting must exist within the standard directory structure (Folders 0-5).
+> **Execution**:
+>
+> ```python
+> from system.scripts import kernel_utils
+> if not kernel_utils.check_anchor_rule(target_path):
+>     raise PermissionError("Violation: File must be in standard folders (0-5).")
+> ```
+
+### 2. Privacy Rule
+
+> **Rule**: Files in Folders 1-5 (Company, Products, Meetings, People, Trackers) are LOCAL ONLY.
+> **Execution**:
+>
+> ```python
+> # Before any git push
+> passed, violations = kernel_utils.check_privacy_rule(file_list)
+> if not passed:
+>     raise SecurityError(f"Privacy Violation: Cannot push {violations}")
+> ```
 
 ## �� Universal Routing Rules
 
@@ -119,16 +130,19 @@ To ensure consistent behavior across macOS, Windows, and Linux:
 To ensure continuity across "weeks, months, years", the system uses **Immutable Logs**:
 
 1.  **`DECISION_LOG.md`** (in `5. Trackers/`):
+
     - **Trigger**: Any significant architectural or strategic pivot (e.g., "Use Single Engine for Pilot").
     - **Format**: Date | Decision | Context | Owner.
     - **Goal**: Prevent "why did we do this?" loops 6 months later.
 
 2.  **`PEOPLE.md`** (in `4. People/`):
+
     - **Trigger**: New stakeholder mentioned.
     - **Format**: Name | Role | Product Alignment | User Preference.
     - **Goal**: Zero hallucination on "Who handles Grace?".
 
 3.  **`SESSION_MEMORY.md`** (Root):
+
     - **Trigger**: End of every session.
     - **Format**: "Last Known State" summary + OS context.
     - **Goal**: Instant "Hot Start" for the next session.
@@ -142,11 +156,11 @@ To ensure continuity across "weeks, months, years", the system uses **Immutable 
 
 To manage context window size and long-term storage, transcripts and notes are tiered by age:
 
-| Tier     | Location                   | Criteria       | Contents                                  |
-| :------- | :------------------------- | :------------- | :---------------------------------------- |
-| **Hot**  | `3. Meetings/transcripts/` | < 30 days old  | Full raw transcript + extraction manifest |
-| **Warm** | `3. Meetings/summaries/`   | 30–90 days old | Summary + quote-index entries only        |
-| **Cold** | `3. Meetings/archive/`     | > 90 days old  | Raw transcript (compressed) + metadata    |
+| Tier     | Location                   | Criteria        | Contents                                  |
+| :------- | :------------------------- | :-------------- | :---------------------------------------- |
+| **Hot**  | `3. Meetings/transcripts/` | < 30 days old   | Full raw transcript + extraction manifest |
+| **Warm** | `3. Meetings/summaries/`   | 30–365 days old | Summary + quote-index entries only        |
+| **Cold** | `3. Meetings/archive/`     | > 365 days old  | Raw transcript (compressed) + metadata    |
 
 **Agent Rule**: When referencing old transcripts, check `quote-index.md` first. Only expand to full transcript if quote-level context is insufficient.
 
@@ -159,6 +173,7 @@ To manage context window size and long-term storage, transcripts and notes are t
 The System should nudge the user intelligently based on context:
 
 1.  **Time-Based Triggers**:
+
     - **Morning (08:00-10:00)**: Offer `#morning` brief.
     - **Lunch (11:30-13:30)**: Offer `#lunch` brief.
     - **EOD (16:30-18:00)**: Offer to wrap up (`#eod`).
@@ -173,34 +188,21 @@ The System should nudge the user intelligently based on context:
 ## 🎼 Gemini CLI Conductor-First Protocol
 
 **Rule**: The PM Brain operates on a **"Conductor-First-Always"** basis.
-**Effect**: For _any_ structured artifact creation, you MUST load and apply the corresponding template from `.gemini/templates/`.
-
-### 🚨 Template Enforcement Table
-
-| Intent Detected  | Required Template                            | Auto-Trigger Logic                             |
-| :--------------- | :------------------------------------------- | :--------------------------------------------- |
-| **Bug / Issue**  | `.gemini/templates/bug-report.md`            | Input has "error", "crash", "fix", or `#bug`.  |
-| **Fix Spec**     | `.gemini/templates/bug-fix-spec.md`          | User asks to _solve_ a specific bug.           |
-| **New Feature**  | `.gemini/templates/feature-request.md`       | Input has "idea", "build", or `#feature`.      |
-| **Feature Spec** | `.gemini/templates/feature-spec.md`          | User asks to _detail_ or _spec out_ a feature. |
-| **Transcript**   | `.gemini/templates/transcript-extraction.md` | Large block of conversational text.            |
-| **Strategy**     | `.gemini/templates/strategy-memo.md`         | Input has "pivot", "roadmap", "vision".        |
-| **Weekly**       | `.gemini/templates/weekly-review.md`         | Input is `#weekly` or "summarize week".        |
 
 ### ⚡ Auto-Conductor Logic
 
-1.  **Implicit Detection**: Do **NOT** wait for a `/conductor:` command. If the user input matches the "Intent Detected" column above, you MUST:
-    - Load the template immediately.
-    - Parse the user's input _through_ that template's structure.
-    - Generate the output adhering strictly to the template's headers.
+**Execution**:
+When a clear intent is detected (Bug, Feature, Strategy, etc.), you MUST query `kernel_utils` for the correct template.
 
-2.  **Zero-Hallucination Formatting**:
-    - If the template says "Source Truth", you must fill it.
-    - If the template says "Impact Score", you must calculate it.
-    - Do not invent sections not present in the `.gemini/templates/` file.
+```python
+template_path = kernel_utils.get_suggested_template(intent)
+if template_path:
+    # LOAD template_path
+    # FILL template
+    # SAVE to target_path
+```
 
-3.  **Proactive Suggestion**:
-    - If a user asks "Help me write a PRD", do not ask 20 questions. Immediately invoke `.gemini/templates/feature-spec.md` and say: "I've loaded the Feature Spec template. Let's fill this out."
+**Zero-Hallucination**: Do not invent sections or formats. Use the template provided by the Hard Kernel.
 
 ---
 

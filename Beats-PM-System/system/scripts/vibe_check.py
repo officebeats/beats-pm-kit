@@ -21,7 +21,7 @@ from utils.subprocess_helper import check_command_exists, check_extension_instal
 from utils.config import get_default_model, set_default_model, get_config
 
 
-def check_toolchain():
+def check_toolchain() -> None:
     """Check if required development tools are installed."""
     print_cyan("\nToolchain:")
     
@@ -54,7 +54,7 @@ def check_toolchain():
         print_error(f"Node/NPM: Missing")
 
 
-def check_file_structure():
+def check_file_structure() -> None:
     """Check if required directory structure exists."""
     print_cyan("\nCore Infrastructure:")
     
@@ -67,7 +67,7 @@ def check_file_structure():
             print_warning(f"/{folder}: Missing (Run #update)")
 
 
-def check_critical_files():
+def check_critical_files() -> None:
     """Check if critical system files exist."""
     print_cyan("\nSystem Files:")
     
@@ -84,7 +84,7 @@ def check_critical_files():
             print_error(f"{filename}: CRITICAL MISSING")
 
 
-def check_skills_configuration():
+def check_skills_configuration() -> None:
     """Check if the Skills directory and content exist."""
     print_cyan("\nAI Agent Skills (v3.0.0):")
     
@@ -104,7 +104,7 @@ def check_skills_configuration():
         print_error(f"Skills Directory Missing! (Run #update)")
 
 
-def check_extensions():
+def check_extensions() -> None:
     """Check if optional extensions are installed."""
     print_cyan("\nOptional Power-Ups:")
     
@@ -120,7 +120,7 @@ def check_extensions():
             print_warning(f"Ext: {ext_name}: Not Installed")
 
 
-def main():
+def main() -> None:
     """Main entry point for vibe check."""
     system = get_system()
     print_cyan(f"--- Antigravity Vibe Check ({system}) ---")
