@@ -99,7 +99,7 @@ To handle multiple inputs (files, screenshots, text) for a single intent:
 
 ## 🎙️ Meeting Management
 
-1.  **Ingestion**: All meeting transcripts (Quill, Voice, Notes) land in `3. Meetings/transcripts/`.
+1.  **Ingestion**: All meeting transcripts (Audio, Voice, Notes) land in `3. Meetings/transcripts/`.
 2.  **Synthesis**: Use `#transcript` to activate `meeting-synth`. Output artifacts (PRDs, Action Items) are routed to the corresponding Product folder or `3. Meetings/reports/`.
 3.  **Audit**: Weekly roll-ups land in `3. Meetings/weekly-digests/`.
 
