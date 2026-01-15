@@ -12,7 +12,7 @@ from pathlib import Path
 # Default configuration values
 DEFAULT_CONFIG = {
     'system': {
-        'version': '4.4.0',
+        'version': '4.4.1',
         'name': 'Beats PM System'
     },
     'paths': {

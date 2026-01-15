@@ -55,7 +55,7 @@ Once the folder is open in Antigravity, just type:
 
 ---
 
-## ⚡ Gemini-Native Architecture (v4.4.0 - Centrifuge)
+## ⚡ Gemini-Native Architecture (v4.4.1 - Centrifuge)
 
 This edition is re-engineered as a **Skills-First Orchestration** system. It leverages the latest **Gemini CLI Agent Skills** protocol for maximum efficiency, modularity, and speed.
 
