@@ -64,7 +64,7 @@ This edition is re-engineered as a **Skills-First Orchestration** system. It lev
 - **Parallel Fan-Out**: Expert agents execute non-dependent tasks simultaneously using the `waitForPreviousTools: false` protocol.
 - **Conductor-First Protocol**: All artifacts (PRDs, Bugs, Strategy Memos) are generated via hierarchical `.gemini/templates/` managed by the Gemini CLI Conductor.
 - **Access Override Fallback**: High-performance local file access protocol ensures gitignored files are always readable by the AI agents.
-- **Stateful Catch-Up Ingestion**: Optimized `#quill` and `#transcript` commands with automatic weekly anchors and last-sync tracking.
+- **Stateful Catch-Up Ingestion**: Optimized `#transcript` command with automatic weekly anchors and last-sync tracking.
 
 ---
 
@@ -145,7 +145,6 @@ The Brain uses **Zero-Friction Routing**. You don't need to know which agent is 
 
 |        Command        | Focus              | What It Does                                                                 |
 | :-------------------: | :----------------- | :--------------------------------------------------------------------------- |
-|       `#quill`        | **Quill DB Sync**  | Stateful sync of latest transcripts since last run with automatic Monday catch-up.             |
 | `#transcript [paste]` | Call Audio/Text    | Extracts action items, decisions, and roadmap concepts from raw transcripts to `3. Meetings/`. |
 |  `#meeting [paste]`   | Hand-written Notes | Converts raw notes into structured artifacts with owners and deadlines.      |
 |   `#call [subject]`   | Sync Capture       | Quick capture protocol for phone calls or unscheduled sync messages.         |
