@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 # Configuration
 DB_PATH = os.path.expanduser("~/Library/Application Support/Quill/quill.db")
 STATE_FILE = ".gemini/state/quill_cursor.json"
-INCOMING_DIR = "0. Incoming"
+INCOMING_DIR = "3. Meetings/transcripts"
 LOOKBACK_HOURS = 72
 
 def load_state():
@@ -56,6 +56,14 @@ def extract_text_from_json(json_str):
     except json.JSONDecodeError:
         return "[Error decoding JSON transcript]"
 
+
+def get_monday_anchor():
+    """Get the timestamp for Monday 00:00 of the current week."""
+    now = datetime.now()
+    monday = now - timedelta(days=now.weekday())
+    monday_zero = monday.replace(hour=0, minute=0, second=0, microsecond=0)
+    return int(monday_zero.timestamp() * 1000)
+
 def main():
     print(f"🔄 Connecting to Quill DB: {DB_PATH}")
     
@@ -67,15 +75,21 @@ def main():
     processed_ids = set(state.get("processed_ids", []))
     last_run = state.get("last_run", 0)
 
-    # Calculate lookback window (Unix MS)
-    lookback_ms = int((time.time() - (LOOKBACK_HOURS * 3600)) * 1000)
+    # Calculate Monday anchor
+    monday_ms = get_monday_anchor()
     
-    # We want either new items (since last run) OR recent items (in window) that we haven't processed.
-    # To be safe, we query the window.
-    cutoff_ms = max(lookback_ms, last_run)
-    # Actually, always lookback 72h, then filter by processed_ids to catch anything missed? 
-    # Or strict lookback. User said "last 72 hours and then process".
-    query_cutoff = lookback_ms
+    # query_cutoff is the EARLIER of (Monday, Last Run) 
+    # This ensures we catch up if we missed days, but also capture everything from Monday if it's the first run of the week.
+    # However, if Last Run is older than Monday (e.g. ran last Thursday), we want to start from Last Run.
+    if last_run == 0:
+        query_cutoff = monday_ms
+    else:
+        # Use last_run if it exists, otherwise fall back to Monday. 
+        # Actually, user said "Ideally you instead process from the last time the command was ran"
+        # So last_run is the primary anchor.
+        query_cutoff = last_run
+
+    print(f"⏱️  Syncing from: {datetime.fromtimestamp(query_cutoff/1000).strftime('%Y-%m-%d %H:%M:%S')}")
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -128,6 +142,7 @@ def main():
         safe_title = "".join([c for c in (title or "Untitled") if c.isalnum() or c in " -_"]).strip()
         filename = f"{date_str}-{safe_title}.md"
         output_path = os.path.join(INCOMING_DIR, filename)
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
         # Write File
         content = f"# {title or 'Untitled Meeting'}\n\n**Date**: {date_str}\n**Source**: QuillDB ({m_id})\n\n## Transcript\n\n{transcript_text}"

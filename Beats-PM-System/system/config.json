@@ -1,6 +1,6 @@
 {
   "system": {
-    "version": "4.3.1",
+    "version": "4.4.0",
     "name": "Beats PM System"
   },
   "paths": {
@@ -34,9 +34,6 @@
       "3. Meetings/daily-briefs",
       "3. Meetings/weekly-digests",
       "4. People",
-      "5. Trackers/bugs",
-      "5. Trackers/critical",
-      "5. Trackers/projects",
       "5. Trackers/archive"
     ]
   },
@@ -50,13 +47,13 @@
     "product_context": "Beats-PM-System/TEMPLATES/product-context.md"
   },
   "trackers": {
-    "bugs_master": "5. Trackers/bugs/bugs-master.md",
-    "boss_requests": "5. Trackers/critical/boss-requests.md",
-    "escalations": "5. Trackers/critical/escalations.md",
-    "projects_master": "5. Trackers/projects/projects-master.md",
-    "delegated_tasks": "5. Trackers/projects/delegated-tasks.md",
-    "engineering_items": "5. Trackers/people/engineering-items.md",
-    "ux_tasks": "5. Trackers/people/ux-tasks.md"
+    "bugs_master": "5. Trackers/BUG_TRACKER.md",
+    "boss_requests": "5. Trackers/BOSS_REQUESTS.md",
+    "decision_log": "5. Trackers/DECISION_LOG.md",
+    "projects_master": "5. Trackers/PROJECT_TRACKER.md",
+    "delegated_tasks": "5. Trackers/DELEGATED_TASKS.md",
+    "eng_tasks": "5. Trackers/ENG_TASKS.md",
+    "ux_tasks": "5. Trackers/UX_TASKS.md"
   },
   "ai": {
     "default_model": "gemini-3-flash-preview"

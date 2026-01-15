@@ -4,7 +4,6 @@ Configuration Utilities Module
 Provides centralized configuration management for the Beats PM System.
 """
 
-import os
 import json
 from typing import Any, Optional, Dict
 from pathlib import Path
@@ -13,7 +12,7 @@ from pathlib import Path
 # Default configuration values
 DEFAULT_CONFIG = {
     'system': {
-        'version': '4.3.1',
+        'version': '4.4.0',
         'name': 'Beats PM System'
     },
     'paths': {
@@ -25,7 +24,7 @@ DEFAULT_CONFIG = {
         'people': '4. People',
         'company': '1. Company',
         'products': '2. Products',
-        'templates': 'Beats-PM-System/TEMPLATES',
+        'templates': '.gemini/templates',
         'scripts': 'Beats-PM-System/system/scripts',
         'utils': 'Beats-PM-System/system/utils'
     },
@@ -47,29 +46,27 @@ DEFAULT_CONFIG = {
             '3. Meetings/daily-briefs',
             '3. Meetings/weekly-digests',
             '4. People',
-            '5. Trackers/bugs',
-            '5. Trackers/critical',
-            '5. Trackers/projects',
             '5. Trackers/archive'
         ]
     },
     'templates': {
-        'settings': 'Beats-PM-System/TEMPLATES/SETTINGS_TEMPLATE.md',
-        'bug_report': 'Beats-PM-System/TEMPLATES/bug-report.md',
-        'boss_request': 'Beats-PM-System/TEMPLATES/boss-request.md',
-        'meeting_notes': 'Beats-PM-System/TEMPLATES/meeting-notes.md',
-        'feature_request': 'Beats-PM-System/TEMPLATES/feature-request.md',
-        'prd': 'Beats-PM-System/TEMPLATES/PRD_TEMPLATE.md',
-        'product_context': 'Beats-PM-System/TEMPLATES/product-context.md'
+        'settings': '.gemini/templates/SETTINGS_TEMPLATE.md',
+        'bug_report': '.gemini/templates/trackers/bug-report.md',
+        'boss_request': '.gemini/templates/trackers/boss-request.md',
+        'meeting_notes': '.gemini/templates/meetings/meeting-notes.md',
+        'feature_request': '.gemini/templates/docs/feature-request.md',
+        'prd': '.gemini/templates/docs/PRD_TEMPLATE.md',
+        'product_context': '.gemini/templates/docs/product-context.md',
+        '1on1': '.gemini/templates/meetings/1-on-1-notes.md'
     },
     'trackers': {
-        'bugs_master': '5. Trackers/bugs/bugs-master.md',
-        'boss_requests': '5. Trackers/critical/boss-requests.md',
-        'escalations': '5. Trackers/critical/escalations.md',
-        'projects_master': '5. Trackers/projects/projects-master.md',
-        'delegated_tasks': '5. Trackers/projects/delegated-tasks.md',
-        'engineering_items': '5. Trackers/people/engineering-items.md',
-        'ux_tasks': '5. Trackers/people/ux-tasks.md'
+        'bugs_master': '5. Trackers/BUG_TRACKER.md',
+        'boss_requests': '5. Trackers/BOSS_REQUESTS.md',
+        'decision_log': '5. Trackers/DECISION_LOG.md',
+        'projects_master': '5. Trackers/PROJECT_TRACKER.md',
+        'delegated_tasks': '5. Trackers/DELEGATED_TASKS.md',
+        'eng_tasks': '5. Trackers/ENG_TASKS.md',
+        'ux_tasks': '5. Trackers/UX_TASKS.md'
     },
     'ai': {
         'default_model': 'gemini-3-flash-preview',
@@ -88,33 +85,23 @@ DEFAULT_CONFIG = {
 _config_cache: Optional[Dict[str, Any]] = None
 
 
-def get_config_path() -> str:
-    """
-    Get the path to the configuration file.
-    
-    Returns:
-        Path to config.json
-    """
-    return 'Beats-PM-System/system/config.json'
+def get_config_path() -> Path:
+    """Get the path to the configuration file."""
+    return Path('Beats-PM-System/system/config.json')
 
 
 def load_config() -> Dict[str, Any]:
-    """
-    Load configuration from file, or create default if not exists.
-    
-    Returns:
-        Configuration dictionary
-    """
+    """Load configuration from file, or create default if not exists."""
     global _config_cache
-    
-    config_path = get_config_path()
     
     if _config_cache is not None:
         return _config_cache
     
-    if os.path.exists(config_path):
+    config_path = get_config_path()
+    
+    if config_path.exists():
         try:
-            with open(config_path, 'r', encoding='utf-8') as f:
+            with config_path.open('r', encoding='utf-8') as f:
                 _config_cache = json.load(f)
             return _config_cache
         except (json.JSONDecodeError, IOError) as e:
@@ -129,30 +116,19 @@ def load_config() -> Dict[str, Any]:
 
 
 def save_config(config: Optional[Dict[str, Any]] = None) -> bool:
-    """
-    Save configuration to file.
-    
-    Args:
-        config: Configuration dictionary (uses current config if None)
-    
-    Returns:
-        True if save was successful, False otherwise
-    """
+    """Save configuration to file."""
     global _config_cache
     
     if config is None:
-        config = _config_cache
-    
-    if config is None:
-        config = DEFAULT_CONFIG.copy()
+        config = _config_cache or DEFAULT_CONFIG.copy()
     
     config_path = get_config_path()
     
     try:
         from .filesystem import ensure_file_directory
-        ensure_file_directory(config_path)
+        ensure_file_directory(str(config_path))
         
-        with open(config_path, 'w', encoding='utf-8') as f:
+        with config_path.open('w', encoding='utf-8') as f:
             json.dump(config, f, indent=2)
         
         _config_cache = config
@@ -217,33 +193,19 @@ def set_config(key_path: str, value: Any) -> bool:
 
 
 def get_root_directory() -> str:
-    """
-    Get the root directory of the Beats PM System.
-    
-    Returns:
-        Root directory path
-    """
+    """Get the root directory of the Beats PM System."""
     root = get_config('paths.root')
     
     if root is None:
         # Auto-detect root directory
-        root = os.getcwd()
+        root = str(Path.cwd())
         set_config('paths.root', root)
     
     return root
 
 
 def get_path(key: str, relative: bool = True) -> str:
-    """
-    Get a path from configuration.
-    
-    Args:
-        key: Configuration key for the path
-        relative: Whether to return relative path (default: True)
-    
-    Returns:
-        Path string
-    """
+    """Get a path from configuration."""
     path = get_config(f'paths.{key}')
     
     if path is None:
@@ -254,7 +216,7 @@ def get_path(key: str, relative: bool = True) -> str:
     if relative:
         return path
     
-    return os.path.join(get_root_directory(), path)
+    return str(Path(get_root_directory()) / path)
 
 
 def get_tracker_path(tracker_name: str) -> str:

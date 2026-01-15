@@ -248,9 +248,10 @@ _Raw transcript preserved in: [archive path]_
 ## Resource Conventions
 
 - **Templates**: `.gemini/templates/transcript-extraction.md`
-- **Output**: `3. Meetings/[YYYY-MM-DD]_[title].md`
+- **Templates**: `.gemini/templates/transcript-extraction.md`
+- **Output**: `3. Meetings/reports/[YYYY-MM-DD]_[title].md`
 - **Quote Archive**: `3. Meetings/quote-index.md`
-- **Transcript Archive**: `3. Meetings/archive/`
+- **Transcript Archive**: `3. Meetings/transcripts/`
 - **Decisions**: `5. Trackers/DECISION_LOG.md`
 
 ## Cross-Skill Integration

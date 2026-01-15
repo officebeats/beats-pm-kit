@@ -87,7 +87,7 @@ To maintain data integrity, the agent MUST run the following checks. If any chec
 7.  **System Diagnostics**: Use `#vibe` to trigger `vibe_check.py`.
 8.  **Briefing**: Use `#day` or `#status` to activate the `Daily Synthesizer` for a table-based briefing.
 9.  **Parking Lot**: Log unclear or non-actionable thoughts to `BRAIN_DUMP.md`.
-10. **Archive**: Use `vacuum.py` to move old completed tracker items to `5. Trackers/archive/`.
+10. **Flattened Ledger**: All active trackers (Bugs, Boss Asks, Projects) reside as master `.md` files in the root of `5. Trackers/`. Subdirectories are reserved for the `archive/`. Use `vacuum.py` to move old items to the archive.
 11. **Auto-Detection**: Conversational patterns (labels, timestamps) automatically activate the `meeting-synthesizer` skill.
 12. **System Updates**: If input is `#update`, execute `git pull && npm install -g @google/gemini-cli@preview` followed by `python Beats-PM-System/system/scripts/core_setup.py`.
 
@@ -97,13 +97,11 @@ To maintain data integrity, the agent MUST run the following checks. If any chec
 
 To handle multiple inputs (files, screenshots, text) for a single intent:
 
-1.  **`#paste` Command**: Triggers clipboard ingestion and routes based on content type (Transcript, Notes, Screenshots).
-2.  **Auto-Detect (No Command)**: If user just pastes a large block (>500 words) with conversational patterns, AI auto-detects and processes without needing `#paste`.
-3.  **Staging for Files**: For actual files (screenshots, images), drop into `0. Incoming/staging/` folder.
-4.  **Processing Trigger**:
-    - An explicit `#process` command.
-    - A message that provides context for the staged items (e.g., "Review these screenshots for bugs").
-5.  **Cleanup**: Once processed, items in `0. Incoming/staging/` are moved to the appropriate directory in `2. Products/[Company]/[Product]/` or `0. Incoming/archive/`.
+## 🎙️ Meeting Management
+
+1.  **Ingestion**: All meeting transcripts (Quill, Voice, Notes) land in `3. Meetings/transcripts/`.
+2.  **Synthesis**: Use `#transcript` to activate `meeting-synth`. Output artifacts (PRDs, Action Items) are routed to the corresponding Product folder or `3. Meetings/reports/`.
+3.  **Audit**: Weekly roll-ups land in `3. Meetings/weekly-digests/`.
 
 ---
 
@@ -213,4 +211,4 @@ if template_path:
 - **Health**: To diagnose issues, run `#vibe`.
 - **Architecture**: This KERNEL is the single source of truth for all Agent Orchestration.
 
-_End of KERNEL.md (v3.2.1)_
+_End of KERNEL.md (v4.4.0)_
