@@ -60,7 +60,7 @@ Once the folder is open in Antigravity, just type:
 This edition is re-engineered as a **Skills-First Orchestration** system. It leverages the latest **Gemini CLI Agent Skills** protocol for maximum efficiency, modularity, and speed.
 
 - **Dynamic Skill Activation**: Expertise is lazy-loaded on-demand.
- The system identifies which "Agent Skill" to activate based on your command, saving massive amounts of context tokens.
+  The system identifies which "Agent Skill" to activate based on your command, saving massive amounts of context tokens.
 - **Parallel Fan-Out**: Expert agents execute non-dependent tasks simultaneously using the `waitForPreviousTools: false` protocol.
 - **Conductor-First Protocol**: All artifacts (PRDs, Bugs, Strategy Memos) are generated via hierarchical `.gemini/templates/` managed by the Gemini CLI Conductor.
 - **Access Override Fallback**: High-performance local file access protocol ensures gitignored files are always readable by the AI agents.
@@ -143,14 +143,14 @@ The Brain uses **Zero-Friction Routing**. You don't need to know which agent is 
 
 ### 🗣️ Meeting Commands
 
-|        Command        | Focus              | What It Does                                                                 |
-| :-------------------: | :----------------- | :--------------------------------------------------------------------------- |
+|        Command        | Focus              | What It Does                                                                                   |
+| :-------------------: | :----------------- | :--------------------------------------------------------------------------------------------- |
 | `#transcript [paste]` | Call Audio/Text    | Extracts action items, decisions, and roadmap concepts from raw transcripts to `3. Meetings/`. |
-|  `#meeting [paste]`   | Hand-written Notes | Converts raw notes into structured artifacts with owners and deadlines.      |
-|   `#call [subject]`   | Sync Capture       | Quick capture protocol for phone calls or unscheduled sync messages.         |
-|   `#1on1 [person]`    | People Sync        | Templated sync for performance tracking and feedback loops.                  |
-|      `#standup`       | Team Pulse         | Optimized capture for daily engineering or pod standups.                     |
-|   `#notes [paste]`    | Raw Notes          | Raw notes dump for processing.                                               |
+|  `#meeting [paste]`   | Hand-written Notes | Converts raw notes into structured artifacts with owners and deadlines.                        |
+|   `#call [subject]`   | Sync Capture       | Quick capture protocol for phone calls or unscheduled sync messages.                           |
+|   `#1on1 [person]`    | People Sync        | Templated sync for performance tracking and feedback loops.                                    |
+|      `#standup`       | Team Pulse         | Optimized capture for daily engineering or pod standups.                                       |
+|   `#notes [paste]`    | Raw Notes          | Raw notes dump for processing.                                                                 |
 
 ### 🧠 Strategy Commands
 
@@ -196,12 +196,12 @@ The Brain uses **Zero-Friction Routing**. You don't need to know which agent is 
 
 ### 🛠️ System Commands
 
-|      Command       | Focus           | What It Does                                                                  |
-| :----------------: | :-------------- | :---------------------------------------------------------------------------- |
-|     `#update`      | Logic Sync      | Fetches latest brain mesh and runs `core_setup.py` to ensure platform parity. |
-|      `#help`       | User Guide      | Displays the full Command Menu and provides an onboarding assist.             |
-|      `#vibe`       | Diagnostics     | Runs system health diagnostics.                                               |
-| `/conductor:[cmd]` | Direct Template | Direct access to Gemini CLI Conductor templates.                              |
+|      Command       | Focus           | What It Does                                                                   |
+| :----------------: | :-------------- | :----------------------------------------------------------------------------- |
+|     `#update`      | Logic Sync      | Fetches latest brain mesh and runs `core_setup.py` to ensure platform parity.  |
+|      `#help`       | User Guide      | Displays the full Command Menu and provides an onboarding assist.              |
+|      `#vibe`       | Diagnostics     | Runs system health diagnostics and saves report to `Beats-PM-System/reports/`. |
+| `/conductor:[cmd]` | Direct Template | Direct access to Gemini CLI Conductor templates.                               |
 
 ### 📊 Reporting Commands
 
@@ -314,7 +314,9 @@ Type `#help` anytime to see the full command menu. The AI will also suggest comm
 <details>
 <summary><strong>🔐 Is my data secure?</strong></summary>
 
-**Absolutely.** Your data is stored locally on your computer as plain text files. Nothing is sent to the cloud. You have full control and ownership of your data.
+**Absolutely.** Your data is stored locally on your computer as plain text files. Nothing is sent to the cloud (unless you enable "Process with Cloud" features).
+
+**New:** The system defaults to **"YOLO Mode"** (Max Velocity), but you can enable **Secure Mode** in `SETTINGS.md` if you require strict human approval for all actions.
 
 </details>
 
@@ -352,6 +354,8 @@ beats-pm-antigravity-brain/
 ├── 5. Trackers/           # Flattened Ledger (Master Trackers)
 ├── .agent/skills/         # Gemini CLI Agent Skills
 ├── .gemini/templates/     # Conductor Templates
+├── Beats-PM-System/       # Core System Logic
+│   └── reports/           # Local Vibe Reports (GitIgnored)
 └── STATUS.md             # System Dashboard
 ```
 
