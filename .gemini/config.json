@@ -1,0 +1,68 @@
+{
+  "system": {
+    "version": "3.1.0",
+    "name": "Beats PM System"
+  },
+  "paths": {
+    "root": null,
+    "staging": "0. Incoming/staging",
+    "trackers": "5. Trackers",
+    "archive": "5. Trackers/archive",
+    "meetings": "3. Meetings",
+    "people": "4. People",
+    "company": "1. Company",
+    "products": "2. Products",
+    "templates": ".gemini/templates",
+    "skills": ".agent/skills"
+  },
+  "files": {
+    "kernel": "KERNEL.md",
+    "settings": "SETTINGS.md",
+    "readme": "README.md",
+    "action_plan": "ACTION_PLAN.md",
+    "brain_dump": "0. Incoming/BRAIN_DUMP.md",
+    "status": "STATUS.md"
+  },
+  "directories": {
+    "required": [
+      "0. Incoming/staging",
+      "0. Incoming/archive",
+      "1. Company",
+      "2. Products",
+      "3. Meetings/transcripts",
+      "3. Meetings/daily-briefs",
+      "4. People",
+      "5. Trackers/archive"
+    ]
+  },
+  "templates": {
+    "settings": ".gemini/templates/SETTINGS_TEMPLATE.md",
+    "bug_report": ".gemini/templates/trackers/bug-report.md",
+    "boss_request": ".gemini/templates/trackers/boss-request.md",
+    "meeting_notes": ".gemini/templates/meetings/meeting-notes.md",
+    "feature_request": ".gemini/templates/docs/feature-request.md",
+    "prd": ".gemini/templates/docs/PRD_TEMPLATE.md",
+    "product_context": ".gemini/templates/docs/product-context.md",
+    "1on1": ".gemini/templates/meetings/1-on-1-notes.md"
+  },
+  "trackers": {
+    "task_master": "5. Trackers/TASK_MASTER.md",
+    "bug_tracker": "5. Trackers/BUG_TRACKER.md",
+    "boss_requests": "5. Trackers/BOSS_REQUESTS.md",
+    "project_tracker": "5. Trackers/PROJECT_TRACKER.md",
+    "delegated_tasks": "5. Trackers/DELEGATED_TASKS.md",
+    "eng_tasks": "5. Trackers/ENG_TASKS.md",
+    "ux_tasks": "5. Trackers/UX_TASKS.md",
+    "decision_log": "5. Trackers/DECISION_LOG.md"
+  },
+  "ai": {
+    "default_model": "gemini-3-flash-preview"
+  },
+  "extensions": [
+    {
+      "id": "pesosz.antigravity-auto-accept",
+      "name": "Antigravity Auto-Accept (Autonomous Execution)",
+      "url": null
+    }
+  ]
+}

@@ -121,21 +121,55 @@ def check_trackers_flattening():
             print_warning(f"{name}: Missing at {path}")
 
 
+class Logger(object):
+    def __init__(self, filename):
+        self.terminal = sys.stdout
+        self.log = open(filename, "w", encoding='utf-8')
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+
+    def flush(self):
+        self.terminal.flush()
+        self.log.flush()
+
 def main():
     """Main entry point for vibe check."""
-    system = get_system()
-    version = get_config('system.version', '3.1.0')
-    print_cyan(f"--- Antigravity Vibe Check v{version} ({system}) ---")
     
-    # Run all checks
-    check_toolchain()
-    check_file_structure()
-    check_critical_files()
-    check_skills_configuration()
-    check_trackers_flattening()
+    # Setup logging to file
+    from datetime import datetime
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    # Go up 5 levels to reach root: scripts -> core-utility -> skills -> .agent -> brain -> root
+    root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+    report_dir = os.path.join(root_dir, "Beats-PM-System", "reports")
     
-    print_cyan("\n--- Check Complete ---")
-
+    # Ensure report directory exists
+    if not os.path.exists(report_dir):
+        os.makedirs(report_dir)
+        
+    report_file = os.path.join(report_dir, f"vibe_report_{timestamp}.txt")
+    
+    # Redirect stdout to both console and file
+    sys.stdout = Logger(report_file)
+    
+    try:
+        system = get_system()
+        version = get_config('system.version', '3.1.0')
+        print_cyan(f"--- Antigravity Vibe Check v{version} ({system}) ---")
+        print_cyan(f"Report saved to: {report_file}")
+        
+        # Run all checks
+        check_toolchain()
+        check_file_structure()
+        check_critical_files()
+        check_skills_configuration()
+        check_trackers_flattening()
+        
+        print_cyan("\n--- Check Complete ---")
+    finally:
+        # Restore stdout but keep the file written
+        pass
 
 if __name__ == "__main__":
     main()

@@ -96,6 +96,9 @@ requirements.txt
 !/Beats-PM-System/system/queue/.gitkeep
 /Beats-PM-System/system/backups/**
 !/Beats-PM-System/system/backups/.gitkeep
+# Ignore Vibe Reports (Local Only)
+/Beats-PM-System/reports/**
+!/Beats-PM-System/reports/.gitkeep
 
 # ----------------------------------------
 # 5. GEMINI CLI CONDUCTOR CONTEXT
