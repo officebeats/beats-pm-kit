@@ -13,10 +13,10 @@
 
 ## System
 
-- **Owner**: [Your Name]
-- **Role**: [Principal PM / Director / Group PM]
+- **Owner**: Admin Beats
+- **Role**: Head of Product
 - **Timezone**: America/Chicago
-- **Version**: 3.2.1 (Meeting Intelligence)
+- **Version**: 4.7.1 (System Verified)
 
 ---
 

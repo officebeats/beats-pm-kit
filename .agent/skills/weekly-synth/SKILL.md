@@ -1,85 +1,68 @@
 ---
 name: weekly-synthesizer
-description: The Archivist and Storyteller of the PM Brain. Generates weekly and monthly summaries with trajectory analysis, metrics, and executive-ready rollups. Use for #weekly, #monthly, #rollup, or periodic reviews.
-version: 2.0.0
+description: The Archivist. Generates weekly and monthly summaries with trajectory analysis, metrics, and executive-ready rollups.
+triggers:
+  - "#weekly"
+  - "#monthly"
+  - "#rollup"
+  - "#retrospective"
+version: 3.0.0 (Native)
 author: Beats PM Brain
 ---
 
-# Weekly Synthesizer Skill
+# Weekly Synthesizer Skill (Native)
 
-> **Role**: You are the **Archivist** of the Antigravity PM Brain. You zoom out from the daily noise to see the trajectory. You convert a week's worth of task completions, decisions, and bugs into a coherent narrative of progress and risk.
+> **Role**: You are the **Historian**. You stop the treadmill on Fridays to answer: "Did we actually move forward?" You convert a pile of completed tasks into a Narrative of Progress.
 
-## 1. Interface Definition
+## 1. Native Interface
 
 ### Inputs
 
-- **Keywords**: `#weekly`, `#monthly`, `#rollup`, `#retrospective`
-- **Context**: Date range (Last 7 days or Last Month), current system state.
-
-### Outputs
-
-- **Primary Artifact**: `3. Meetings/weekly/[YYYY-MM-DD]_weekly.md`
-- **Secondary Output**: `3. Meetings/monthly/[YYYY-MM]_monthly.md`
-- **Console**: Executive Summary string.
+- **Triggers**: `#weekly`, `#monthly`
+- **Context**: Last 7 days of logs.
 
 ### Tools
 
-- `view_file`: To read all tracker files and `STATUS.md`.
-- `write_to_file`: To generate the report.
-- `run_command`: To check git history (optional) or system time.
+- `view_file`: Read `TASK_MASTER`, `DECISION_LOG`.
+- `write_to_file`: Generate Report.
 
-## 2. Cognitive Protocol (Chain-of-Thought)
+## 2. Cognitive Protocol
 
-### Step 1: Context Loading (The "Rollup")
+### Phase 1: The Deep Scan (Native Mode)
 
-Load in **PARALLEL** (Deep Scan):
+Read the specific memory banks (Last 7 Days):
 
-- `STATUS.md`: Dashboard state.
-- `5. Trackers/task-master.md`: Velocity analysis.
-- `5. Trackers/decisions.md`: What did we decide?
-- `5. Trackers/critical/boss-requests.md`: Did we satisfy leadership?
-- `3. Meetings/quote-index.md`: What was the "word on the street"?
+1.  **Work**: `TASK_MASTER.md` (Filter: Done).
+2.  **Decisions**: `DECISION_LOG.md` (Filter: This Week).
+3.  **Vibes**: `quote-index.md` (What did people say?).
+4.  **Politics**: `boss-requests.md` (Did we ship the urgent asks?).
 
-### Step 2: Trajectory Analysis
+### Phase 2: Trajectory Analysis
 
-Evaluate each Active Initiative:
+Determine the **Vector**:
 
-- **Green**: Events met, no blockers, high velocity.
-- **Yellow**: Minor blockers, slowing velocity, unchecked bugs.
-- **Red**: Major blockers, missed SLA, critical bugs.
+- ↗️ **Accelerating**: High Velocity, Low Bugs.
+- ➡️ **Cruising**: Planned work done.
+- ↘️ **Stalling**: Blocked, High Tech Debt.
+- 📉 **Crashing**: Critical Incidents / Missed SLAs.
 
-_Output_: A Trajectory Table with `Trend` arrows (↗️ ↘️ ➡️).
+### Phase 3: The Narrative Generation
 
-### Step 3: Execution Strategy
+Write `3. Meetings/weekly/YYYY-MM-DD_[Week].md`:
 
-#### A. The Narrative Arc (Wins & Learnings)
+1.  **The Headline**: One sentence summary.
+2.  **The Wins**: Top 3 shipped items (Business Value first).
+3.  **The Misses**: What slipped? Why? (Be honest).
+4.  **The Learnings**: "We learned that..." (Strategic Insight).
+5.  **Next Week**: Top 3 Priorities.
 
-- **Wins**: extract "Done" items with high priority.
-- **Learnings**: extract "Failed" or "Stalled" items.
-- **Story**: Connect them. "We shipped X, but discovered Y, so we pivoted to Z."
+### Phase 4: Maintenance
 
-#### B. The Metrics Dashboard
+- **Archive**: Suggest archiving this week's Done tasks via `turbo_dispatch("vacuum")`.
+- **Reset**: Clear the board for Monday.
 
-Calculate:
+## 3. Output Rules
 
-- **Velocity**: (Completed / Added) ratio.
-- **Quality**: (Bugs Fixed / Bugs Found) ratio.
-- **Focus**: (Strategic Tasks / Maintenance Tasks) ratio.
-
-#### C. The Executive Summary
-
-Write the `TL;DR` for a VP audience:
-
-- 3 Bullet Points MAX.
-- Focus on _Business Impact_, not _Activity_.
-
-### Step 4: Verification
-
-- **Safety**: No hallucinated metrics. Count the actual rows.
-- **Tone**: Professional, objective, forward-looking.
-
-## 3. Cross-Skill Routing
-
-- **To `strategy-synth`**: If the weekly reveals a major strategic misalignment.
-- **To `boss-tracker`**: To flag "Weekly Report Sent" status.
-- **To `task-manager`**: To populate "Next Week's" priorities as new tasks.
+1.  **No Fluff**: Executives read the first 3 bullets. Make them count.
+2.  **Data Backed**: "We shipped a lot" -> "We shipped 12 tickets".
+3.  **Blameless**: "Design was late" -> "Design handoff friction caused delay".

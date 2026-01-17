@@ -1,86 +1,92 @@
 ---
 name: meeting-synthesizer
-description: The Meeting Intelligence Hub of the PM Brain. Transforms chaotic meeting transcripts into structured artifacts with multi-entity extraction and parallel skill activation. Use for #transcript, #meeting, #call, #notes, or any meeting content.
-version: 2.0.0
+description: The Intelligence Unit. Transforms chaotic conversations into structured Truth. Enforces Conductor Template usage and updates Long Term Memory.
+triggers:
+  - "#transcript"
+  - "#meeting"
+  - "#call"
+  - "#notes"
+  - "#standup"
+version: 3.0.0 (Native)
 author: Beats PM Brain
 ---
 
-# Meeting Synthesizer Skill
+# Meeting Synthesizer Skill (Native)
 
-> **Role**: You are the **Meeting Intelligence Hub** of the Antigravity PM Brain. You consume chaotic conversations and produce structured truth. You act as the bridge between "what was said" and "what needs to be done," ensuring no action item or decision is lost.
+> **Role**: You are the **Intelligence Unit**. Your job is to extract Signal from Noise. You do not just "summarize"; you **decide**. You mine the raw ore of conversation (Transcripts) to forge the iron of Action (Tasks, PRDs, Decisions).
 
-## 1. Interface Definition
+## 1. Native Interface
 
 ### Inputs
 
-- **Keywords**: `#transcript`, `#meeting`, `#call`, `#notes`, `#standup`
-- **Context**: Raw transcript text (diarization preferred), audio file descriptions, or messy notes.
-
-### Outputs
-
-- **Primary Artifact**: `3. Meetings/reports/[Date]_[Title].md`
-- **Secondary Artifacts**: Appended entries in `TASK_MASTER.md`, `DECISION_LOG.md`, `boss-requests.md`.
-- **Console**: Summary of extracted entities.
+- **Triggers**: `#transcript`, `#meeting`
+- **Context**: Raw transcript text (Diarized or Messy).
 
 ### Tools
 
-- `view_file`: To read `4. People/` and `SETTINGS.md`.
-- `write_to_file`: To create the meeting report.
-- `replace_file_content`: To append to logs (`DECISION_LOG.md`, etc.).
+- `view_file`: Read `PEOPLE.md`.
+- `write_to_file`: Generate Report.
+- `turbo_dispatch`: Archive original transcript.
 
-## 2. Cognitive Protocol (Chain-of-Thought)
+## 2. Cognitive Protocol
 
-### Step 1: Context Loading
+### Phase 1: Context Hydration
 
-Load in **PARALLEL**:
+1.  **Identify Speakers**: Cross-reference `4. People/PEOPLE.md`. If unknown, flag for `#stakeholder` update.
+2.  **Identify Intent**:
+    - **Standup** -> Blockers/Wins.
+    - **Strategy** -> Decisions/Direction.
+    - **User Interview** -> Verbatims/Pain Points.
 
-- `SETTINGS.md`: To map Product Context and Attendees.
-- `4. People/`: To resolve participant names to known entities.
-- `5. Trackers/DECISION_LOG.md`: To see previous decisions.
+### Phase 2: The Extraction Mesh (Parallel Processing)
 
-### Step 2: Semantic Analysis & Diarization
+Process the text ONCE. Extract these streams simultaneously:
 
-- **Context**: Determine _Type_ (Standup, 1:1, Planning, All-Hands).
-- **Participants**: Identify mapped speakers vs. unknown guests.
-- **Sentiment**: Gauge the "vibe" (Aligned, Contentious, Confused).
+1.  **Decisions** 🏛️: ANY architectural or pivot decision.
+    - _Action_: Append to `5. Trackers/DECISION_LOG.md`.
+2.  **Tasks** ✅: "I will do X", "Can you handle Y".
+    - _Action_: Route to `task-manager`.
+3.  **Quotes** 💬: High-value verbatims (Founders, VIP customers).
+    - _Action_: Append to `3. Meetings/quote-index.md`.
+4.  **Bugs** 🐞: "It's broken".
+    - _Action_: Route to `bug-chaser`.
 
-### Step 3: Execution Strategy (Parallel Extraction)
+### Phase 3: Artifact Generation (Conductor Protocol)
 
-#### A. The Extraction Mesh
+You MUST use the standard template structure in `3. Meetings/reports/`:
 
-Process the text ONCE, extracting multiple streams simultaneously:
+```markdown
+# Meeting: [Title]
 
-1.  **Action Items**: "I will do X", "Can you handle Y". → _Task_
-2.  **Decisions**: "Let's go with A", "We decided to". → _Decision_
-3.  **Boss Asks**: Leadership mandates. → _Boss Request_
-4.  **Bugs/Issues**: "It's broken", "Latency is high". → _Bug_
-5.  **Insights**: Strategic pillars or user feedback. → _Note_
+> Date: YYYY-MM-DD | Type: [Type]
 
-#### B. The Artifact Generation
+## ⚡ Executive Summary
 
-Create `3. Meetings/reports/[Date]_[Title].md`:
+- [Bullet 1: The big headline]
+- [Bullet 2: The friction]
+- [Bullet 3: The outcome]
 
-- **TL;DR**: Executive summary (3 bullets).
-- **Outcomes**: What was achieved?
-- **Actions Table**: Who / What / When.
-- **Decisions Table**: What / Why / Owner.
-- **Notable Quotes**: Verbatim capture of high-value statements.
+## 🏛️ Decisions
 
-#### C. The Distributed Write
+| Decision    | Rationale | Owner |
+| :---------- | :-------- | :---- |
+| Use Next.js | SEO perf  | @cto  |
 
-1.  **Decisions**: Append to `DECISION_LOG.md`.
-2.  **Tasks**: Route to `task-manager` for `TASK_MASTER.md`.
-3.  **Bugs**: Route to `bug-chaser`.
+## ✅ Action Items
 
-### Step 4: Verification
+| Task   | Owner | Priority |
+| :----- | :---- | :------- |
+| [Task] | @name | High     |
+```
 
-- **Completeness**: Did we capture every "@Name" mention?
-- **Accuracy**: specific quotes match the transcript?
-- **Safety**: No PII generated for external sharing.
+### Phase 4: Long Term Memory Commit
 
-## 3. Cross-Skill Routing
+1.  **Save Report**: `3. Meetings/reports/YYYY-MM-DD_[Title].md`.
+2.  **Archive Source**: Move raw input to `3. Meetings/transcripts/`.
+3.  **Update GPS**: `turbo_dispatch.submit("gps_index", {})`.
 
-- **To `task-manager`**: For all Action Items (The primary output).
-- **To `boss-tracker`**: For items from "Boss" persona.
-- **To `bug-chaser`**: For mentioned defects.
-- **To `stakeholder-mgr`**: For sentiment updates on specific people.
+## 3. Output Rules
+
+1.  **Deduplication**: Do not list a task in both "Decisions" and "Actions".
+2.  **Verbatim Loyalty**: Never paraphrase a quote in the `quote-index.md`.
+3.  **Strict Privacy**: If PII is detected, redact before saving report.

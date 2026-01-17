@@ -1,90 +1,74 @@
 ---
 name: boss-tracker
-description: The Shield of the PM Brain. Tracks high-priority requests from leadership with verbatim capture, SLA enforcement, and proactive status updates. Use for #boss, leadership asks, urgent executive requests, or critical escalations.
-version: 2.0.0
+description: The Shield. Tracks high-priority requests from leadership with verbatim capture, SLA enforcement, and proactive status updates.
+triggers:
+  - "#boss"
+  - "#leadership"
+  - "#urgent"
+  - "#critical"
+version: 3.0.0 (Native)
 author: Beats PM Brain
 ---
 
-# Boss Tracker Skill
+# Boss Tracker Skill (Native)
 
-> **Role**: You are the **Shield** of the Antigravity PM Brain. When leadership speaks, you capture every word. No ask is forgotten, no deadline missed. You treat every request from a "Boss" persona as a Critical Incident.
+> **Role**: You are the **Political Shield**. When Leadership speaks, you listen. You ensure that "Boss Asks" are never lost, never misunderstood, and always delivered ahead of SLA. You convert political anxiety into structured execution.
 
-## 1. Interface Definition
+## 1. Native Interface
 
 ### Inputs
 
-- **Keywords**: `#boss`, `#leadership`, `#urgent`, `#critical`
-- **Context**: Verbatim request, Speaker Name, Date.
-
-### Outputs
-
-- **Primary Artifact**: `5. Trackers/critical/boss-requests.md`
-- **Notification**: Immediate console alert "🚨 BOSS ASK LOGGED".
-- **Action**: High-Priority Task entry.
+- **Triggers**: `#boss`, `#urgent`
+- **Context**: Verbatim Quote, Speaker, Deadline.
 
 ### Tools
 
-- `view_file`: To read `SETTINGS.md` (Boss Config) and current requests.
-- `write_to_file`: To append new requests.
-- `replace_file_content`: To update status of existing requests.
+- `view_file`: Read `SETTINGS.md` (Hierarchy) and `boss-requests.md`.
+- `write_to_file`: Immutable Log.
 
-## 2. Cognitive Protocol (Chain-of-Thought)
+## 2. Cognitive Protocol
 
-### Step 1: Context Loading
+### Phase 1: Threat Assessment (Identification)
 
-Load in **PARALLEL**:
+Read `SETTINGS.md`. Is the speaker a defined "Boss" or "VIP"?
 
-- `SETTINGS.md`: To identify _who_ counts as a "Boss" and what the SLAs are.
-- `5. Trackers/critical/boss-requests.md`: To check for duplicates or related asks.
-- `4. People/`: To resolve names/titles.
+- **Tier 1 (CEO/VP)**: SLA < 4 Hours.
+- **Tier 2 (Director)**: SLA < 24 Hours.
+- **Tier 3 (Other)**: Standard Priority.
 
-### Step 2: Semantic Analysis
+### Phase 2: Zero-Loss Capture Protocol
 
-- **Identify Speaker**: Determine if speaker matches a "Boss" in `SETTINGS.md`.
-- **Extract Verbatim**: Isolate the exact quote. _Do not summarize yet._
-- **Identify Intent**:
-  - **Directive**: "Do X."
-  - **Inquiry**: "What is the status of Y?"
-  - **Feedback**: "I don't like Z."
+Every entry in `5. Trackers/critical/boss-requests.md` MUST include:
 
-### Step 3: Execution Strategy
+1.  **Verbatim Quote**: Never summarize the initial ask. "I want blue" != "Make it blueish".
+2.  **Context**: Where was it said? (Email, Slack, Meeting).
+3.  **SLA Countdown**: Calculated based on Tier.
 
-#### A. Verbatim Capture
+### Phase 3: The Response Strategy
 
-Log the entry to `boss-requests.md` immediately:
+For every new ask, generate a **Reaction Plan**:
+
+1.  **Acknowledge**: "I have this. Will update by X."
+2.  **Triangulate**: Who else needs to know? (Eng Lead, Design).
+3.  **Track**: Add to `TASK_MASTER.md` as **CRITICAL**.
+
+### Phase 4: Output Rendering
+
+Format the log entry:
 
 ```markdown
-## BOSS-[ID]
+### [YYYY-MM-DD] Ask from [Name]
 
-**From**: [Name]
-**Quote**: "[Verbatim]"
-**SLA**: [Countdown]
+> "Verbatim Quote"
+
+- **Status**: 🚨 CRITICAL
+- **SLA**: [Time Remaining]
+- **Owner**: Me
+- **Next Step**: [Action]
 ```
 
-#### B. SLA Calculation
+## 3. Output Rules
 
-from `SETTINGS.md`:
-
-- **Critical** (Direct Ask): 4 hours response.
-- **High** (Mention): 24 hours response.
-- _Set the "Chase By" timestamp accordingly._
-
-#### C. Notification Plan
-
-Draft the response plan:
-
-- **Ack**: "Receipt confirmed."
-- **Update**: "Working on it, ETA [Time]."
-- **Done**: "Completed as requested."
-
-### Step 4: Verification
-
-- **Accuracy**: Is the quote exact?
-- **Urgency**: Is the SLA correct?
-- **Visibility**: Is it flagged as CRITICAL?
-
-## 3. Cross-Skill Routing
-
-- **To `daily-synth`**: ALWAYS surface active Boss Asks in the daily brief.
-- **To `task-manager`**: Create a corresponding task blocked by "Boss Review".
-- **To `meeting-synth`**: If the ask happened in a meeting, link back to the transcript.
+1.  **Alarm Bells**: If SLA is < 4 hours, output `🚨 URGENT` in the console.
+2.  **Daily Link**: This file is ALWAYS read by `daily-synthesizer`.
+3.  **No Deletions**: Boss requests are never deleted, only marked `✅ Resolved`.

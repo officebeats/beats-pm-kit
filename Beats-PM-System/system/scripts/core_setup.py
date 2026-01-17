@@ -114,6 +114,33 @@ def run_vibe_check() -> None:
         print_warning("Warning: vibe_check.py not found. Model validation skipped.")
 
 
+
+def run_skill_optimizer() -> None:
+    """Run the skill optimizer to index skills."""
+    print_cyan("\n🧠 Optimizing Agent Skills...")
+    script = os.path.join("Beats-PM-System", "system", "scripts", "optimize_skills.py")
+    if file_exists(script):
+        run_python_script(script)
+    else:
+        print_warning("Skill optimizer script not found.")
+
+def run_memory_init() -> None:
+    """Initialize long-term memory artifacts."""
+    print_cyan("\n💾 Initializing Long-Term Memory...")
+    script = os.path.join("Beats-PM-System", "system", "scripts", "init_memory.py")
+    if file_exists(script):
+        run_python_script(script)
+    else:
+        print_warning("Memory init script not found.")
+
+
+def run_structure_enforcement() -> None:
+    """Run the self-healing structure enforcement."""
+    script = os.path.join("Beats-PM-System", "system", "scripts", "enforce_structure.py")
+    if file_exists(script):
+        run_python_script(script)
+
+
 def main() -> None:
     """Main entry point for core setup."""
     system = get_system()
@@ -123,16 +150,34 @@ def main() -> None:
     # 1. Create directories
     create_directories()
     
-    # 2. Copy templates
+    # 2. Initialize Memory
+    run_memory_init()
+    
+    # 3. Optimize Skills (Sync - Required for operation)
+    run_skill_optimizer()
+    
+    # 4. Copy templates
     copy_templates()
+    
+    # 5. Background Heavy Tasks (New Native Optimization)
+    # We offload structure enforcement and vacuuming to the background queue
+    # so the user gets control back instantly.
+
+    try:
+        from system.scripts import turbo_dispatch
+        print_cyan("\n⚡ Dispatching Background Optimizations...")
+        turbo_dispatch.submit("structure_enforce", {})
+        turbo_dispatch.submit("gps_index", {})
+    except ImportError:
+        print_warning("Could not dispatch background tasks (module missing)")
     
     print_cyan("\n✅ Brain is ready. Your privacy is secured.")
     print_yellow("Active files are ignored by git. You can now add your real data.")
     
-    # 3. Install optional extensions
+    # 6. Install optional extensions
     install_extensions()
     
-    # 4. Run vibe check
+    # 7. Run vibe check
     run_vibe_check()
     
     # Pause on Windows for visibility

@@ -125,3 +125,6 @@ requirements.txt
 /_INBOX/
 /_QUEUE/
 /00-DROP-FILES-HERE-00/
+
+# Generated Indices
+/Beats-PM-System/system/content_index.json

@@ -12,11 +12,29 @@
 
 ### 🛠️ Core Skills Inventory
 
-> **Optimization**: The manual skills table has been decapitated for performance.
-> **Source of Truth**: Read `Beats-PM-System/system/skills.json` for the automated routing index.
+> **Note**: This kernel runs in **Native Mode**. Skill definitions are indexed in `Beats-PM-System/system/skills.json` to save context tokens. The Agent automatically accesses this index to resolve commands.
 
-1.  **Skill Discovery**: System auto-discovers expertise from `.agent/skills/`.
-2.  **Activation**: The model uses `read_resource` or `view_file` to load instructions.
+---
+
+---
+
+## 🛰️ Antigravity GPS Protocol (System-Wide Efficiency)
+
+> **Rule**: Never search for a file if you can Lookup.
+
+1.  **O(1) Retrieval**: Before using `find_by_name` or `list_dir` to locate a document (PRD, Strategy, Previous Meeting), the Agent **MUST** first read `Beats-PM-System/system/content_index.json`.
+2.  **Context Hydration**: All skills automatically hydrate context from the GPS Index to avoid "FileSystem Crawl" latency.
+3.  **Turbo Dispatch**: Any "heavy" write operation (Archiving, Indexing, Structuring) must be offloaded to the background via `turbo_dispatch`.
+
+---
+
+## 🛰️ Antigravity GPS Protocol (System-Wide Efficiency)
+
+> **Rule**: Never search for a file if you can Lookup.
+
+1.  **O(1) Retrieval**: Before using `find_by_name` or `list_dir` to locate a document (PRD, Strategy, Previous Meeting), the Agent **MUST** first read `Beats-PM-System/system/content_index.json`.
+2.  **Context Hydration**: All skills automatically hydrate context from the GPS Index to avoid "FileSystem Crawl" latency.
+3.  **Turbo Dispatch**: Any "heavy" write operation (Archiving, Indexing, Structuring) must be offloaded to the background via `turbo_dispatch`.
 
 ---
 

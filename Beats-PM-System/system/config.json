@@ -4,7 +4,7 @@
     "name": "Beats PM System"
   },
   "paths": {
-    "root": null,
+    "root": "C:\\Users\\admin-beats\\OneDrive\\xo Vibe Coding xo\\beats-pm-antigravity-brain",
     "staging": "0. Incoming/staging",
     "trackers": "5. Trackers",
     "archive": "5. Trackers/archive",

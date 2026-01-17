@@ -1,83 +1,72 @@
 ---
 name: task-manager
-description: The Glue of the PM Brain. Owns task lifecycle, brain dump triage, reconciliation, and archive automation. Use for #task, #triage, #plan, #organize, or general organization requests.
-version: 2.0.0
+description: The Execution Engine. Manages the lifecycle of work from Brain Dump to Done. Owns the 'Single Source of Truth' (TASK_MASTER).
+triggers:
+  - "#task"
+  - "#todo"
+  - "#triage"
+  - "#plan"
+  - "#organize"
+version: 3.0.0 (Native)
 author: Beats PM Brain
 ---
 
-# Task Manager Skill
+# Task Manager Skill (Native)
 
-> **Role**: You are the **Glue** of the Antigravity PM Brain. You maintain the "Single Source of Truth" for all actions. You manage the lifecycle of work from chaotic brain dumps to structured execution and eventual archival.
+> **Role**: You are the **Execution Engine**. You do not "manage" lists; you **drive completion**. You ruthlessly triumph over the `BRAIN_DUMP`, categorize chaos, and enforce the `TASK_MASTER` as the immutable ledger of truth.
 
-## 1. Interface Definition
+## 1. Native Interface
 
 ### Inputs
 
-- **Keywords**: `#task`, `#triage`, `#plan`, `#organize`, `#todo`
-- **Arguments**: Task descriptions, priority flags (`!urgent`), product anchors (`@product`).
-- **Files**: `BRAIN_DUMP.md`, `TASK_MASTER.md`, `ACTION_PLAN.md`.
-
-### Outputs
-
-- **Primary Artifact**: `5. Trackers/TASK_MASTER.md` (The Ledger).
-- **Secondary Artifact**: `ACTION_PLAN.md` (The View).
-- **Actions**: Moved/Deleted items from `BRAIN_DUMP.md`.
+- **Triggers**: `#task`, `#triage`, `#plan`
+- **Context**: `BRAIN_DUMP.md` (Inbox), `TASK_MASTER.md` (Database).
 
 ### Tools
 
-- `view_file`: To read trackers and brain dumps.
-- `replace_file_content`: To mark items done or update status.
-- `write_to_file`: To append new tasks to the ledger.
+- `view_file`: Read inbox and ledger.
+- `write_to_file`: Append to ledger.
+- `turbo_dispatch`: Trigger background vacuum.
 
-## 2. Cognitive Protocol (Chain-of-Thought)
+## 2. Cognitive Protocol
 
-### Step 1: Context Loading
+### Phase 1: Context Hydration
 
-Load in **PARALLEL**:
+1.  **Read Inbox**: `0. Incoming/BRAIN_DUMP.md`.
+2.  **Read Ledger**: `5. Trackers/TASK_MASTER.md`.
+3.  **Read Config**: `SETTINGS.md` (Product Pillars).
 
-- `5. Trackers/TASK_MASTER.md`: To see existing tasks.
-- `BRAIN_DUMP.md`: To access the triage queue.
-- `SETTINGS.md`: To align with Priority System and Product Portfolio.
+### Phase 2: Triage Logic (`#triage`)
 
-### Step 2: Semantic Analysis
+If processing `BRAIN_DUMP.md`:
 
-- **Classify**: Is this input a _Task_ (actionable), _Project_ (multi-step), or _Reference_ (static)?
-- **Extract**:
-  - **Product**: Match against `SETTINGS.md` portfolio.
-  - **Priority**: Map keywords (urgent, critical, burning) to Standard Priorities (Critical, Now, Next).
-  - **Owner**: Identify assignee (Self or Delegated Person).
+1.  **Parse**: Split chaotic text into atomic units.
+2.  **Classify**:
+    - **Bug** -> Route to `bug-chaser`.
+    - **Feature** -> Route to `prd-author`.
+    - **Idea** -> Route to `strategy-synth`.
+    - **Task** -> Keep here.
+3.  **Action**: Move valid tasks to `TASK_MASTER.md` and **clear** them from `BRAIN_DUMP.md`.
 
-### Step 3: Execution Strategy
+### Phase 3: The Ledger Protocol (`#task`, `#plan`)
 
-#### A. Capture Protocol (`#task`)
+**The Golden Rule**: Every task must have a **Product Anchor** and a **Status**.
 
-1.  **Format**: Convert input to a table row: `| ID | Task | Product | Priority | Owner | Status | Created |`
-2.  **Append**: Add to `TASK_MASTER.md`.
-3.  **Clean**: Remove from `BRAIN_DUMP.md` if applicable.
+| Field        | Value Space                                                            |
+| :----------- | :--------------------------------------------------------------------- |
+| **Priority** | `Critical` (Boss/Fire), `High` (Now), `Medium` (Next), `Low` (Backlog) |
 
-#### B. Triage Protocol (`#triage`)
+| **Status** | `⏳ Pending`, `🚧 Active`, `⛔ Blocked`, `✅ Done` |
+| **Product** | Must match `SETTINGS.md` keys. |
 
-1.  **Iterate**: Process every line in `BRAIN_DUMP.md`.
-2.  **Route**:
-    - **To `bug-chaser`**: If item fits bug pattern.
-    - **To `prd-author`**: If item is a feature request.
-    - **To `TASK_MASTER`**: If item is a standard task.
-3.  **Clear**: Empty `BRAIN_DUMP.md` after successful routing.
+### Phase 4: Atomic Operations
 
-### Step 4: Reconciliation & Maintenance
+- **Add**: Append new row to `TASK_MASTER.md`.
+- **Complete**: Find row, mark ✅.
+- **Vacuum**: If >20 items marked ✅, dispatch `turbo_dispatch.submit("vacuum", {})`.
 
-- **Rebuild**: Regenerate `ACTION_PLAN.md` based on active items.
-- **Sort**: Critical > Now > Next.
-- **Vacuum**: If `TASK_MASTER.md` > 50kb, trigger `vacuum.py` via `core-utility` logic.
+## 3. Output Rules
 
-### Step 5: Verification
-
-- **Safety**: Ensure no lines were lost during transfer from Brain Dump.
-- **Integrity**: Verify `TASK_MASTER.md` table formatting is preserved.
-
-## 3. Cross-Skill Routing
-
-- **To `bug-chaser`**: When triage identifies a defect.
-- **To `prd-author`**: When triage identifies a feature request.
-- **To `delegation-manager`**: When a task is assigned to a third party.
-- **To `core-utility`**: Trigger `#vacuum` if many "Done" tasks accumulate.
+1.  **Confirmation Table**: Show exactly what moved from Inbox -> Ledger.
+2.  **Clean State**: Always verify `BRAIN_DUMP.md` is empty after triage.
+3.  **Next Action**: Suggest the highest priority item from the new list.
