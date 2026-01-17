@@ -2,7 +2,7 @@
 
 # 🧠 Beats PM Antigravity Brain
 
-### The Professional Second Brain for Product Managers — Created by Ernesto Rodriguez, Chicago-Based AI & Digital Transformation Expert
+### The Professional Second Brain for Product Managers
 
 **Stop drowning in chaos. Capture everything. Let AI organize the rest.**
 
@@ -15,9 +15,7 @@
 
 ---
 
-## ✨ What Is Beats PM Antigravity Brain?
-
-Created by **Ernesto Rodriguez** — a Chicago-based ex-BCG product leader with over a decade of AI and digital transformation experience — the Beats PM Antigravity Brain is designed to revolutionize how product managers work.
+## ✨ Overview
 
 As a Product Manager, you're constantly bombarded with information: Slack messages, meeting transcripts, screenshots of bugs, and "quick asks" from your boss.
 
@@ -25,16 +23,16 @@ The **Antigravity Brain** is a local-first system designed to catch all that noi
 
 **No more manual entry. No more lost notes.**
 
-Built by a product leader for product leaders, this system embodies Ernesto's expertise in AI-powered productivity and digital transformation.
-
 ---
 
 ## 🚀 Quick Start (60 Seconds)
 
 ### 📖 Step 1: Get the App
+
 Download **[Google Antigravity](https://antigravity.google/)** (it's free).
 
 ### 📥 Step 2: Load the Brain
+
 Download this project as a ZIP file and drag the extracted folder directly into the **Antigravity** app.
 
 > **Advanced:** Or clone directly into your workspace:
@@ -44,6 +42,7 @@ Download this project as a ZIP file and drag the extracted folder directly into 
 > ```
 
 ### 🎯 Step 3: Run the Setup
+
 Once the folder is open in Antigravity, just type:
 
 ```text
@@ -51,6 +50,20 @@ Once the folder is open in Antigravity, just type:
 ```
 
 **Antigravity will handle the rest**, automatically setting up your team profile, securing your privacy permissions, and running a system health check.
+
+---
+
+## ⚡ Gemini-Native Architecture (v4.7.1 - Antigravity Native)
+
+This edition is re-engineered as a **Skills-First Orchestration** system. It leverages the latest **Gemini CLI Agent Skills** protocol for maximum efficiency, modularity, and speed.
+
+- **Gamma-Class Skill Schema (v2.0)**: All agents now adhere to a standardized Cognitive Protocol, featuring explicit Context Loading, Semantic Analysis, Execution Strategy, and Cross-Skill Routing phases.
+- **Dynamic Skill Activation**: Expertise is lazy-loaded on-demand.
+  The system identifies which "Agent Skill" to activate based on your command, saving massive amounts of context tokens.
+- **Parallel Fan-Out**: Expert agents execute non-dependent tasks simultaneously using the `waitForPreviousTools: false` protocol.
+- **Conductor-First Protocol**: All artifacts (PRDs, Bugs, Strategy Memos) are generated via hierarchical `.gemini/templates/` managed by the Gemini CLI Conductor.
+- **Access Override Fallback**: High-performance local file access protocol ensures gitignored files are always readable by the AI agents.
+- **Stateful Catch-Up Ingestion**: Optimized `#transcript` command with automatic weekly anchors and last-sync tracking.
 
 ---
 
@@ -200,27 +213,31 @@ The Brain uses **Zero-Friction Routing**. You don't need to know which agent is 
 
 ---
 
-## 💡 Best Practices for Success
+## 💡 Best Practices
 
-### 🌅 Daily Workflow Routine
+### 🌅 Daily Workflow
+
 1. **Start Your Day**: Type `#morning` to get your daily brief with critical boss requests and calendar items.
 2. **Capture Everything**: Use `#paste` to quickly import screenshots, files, or text from your clipboard.
 3. **Process Regularly**: Run `#process` at least once a day to organize items in your Drop Zone.
 4. **End Your Day**: Type `#eod` to wrap up and preview tomorrow's priorities.
 
-### 📸 Information Capture Tips
+### 📸 Information Capture
+
 - **Screenshots**: Copy any image (Ctrl+C) and type `#paste` to capture bugs, UI issues, or design feedback.
 - **Files**: Copy any file (PDF, Excel, Word) and type `#paste` to import documents directly.
 - **Meeting Notes**: Use `#meeting` for structured notes, `#transcript` for call recordings, or `#standup` for team syncs.
 - **Quick Thoughts**: Use `#braindump` to park unstructured ideas for later triage.
 
-### 🎯 Command Usage Best Practices
+### 🎯 Command Usage Tips
+
 - **Use Hashtags**: Always start commands with `#` for automatic routing to the right agent.
 - **Be Specific**: When logging bugs or features, include as much context as possible.
 - **Track Boss Requests**: Use `#boss` for leadership requests to ensure high visibility.
 - **Delegate Wisely**: Use `#delegate` to track tasks assigned to others across projects.
 
 ### 🔒 Privacy & Security
+
 - **Local-First**: All data stays on your computer—nothing is sent to the cloud.
 - **Control Access**: Review privacy permissions during setup to ensure appropriate access.
 - **Regular Backups**: Since data is stored as text files, use your preferred backup solution.
@@ -234,13 +251,12 @@ The Beats Brain is optimized for **Gemini** (Google's AI), which has the best "e
 **The Workaround:** Since Antigravity doesn't have a "File Upload" button yet, we built a pro workaround. Just **Copy** (Ctrl+C) any image or file, then type **`#paste`** in the chat.
 
 The AI will autonomously reach out, grab your clipboard, and start analyzing:
+
 - 🐞 **Capture a Bug**: Paste a screenshot of a crash → The AI logs it to the Bug Tracker.
 - 📁 **Instant File Upload**: Press **Ctrl+C** on any **PDF, Excel, or Word doc** in your File Explorer, then type **`#paste`** → The AI pulls the actual file into your brain.
 - 💬 **Meeting Notes**: Paste a call transcript → The AI extracts action items for your team.
 
 ---
-
-## 🚀 Boost Productivity with Auto-Accept
 
 ### [🤖 Antigravity Auto-Accept](https://open-vsx.org/vscode/item?itemName=pesosz.antigravity-auto-accept)
 
@@ -249,13 +265,14 @@ The AI will autonomously reach out, grab your clipboard, and start analyzing:
 Allows your Brain to execute standard system commands (like file moves or status checks) autonomously without requiring manual approval for every step.
 
 **Manual Installation**:
+
 ```bash
 antigravity --install-extension pesosz.antigravity-auto-accept
 ```
 
 ---
 
-## 🔒 Privacy First, Always
+## 🔒 Privacy First
 
 Your data **never leaves your computer**.
 
@@ -323,9 +340,11 @@ Type `#vibe` to run system diagnostics. The AI will check for issues and provide
 ## 🔧 For Technical Users
 
 ### 🏗️ System Architecture
+
 The Beats PM Brain uses a **mesh architecture** with specialized agents that communicate through the **Universal Orchestration Protocol**. Each agent has a specific responsibility and can orchestrate other agents as needed.
 
 ### 📁 File Structure
+
 ```
 beats-pm-antigravity-brain/
 ├── 0. Incoming/           # Drop zone (screenshots, clips)
@@ -342,13 +361,16 @@ beats-pm-antigravity-brain/
 ```
 
 ### 🔌 Extending the System
+
 You can extend the system by:
+
 1. **Adding New Skills**: Create skill folders in `.agent/skills/`
 2. **Creating Templates**: Add templates to `.gemini/templates/`
 3. **Writing Agents**: Add agent definitions to `Beats-PM-System/system/agents/`
 4. **Modifying Logic**: Adjust behavior via `system/utils/config.py`
 
 ### 🧪 System Testing (Regression Suite)
+
 To ensure the Brain is functioning correctly after updates, run the regression test suite located in `Beats-PM-System/tests/`.
 
 ```bash
@@ -361,7 +383,7 @@ python Beats-PM-System/tests/test_structure.py
 
 ---
 
-## 🤝 Contributing to the Project
+## 🤝 Contributing
 
 This is an open-source project. Contributions are welcome! Please feel free to submit issues, feature requests, or pull requests.
 
@@ -369,27 +391,17 @@ This is an open-source project. Contributions are welcome! Please feel free to s
 
 ## 👤 Created By
 
-### Ernesto Rodriguez — Chicago-Based AI & Digital Transformation Product Leader
-
-**Ex-BCG | 10+ Years of Product Management Excellence | Chicago, IL**
-
-Ernesto Rodriguez is a seasoned product leader and mentor with over a decade of experience transforming organizations through AI and digital innovation. Based in Chicago, he has led product teams across multiple industries, helping companies leverage emerging technologies to drive growth and operational efficiency.
-
-As a former BCG consultant, Ernesto brings a unique blend of strategic thinking and hands-on product expertise. He specializes in:
-- **AI-Powered Product Strategy**: Designing and launching intelligent products that solve complex business challenges
-- **Digital Transformation**: Guiding organizations through large-scale digital initiatives
-- **Product Leadership**: Mentoring product teams and building high-performing product organizations
-- **Cross-Industry Expertise**: Delivering results across healthcare, finance, retail, and technology sectors
+Ernesto Rodriguez — Product Management leader & AI enthusiast.
 
 <div align="center">
 
-<a href="https://www.linkedin.com/in/productmg/"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="Ernesto Rodriguez LinkedIn - Chicago Product Manager"></a>
-<a href="https://x.com/officebeats"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" alt="Ernesto Rodriguez X (Twitter) - @officebeats"></a>
-<a href="mailto:Ernesto@ProductMG.com"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Ernesto Rodriguez Email"></a>
+<a href="https://www.linkedin.com/in/productmg/"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
+<a href="https://x.com/officebeats"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" alt="X/Twitter"></a>
+<a href="mailto:Ernesto@ProductMG.com"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>
 
 ---
 
-<strong>Built by a Chicago Product Leader, for Product Managers Everywhere.</strong><br>
-<em>Stop chasing status updates. Start driving strategy with AI-powered automation.</em>
+<strong>Built by PMs, for PMs.</strong><br>
+<em>Stop chasing status updates. Start driving strategy.</em>
 
 </div>
