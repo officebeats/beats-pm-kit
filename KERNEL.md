@@ -1,6 +1,6 @@
 # System Kernel (Universal Orchestration Protocol)
 
-**Version**: 4.6.1 (UI Standard Protocol + Design Trigger)
+**Version**: 4.6.2 (Trigger Patch)
 
 > **SYSTEM PROMPT**: All agents listed below are part of a connected mesh. Any agent can call any other agent if the input requires it.
 
@@ -12,28 +12,28 @@
 
 ### 🛠️ Core Skills Inventory
 
-| Expert Role          | Skill ID                  | Trigger Keywords                            |
-| :------------------- | :------------------------ | :------------------------------------------ |
-| **Meeting Synth**    | `meeting-synth`           | `#transcript`, `#meeting`, `#notes`         |
-| **Bug Chaser**       | `bug-chaser`              | `#bug`, `#triage`, `#sla`                   |
-| **PRD Author**       | `prd-author`              | `#prd`, `#spec`, `#feature`                 |
-| **Task Manager**     | `task-manager`            | `#task`, `#plan`, `#clarify`                |
-| **Daily Synth**      | `daily-synth`             | `#day`, `#morning`, `#lunch`, `#eod`        |
-| **Strategy Synth**   | `strategy-synth`          | `#strategy`, `#vision`, `#market`           |
-| **Weekly Synth**     | `weekly-synth`            | `#weekly`, `#monthly`, `#rollup`            |
-| **Visual Processor** | `visual-processor`        | Images, `#screenshot`, `#paste`             |
-| **Boss Tracker**     | `boss-tracker`            | `#boss`, `#urgent`, `#critical`             |
-| **Eng Collaborator** | `engineering-collab`      | `#eng`, `#tech`, `#spike`                   |
-| **UX Collaborator**  | `ux-collab`               | `#ux`, `#design`, `#wireframe`              |
-| **Stakeholder Mgr**  | `stakeholder-mgr`         | `#stakeholder`, `#update`, `#partner`       |
-| **Delegation Mgr**   | `delegation-manager`      | `#delegate`, `#followup`, `#handoff`        |
-| **Req Translator**   | `requirements-translator` | `#concept`, `#ideation`, `#braindump`       |
-| **Code Simplifier**  | `code-simplifier`         | `#simplify`, `#refactor`, `#cleanup`        |
-| **Skill Creator**    | `skill-creator`           | `#skillcreate`, `#newskill`                 |
-| **Joke Generator**   | `joke-generator`          | `#joke`, `#dadjoke`                         |
-| **Frontend Arch**    | `frontend-architect`      | `#ui`, `#frontend`, `#component`, `#design` |
-| **Frontend Testing** | `frontend-testing`        | `#test`, `#uitest`, `#jest`                 |
-| **Skill Lookup**     | `skill-lookup`            | `#skillsearch`, `#lookup`                   |
+| Expert Role          | Skill ID                  | Trigger Keywords                      |
+| :------------------- | :------------------------ | :------------------------------------ |
+| **Meeting Synth**    | `meeting-synth`           | `#transcript`, `#meeting`, `#notes`   |
+| **Bug Chaser**       | `bug-chaser`              | `#bug`, `#triage`, `#sla`             |
+| **PRD Author**       | `prd-author`              | `#prd`, `#spec`, `#feature`           |
+| **Task Manager**     | `task-manager`            | `#task`, `#plan`, `#clarify`          |
+| **Daily Synth**      | `daily-synth`             | `#day`, `#morning`, `#lunch`, `#eod`  |
+| **Strategy Synth**   | `strategy-synth`          | `#strategy`, `#vision`, `#market`     |
+| **Weekly Synth**     | `weekly-synth`            | `#weekly`, `#monthly`, `#rollup`      |
+| **Visual Processor** | `visual-processor`        | Images, `#screenshot`, `#paste`       |
+| **Boss Tracker**     | `boss-tracker`            | `#boss`, `#urgent`, `#critical`       |
+| **Eng Collaborator** | `engineering-collab`      | `#eng`, `#tech`, `#spike`             |
+| **UX Collaborator**  | `ux-collab`               | `#ux`, `#design`, `#wireframe`        |
+| **Stakeholder Mgr**  | `stakeholder-mgr`         | `#stakeholder`, `#update`, `#partner` |
+| **Delegation Mgr**   | `delegation-manager`      | `#delegate`, `#followup`, `#handoff`  |
+| **Req Translator**   | `requirements-translator` | `#concept`, `#ideation`, `#braindump` |
+| **Code Simplifier**  | `code-simplifier`         | `#simplify`, `#refactor`, `#cleanup`  |
+| **Skill Creator**    | `skill-creator`           | `#skillcreate`, `#newskill`           |
+| **Joke Generator**   | `joke-generator`          | `#joke`, `#dadjoke`                   |
+| **Frontend Arch**    | `frontend-architect`      | `#ui`, `#frontend`, `#component`      |
+| **Frontend Testing** | `frontend-testing`        | `#test`, `#uitest`, `#jest`           |
+| **Skill Lookup**     | `skill-lookup`            | `#skillsearch`, `#lookup`             |
 
 ---
 
@@ -222,4 +222,4 @@ if template_path:
 - **Health**: To diagnose issues, run `#vibe`.
 - **Architecture**: This KERNEL is the single source of truth for all Agent Orchestration.
 
-_End of KERNEL.md (v4.6.1)_
+_End of KERNEL.md (v4.6.2)_
