@@ -8,18 +8,18 @@ You are assisting with the **Beats PM Antigravity Brain**, a file-based knowledg
 
 ## Folder Structure (0-5 Standard)
 
-| Folder | Purpose |
-| :--- | :--- |
-| `0. Incoming/` | Raw intake (screenshots, clipboard) |
-| `1. Company/` | Company profiles, strategy |
-| `2. Products/` | PRDs, initiatives, product bugs |
-| `3. Meetings/` | Daily briefs, meeting notes |
-| `4. People/` | Stakeholder directory |
+| Folder         | Purpose                               |
+| :------------- | :------------------------------------ |
+| `0. Incoming/` | Raw intake (screenshots, clipboard)   |
+| `1. Company/`  | Company profiles, strategy            |
+| `2. Products/` | PRDs, initiatives, product bugs       |
+| `3. Meetings/` | Daily briefs, meeting notes           |
+| `4. People/`   | Stakeholder directory                 |
 | `5. Trackers/` | All tracking files (Flattened Ledger) |
 
 ## Key Files
 
-- **KERNEL.md**: Universal orchestration rules (v3.1.0 - Skills Protocol).
+- **KERNEL.md**: Universal orchestration rules (v4.7.0 - Skills Protocol).
 - **SETTINGS.md**: User preferences (boss, team, products).
 - **STATUS.md**: Current state dashboard.
 
@@ -27,27 +27,27 @@ You are assisting with the **Beats PM Antigravity Brain**, a file-based knowledg
 
 The system uses **Gemini CLI Agent Skills**. Expertise is activated on-demand from `.agent/skills/`.
 
-| Command | Action |
-| :--- | :--- |
-| `#vibe` | Activate `core-utility` diagnostics |
-| `#vacuum` | Activate `core-utility` cleanup |
-| `#day` | Activate `daily-synth` brief |
-| `#boss` | Activate `boss-tracker` |
-| `#bug` | Activate `bug-chaser` |
-| `#task` | Activate `task-manager` |
-| `#transcript`| Activate `meeting-synth` |
-| `#prd` | Activate `prd-author` |
-| `#strategy` | Activate `strategy-synth` |
-| `#weekly` | Activate `weekly-synth` |
-| `#eng` | Activate `engineering-collab` |
-| `#ux` | Activate `ux-collab` |
-| `#delegate` | Activate `delegation-manager` |
-| `#stakeholder`| Activate `stakeholder-mgr` |
-| `#1on1` | Activate `crm` sync prep |
-| `#simplify` | Activate `code-simplifier` |
-| `#refactor` | Activate `code-simplifier` |
-| `#cleanup` | Activate `code-simplifier` |
-| `#update` | Upgrade brain & latest gemini-cli |
+| Command        | Action                              |
+| :------------- | :---------------------------------- |
+| `#vibe`        | Activate `core-utility` diagnostics |
+| `#vacuum`      | Activate `core-utility` cleanup     |
+| `#day`         | Activate `daily-synth` brief        |
+| `#boss`        | Activate `boss-tracker`             |
+| `#bug`         | Activate `bug-chaser`               |
+| `#task`        | Activate `task-manager`             |
+| `#transcript`  | Activate `meeting-synth`            |
+| `#prd`         | Activate `prd-author`               |
+| `#strategy`    | Activate `strategy-synth`           |
+| `#weekly`      | Activate `weekly-synth`             |
+| `#eng`         | Activate `engineering-collab`       |
+| `#ux`          | Activate `ux-collab`                |
+| `#delegate`    | Activate `delegation-manager`       |
+| `#stakeholder` | Activate `stakeholder-mgr`          |
+| `#1on1`        | Activate `crm` sync prep            |
+| `#simplify`    | Activate `code-simplifier`          |
+| `#refactor`    | Activate `code-simplifier`          |
+| `#cleanup`     | Activate `code-simplifier`          |
+| `#update`      | Upgrade brain & latest gemini-cli   |
 
 ## Behavior Rules
 
@@ -56,7 +56,7 @@ The system uses **Gemini CLI Agent Skills**. Expertise is activated on-demand fr
 3.  **Succinct Output**: Tables over prose. No fluff.
 4.  **Source Preservation**: Always preserve raw source text when extracting insights.
 5.  **Parking Lot**: Log unclear input to `BRAIN_DUMP.md`.
-6.  **Access Override (CRITICAL)**: Files in Folders 1-5 and configs are gitignored but **fully readable**. 
+6.  **Access Override (CRITICAL)**: Files in Folders 1-5 and configs are gitignored but **fully readable**.
     - **FALLBACK**: If `view_file` fails, IMMEDIATELY use `run_command` (e.g., `cat`) to read it.
     - **PROACTIVE**: Do not ask for permission; do not explain the error; just execute the fallback.
 7.  **User Persona**: The "Defacto AI PM" (Consumer Focus). Prioritize AI solutions.
@@ -70,4 +70,4 @@ The system uses **Gemini CLI Agent Skills**. Expertise is activated on-demand fr
 
 ## Conductor Integration
 
-Use hierarchical templates in `.gemini/templates/` (e.g., `/conductor:docs/prd`).
+Use hierarchical templates in `.agent/templates/` (e.g., `/conductor:docs/prd`).
