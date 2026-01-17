@@ -1,0 +1,230 @@
+{
+  "boss-tracker": {
+    "path": ".agent/skills/boss-tracker/SKILL.md",
+    "description": "The Shield of the PM Brain. Tracks high-priority requests from leadership with verbatim capture, SLA enforcement, and proactive status updates. Use for",
+    "triggers": [
+      "#boss",
+      "#leadership",
+      "#urgent",
+      "#critical"
+    ]
+  },
+  "bug-chaser": {
+    "path": ".agent/skills/bug-chaser/SKILL.md",
+    "description": "The Quality Gate of the PM Brain. Manages the complete bug lifecycle from discovery to remediation with SLA tracking and impact assessment. Use for",
+    "triggers": [
+      "#bug",
+      "#issue",
+      "#defect",
+      "#broken",
+      "#crash"
+    ]
+  },
+  "code-simplifier": {
+    "path": ".agent/skills/code-simplifier/SKILL.md",
+    "description": "Expert code simplification specialist focused on enhancing clarity, consistency, and maintainability while preserving exact functionality. Use for",
+    "triggers": [
+      "#simplify",
+      "#refactor",
+      "#cleanup",
+      "#polish",
+      "#optimize",
+      "#profile",
+      "#performance"
+    ]
+  },
+  "core-utility": {
+    "path": ".agent/skills/core-utility/SKILL.md",
+    "description": "System maintenance, health checks, and environment setup. Use for",
+    "triggers": []
+  },
+  "crm": {
+    "path": ".agent/skills/crm/SKILL.md",
+    "description": "Expertise in managing project people, stakeholder preferences, and performance tracking. Use for",
+    "triggers": [
+      "#crm",
+      "#1on1",
+      "#person",
+      "#stakeholder",
+      "#whois"
+    ]
+  },
+  "daily-synthesizer": {
+    "path": ".agent/skills/daily-synth/SKILL.md",
+    "description": "The Pulse of the PM Brain. Generates time-adaptive daily briefings, status updates, and Today's List. Use for",
+    "triggers": [
+      "#day",
+      "#status",
+      "#morning",
+      "#lunch",
+      "#eod",
+      "#brief"
+    ]
+  },
+  "delegation-manager": {
+    "path": ".agent/skills/delegation-manager/SKILL.md",
+    "description": "The Accountability Specialist of the PM Brain. Tracks tasks assigned to others, manages follow-ups, maps dependencies, and ensures completion verification. Use for",
+    "triggers": [
+      "#delegate",
+      "#assign",
+      "#handoff",
+      "#followup"
+    ]
+  },
+  "engineering-collaborator": {
+    "path": ".agent/skills/engineering-collab/SKILL.md",
+    "description": "The Technical Bridge of the PM Brain. Manages PM-Engineering collaboration, architecture decisions, tech debt, and translates technical constraints to business impact. Use for",
+    "triggers": [
+      "#eng",
+      "#tech",
+      "#spike",
+      "#architecture",
+      "#adr",
+      "#estimate"
+    ]
+  },
+  "frontend-architect": {
+    "path": ".agent/skills/frontend-architect/SKILL.md",
+    "description": "Expert UI/UX engineer and frontend specialist. Enforces the ibelick/ui-skills standard (Tailwind, Framer Motion, Shadcn) to build premium, performant interfaces.",
+    "triggers": [
+      "#ui",
+      "#frontend",
+      "#design-system",
+      "#animate",
+      "#component"
+    ]
+  },
+  "frontend-testing": {
+    "path": ".agent/skills/frontend-testing/SKILL.md",
+    "description": "Specialized skill for testing frontend components using industry standard best practices. Use for testing React/Next.js components, writing test cases, and verifying UI logic.",
+    "triggers": [
+      "#test",
+      "#frontend-test",
+      "#uitest",
+      "#jest",
+      "#cypress"
+    ]
+  },
+  "joke-generator": {
+    "path": ".agent/skills/joke-generator/SKILL.md",
+    "description": "A fun utility skill that provides dad jokes on demand. Use for",
+    "triggers": [
+      "#joke",
+      "#dadjoke",
+      "#laugh"
+    ]
+  },
+  "meeting-synthesizer": {
+    "path": ".agent/skills/meeting-synth/SKILL.md",
+    "description": "The Meeting Intelligence Hub of the PM Brain. Transforms chaotic meeting transcripts into structured artifacts with multi-entity extraction and parallel skill activation. Use for",
+    "triggers": [
+      "#transcript",
+      "#meeting",
+      "#call",
+      "#notes",
+      "#standup"
+    ]
+  },
+  "prd-author": {
+    "path": ".agent/skills/prd-author/SKILL.md",
+    "description": "The Architect of the PM Brain. Generates executive-ready, FAANG-quality Product Requirements Documents and feature specifications. Use for",
+    "triggers": [
+      "#prd",
+      "#spec",
+      "#feature",
+      "#requirements",
+      "#epic"
+    ]
+  },
+  "requirements-translator": {
+    "path": ".agent/skills/requirements-translator/SKILL.md",
+    "description": "The Entry Point and Air Traffic Controller for the PM Brain. Transforms chaotic input (hashtags, raw text, voice notes) into structured, routed artifacts. Use for ambiguous input,",
+    "triggers": [
+      "#concept",
+      "#ideation",
+      "#braindump",
+      "#idea",
+      "#thought"
+    ]
+  },
+  "skill-creator": {
+    "path": ".agent/skills/skill-creator/SKILL.md",
+    "description": "The Meta-Architect of the Brain. Generates new AI agent skills based on the Gamma-Class v2.0 Schema. Use for",
+    "triggers": [
+      "#skillcreate"
+    ]
+  },
+  "skill-lookup": {
+    "path": ".agent/skills/skill-lookup/SKILL.md",
+    "description": "The Librarian of the Mind. Searches, inspects, and explains available AI skills. Use for",
+    "triggers": [
+      "#skillsearch",
+      "#lookup",
+      "#findskill",
+      "#help"
+    ]
+  },
+  "stakeholder-manager": {
+    "path": ".agent/skills/stakeholder-mgr/SKILL.md",
+    "description": "The Communication Shield of the PM Brain. Manages proactive stakeholder communication, tracks preferences, and ensures alignment across partnerships. Use for",
+    "triggers": [
+      "#stakeholder",
+      "#update",
+      "#partner",
+      "#align"
+    ]
+  },
+  "strategy-synthesizer": {
+    "path": ".agent/skills/strategy-synth/SKILL.md",
+    "description": "The Pattern Recognizer of the PM Brain. Analyzes company and product strategy, aligns tactical work with strategic objectives, and produces executive-level memos. Use for",
+    "triggers": [
+      "#strategy",
+      "#vision",
+      "#roadmap",
+      "#market",
+      "#okr"
+    ]
+  },
+  "task-manager": {
+    "path": ".agent/skills/task-manager/SKILL.md",
+    "description": "The Glue of the PM Brain. Owns task lifecycle, brain dump triage, reconciliation, and archive automation. Use for",
+    "triggers": [
+      "#task",
+      "#triage",
+      "#plan",
+      "#organize",
+      "#todo"
+    ]
+  },
+  "ux-collaborator": {
+    "path": ".agent/skills/ux-collab/SKILL.md",
+    "description": "The Experience Advocate of the PM Brain. Manages PM-UX collaboration, design handoffs, user journey enforcement, and design debt tracking. Use for",
+    "triggers": [
+      "#ux",
+      "#design",
+      "#wireframe",
+      "#prototype",
+      "#journey"
+    ]
+  },
+  "visual-processor": {
+    "path": ".agent/skills/visual-processor/SKILL.md",
+    "description": "The Eyes of the PM Brain. Expertise in multi-modal analysis for images, screenshots, charts, and documents. Use for",
+    "triggers": [
+      "#screenshot",
+      "#paste",
+      "#image",
+      "#chart"
+    ]
+  },
+  "weekly-synthesizer": {
+    "path": ".agent/skills/weekly-synth/SKILL.md",
+    "description": "The Archivist and Storyteller of the PM Brain. Generates weekly and monthly summaries with trajectory analysis, metrics, and executive-ready rollups. Use for",
+    "triggers": [
+      "#weekly",
+      "#monthly",
+      "#rollup",
+      "#retrospective"
+    ]
+  }
+}

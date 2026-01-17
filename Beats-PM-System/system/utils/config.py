@@ -24,7 +24,7 @@ DEFAULT_CONFIG = {
         'people': '4. People',
         'company': '1. Company',
         'products': '2. Products',
-        'templates': '.gemini/templates',
+        'templates': '.agent/templates',
         'scripts': 'Beats-PM-System/system/scripts',
         'utils': 'Beats-PM-System/system/utils'
     },
@@ -50,14 +50,14 @@ DEFAULT_CONFIG = {
         ]
     },
     'templates': {
-        'settings': '.gemini/templates/SETTINGS_TEMPLATE.md',
-        'bug_report': '.gemini/templates/trackers/bug-report.md',
-        'boss_request': '.gemini/templates/trackers/boss-request.md',
-        'meeting_notes': '.gemini/templates/meetings/meeting-notes.md',
-        'feature_request': '.gemini/templates/docs/feature-request.md',
-        'prd': '.gemini/templates/docs/PRD_TEMPLATE.md',
-        'product_context': '.gemini/templates/docs/product-context.md',
-        '1on1': '.gemini/templates/meetings/1-on-1-notes.md'
+        'settings': '.agent/templates/SETTINGS_TEMPLATE.md',
+        'bug_report': '.agent/templates/trackers/bug-report.md',
+        'boss_request': '.agent/templates/trackers/boss-request.md',
+        'meeting_notes': '.agent/templates/meetings/meeting-notes.md',
+        'feature_request': '.agent/templates/docs/feature-request.md',
+        'prd': '.agent/templates/docs/PRD_TEMPLATE.md',
+        'product_context': '.agent/templates/docs/product-context.md',
+        '1on1': '.agent/templates/meetings/1-on-1-notes.md'
     },
     'trackers': {
         'bugs_master': '5. Trackers/BUG_TRACKER.md',

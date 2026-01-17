@@ -1,6 +1,6 @@
 # System Kernel (Universal Orchestration Protocol)
 
-**Version**: 4.6.2 (Trigger Patch)
+**Version**: 4.7.0 (Antigravity Native)
 
 > **SYSTEM PROMPT**: All agents listed below are part of a connected mesh. Any agent can call any other agent if the input requires it.
 
@@ -12,28 +12,11 @@
 
 ### 🛠️ Core Skills Inventory
 
-| Expert Role          | Skill ID                  | Trigger Keywords                      |
-| :------------------- | :------------------------ | :------------------------------------ |
-| **Meeting Synth**    | `meeting-synth`           | `#transcript`, `#meeting`, `#notes`   |
-| **Bug Chaser**       | `bug-chaser`              | `#bug`, `#triage`, `#sla`             |
-| **PRD Author**       | `prd-author`              | `#prd`, `#spec`, `#feature`           |
-| **Task Manager**     | `task-manager`            | `#task`, `#plan`, `#clarify`          |
-| **Daily Synth**      | `daily-synth`             | `#day`, `#morning`, `#lunch`, `#eod`  |
-| **Strategy Synth**   | `strategy-synth`          | `#strategy`, `#vision`, `#market`     |
-| **Weekly Synth**     | `weekly-synth`            | `#weekly`, `#monthly`, `#rollup`      |
-| **Visual Processor** | `visual-processor`        | Images, `#screenshot`, `#paste`       |
-| **Boss Tracker**     | `boss-tracker`            | `#boss`, `#urgent`, `#critical`       |
-| **Eng Collaborator** | `engineering-collab`      | `#eng`, `#tech`, `#spike`             |
-| **UX Collaborator**  | `ux-collab`               | `#ux`, `#design`, `#wireframe`        |
-| **Stakeholder Mgr**  | `stakeholder-mgr`         | `#stakeholder`, `#update`, `#partner` |
-| **Delegation Mgr**   | `delegation-manager`      | `#delegate`, `#followup`, `#handoff`  |
-| **Req Translator**   | `requirements-translator` | `#concept`, `#ideation`, `#braindump` |
-| **Code Simplifier**  | `code-simplifier`         | `#simplify`, `#refactor`, `#cleanup`  |
-| **Skill Creator**    | `skill-creator`           | `#skillcreate`, `#newskill`           |
-| **Joke Generator**   | `joke-generator`          | `#joke`, `#dadjoke`                   |
-| **Frontend Arch**    | `frontend-architect`      | `#ui`, `#frontend`, `#component`      |
-| **Frontend Testing** | `frontend-testing`        | `#test`, `#uitest`, `#jest`           |
-| **Skill Lookup**     | `skill-lookup`            | `#skillsearch`, `#lookup`             |
+> **Optimization**: The manual skills table has been decapitated for performance.
+> **Source of Truth**: Read `Beats-PM-System/system/skills.json` for the automated routing index.
+
+1.  **Skill Discovery**: System auto-discovers expertise from `.agent/skills/`.
+2.  **Activation**: The model uses `read_resource` or `view_file` to load instructions.
 
 ---
 
@@ -72,16 +55,21 @@ To maintain data integrity, the agent MUST run the following checks. If any chec
 > **Rule**: All frontend code MUST adhere to the `ibelick/ui-skills` standard (Tailwind, Framer Motion, Shadcn).
 > **Enforcement**: Activate `frontend-architect` skill for any UI implementation.
 
-### 3. Privacy Rule
+### 3. Privacy Rule (CORE DIRECTIVE)
 
-> **Rule**: Files in Folders 1-5 (Company, Products, Meetings, People, Trackers) are LOCAL ONLY.
+> **Rule**: Files in Folders 1-5 (Company, Products, Meetings, People, Trackers) are **Brain Processed Files**.
+>
+> - **Local-Only**: These files contain sensitive entity info. They MUST NEVER be pushed to GitHub.
+> - **Full Access**: The Brain has full read/write access to these folders locally.
+> - **System Logic**: Only "System Boilerplate" (Scripts, Templates, KERNEL) is versioned.
+
 > **Execution**:
 >
 > ```python
 > # Before any git push
 > passed, violations = kernel_utils.check_privacy_rule(file_list)
 > if not passed:
->     raise SecurityError(f"Privacy Violation: Cannot push {violations}")
+>     raise SecurityError(f"CRITICAL: Attempted to push Brain Processed Files: {violations}")
 > ```
 
 ## Universal Routing Rules
@@ -222,4 +210,4 @@ if template_path:
 - **Health**: To diagnose issues, run `#vibe`.
 - **Architecture**: This KERNEL is the single source of truth for all Agent Orchestration.
 
-_End of KERNEL.md (v4.6.2)_
+_End of KERNEL.md (v4.7.0)_

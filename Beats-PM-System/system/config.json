@@ -1,6 +1,6 @@
 {
   "system": {
-    "version": "4.4.0",
+    "version": "4.7.0",
     "name": "Beats PM System"
   },
   "paths": {
@@ -12,7 +12,7 @@
     "people": "4. People",
     "company": "1. Company",
     "products": "2. Products",
-    "templates": "Beats-PM-System/TEMPLATES",
+    "templates": ".agent/templates",
     "scripts": "Beats-PM-System/system/scripts",
     "utils": "Beats-PM-System/system/utils"
   },
@@ -38,13 +38,13 @@
     ]
   },
   "templates": {
-    "settings": "Beats-PM-System/TEMPLATES/SETTINGS_TEMPLATE.md",
-    "bug_report": "Beats-PM-System/TEMPLATES/bug-report.md",
-    "boss_request": "Beats-PM-System/TEMPLATES/boss-request.md",
-    "meeting_notes": "Beats-PM-System/TEMPLATES/meeting-notes.md",
-    "feature_request": "Beats-PM-System/TEMPLATES/feature-request.md",
-    "prd": "Beats-PM-System/TEMPLATES/PRD_TEMPLATE.md",
-    "product_context": "Beats-PM-System/TEMPLATES/product-context.md"
+    "settings": ".agent/templates/SETTINGS_TEMPLATE.md",
+    "bug_report": ".agent/templates/bug-report.md",
+    "boss_request": ".agent/templates/boss-request.md",
+    "meeting_notes": ".agent/templates/meeting-notes.md",
+    "feature_request": ".agent/templates/feature-request.md",
+    "prd": ".agent/templates/PRD_TEMPLATE.md",
+    "product_context": ".agent/templates/product-context.md"
   },
   "trackers": {
     "bugs_master": "5. Trackers/BUG_TRACKER.md",

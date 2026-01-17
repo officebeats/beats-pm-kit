@@ -97,55 +97,15 @@ def get_suggested_template(intent: str) -> Optional[str]:
     intent = intent.lower()
 
     mapping = {
-        "bug": ".gemini/templates/bug-report.md",
-        "fix": ".gemini/templates/bug-fix-spec.md",
-        "feature": ".gemini/templates/feature-request.md",
-        "spec": ".gemini/templates/feature-spec.md",
-        "transcript": ".gemini/templates/transcript-extraction.md",
-        "strategy": ".gemini/templates/strategy-memo.md",
-        "weekly": ".gemini/templates/weekly-review.md",
+        "bug": ".agent/templates/bug-report.md",
+        "fix": ".agent/templates/bug-fix-spec.md",
+        "feature": ".agent/templates/feature-request.md",
+        "spec": ".agent/templates/feature-spec.md",
+        "transcript": ".agent/templates/transcript-extraction.md",
+        "strategy": ".agent/templates/strategy-memo.md",
+        "weekly": ".agent/templates/weekly-review.md",
     }
     return mapping.get(intent)
 
 
-def get_active_context(project_name: str, context_file: str) -> str:
-    """
-    Filter the master context file (e.g. TASK_MASTER.md) to only return lines
-    relevant to the active project.
 
-    Args:
-        project_name: The name of the project (e.g. "Mobile App")
-        context_file: Path to the context file.
-
-    Returns:
-        Pruned context string.
-    """
-    p = Path(context_file)
-    if not p.exists():
-        return ""
-
-    with p.open("r", encoding="utf-8") as f:
-        lines = f.readlines()
-
-    active_lines = []
-    capture = False
-
-    # Simple Header-Based Context Pruning
-    # Start capturing when we see "# ProjectName"
-    # Stop when we see another "# "
-
-    for line in lines:
-        is_project_header = line.strip().startswith(
-            (f"# {project_name}", f"## {project_name}")
-        )
-        is_new_section = line.startswith(("# ", "## "))
-
-        if is_project_header:
-            capture = True
-            active_lines.append(line)
-        elif capture and is_new_section:
-            capture = False
-        elif capture:
-            active_lines.append(line)
-
-    return "".join(active_lines)

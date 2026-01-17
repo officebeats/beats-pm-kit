@@ -4,9 +4,16 @@ import sys
 from unittest.mock import MagicMock
 
 # Handle imports
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SYSTEM_DIR = os.path.join(ROOT_DIR, 'Beats-PM-System', 'system')
-sys.path.insert(0, SYSTEM_DIR)
+from pathlib import Path
+
+# Handle imports
+CURRENT_FILE = Path(__file__).resolve()
+TESTS_DIR = CURRENT_FILE.parent
+SYSTEM_ROOT = TESTS_DIR.parent # Beats-PM-System
+ROOT_DIR = SYSTEM_ROOT.parent # beats-pm-antigravity-brain
+
+SYSTEM_DIR = SYSTEM_ROOT / 'system'
+sys.path.insert(0, str(SYSTEM_DIR))
 
 # Mock utils 
 if 'utils' not in sys.modules:
@@ -70,7 +77,7 @@ class TestFeatureParity(unittest.TestCase):
             "stakeholder": "stakeholder-mgr",
         }
         
-        skills_dir = os.path.join(ROOT_DIR, ".gemini", "skills")
+        skills_dir = os.path.join(ROOT_DIR, ".agent", "skills")
         for command, skill in skill_map.items():
             skill_path = os.path.join(skills_dir, skill, "SKILL.md")
             self.assertTrue(os.path.exists(skill_path), f"Command '#{command}' requires skill '{skill}', but {skill}/SKILL.md is missing.")
@@ -91,7 +98,7 @@ class TestFeatureParity(unittest.TestCase):
             "weekly": "weekly-review.md" 
         }
         
-        templates_dir = os.path.join(ROOT_DIR, ".gemini", "templates")
+        templates_dir = os.path.join(ROOT_DIR, ".agent", "templates")
         
         # 1. Check Files Exist on Disk
         for intent, filename in template_map.items():
@@ -102,7 +109,7 @@ class TestFeatureParity(unittest.TestCase):
         # Ensure our python code actually knows about these mappings
         for intent, filename in template_map.items():
             mapped_path = kernel_utils.get_suggested_template(intent)
-            expected_suffix = f".gemini/templates/{filename}"
+            expected_suffix = f".agent/templates/{filename}"
             self.assertTrue(mapped_path.replace("\\", "/").endswith(expected_suffix), 
                             f"kernel_utils.get_suggested_template('{intent}') returned {mapped_path}, expected to end with {expected_suffix}")
 

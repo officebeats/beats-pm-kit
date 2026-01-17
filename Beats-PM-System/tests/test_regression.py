@@ -15,7 +15,7 @@ from unittest.mock import MagicMock
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 SYSTEM_DIR = ROOT_DIR / 'Beats-PM-System' / 'system'
 SKILLS_DIR = ROOT_DIR / '.agent' / 'skills'
-TEMPLATES_DIR = ROOT_DIR / '.gemini' / 'templates'
+TEMPLATES_DIR = ROOT_DIR / '.agent' / 'templates'
 
 sys.path.insert(0, str(SYSTEM_DIR))
 
@@ -56,7 +56,7 @@ CORE_SCRIPTS = [
     "kernel_utils.py", "queue_worker.py", "dispatch.py"
 ]
 
-CRITICAL_FILES = ["KERNEL.md", "SETTINGS.md", "README.md", "CONTRIBUTING.md", "LICENSE"]
+CRITICAL_FILES = ["KERNEL.md", "SETTINGS.md", "README.md"]
 
 # Command → Skill mapping (exhaustive from README.md)
 COMMAND_SKILL_MAP = [

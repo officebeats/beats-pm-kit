@@ -20,14 +20,6 @@
 
 ---
 
-## 🔒 Privacy & Security
-
-- **Secure Mode**: Disabled (YOLO Mode - Maximized Velocity)
-- **Knowledge Persistence**: Enabled (Store long-term context)
-- **Conversation History**: Enabled (Feedback loop active)
-
----
-
 ## 📂 Product Portfolio
 
 > Define your products here. Antigravity uses this to route items automatically.
@@ -112,6 +104,23 @@
 
 ## External Tools
 
+### Notion
+
+- **Enabled**: no
+- **Sync path**: `system/inbox/notion/`
+
+### Obsidian
+
+- **Enabled**: no
+- **Vault path**: [Your vault path]
+- **Sync folder**: `system/inbox/obsidian/`
+
+### Trello
+
+- **Enabled**: no
+- **Sync path**: `system/inbox/trello/`
+- **Boards**: [Board names]
+
 ### Other
 
 - **Calendar**: Google Calendar
@@ -158,4 +167,4 @@
 
 ---
 
-_Beats Product Management Antigravity Brain_
+_Beats Product Management Antigravity Brain v3.2.1_
