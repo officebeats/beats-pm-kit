@@ -29,6 +29,10 @@
 | **Delegation Mgr**   | `delegation-manager`      | `#delegate`, `#followup`, `#handoff`  |
 | **Req Translator**   | `requirements-translator` | `#concept`, `#ideation`, `#braindump` |
 | **Code Simplifier**  | `code-simplifier`         | `#simplify`, `#refactor`, `#cleanup`  |
+| **Skill Creator**    | `skill-creator`           | `#skillcreate`, `#newskill`           |
+| **Joke Generator**   | `joke-generator`          | `#joke`, `#dadjoke`                   |
+| **Frontend Testing** | `frontend-testing`        | `#test`, `#uitest`, `#jest`           |
+| **Skill Lookup**     | `skill-lookup`            | `#skillsearch`, `#lookup`             |
 
 ---
 
@@ -129,19 +133,16 @@ To ensure consistent behavior across macOS, Windows, and Linux:
 To ensure continuity across "weeks, months, years", the system uses **Immutable Logs**:
 
 1.  **`DECISION_LOG.md`** (in `5. Trackers/`):
-
     - **Trigger**: Any significant architectural or strategic pivot (e.g., "Use Single Engine for Pilot").
     - **Format**: Date | Decision | Context | Owner.
     - **Goal**: Prevent "why did we do this?" loops 6 months later.
 
 2.  **`PEOPLE.md`** (in `4. People/`):
-
     - **Trigger**: New stakeholder mentioned.
     - **Format**: Name | Role | Product Alignment | User Preference.
     - **Goal**: Zero hallucination on "Who handles Grace?".
 
 3.  **`SESSION_MEMORY.md`** (Root):
-
     - **Trigger**: End of every session.
     - **Format**: "Last Known State" summary + OS context.
     - **Goal**: Instant "Hot Start" for the next session.
@@ -150,6 +151,11 @@ To ensure continuity across "weeks, months, years", the system uses **Immutable 
     - **Trigger**: Every transcript processed.
     - **Format**: Date | Speaker | Quote | Source File.
     - **Goal**: Searchable, grep-friendly verbatim quote archive.
+
+5.  **`INDEX.md`** (in `5. Trackers/archive/`):
+    - **Trigger**: Scripted via `vacuum.py`.
+    - **Format**: Date | Category | Summary | Location.
+    - **Goal**: Fastest possible O(1) lookup for "Did I finish this in 2024?". No need to scan 50 archive files.
 
 ### 🗂️ Tiered Memory System (Hot / Warm / Cold)
 
@@ -172,7 +178,6 @@ To manage context window size and long-term storage, transcripts and notes are t
 The System should nudge the user intelligently based on context:
 
 1.  **Time-Based Triggers**:
-
     - **Morning (08:00-10:00)**: Offer `#morning` brief.
     - **Lunch (11:30-13:30)**: Offer `#lunch` brief.
     - **EOD (16:30-18:00)**: Offer to wrap up (`#eod`).

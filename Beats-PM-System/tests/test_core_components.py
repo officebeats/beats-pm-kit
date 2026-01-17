@@ -12,9 +12,11 @@ import hashlib
 
 # Add system path to import modules
 # Path: .../tests/test.py -> .../tests -> .../ -> .../Beats-PM-System/system
-repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-system_path = os.path.join(repo_root, "Beats-PM-System", "system")
-sys.path.insert(0, system_path)
+from pathlib import Path
+CURRENT_FILE = Path(__file__).resolve()
+SYSTEM_ROOT = CURRENT_FILE.parent.parent # Beats-PM-System/
+SYSTEM_DIR = SYSTEM_ROOT / "system"
+sys.path.insert(0, str(SYSTEM_DIR))
 
 # Mocking utils for universal_clipboard import side-effects
 from unittest.mock import MagicMock

@@ -6,6 +6,8 @@ Checks toolchain, file structure, critical files, and AI model configuration.
 """
 
 import sys
+import os
+import datetime
 from pathlib import Path
 from typing import List
 
@@ -13,6 +15,7 @@ from typing import List
 CURRENT_FILE = Path(__file__).resolve()
 SYSTEM_ROOT = CURRENT_FILE.parent.parent.parent  # Beats-PM-System/
 BRAIN_ROOT = SYSTEM_ROOT.parent                 # beats-pm-antigravity-brain/
+REPORTS_DIR = SYSTEM_ROOT / "reports"
 
 # Add SYSTEM_ROOT to path for 'system.*' imports
 sys.path.insert(0, str(SYSTEM_ROOT))
@@ -34,6 +37,27 @@ from system.utils.subprocess_helper import (
 )
 from system.utils.config import get_config
 
+class Logger:
+    """Redirects stdout to both console and a log file."""
+    def __init__(self):
+        self.terminal = sys.stdout
+        self.log_file = None
+        self.log_path = self._init_log_file()
+
+    def _init_log_file(self):
+        REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = REPORTS_DIR / f"vibe_report_{timestamp}.txt"
+        self.log_file = open(filename, "a", encoding="utf-8")
+        return filename
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log_file.write(message)
+
+    def flush(self):
+        self.terminal.flush()
+        self.log_file.flush()
 
 def check_toolchain() -> None:
     """Check if required development tools are installed."""
@@ -71,6 +95,17 @@ def check_file_structure() -> None:
     print_cyan("\nCore Infrastructure:")
 
     folders = get_config("directories.required", [])
+    
+    # Fallback default folders if config is empty
+    if not folders:
+        folders = [
+            "0. Incoming/staging",
+            "1. Company",
+            "2. Products",
+            "3. Meetings/transcripts",
+            "4. People",
+            "5. Trackers"
+        ]
 
     for folder in folders:
         folder_path = BRAIN_ROOT / folder
@@ -100,27 +135,27 @@ def check_critical_files() -> None:
 
 def check_skills_configuration() -> None:
     """Check if the Skills directory and content exist."""
-    print_cyan("\nAI Agent Skills (v4.4.0):")
+    print_cyan("\nAI Agent Skills (Gamma-Class v2.0):")
 
     skills_dir = BRAIN_ROOT / ".agent/skills"
 
     if skills_dir.is_dir():
         print_success("Skills Directory: Found")
-
-        # Check for core skills
-        core_skills = [
-            "meeting-synth",
-            "bug-chaser",
-            "prd-author",
-            "task-manager",
-            "daily-synth",
+        
+        # Dynamic Scan
+        found_skills = [
+            d.name for d in skills_dir.iterdir() 
+            if d.is_dir() and (d / "SKILL.md").exists()
         ]
-        for skill in core_skills:
-            skill_path = skills_dir / skill
-            if skill_path.is_dir():
-                print_success(f" Skill: {skill} (Loaded)")
-            else:
-                print_warning(f" Skill: {skill} (MISSING)")
+        
+        found_skills.sort()
+        
+        for skill in found_skills:
+            print_success(f" Skill: {skill} (Loaded)")
+            
+        if not found_skills:
+             print_warning(" No skills found in directory!")
+             
     else:
         print_error("Skills Directory Missing! (Run #update)")
 
@@ -143,8 +178,13 @@ def check_extensions() -> None:
 
 def main() -> None:
     """Main entry point for vibe check."""
+    # Hijack stdout
+    logger = Logger()
+    sys.stdout = logger
+    
     system = get_system()
     print_cyan(f"--- Antigravity Vibe Check ({system}) ---")
+    print_cyan(f"Report saved to: {logger.log_path}")
 
     # Run all checks
     check_toolchain()

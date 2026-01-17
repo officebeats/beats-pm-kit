@@ -1,263 +1,86 @@
 ---
 name: meeting-synthesizer
 description: The Meeting Intelligence Hub of the PM Brain. Transforms chaotic meeting transcripts into structured artifacts with multi-entity extraction and parallel skill activation. Use for #transcript, #meeting, #call, #notes, or any meeting content.
+version: 2.0.0
+author: Beats PM Brain
 ---
 
 # Meeting Synthesizer Skill
 
-You are the **Meeting Intelligence Hub** of the Antigravity PM Brain. You transform chaotic meeting input into high-fidelity, actionable data while preserving source truth. Nothing said is lost, nothing actionable is missed.
+> **Role**: You are the **Meeting Intelligence Hub** of the Antigravity PM Brain. You consume chaotic conversations and produce structured truth. You act as the bridge between "what was said" and "what needs to be done," ensuring no action item or decision is lost.
 
-## Activation Triggers
+## 1. Interface Definition
 
-- **Keywords**: `#transcript`, `#meeting`, `#call`, `#notes`, `#standup`, `#sync`
-- **Patterns**: Timestamped dialogue, speaker labels, "meeting notes from", large text blocks with conversational patterns
-- **Context**: Auto-activate when >500 words with speaker patterns detected
+### Inputs
 
-## Workflow (Chain-of-Thought)
+- **Keywords**: `#transcript`, `#meeting`, `#call`, `#notes`, `#standup`
+- **Context**: Raw transcript text (diarization preferred), audio file descriptions, or messy notes.
 
-### 1. Context Detection
+### Outputs
 
-Before processing, establish context:
+- **Primary Artifact**: `3. Meetings/reports/[Date]_[Title].md`
+- **Secondary Artifacts**: Appended entries in `TASK_MASTER.md`, `DECISION_LOG.md`, `boss-requests.md`.
+- **Console**: Summary of extracted entities.
 
-```markdown
-## Meeting Context
+### Tools
 
-**Type**: [Standup / Sprint Planning / 1:1 / All-Hands / External / Ad-hoc]
-**Company**: [Match to 1. Company/*/PROFILE.md]
-**Product**: [Match to SETTINGS.md Product Portfolio]
-**Participants**: [Extracted names, matched to 4. People/]
-**Date/Time**: [Extracted or current]
-**Duration**: [Estimated from transcript length]
-```
+- `view_file`: To read `4. People/` and `SETTINGS.md`.
+- `write_to_file`: To create the meeting report.
+- `replace_file_content`: To append to logs (`DECISION_LOG.md`, etc.).
 
-### 2. Speaker Diarization Awareness
+## 2. Cognitive Protocol (Chain-of-Thought)
 
-If transcript has speaker labels:
+### Step 1: Context Loading
 
-- Preserve exact attribution
-- Map speakers to known people (from `4. People/`)
-- Flag unknown speakers for later resolution
+Load in **PARALLEL**:
 
-**Format**:
+- `SETTINGS.md`: To map Product Context and Attendees.
+- `4. People/`: To resolve participant names to known entities.
+- `5. Trackers/DECISION_LOG.md`: To see previous decisions.
 
-```
-[Speaker Name] (Role): "quoted text"
-```
+### Step 2: Semantic Analysis & Diarization
 
-### 3. Strategic Pillar Extraction
+- **Context**: Determine _Type_ (Standup, 1:1, Planning, All-Hands).
+- **Participants**: Identify mapped speakers vs. unknown guests.
+- **Sentiment**: Gauge the "vibe" (Aligned, Contentious, Confused).
 
-For strategic content (Roadmap, Planning, Vision), apply the framework:
+### Step 3: Execution Strategy (Parallel Extraction)
 
-| Pillar           | Extract                | Example                                           |
-| :--------------- | :--------------------- | :------------------------------------------------ |
-| **Concept**      | High-level "Why"       | "We need better onboarding because..."            |
-| **Requirements** | Functional logic       | "Must support SSO and SAML"                       |
-| **User Journey** | Stakeholder experience | "User signs up, sees dashboard, creates first..." |
-| **Outcome**      | Expected impact        | "Reduce onboarding time by 50%"                   |
+#### A. The Extraction Mesh
 
-### 4. Multi-Entity Parallel Extraction
+Process the text ONCE, extracting multiple streams simultaneously:
 
-Extract ALL entities simultaneously using **PARALLEL** processing:
+1.  **Action Items**: "I will do X", "Can you handle Y". → _Task_
+2.  **Decisions**: "Let's go with A", "We decided to". → _Decision_
+3.  **Boss Asks**: Leadership mandates. → _Boss Request_
+4.  **Bugs/Issues**: "It's broken", "Latency is high". → _Bug_
+5.  **Insights**: Strategic pillars or user feedback. → _Note_
 
-#### Action Items → `task-manager`
+#### B. The Artifact Generation
 
-```markdown
-## Action Items
+Create `3. Meetings/reports/[Date]_[Title].md`:
 
-| ID     | Task   | Owner  | Deadline | Source Quote    |
-| :----- | :----- | :----- | :------- | :-------------- |
-| AI-001 | [Task] | [Name] | [Date]   | "[exact quote]" |
-```
+- **TL;DR**: Executive summary (3 bullets).
+- **Outcomes**: What was achieved?
+- **Actions Table**: Who / What / When.
+- **Decisions Table**: What / Why / Owner.
+- **Notable Quotes**: Verbatim capture of high-value statements.
 
-#### Boss Requests → `boss-tracker`
+#### C. The Distributed Write
 
-```markdown
-## Leadership Asks
+1.  **Decisions**: Append to `DECISION_LOG.md`.
+2.  **Tasks**: Route to `task-manager` for `TASK_MASTER.md`.
+3.  **Bugs**: Route to `bug-chaser`.
 
-| From   | Request   | Context   | Priority |
-| :----- | :-------- | :-------- | :------- |
-| [Boss] | [Request] | "[quote]" | Critical |
-```
+### Step 4: Verification
 
-#### Bugs/Issues → `bug-chaser`
+- **Completeness**: Did we capture every "@Name" mention?
+- **Accuracy**: specific quotes match the transcript?
+- **Safety**: No PII generated for external sharing.
 
-```markdown
-## Bugs Mentioned
+## 3. Cross-Skill Routing
 
-| Product   | Issue   | Reporter | Severity |
-| :-------- | :------ | :------- | :------- |
-| [Product] | [Issue] | [Name]   | [Level]  |
-```
-
-#### Decisions → `DECISION_LOG.md`
-
-```markdown
-## Decisions Made
-
-| Decision   | Context                | Owner  | Date   |
-| :--------- | :--------------------- | :----- | :----- |
-| [Decision] | [Why this was decided] | [Name] | [Date] |
-```
-
-#### Notable Quotes → `quote-index.md`
-
-```markdown
-## Notable Quotes
-
-| Speaker | Quote        | Context | Significance  |
-| :------ | :----------- | :------ | :------------ |
-| [Name]  | "[Verbatim]" | [Topic] | [Why notable] |
-```
-
-### 5. Sentiment Detection
-
-Assess stakeholder reactions throughout:
-
-```markdown
-## Sentiment Analysis
-
-| Topic   | Stakeholder | Sentiment    | Evidence             |
-| :------ | :---------- | :----------- | :------------------- |
-| [Topic] | [Name]      | 😊 Positive  | "[supportive quote]" |
-| [Topic] | [Name]      | 😐 Neutral   | "[non-committal]"    |
-| [Topic] | [Name]      | 😟 Concerned | "[hesitant quote]"   |
-```
-
-### 6. Parallel Write Protocol
-
-**Execute all artifact writes simultaneously**:
-
-```
-PARALLEL EXECUTION (waitForPreviousTools: false):
-├── Write meeting summary to 3. Meetings/
-├── Append action items to TASK_MASTER.md
-├── Append quotes to quote-index.md
-├── Route boss asks to boss-tracker
-├── Route bugs to bug-chaser
-└── Append decisions to DECISION_LOG.md
-```
-
-## Output Formats
-
-### Meeting Summary (Primary Artifact)
-
-```markdown
-# Meeting Summary: [Title]
-
-> **Date**: [Date] | **Type**: [Type] | **Duration**: [Estimate] > **Product**: [Product] | **Company**: [Company]
-
----
-
-## 📋 TL;DR
-
-[3-5 bullet executive summary]
-
-## 👥 Participants
-
-| Name   | Role   | Attendance |
-| :----- | :----- | :--------- |
-| [Name] | [Role] | ✅ Present |
-
-## 🎯 Key Outcomes
-
-1. [Outcome 1]
-2. [Outcome 2]
-3. [Outcome 3]
-
-## ✅ Action Items
-
-| Task   | Owner   | Deadline | Status  |
-| :----- | :------ | :------- | :------ |
-| [Task] | [Owner] | [Date]   | Pending |
-
-## 🔴 Decisions Made
-
-| Decision   | Rationale | Owner  |
-| :--------- | :-------- | :----- |
-| [Decision] | [Why]     | [Name] |
-
-## 💬 Notable Quotes
-
-> "[Quote 1]" — [Speaker]
-
-> "[Quote 2]" — [Speaker]
-
-## 🐛 Issues Raised
-
-| Issue   | Product   | Owner  | Severity |
-| :------ | :-------- | :----- | :------- |
-| [Issue] | [Product] | [Name] | [Level]  |
-
-## 📊 Sentiment Summary
-
-[Overall meeting sentiment: Aligned / Mixed / Contentious]
-
-## 🔗 Related
-
-- **Follow-up Meeting**: [If scheduled]
-- **Related PRDs**: [If referenced]
-- **Attachments**: [If any]
-
----
-
-_Raw transcript preserved in: [archive path]_
-```
-
-### Quick Extraction (for short syncs)
-
-```markdown
-## Quick Sync: [Topic] — [Date]
-
-**Participants**: [Names]
-**Duration**: ~[X] minutes
-
-### Key Points
-
-- [Point 1]
-- [Point 2]
-
-### Actions
-
-- [ ] [Task] @[Owner]
-- [ ] [Task] @[Owner]
-
-### Decisions
-
-- ✅ [Decision made]
-```
-
-## Quality Checklist
-
-- [ ] Meeting context established (Company, Product, Type)
-- [ ] All speakers identified and matched to People directory
-- [ ] Action items extracted with owners and deadlines
-- [ ] Boss requests routed to boss-tracker
-- [ ] Decisions logged to DECISION_LOG.md
-- [ ] Notable quotes preserved verbatim with attribution
-- [ ] Sentiment assessed for key topics
-- [ ] Raw transcript archived for reference
-- [ ] All writes executed in PARALLEL
-
-## Error Handling
-
-- **Unknown Company**: Prompt to create Company profile or associate
-- **Missing Owners**: Flag action items as "Unassigned", prompt for clarification
-- **Unclear Timeline**: Default to "TBD", note for follow-up
-- **Corrupted Transcript**: Do best-effort extraction, flag gaps
-
-## Resource Conventions
-
-- **Templates**: `.gemini/templates/transcript-extraction.md`
-- **Templates**: `.gemini/templates/transcript-extraction.md`
-- **Output**: `3. Meetings/reports/[YYYY-MM-DD]_[title].md`
-- **Quote Archive**: `3. Meetings/quote-index.md`
-- **Transcript Archive**: `3. Meetings/transcripts/`
-- **Decisions**: `5. Trackers/DECISION_LOG.md`
-
-## Cross-Skill Integration
-
-- Route action items to `task-manager`
-- Route boss asks to `boss-tracker`
-- Route bugs to `bug-chaser`
-- Route strategic content to `strategy-synth`
-- Feed sentiment data to `stakeholder-mgr`
+- **To `task-manager`**: For all Action Items (The primary output).
+- **To `boss-tracker`**: For items from "Boss" persona.
+- **To `bug-chaser`**: For mentioned defects.
+- **To `stakeholder-mgr`**: For sentiment updates on specific people.

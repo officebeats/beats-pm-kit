@@ -10,9 +10,12 @@ import os
 import json
 
 # Add system path
-repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-system_path = os.path.join(repo_root, "Beats-PM-System", "system")
-sys.path.insert(0, system_path)
+# Add system path
+from pathlib import Path
+CURRENT_FILE = Path(__file__).resolve()
+REPO_ROOT = CURRENT_FILE.parent.parent.parent
+SYSTEM_DIR = REPO_ROOT / "Beats-PM-System" / "system"
+sys.path.insert(0, str(SYSTEM_DIR))
 
 # Import real config module
 # We need to make sure utils is importable.
@@ -25,11 +28,7 @@ class TestSystemStructure(unittest.TestCase):
     
     def setUp(self):
         # Ensure we are testing the actual repo root
-        self.root = repo_root
-        
-        # Inject the root into config so it doesn't try to guess or use CWD incorrectly if we ran from elsewhere
-        # config.py has a default logic, but we can override path resolution if needed.
-        # But for now, let's rely on config.py's detection or relative paths.
+        self.root = str(REPO_ROOT)
         pass
 
     def test_required_directories_exist(self):
@@ -54,7 +53,7 @@ class TestSystemStructure(unittest.TestCase):
         crit_files = [
             "KERNEL.md",
             "SETTINGS.md",
-            ".gemini/skills",
+            ".agent/skills",
             "requirements.txt"
         ]
         
@@ -68,7 +67,7 @@ class TestSystemStructure(unittest.TestCase):
 
     def test_skills_architecture(self):
         """Verify that the Skills directory structure is valid (v3.0.0)."""
-        skills_dir = os.path.join(self.root, ".gemini", "skills")
+        skills_dir = os.path.join(self.root, ".agent", "skills")
         
         # Check standard skills exist
         expected_skills = [

@@ -11,7 +11,8 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 # Setup paths
-ROOT_DIR = Path(__file__).parent.parent
+# Setup paths
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 SYSTEM_DIR = ROOT_DIR / 'Beats-PM-System' / 'system'
 SKILLS_DIR = ROOT_DIR / '.agent' / 'skills'
 TEMPLATES_DIR = ROOT_DIR / '.gemini' / 'templates'

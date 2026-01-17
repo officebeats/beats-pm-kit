@@ -59,6 +59,7 @@ Once the folder is open in Antigravity, just type:
 
 This edition is re-engineered as a **Skills-First Orchestration** system. It leverages the latest **Gemini CLI Agent Skills** protocol for maximum efficiency, modularity, and speed.
 
+- **Gamma-Class Skill Schema (v2.0)**: All agents now adhere to a standardized Cognitive Protocol, featuring explicit Context Loading, Semantic Analysis, Execution Strategy, and Cross-Skill Routing phases.
 - **Dynamic Skill Activation**: Expertise is lazy-loaded on-demand.
   The system identifies which "Agent Skill" to activate based on your command, saving massive amounts of context tokens.
 - **Parallel Fan-Out**: Expert agents execute non-dependent tasks simultaneously using the `waitForPreviousTools: false` protocol.
@@ -216,10 +217,10 @@ The Brain uses **Zero-Friction Routing**. You don't need to know which agent is 
 
 ### 🌅 Daily Workflow
 
-1.  **Start Your Day**: Type `#morning` to get your daily brief with critical boss requests and calendar items.
-2.  **Capture Everything**: Use `#paste` to quickly import screenshots, files, or text from your clipboard.
-3.  **Process Regularly**: Run `#process` at least once a day to organize items in your Drop Zone.
-4.  **End Your Day**: Type `#eod` to wrap up and preview tomorrow's priorities.
+1. **Start Your Day**: Type `#morning` to get your daily brief with critical boss requests and calendar items.
+2. **Capture Everything**: Use `#paste` to quickly import screenshots, files, or text from your clipboard.
+3. **Process Regularly**: Run `#process` at least once a day to organize items in your Drop Zone.
+4. **End Your Day**: Type `#eod` to wrap up and preview tomorrow's priorities.
 
 ### 📸 Information Capture
 
@@ -370,14 +371,14 @@ You can extend the system by:
 
 ### 🧪 System Testing (Regression Suite)
 
-To ensure the Brain is functioning correctly after updates, run the regression test suite located in `tests/`.
+To ensure the Brain is functioning correctly after updates, run the regression test suite located in `Beats-PM-System/tests/`.
 
 ```bash
 # Run Core Logic Tests (Clipboard, Context Loader)
-python tests/test_core_components.py
+python Beats-PM-System/tests/test_core_components.py
 
 # Run Structural Integrity Tests (Files, Config, Agents)
-python tests/test_structure.py
+python Beats-PM-System/tests/test_structure.py
 ```
 
 ---
@@ -390,17 +391,17 @@ This is an open-source project. Contributions are welcome! Please feel free to s
 
 ## 👤 Created By
 
-**[Your Name]** — Product Management leader & AI enthusiast.
+Ernesto Rodriguez — Product Management leader & AI enthusiast.
 
 <div align="center">
 
-<a href="https://www.linkedin.com/in/productmg/"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
-<a href="https://x.com/officebeats"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" alt="X/Twitter"></a>
-<a href="mailto:Ernesto@ProductMG.com"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>
+`<a href="https://www.linkedin.com/in/productmg/"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn">``</a>`
+`<a href="https://x.com/officebeats"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" alt="X/Twitter">``</a>`
+`<a href="mailto:Ernesto@ProductMG.com"><img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">``</a>`
 
 ---
 
-<strong>Built by PMs, for PMs.</strong><br>
-<em>Stop chasing status updates. Start driving strategy.</em>
+`<strong>`Built by PMs, for PMs.`</strong><br>`
+`<em>`Stop chasing status updates. Start driving strategy.`</em>`
 
 </div>
