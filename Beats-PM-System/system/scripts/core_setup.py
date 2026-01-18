@@ -125,13 +125,72 @@ def run_skill_optimizer() -> None:
         print_warning("Skill optimizer script not found.")
 
 def run_memory_init() -> None:
-    """Initialize long-term memory artifacts."""
+    """Initialize long-term memory artifacts (Inline)."""
     print_cyan("\n💾 Initializing Long-Term Memory...")
-    script = os.path.join("Beats-PM-System", "system", "scripts", "init_memory.py")
-    if file_exists(script):
-        run_python_script(script)
+    
+    root = get_config('paths.root')
+    if not root:
+         root = str(os.getcwd())
+
+    # 1. DECISION_LOG.md
+    dec_path = get_config('trackers.decision_log')
+    if dec_path:
+        full_dec_path = os.path.join(root, dec_path)
+        if not file_exists(full_dec_path):
+            ensure_directory(os.path.dirname(full_dec_path))
+            header = ("# Strategic Decision Log\n\n"
+                      "> Immutable record of key product and architectural decisions.\n\n"
+                      "| Date | Decision | Context | Owner |\n"
+                      "|:---|:---|:---|:---|\n")
+            with open(full_dec_path, "w", encoding="utf-8") as f:
+                f.write(header)
+            print_success(f"Created {dec_path}")
+        else:
+            print_gray(f"[skip] {dec_path} (Exists)")
+
+    # 2. PEOPLE.md
+    people_dir = get_config('paths.people')
+    if people_dir:
+        people_file = os.path.join(root, people_dir, "PEOPLE.md")
+        if not file_exists(people_file):
+            ensure_directory(os.path.dirname(people_file))
+            header = ("# People & Stakeholders\n\n"
+                      "> The Human Context. Who does what?\n\n"
+                      "| Name | Role | Context |\n"
+                      "|:---|:---|:---|\n")
+            with open(people_file, "w", encoding="utf-8") as f:
+                f.write(header)
+            print_success(f"Created {people_dir}/PEOPLE.md")
+        else:
+            print_gray(f"[skip] {people_dir}/PEOPLE.md (Exists)")
+
+    # 3. quote-index.md
+    quote_dir = get_config('paths.meetings')
+    if quote_dir:
+        quote_file = os.path.join(root, quote_dir, "quote-index.md")
+        if not file_exists(quote_file):
+            ensure_directory(os.path.dirname(quote_file))
+            header = ("# Quote Index\n\n"
+                      "> Grep-friendly archive of key verbatim quotes.\n\n"
+                      "| Date | Speaker | Quote | Source |\n"
+                      "|:---|:---|:---|:---|\n")
+            with open(quote_file, "w", encoding="utf-8") as f:
+                f.write(header)
+            print_success(f"Created {quote_dir}/quote-index.md")
+        else:
+            print_gray(f"[skip] {quote_dir}/quote-index.md (Exists)")
+
+    # 4. SESSION_MEMORY.md (Root)
+    session_file = os.path.join(root, "SESSION_MEMORY.md")
+    if not file_exists(session_file):
+        header = ("# Session Memory\n"
+                  "> Last Known State registry.\n\n"
+                  "System Initialized. No previous session data.\n")
+        with open(session_file, "w", encoding="utf-8") as f:
+            f.write(header)
+        print_success("Created SESSION_MEMORY.md")
     else:
-        print_warning("Memory init script not found.")
+        print_gray("[skip] SESSION_MEMORY.md (Exists)")
 
 
 def run_structure_enforcement() -> None:

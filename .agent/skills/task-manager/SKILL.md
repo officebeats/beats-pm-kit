@@ -7,66 +7,40 @@ triggers:
   - "/triage"
   - "/plan"
   - "/organize"
-version: 3.1.0 (Slash Command)
+version: 3.2.0 (Native Optimized)
 author: Beats PM Brain
 ---
 
-# Task Manager Skill (Native)
+# Task Manager Skill
 
-> **Role**: You are the **Execution Engine**. You do not "manage" lists; you **drive completion**. You ruthlessly triumph over the `BRAIN_DUMP`, categorize chaos, and enforce the `TASK_MASTER` as the immutable ledger of truth.
+> **Role**: Execution Engine. You ruthlessly triumph over the `BRAIN_DUMP` and enforce the `TASK_MASTER` as the immutable ledger.
 
 ## 1. Native Interface
 
-### Inputs
-
-- **Triggers**: `/task`, `/triage`, `/plan`
-- **Context**: `BRAIN_DUMP.md` (Inbox), `TASK_MASTER.md` (Database).
-
-### Tools
-
-- `view_file`: Read inbox and ledger.
-- `write_to_file`: Append to ledger.
-- `turbo_dispatch`: Trigger background vacuum.
+- **Inputs**: `/task`, `/triage`. `BRAIN_DUMP.md` (Inbox). `TASK_MASTER.md` (Ledger).
+- **Tools**: `view_file`, `write_to_file`.
 
 ## 2. Cognitive Protocol
 
-### Phase 1: Context Hydration
+### A. Triage (`#triage`)
 
-1.  **Read Inbox**: `0. Incoming/BRAIN_DUMP.md`.
-2.  **Read Ledger**: `5. Trackers/TASK_MASTER.md`.
-3.  **Read Config**: `SETTINGS.md` (Product Pillars).
+1.  **Parse**: Split chaotic `BRAIN_DUMP.md`.
+2.  **Route**:
+    - **Bug** -> `bug-chaser`.
+    - **Feature** -> `prd-author`.
+    - **Idea** -> `strategy-synth`.
+    - **Task** -> Move to Ledger.
+3.  **Clean**: Ensure `BRAIN_DUMP.md` is empty -> "Inbox Zero".
 
-### Phase 2: Triage Logic (`#triage`)
+### B. Ledger Management (`/task`)
 
-If processing `BRAIN_DUMP.md`:
+- **Structure**: `| Priority (P0-P3) | Task | Product | Status (⏳/🚧/✅) |`
+- **Operations**:
+  - **Add**: Append new row.
+  - **Complete**: Mark ✅.
+  - **Scale**: P0=Blocker, P1=Next. S=Hours, XL=Months.
 
-1.  **Parse**: Split chaotic text into atomic units.
-2.  **Classify**:
-    - **Bug** -> Route to `bug-chaser`.
-    - **Feature** -> Route to `prd-author`.
-    - **Idea** -> Route to `strategy-synth`.
-    - **Task** -> Keep here.
-3.  **Action**: Move valid tasks to `TASK_MASTER.md` and **clear** them from `BRAIN_DUMP.md`.
+## 3. Output
 
-### Phase 3: The Ledger Protocol (`/task`, `/plan`)
-
-**The Golden Rule**: Every task must have a **Product Anchor** and a **Status**.
-
-| Field        | Value Space                                                                  |
-| :----------- | :--------------------------------------------------------------------------- |
-| **Priority** | `P0` (Blocker/Fire), `P1` (Next Release), `P2` (Normal), `P3` (Nice to Have) |
-| **Effort**   | `S` (Hours), `M` (Days), `L` (Weeks), `XL` (Months)                          |
-| **Status**   | `⏳ Pending`, `🚧 Active`, `⛔ Blocked`, `✅ Done`                           |
-| **Product**  | Must match `SETTINGS.md` keys.                                               |
-
-### Phase 4: Atomic Operations
-
-- **Add**: Append new row to `TASK_MASTER.md`.
-- **Complete**: Find row, mark ✅.
-- **Vacuum**: If >20 items marked ✅, dispatch `turbo_dispatch.submit("vacuum", {})`.
-
-## 3. Output Rules
-
-1.  **Confirmation Table**: Show exactly what moved from Inbox -> Ledger.
-2.  **Clean State**: Always verify `BRAIN_DUMP.md` is empty after triage.
-3.  **Next Action**: Suggest the highest priority item from the new list.
+- **Table**: Show exactly what moved Inbox -> Ledger.
+- **Next Action**: Suggest top P0 item.

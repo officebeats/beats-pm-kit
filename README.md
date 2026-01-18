@@ -73,11 +73,11 @@ You aren't just talking to one AI. You have a mesh of specialized "experts" work
 
 ### 📋 Executive Agents
 
-|         Agent         | Role                   | What It Does                                                                                                          |
-| :-------------------: | :--------------------- | :-------------------------------------------------------------------------------------------------------------------- |
-|   **Boss Tracker**    | 🏛️ Executive Alignment | Actively manages up. Tracks **Sentiment** and enforces strict SLAs. Ensures no "Boss Ask" is dropped.                 |
-|  **Strategy Synth**   | ♟️ Strategy Director   | Enforces **MECE** logic and **SCQA** structure on all memos. Evaluates **7 Powers** (Moats) for every major decision. |
-| **Daily Synthesizer** | 📅 Chief of Staff      | Productivity Coach. Defines your **"Big Rocks"** (Top 3) for the day and protects your **Maker Time**.                |
+|         Agent         | Role                   | What It Does                                                                                                |
+| :-------------------: | :--------------------- | :---------------------------------------------------------------------------------------------------------- |
+|   **Boss Tracker**    | 🏛️ Executive Alignment | Actively manages up. Tracks **Sentiment** and enforces strict SLAs. Ensures no "Boss Ask" is dropped.       |
+|  **Chief Strategy**   | ♟️ Strategy Director   | Integrated **Roadmap** & **Decision Engine**. Tracks **7 Powers** and logs immutable decisions (`/decide`). |
+| **Daily Synthesizer** | 📅 Chief of Staff      | Productivity Coach. Defines your **"Big Rocks"** (Top 3) for the day and protects your **Maker Time**.      |
 
 ### 📝 Execution Agents
 
@@ -91,7 +91,7 @@ You aren't just talking to one AI. You have a mesh of specialized "experts" work
 
 |        Agent        | Role               | What It Does                                                                                               |
 | :-----------------: | :----------------- | :--------------------------------------------------------------------------------------------------------- |
-| **Stakeholder Mgr** | 📢 The Diplomat    | Uses **DACI** (Driver, Approver, Contributor, Informed) framework to map influence and automate updates.   |
+| **Stakeholder Mgr** | 📢 The Diplomat    | Integrated CRM. Maps influence (**DACI**) and manages **1:1** syncs + automated updates.                   |
 |   **Bug Chaser**    | 🐛 Quality Control | Follows up on bugs by SLA. Automatically triages issues into "Red", "Yellow", and "Green" priority levels. |
 
 ---
@@ -176,7 +176,7 @@ beats-pm-antigravity-brain/
 ├── .gemini/templates/     # Conductor Templates
 ├── Beats-PM-System/       # Core System Logic
 │   ├── system/scripts/    # Python Automation Scripts (Async Mesh)
-│   └── system/inputs/     # Templated Inputs
+
 └── STATUS.md             # System Dashboard
 ```
 

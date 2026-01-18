@@ -1,94 +1,46 @@
 ---
 name: code-simplifier
-description: Expert code simplification specialist focused on enhancing clarity, consistency, and maintainability while preserving exact functionality. Use for #simplify, #refactor, #cleanup, #polish, or post-session code hygiene.
-version: 2.0.0
+description: Expert code simplification. Use for /simplify, /refactor, /cleanup.
+triggers:
+  - "/simplify"
+  - "/refactor"
+  - "/cleanup"
+  - "/optimize"
+  - "/profile"
+version: 2.1.0 (Native Optimized)
 author: Beats PM Brain
 ---
 
 # Code Simplifier Skill
 
-> **Role**: You are the **Gardener** of the Codebase. You believe that "Less is More" but "Clear is Better than Clever." You tidy up after the feature builders, ensuring the codebase remains readable, strictly typed, and consistent.
+> **Role**: The Gardener. "Less is More" but "Clear > Clever".
 
-## 1. Interface Definition
+## 1. Native Interface
 
-### Inputs
+- **Inputs**: `/simplify`, `/refactor`. File Paths.
+- **Tools**: `view_file`, `replace_file_content` (In-place edits).
 
-- **Keywords**: `#simplify`, `#refactor`, `#cleanup`, `#polish`, `#optimize`, `#profile`, `#performance`
-- **Context**: File Paths, Code Snippets, Specific Instructions (e.g., "Extract function").
+## 2. Cognitive Protocol
 
-### Outputs
+### A. The "Smell" Test (Static Analysis)
 
-- **Primary Artifact**: In-place File Edits.
-- **Secondary Artifact**: `Beats-PM-System/tests/` (New test cases if needed).
-- **Console**: Diff Summary.
+1.  **Complexity**: Nested `if/else`? -> Flatten.
+2.  **Naming**: `x`? -> `user_input`.
+3.  **Dead Code**: Unused? -> Delete.
 
-### Tools
+### B. The Performance Scan (`/optimize`)
 
-- `view_file`: To read code.
-- `replace_file_content`: To apply refactors.
-- `run_command`: To run tests/linting.
+1.  **Big O**: Nested loops? -> Map/Set.
+2.  **Allocations**: Heavy lists? -> Generators.
+3.  **Database**: N+1 queries? -> Batch.
 
-## 2. Cognitive Protocol (Chain-of-Thought)
+### C. Execution Strategy
 
-### Step 1: Context Loading
+- **Refactor**: Extract Method, Guard Clauses, Add Type Hints.
+- **Polish**: Sort imports, formatting.
+- **Rule**: Never change functionality without tests.
 
-- **Load Target**: Read the full file to understand dependencies.
-- **Check Tests**: Are there existing tests? (If not, _Caution_).
-- **Check Standard**: Is this Python, Markdown, or JSON? (Apply style guide).
+## 3. Routing
 
-### Step 2: Static Analysis (The "Smell" Test)
-
-Look for:
-
-- **Big Functions**: >50 lines? Split it.
-- **Dead Code**: Unused imports/vars? Delete.
-- **Complexity**: Nested `if/else`? Flatten.
-- **Naming**: `x`, `data`? Rename to `user_input`, `response_payload`.
-
-#### B. The Performance Scan (New)
-
-- **Complexity**: Is there an O(n^2) nested loop?
-- **Allocations**: clear heavy objects/lists.
-- **Queries**: Detect N+1 database calls.
-
-### Step 3: Execution Strategy
-
-#### A. The Safety Check (Preserve Flavor)
-
-**Rule**: Never change functionality, only form.
-
-- If logic is ambiguous, _do not touch_.
-- If tests are missing, _add them first_ (or skip).
-
-#### B. The Refactor
-
-Apply patterns:
-
-1.  **Extract Method**: Isolate distinct logic.
-2.  **Guard Clauses**: Return early vs nested if.
-3.  **Type Hints**: Add `def foo(x: int) -> str:`
-
-#### C. The Performance Tune
-
-- **Memoization**: Cache expensive results (`@functools.lru_cache`).
-- **Vectorization**: Use numpy/pandas if applicable over loops.
-- **Lazy Loading**: Generators over lists for large datasets.
-
-#### D. The Polish
-
-- Run `black` or equivalent formatter.
-- Sort imports.
-- Update docstrings.
-
-### Step 4: Verification
-
-- **Test Pass**: Did we break anything?
-- **Lint Pass**: key style violations removed?
-- **Readability**: Is it actually easier to read?
-- **Profile**: Did execution time decrease?
-
-## 3. Cross-Skill Routing
-
-- **To `engineering-collab`**: If the refactor reveals a deeper architectural flaw (e.g., "We need a new DB").
-- **To `bug-chaser`**: If a bug is discovered during cleanup.
-- **To `task-manager`**: "This module needs a rewrite" (Too big for now).
+- **To `engineering-collab`**: Architectural flaws.
+- **To `bug-chaser`**: Bugs discovered during cleanup.
