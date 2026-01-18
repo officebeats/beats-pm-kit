@@ -1,227 +1,190 @@
 {
   "boss-tracker": {
     "path": ".agent/skills/boss-tracker/SKILL.md",
-    "description": "The Shield. Tracks high-priority requests from leadership with verbatim captu...",
+    "description": "Track high-priority leadership requests.",
     "triggers": [
-      "#boss",
-      "#leadership",
-      "#urgent",
-      "#critical"
+      "/boss",
+      "/leadership",
+      "/urgent",
+      "/critical"
     ]
   },
   "bug-chaser": {
     "path": ".agent/skills/bug-chaser/SKILL.md",
-    "description": "The Quality Gate. Manages the complete bug lifecycle from discovery to remedi...",
+    "description": "Manage bug lifecycle and SLAs.",
     "triggers": [
-      "#bug",
-      "#issue",
-      "#defect",
-      "#broken",
-      "#crash"
+      "/bug",
+      "/issue",
+      "/defect",
+      "/broken",
+      "/crash"
+    ]
+  },
+  "chief-strategy-officer": {
+    "path": ".agent/skills/chief-strategy-officer/SKILL.md",
+    "description": "Synthesize strategic roadmaps and document key decisions.",
+    "triggers": [
+      "/strategy",
+      "/decide",
+      "/roadmap",
+      "/vision",
+      "/okr"
     ]
   },
   "code-simplifier": {
     "path": ".agent/skills/code-simplifier/SKILL.md",
-    "description": "Expert code simplification specialist focused on enhancing clarity, consisten...",
+    "description": "Expert code simplification. Use for /simplify, /refactor, /cleanup.",
     "triggers": [
-      "#simplify",
-      "#refactor",
-      "#cleanup",
-      "#polish",
-      "#optimize",
-      "#profile",
-      "#performance"
+      "/simplify",
+      "/refactor",
+      "/cleanup",
+      "/optimize",
+      "/profile"
     ]
   },
   "core-utility": {
     "path": ".agent/skills/core-utility/SKILL.md",
-    "description": "System maintenance, health checks, and environment setup. Use for",
+    "description": "System health and diagnostics.",
     "triggers": []
-  },
-  "crm": {
-    "path": ".agent/skills/crm/SKILL.md",
-    "description": "Expertise in managing project people, stakeholder preferences, and performanc...",
-    "triggers": [
-      "#crm",
-      "#1on1",
-      "#person",
-      "#stakeholder",
-      "#whois"
-    ]
   },
   "daily-synthesizer": {
     "path": ".agent/skills/daily-synth/SKILL.md",
-    "description": "The Chief of Staff for your daily operations. Generates time-adaptive briefin...",
+    "description": "Daily briefing and planning.",
     "triggers": [
-      "#day",
-      "#status",
-      "#morning",
-      "#lunch",
-      "#eod",
-      "#brief"
+      "/day",
+      "/status",
+      "/morning",
+      "/lunch",
+      "/eod",
+      "/brief"
     ]
   },
   "delegation-manager": {
     "path": ".agent/skills/delegation-manager/SKILL.md",
-    "description": "The Accountability Specialist. Tracks tasks assigned to others, manages follo...",
+    "description": "Track assigned tasks and follow-ups.",
     "triggers": [
-      "#delegate",
-      "#assign",
-      "#handoff",
-      "#followup"
+      "/delegate",
+      "/assign",
+      "/handoff",
+      "/followup"
     ]
   },
   "engineering-collaborator": {
     "path": ".agent/skills/engineering-collab/SKILL.md",
-    "description": "The Technical Bridge. Manages architecture decisions, tech debt, and translat...",
+    "description": "Architecture, tech debt, and spike management.",
     "triggers": [
-      "#eng",
-      "#tech",
-      "#spike",
-      "#architecture",
-      "#adr"
+      "/eng",
+      "/tech",
+      "/spike",
+      "/architecture",
+      "/adr"
     ]
   },
-  "frontend-architect": {
-    "path": ".agent/skills/frontend-architect/SKILL.md",
-    "description": "Expert UI/UX engineer and frontend specialist. Enforces the ibelick/ui-skills...",
+  "frontend-engineer": {
+    "path": ".agent/skills/frontend-engineer/SKILL.md",
+    "description": "Build and test premium UI components.",
     "triggers": [
-      "#ui",
-      "#frontend",
-      "#design-system",
-      "#animate",
-      "#component"
-    ]
-  },
-  "frontend-testing": {
-    "path": ".agent/skills/frontend-testing/SKILL.md",
-    "description": "Specialized skill for testing frontend components using industry standard bes...",
-    "triggers": [
-      "#test",
-      "#frontend-test",
-      "#uitest",
-      "#jest",
-      "#cypress"
+      "/frontend",
+      "/ui",
+      "/test-ui"
     ]
   },
   "joke-generator": {
     "path": ".agent/skills/joke-generator/SKILL.md",
-    "description": "A fun utility skill that provides dad jokes on demand. Use for",
-    "triggers": [
-      "#joke",
-      "#dadjoke",
-      "#laugh"
-    ]
+    "description": "Dad jokes on demand.",
+    "triggers": []
   },
   "meeting-synthesizer": {
     "path": ".agent/skills/meeting-synth/SKILL.md",
-    "description": "The Intelligence Unit. Transforms chaotic conversations into structured Truth...",
+    "description": "Process meeting transcripts into notes.",
     "triggers": [
-      "#transcript",
-      "#meeting",
-      "#call",
-      "#notes",
-      "#standup"
+      "/transcript",
+      "/meeting",
+      "/call",
+      "/notes",
+      "/standup"
     ]
+  },
+  "okr-manager": {
+    "path": ".agent/skills/okr-manager/SKILL.md",
+    "description": "The Strategy Executor. Manages the hierarchy of Annual Goals -> Quarterly Obj...",
+    "triggers": []
   },
   "prd-author": {
     "path": ".agent/skills/prd-author/SKILL.md",
-    "description": "The Architect. Generates executive-ready, FAANG-quality Product Requirements ...",
+    "description": "Generate Product Requirement Documents.",
     "triggers": [
-      "#prd",
-      "#spec",
-      "#feature",
-      "#requirements"
+      "/prd",
+      "/spec",
+      "/feature",
+      "/requirements"
     ]
   },
   "requirements-translator": {
     "path": ".agent/skills/requirements-translator/SKILL.md",
-    "description": "The Entry Point and Air Traffic Controller for the PM Brain. Transforms chaot...",
-    "triggers": [
-      "#concept",
-      "#ideation",
-      "#braindump",
-      "#idea",
-      "#thought"
-    ]
+    "description": "Transforms chaotic input into structured intent.",
+    "triggers": []
   },
   "skill-creator": {
     "path": ".agent/skills/skill-creator/SKILL.md",
-    "description": "The Meta-Architect of the Brain. Generates new AI agent skills based on the G...",
-    "triggers": [
-      "#skillcreate"
-    ]
+    "description": "Generate new AI agent skills.",
+    "triggers": []
   },
   "skill-lookup": {
     "path": ".agent/skills/skill-lookup/SKILL.md",
-    "description": "The Librarian. Searches, inspects, and explains available AI skills using the...",
+    "description": "Search and explain available skills.",
     "triggers": [
-      "#skillsearch",
-      "#lookup",
-      "#findskill",
-      "#help"
+      "/skillsearch",
+      "/lookup",
+      "/findskill",
+      "/help"
     ]
   },
   "stakeholder-manager": {
     "path": ".agent/skills/stakeholder-mgr/SKILL.md",
-    "description": "The Diplomat. Manages proactive stakeholder communication, tracks preferences...",
+    "description": "Manage relationships, 1:1s, and stakeholder communication.",
     "triggers": [
-      "#stakeholder",
-      "#update",
-      "#partner",
-      "#align"
-    ]
-  },
-  "strategy-synthesizer": {
-    "path": ".agent/skills/strategy-synth/SKILL.md",
-    "description": "The Pattern Recognizer. Analyzes company strategy, aligns tactical work with ...",
-    "triggers": [
-      "#strategy",
-      "#vision",
-      "#roadmap",
-      "#market",
-      "#okr"
+      "/stakeholder",
+      "/crm",
+      "/1on1",
+      "/whois",
+      "/update"
     ]
   },
   "task-manager": {
     "path": ".agent/skills/task-manager/SKILL.md",
-    "description": "The Execution Engine. Manages the lifecycle of work from Brain Dump to Done. ...",
+    "description": "Manage tasks and priorities.",
     "triggers": [
-      "#task",
-      "#todo",
-      "#triage",
-      "#plan",
-      "#organize"
+      "/task",
+      "/todo",
+      "/triage",
+      "/plan",
+      "/organize"
     ]
   },
   "ux-collaborator": {
     "path": ".agent/skills/ux-collab/SKILL.md",
-    "description": "The Experience Advocate. Manages PM-UX collaboration, design handoffs, and us...",
+    "description": "Manage PM-UX collaboration.",
     "triggers": [
-      "#ux",
-      "#design",
-      "#wireframe",
-      "#journey"
+      "/ux",
+      "/design",
+      "/wireframe",
+      "/journey"
     ]
   },
   "visual-processor": {
     "path": ".agent/skills/visual-processor/SKILL.md",
-    "description": "The Eyes of the PM Brain. Expertise in multi-modal analysis for images, scree...",
-    "triggers": [
-      "#screenshot",
-      "#paste",
-      "#image",
-      "#chart"
-    ]
+    "description": "Analyze images and screenshots.",
+    "triggers": []
   },
   "weekly-synthesizer": {
     "path": ".agent/skills/weekly-synth/SKILL.md",
-    "description": "The Archivist. Generates weekly and monthly summaries with trajectory analysi...",
+    "description": "Generate weekly status summaries.",
     "triggers": [
-      "#weekly",
-      "#monthly",
-      "#rollup",
-      "#retrospective"
+      "/weekly",
+      "/monthly",
+      "/rollup",
+      "/retrospective"
     ]
   }
 }

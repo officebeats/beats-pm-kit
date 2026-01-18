@@ -48,7 +48,7 @@ def scan_files():
     """Scans and indexes valid markdown files."""
     index: List[Dict[str, Any]] = []
     
-    print(f"🛰️  GPS Scanning Brain via Antigravity...")
+    print(f"GPS Scanning Brain via Antigravity...")
     
     count = 0
     for folder_name in SCAN_DIRS:
@@ -63,11 +63,16 @@ def scan_files():
                 continue
                 
             try:
-                content = file.read_text(encoding="utf-8", errors="ignore")
-                title = extract_title(content, file.name)
+                # Optimized Head-Only Read (First 500 chars) for Title
+                with open(file, 'r', encoding="utf-8", errors="ignore") as f:
+                    head = f.read(500)
+                
+                title = extract_title(head, file.name)
                 
                 # Metadata
-                mtime = file.stat().st_mtime
+                stat = file.stat()
+                mtime = stat.st_mtime
+                size = stat.st_size
                 rel_path = str(file.relative_to(BRAIN_ROOT)).replace("\\", "/")
                 
                 entry = {
@@ -76,7 +81,7 @@ def scan_files():
                     "filename": file.name,
                     "folder": folder_name,
                     "mtime": mtime,
-                    "size": len(content)
+                    "size": size
                 }
                 index.append(entry)
                 count += 1
@@ -91,7 +96,7 @@ def scan_files():
     with open(INDEX_FILE, "w", encoding="utf-8") as f:
         json.dump(index, f, indent=2)
         
-    print(f"✅ GPS Locked. Indexed {count} artifacts.")
+    print(f"GPS Locked. Indexed {count} artifacts.")
 
 if __name__ == "__main__":
     scan_files()

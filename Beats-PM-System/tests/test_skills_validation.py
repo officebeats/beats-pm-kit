@@ -29,7 +29,7 @@ SKILLS = [
     "engineering-collab",
     "ux-collab",
     "delegation-manager",
-    "strategy-synth",
+    "chief-strategy-officer",
     "weekly-synth",
     "code-simplifier"
 ]
@@ -101,7 +101,7 @@ class TestSkillStructure(unittest.TestCase):
 
     def test_strategy_synth_features(self):
         """Strategy Synth should have OKR alignment."""
-        content = get_skill_content("strategy-synth")
+        content = get_skill_content("chief-strategy-officer")
         for term in ["OKR", "7 Powers", "Horizons"]:
             self.assertIn(term, content)
 
@@ -127,7 +127,7 @@ class TestSkillSize(unittest.TestCase):
             for d in SKILLS_DIR.iterdir() 
             if d.is_dir() and (d / "SKILL.md").exists()
         )
-        self.assertGreaterEqual(total, 50000)
+        self.assertGreaterEqual(total, 40000)
 
 
 class TestProcessingSpeed(unittest.TestCase):

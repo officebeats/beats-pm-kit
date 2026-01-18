@@ -43,4 +43,10 @@ author: Beats PM Brain
 ## 3. Output
 
 - **Table**: Show exactly what moved Inbox -> Ledger.
-- **Next Action**: Suggest top P0 item.
+- **Table**: Show exactly what moved Inbox -> Ledger.
+- **Next Action**: Suggest top P0 item from `5. Trackers/TASK_MASTER.md`.
+
+## 4. Fallback Patterns
+
+- If `BRAIN_DUMP.md` not found, use context.
+- Default to `5. Trackers` if routing fails.

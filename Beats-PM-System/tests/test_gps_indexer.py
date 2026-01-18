@@ -196,8 +196,8 @@ class TestScanFiles(unittest.TestCase):
         test_file = os.path.join(company_dir, "test.md")
         test_content = "# Test Title\n\nTest content."
 
-        with open(test_file, 'w') as f:
-            f.write(test_content)
+        with open(test_file, 'wb') as f:
+            f.write(test_content.encode('utf-8'))
 
         gps_indexer.scan_files()
 
@@ -219,7 +219,7 @@ class TestScanFiles(unittest.TestCase):
         self.assertEqual(entry['title'], "Test Title")
         self.assertEqual(entry['filename'], "test.md")
         self.assertEqual(entry['folder'], "1. Company")
-        self.assertEqual(entry['size'], len(test_content))
+        self.assertEqual(entry['size'], len(test_content.encode('utf-8')))
         self.assertIsInstance(entry['mtime'], float)
 
     def test_scan_files_ignores_directories(self):
@@ -334,15 +334,15 @@ class TestScanFiles(unittest.TestCase):
         with open(bad_file, 'w') as f:
             f.write("# Bad File\n\nContent.")
 
-        # Patch Path.read_text to raise exception for bad file
-        original_read_text = Path.read_text
+        # Patch builtins.open to raise exception for bad file
+        original_open = open
 
-        def mock_read_text(self, *args, **kwargs):
-            if "bad.md" in str(self):
+        def mock_open_func(file, *args, **kwargs):
+            if "bad.md" in str(file):
                 raise IOError("Mock read error")
-            return original_read_text(self, *args, **kwargs)
+            return original_open(file, *args, **kwargs)
 
-        with patch.object(Path, 'read_text', mock_read_text):
+        with patch('builtins.open', side_effect=mock_open_func):
             gps_indexer.scan_files()
 
         with open(self.index_file, 'r') as f:
@@ -385,8 +385,8 @@ class TestScanFiles(unittest.TestCase):
 
         unicode_content = "# 文档标题 (Document Title) 🚀\n\nContent with émojis and spëcial çharacters."
 
-        with open(unicode_file, 'w', encoding='utf-8') as f:
-            f.write(unicode_content)
+        with open(unicode_file, 'wb') as f:
+            f.write(unicode_content.encode('utf-8'))
 
         gps_indexer.scan_files()
 
@@ -395,7 +395,7 @@ class TestScanFiles(unittest.TestCase):
 
         self.assertEqual(len(index), 1)
         self.assertEqual(index[0]['title'], "文档标题 (Document Title) 🚀")
-        self.assertEqual(index[0]['size'], len(unicode_content))
+        self.assertEqual(index[0]['size'], len(unicode_content.encode('utf-8')))
 
     def test_scan_files_empty_directories(self):
         """Test scanning when all directories are empty."""

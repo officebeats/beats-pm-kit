@@ -90,7 +90,7 @@ class TestSystemStructure(unittest.TestCase):
         
     def test_templates_exist(self):
         """Verify that standard templates exist."""
-        templates_dir = os.path.join(self.root, ".gemini", "templates")
+        templates_dir = os.path.join(self.root, ".agent", "templates")
         
         expected_templates = [
             "bug-report.md",

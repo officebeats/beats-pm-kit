@@ -51,7 +51,7 @@ class TestFeatureParity(unittest.TestCase):
             "notes": "meeting-synth",
             
             # Strategy
-            "strategy": "strategy-synth",
+            "strategy": "chief-strategy-officer",
             
             # Design
             "ux": "ux-collab",

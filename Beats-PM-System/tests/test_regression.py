@@ -41,7 +41,7 @@ REQUIRED_FOLDERS = [
 SKILLS = [
     "boss-tracker", "bug-chaser", "daily-synth", "delegation-manager",
     "engineering-collab", "meeting-synth", "prd-author", "requirements-translator",
-    "stakeholder-mgr", "strategy-synth", "task-manager", "ux-collab",
+    "stakeholder-mgr", "chief-strategy-officer", "task-manager", "ux-collab",
     "visual-processor", "weekly-synth", "code-simplifier"
 ]
 
@@ -74,8 +74,8 @@ COMMAND_SKILL_MAP = [
     ("call", "meeting-synth"), ("1on1", "meeting-synth"),
     ("standup", "meeting-synth"), ("notes", "meeting-synth"),
     # Strategy
-    ("strategy", "strategy-synth"), ("strategy pulse", "strategy-synth"),
-    ("strategy theme", "strategy-synth"), ("strategy opportunities", "strategy-synth"),
+    ("strategy", "chief-strategy-officer"), ("strategy pulse", "chief-strategy-officer"),
+    ("strategy theme", "chief-strategy-officer"), ("strategy opportunities", "chief-strategy-officer"),
     # Design
     ("ux", "ux-collab"), ("ux discovery", "ux-collab"),
     ("ux wireframe", "ux-collab"), ("ux mockup", "ux-collab"),

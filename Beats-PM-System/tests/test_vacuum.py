@@ -9,10 +9,12 @@ import shutil
 import tempfile
 import time
 from datetime import datetime, timedelta
+from pathlib import Path
 
 # Add system path
+# Add system path
 repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-system_path = os.path.join(repo_root, "Beats-PM-System", "system")
+system_path = os.path.join(repo_root, "system")
 sys.path.insert(0, system_path)
 
 # Mock config and utils before importing vacuum
@@ -64,8 +66,8 @@ class TestVacuum(unittest.TestCase):
         self.original_trackers_dir = vacuum.TRACKERS_DIR
         self.original_archive_dir = vacuum.ARCHIVE_DIR
         
-        vacuum.TRACKERS_DIR = self.test_dir
-        vacuum.ARCHIVE_DIR = os.path.join(self.test_dir, "archive")
+        vacuum.TRACKERS_DIR = Path(self.test_dir)
+        vacuum.ARCHIVE_DIR = Path(os.path.join(self.test_dir, "archive"))
         
         # Ensure archive dir exists
         os.makedirs(vacuum.ARCHIVE_DIR)
@@ -80,104 +82,87 @@ class TestVacuum(unittest.TestCase):
         filename = "test_tasks.md"
         filepath = os.path.join(self.test_dir, filename)
         
+        # We need to simulate the file existing and having content, then reading it back.
+        # Since vacuum uses open(), we should ideally create the real file in test_dir (which we do in setUp + write)
+        # BUT the previous test implementation tried to mock everything.
+        
+        # Let's use REAL file operations for the target file, but mock the archive writing if needed.
+        # vacuum.vacuum_tracker actually uses open() for everything.
+        
         content = """# Tasks
 - [ ] Active task 1
 - [x] Completed task 1
 - [ ] Active task 2
 - [x] Completed task 2
 """
-        with open(filepath, 'w') as f:
+        with open(filepath, 'w', encoding='utf-8') as f:
             f.write(content)
             
-        # Mock dependencies that vacuum uses
-        with patch('scripts.vacuum.read_file', side_effect=lambda x: open(x).read()), \
-             patch('scripts.vacuum.write_file', side_effect=lambda x, y: open(x, 'w').write(y)), \
-             patch('scripts.vacuum.append_file', return_value=True) as mock_append, \
-             patch('scripts.vacuum.file_exists', return_value=True):
+        # We want vacuum to run on this real file.
+        # vacuum.vacuum_tracker prints stuff, maybe silence it?
+        
+        with patch('builtins.print'):
+             # We assume vacuum works on real files now, since we removed the mock imports in previous logic thoughts
+             # But wait, vacuum writes to ARCHIVE_DIR.
+             count = vacuum.vacuum_tracker(filename)
              
-            vacuum.vacuum_file(filename)
+             self.assertEqual(count, 2)
             
             # Verify active file content
-            with open(filepath, 'r') as f:
+             with open(filepath, 'r', encoding='utf-8') as f:
                 new_content = f.read()
             
-            self.assertIn("- [ ] Active task 1", new_content)
-            self.assertNotIn("- [x] Completed task 1", new_content)
+             self.assertIn("- [ ] Active task 1", new_content)
+             self.assertNotIn("- [x] Completed task 1", new_content)
             
-            # Verify usage of append to archive (since we mocked it)
-            self.assertTrue(mock_append.called)
-            args, _ = mock_append.call_args
-            self.assertIn("- [x] Completed task 1", args[1])
+            # Verify archive exists
+             archive_files = os.listdir(vacuum.ARCHIVE_DIR)
+             self.assertTrue(len(archive_files) > 0)
+             archive_content = open(os.path.join(vacuum.ARCHIVE_DIR, archive_files[0]), encoding='utf-8').read()
+             self.assertIn("- [x] Completed task 1", archive_content)
 
     def test_archive_transcripts(self):
         """Test transcript archiving logic."""
-        # Setup mock directories
+        # Setup mock directories (real ones in temp dir)
         meetings_dir = os.path.join(self.test_dir, "3. Meetings")
         transcripts_dir = os.path.join(meetings_dir, "transcripts")
+        summaries_dir = os.path.join(meetings_dir, "summaries")
         archive_dir = os.path.join(meetings_dir, "archive")
         
         os.makedirs(transcripts_dir)
+        os.makedirs(summaries_dir)
         os.makedirs(archive_dir)
         
-        # Override vacuum's ROOT_DIR to point to our test dir logic
-        # vacuum.ROOT_DIR is determined at import time. We need to patch it or the os.path.join usage.
-        # vacuum.archive_transcripts uses ROOT_DIR.
-        
-        with patch('scripts.vacuum.ROOT_DIR', self.test_dir):
+        # Override vacuum's MEETINGS_DIR to point to our test dir
+        # Override vacuum's MEETINGS_DIR to point to our test dir
+        with patch('scripts.vacuum.MEETINGS_DIR', Path(meetings_dir)), \
+             patch('scripts.vacuum.update_index') as mock_update_index:
+             
             # Create old and new files
             now = time.time()
             one_day_ago = now - (24 * 60 * 60)
             four_hundred_days_ago = now - (400 * 24 * 60 * 60)
             
-            # New file
-            new_file = os.path.join(transcripts_dir, "new.txt")
+            # New file (Hot -> Warm?) No, logic is > 30 days
+            # Hot file (New)
+            new_file = os.path.join(transcripts_dir, "new.md")
             with open(new_file, 'w') as f: f.write("new")
-            os.utime(new_file, (one_day_ago, one_day_ago))
+            # Touch time
             
-            # Old file
-            old_file = os.path.join(transcripts_dir, "old.txt")
+            # Old file (Hot -> Warm, > 30 days)
+            old_file = os.path.join(transcripts_dir, "old.md")
             with open(old_file, 'w') as f: f.write("old")
             os.utime(old_file, (four_hundred_days_ago, four_hundred_days_ago))
             
             # Run archive
-            # We need to use Real filesystem functions for this specific test because we are testing file movement on disk
-            # But the vacuum script imports them. 
-            # We already MOCKED them in setUp Module level... this is tricky.
+            vacuum.manage_tiered_memory()
             
-            # Strategy: We mocked the MODULE imports. 
-            # vacuum.read_file is correct because we patched it in the previous test method, but here we want to run archive_transcripts.
-            # archive_transcripts imports copy_file, delete_file, directory_exists etc from utils.filesystem.
+            # Assertions
+            # old.md is 400 days old, so it moves Hot -> Warm -> Cold (Archive)
+            self.assertTrue(os.path.exists(os.path.join(archive_dir, "old.md")), "old.md not found in archive (Cold Storage)!")
             
-            # We need to mock those to simulate the actions OR unpatch them.
-            # Since we did sys.modules["utils..."] = MagicMock(), we can't easily unpatch.
-            # So we must mock valid returns.
-            
-            with patch('scripts.vacuum.directory_exists', return_value=True), \
-                 patch('scripts.vacuum.ensure_directory', return_value=True), \
-                 patch('scripts.vacuum.copy_file', return_value=True) as mock_copy, \
-                 patch('scripts.vacuum.delete_file', return_value=True) as mock_delete, \
-                 patch('os.listdir', return_value=["new.txt", "old.txt"]), \
-                 patch('os.path.isfile', return_value=True), \
-                 patch('os.path.getmtime') as mock_mtime:
-                 
-                def side_effect_mtime(path):
-                    if "new.txt" in path: return one_day_ago
-                    if "old.txt" in path: return four_hundred_days_ago
-                    return now
-                mock_mtime.side_effect = side_effect_mtime
-                
-                vacuum.archive_transcripts()
-                
-                # Assertions
-                # old.txt should be copied then deleted
-                mock_copy.assert_called()
-                args_copy, _ = mock_copy.call_args
-                self.assertIn("old.txt", args_copy[0])
-                self.assertIn("archive", args_copy[1])
-                
-                mock_delete.assert_called()
-                args_delete, _ = mock_delete.call_args
-                self.assertIn("old.txt", args_delete[0])
+            # new.md should still be in transcripts
+            self.assertTrue(os.path.exists(new_file))
 
 if __name__ == '__main__':
     unittest.main()

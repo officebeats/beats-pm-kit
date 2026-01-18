@@ -44,3 +44,8 @@ author: Beats PM Brain
 
 - **To `engineering-collab`**: Architectural flaws.
 - **To `bug-chaser`**: Bugs discovered during cleanup.
+
+## 4. Fallback Patterns
+
+- If file missing, return error.
+- Use default Context if routing ambiguous.

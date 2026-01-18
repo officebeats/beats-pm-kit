@@ -25,7 +25,7 @@ author: Beats PM Brain
 
 1.  **Hydrate**: Read `STATUS.md`, `5. Trackers/TASK_MASTER.md`, `boss-requests.md`, `bugs-master.md`.
 2.  **Phase Logic**:
-    - **Morning (<12:00)**: Define **"Big Rocks"** (Top 3 Absolutes).
+    - **Morning (<12:00)**: Define **"Big Rocks"** (Top 3 Absolutes). Temporal Logic: Focus on output.
     - **Midday**: Pivot check.
     - **EOD (>16:00)**: Audit shipped items. Update `STATUS.md`.
 3.  **Context Grouping**:

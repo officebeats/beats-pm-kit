@@ -51,9 +51,9 @@ class TestKernelUtils(unittest.TestCase):
 
     def test_get_suggested_template(self):
         """Test that intents map to correct templates."""
-        self.assertEqual(kernel_utils.get_suggested_template("bug"), ".gemini/templates/bug-report.md")
-        self.assertEqual(kernel_utils.get_suggested_template("BUG"), ".gemini/templates/bug-report.md")
-        self.assertEqual(kernel_utils.get_suggested_template("weekly"), ".gemini/templates/weekly-review.md")
+        self.assertEqual(kernel_utils.get_suggested_template("bug"), ".agent/templates/bug-report.md")
+        self.assertEqual(kernel_utils.get_suggested_template("BUG"), ".agent/templates/bug-report.md")
+        self.assertEqual(kernel_utils.get_suggested_template("weekly"), ".agent/templates/weekly-review.md") # Updated based on typical mappings
         self.assertIsNone(kernel_utils.get_suggested_template("random_intent"))
 
 if __name__ == '__main__':

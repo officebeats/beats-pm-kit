@@ -1,6 +1,6 @@
 # System Kernel (Universal Orchestration Protocol)
 
-**Version**: 4.10.0 (Simplification Update)
+**Version**: 4.11.0 (Stability & Performance)
 
 > **SYSTEM PROMPT**: All agents listed below are part of a connected mesh. Any agent can call any other agent if the input requires it.
 
@@ -246,4 +246,4 @@ if template_path:
 - **Health**: To diagnose issues, run `#vibe`.
 - **Architecture**: This KERNEL is the single source of truth for all Agent Orchestration.
 
-_End of KERNEL.md (v4.10.0)_
+_End of KERNEL.md (v4.11.0)_
