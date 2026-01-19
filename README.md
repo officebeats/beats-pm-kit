@@ -26,12 +26,13 @@ This isn't just a set of templates. It is a **fully autonomous "Virtual Team"** 
 
 ## 🚀 Setup Guide
 
-### 🐣 For Humans (Simple)
+### 🐣 For "Normies" (Simple)
 
-1. **Download**: Click the green **Code** button (top right) -> **Download ZIP**.
-2. **Unzip**: Extract the folder to your Documents.
-3. **Open**: Drag the folder into **VS Code** (or your editor).
-4. **Start**: Type `/track` to see your dashboard.
+1. **Install**: Get **[Google Antigravity](https://antigravity.google/)**.
+2. **Download**: Click the green **Code** button (top right) -> **Download ZIP**.
+3. **Unzip**: Extract the folder to your Documents.
+4. **Load**: Open **Antigravity** and drag the unzipped folder into the window.
+5. **Start**: Type `/track` to see your dashboard.
 
 ### ⚡ For Engineers (Advanced)
 
@@ -50,20 +51,20 @@ cd beats-pm-antigravity-brain
 
 The Kit comes pre-loaded with specialized agents defined in `.agent/agents/`. They don't just "chat"; they have### 📋 Executive Agents
 
-|         Agent         | Role                   | What It Does                                                          |
-| :-------------------: | :--------------------- | :-------------------------------------------------------------------- |
-|   **Boss Tracker**    | 🏛️ Executive Alignment | Actively manages up. Tracks **Sentiment** and enforces strict SLAs.   |
-|  **Chief Strategy**   | ♟️ Strategy Director   | Integrated **Roadmap** & **Decision Engine**. Tracks **7 Powers**.    |
-| **Daily Synthesizer** | 📅 Chief of Staff      | Productivity Coach. Defines your **"Big Rocks"** (Top 3) for the day. |
+|         Agent         | Role                   | What It Does                                                         |
+| :-------------------: | :--------------------- | :------------------------------------------------------------------- |
+|   **Boss Tracker**    | 🏛️ Executive Alignment | Actively manages up. Tracks**Sentiment** and enforces strict SLAs.   |
+|  **Chief Strategy**   | ♟️ Strategy Director   | Integrated**Roadmap** & **Decision Engine**. Tracks **7 Powers**.    |
+| **Daily Synthesizer** | 📅 Chief of Staff      | Productivity Coach. Defines your**"Big Rocks"** (Top 3) for the day. |
 
 ### 📝 Execution Agents
 
-|       Agent        | Role                | What It Does                                                  |
-| :----------------: | :------------------ | :------------------------------------------------------------ |
-|    **Staff PM**    | 🧩 Execution Engine | Manages PRDs and Tasks. The "Get Stuff Done" engine.          |
-| **Data Scientist** | 📊 Quant Lead       | Defines **Success Metrics** and runs simulated **A/B Tests**. |
-| **UX Researcher**  | 🔍 Qual Lead        | Synthesizes **Interviews** and builds **Personas**.           |
-|    **GTM Lead**    | 🚀 Launch Captain   | Manages **T-Minus Schedules** and **Marketing Assets**.       |
+|       Agent        | Role                | What It Does                                                 |
+| :----------------: | :------------------ | :----------------------------------------------------------- |
+|    **Staff PM**    | 🧩 Execution Engine | Manages PRDs and Tasks. The "Get Stuff Done" engine.         |
+| **Data Scientist** | 📊 Quant Lead       | Defines**Success Metrics** and runs simulated **A/B Tests**. |
+| **UX Researcher**  | 🔍 Qual Lead        | Synthesizes**Interviews** and builds **Personas**.           |
+|    **GTM Lead**    | 🚀 Launch Captain   | Manages**T-Minus Schedules** and **Marketing Assets**.       |
 
 ### 👥 Collaboration Agents
 
