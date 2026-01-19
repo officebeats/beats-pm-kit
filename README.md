@@ -150,5 +150,15 @@ beats-pm-antigravity-brain/
 
 Open source and community driven. Pull Requests welcome.
 
+## 👨‍💻 About the Creator
+
+**Ernesto "Beats"**
+_ex-BCG Product Lead | ex-Fetch Rewards Senior Product Lead_
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/productmg/)
+[![X (Twitter)](https://img.shields.io/badge/X-Follow-black?style=for-the-badge&logo=x)](https://x.com/officebeats)
+
+---
+
 **Built by PMs, for PMs.**
 _Stop chasing status updates. Start driving strategy._
