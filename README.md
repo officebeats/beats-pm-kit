@@ -310,7 +310,7 @@ Open source and community driven. Pull Requests welcome.
 
 <div align="center">
 
-**Ernesto "Beats" Sanchez**
+**Ernesto "Beats"**
 
 _ex-BCG Digital Product Lead · ex-Fetch Rewards Senior Product Lead_
 
