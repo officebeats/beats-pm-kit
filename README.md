@@ -91,30 +91,26 @@ Here's the secret: **You may never pay for AI again.**
 
 Antigravity supports multiple AI models with generous free tiers. This kit works identically across all of them.
 
-| Model                | Provider  | Free Tier      | Best For         |
-| :------------------- | :-------- | :------------- | :--------------- |
-| **Gemini 2.5 Flash** | Google    | ~1,500 req/day | Fast daily tasks |
-| **Gemini 2.5 Pro**   | Google    | ~50 req/day    | Complex PRDs     |
-| **Claude Sonnet 4**  | Anthropic | ~100 msg/day   | Balanced work    |
-| **Claude Opus 4**    | Anthropic | Limited        | Maximum quality  |
+| Model              | Provider  | Free Tier (Est.) | Best For                |
+| :----------------- | :-------- | :--------------- | :---------------------- |
+| **Gemini 3 Flash** | Google    | ~100 req/day     | Fast daily tasks        |
+| **Gemini 3 Pro**   | Google    | ~50 req/day      | Complex PRDs & Strategy |
+| **Claude Sonnet**  | Anthropic | Weekly Quota\*   | Balanced work           |
+| **Claude Opus**    | Anthropic | Limited Weekly\* | Maximum quality         |
+
+_\*Antigravity Preview limits are weekly and generous for individual use._
 
 ### The Rotation Strategy
 
-When one model hits its limit, switch to another:
+**Never hit a wall.** Antigravity's multi-model support means you have a massive combined pool of intelligence.
 
-```
-Morning:   Gemini Flash (fast triage)
-              ↓ limit reached
-Afternoon: Gemini Pro (deep work)
-              ↓ limit reached
-Evening:   Claude Sonnet (continued work)
-              ↓ next day
-Morning:   Gemini Flash (reset)
-```
+- **Primary Driver**: Use **Gemini 3 Flash** for your daily routine (`/day`, `/paste`, `/vibe`).
+- **Heavy Lifting**: Switch to **Gemini 3 Pro** or **Claude Sonnet** for deep work (`/create`, `/plan`).
+- **Weekly Rotation**: If you push one model hard during a "Sprint Week", simply rotate to another for the rest of the week to stay free.
 
 **Result**: A professional-grade AI PM assistant for **$0/month**.
 
-> 💡 **Pro Tip**: Use Flash for quick `/paste` and `/day` commands. Save Pro for `/create` and `/plan`.
+> 💡 **Pro Tip**: Use Flash for high-volume tasks. Save Pro/Opus for high-value reasoning.
 
 ---
 
