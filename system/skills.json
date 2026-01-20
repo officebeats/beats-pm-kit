@@ -42,6 +42,15 @@
       "/profile"
     ]
   },
+  "context-retriever": {
+    "path": ".agent/skills/context-retriever/SKILL.md",
+    "description": "The \"Recall Engine\". Fetches history, decisions, and tasks related to a perso...",
+    "triggers": [
+      "/prep",
+      "/recall",
+      "/history"
+    ]
+  },
   "core-utility": {
     "path": ".agent/skills/core-utility/SKILL.md",
     "description": "System health and diagnostics.",
@@ -85,6 +94,15 @@
       "/frontend",
       "/ui",
       "/test-ui"
+    ]
+  },
+  "inbox-processor": {
+    "path": ".agent/skills/inbox-processor/SKILL.md",
+    "description": "The \"Black Hole\" for chaos. Aggressively extracts tasks from raw input and ro...",
+    "triggers": [
+      "/paste",
+      "/inbox",
+      "/capture"
     ]
   },
   "meeting-synthesizer": {
