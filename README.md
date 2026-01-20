@@ -118,14 +118,14 @@ Here's the secret: **You may never pay for AI again.**
 
 Antigravity supports multiple AI models with generous free tiers. This kit works identically across all of them.
 
-| Model              | Provider  | Free Tier (Est.) | Best For                |
-| :----------------- | :-------- | :--------------- | :---------------------- |
-| **Gemini 3 Flash** | Google    | ~100 req/day     | Fast daily tasks        |
-| **Gemini 3 Pro**   | Google    | ~50 req/day      | Complex PRDs & Strategy |
-| **Claude Sonnet**  | Anthropic | Weekly Quota\*   | Balanced work           |
-| **Claude Opus**    | Anthropic | Limited Weekly\* | Maximum quality         |
+| Model | Provider | Free Tier (Est.) | Best For |
+| :---- | :------- | :-------- | :------- |
+| **Gemini 3 Flash** | Google | High Daily Quota | Fast daily tasks |
+| **Gemini 3 Pro** | Google | **Weekly Quota** | Complex PRDs & Strategy |
+| **Claude Sonnet** | Anthropic | **Weekly Quota** | Balanced work |
+| **Claude Opus** | Anthropic | Limited Weekly | Maximum quality |
 
-_\*Antigravity Preview limits are weekly and generous for individual use._
+_*Both Google Antigravity and Anthropic have shifted to Weekly Quotas for their best models._
 
 ### The Rotation Strategy
 
