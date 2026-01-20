@@ -36,31 +36,33 @@ requirements.txt
 
 # 0. Incoming (raw intake)
 /0. Incoming/**
-!/0. Incoming/**/
-!/0. Incoming/**/.gitkeep
+!/0. Incoming/
+!/0. Incoming/.gitkeep
 
-# 35. 1. Company (profiles, communications, strategy)
-# SENSITIVE: Contains client names in folder structure.
+# 1. Company (profiles, strategy)
 /1. Company/**
+!/1. Company/
+!/1. Company/.gitkeep
 
-# 40. 2. Products (PRDs, initiatives, bugs)
-# SENSITIVE: Contains product/client names in folder structure.
+# 2. Products (PRDs, initiatives, bugs)
 /2. Products/**
+!/2. Products/
+!/2. Products/.gitkeep
 
 # 3. Meetings (notes, briefs, transcripts)
 /3. Meetings/**
-!/3. Meetings/**/
-!/3. Meetings/**/.gitkeep
+!/3. Meetings/
+!/3. Meetings/.gitkeep
 
 # 4. People (stakeholder directory)
 /4. People/**
-!/4. People/**/
-!/4. People/**/.gitkeep
+!/4. People/
+!/4. People/.gitkeep
 
 # 5. Trackers (bugs, boss-requests, projects)
 /5. Trackers/**
-!/5. Trackers/**/
-!/5. Trackers/**/.gitkeep
+!/5. Trackers/
+!/5. Trackers/.gitkeep
 
 # ----------------------------------------
 # 3. USER CONFIGURATION (SENSITIVE)

@@ -68,6 +68,16 @@ Before ANY action, classify the request:
 
 ---
 
+### 4. Hierarchical Integrity Protocol (MANDATORY)
+
+**Rule**: No loose files are permitted at the root of Folders 1, 2, or 4. 
+
+- **Structure**: `[Folder]/[Company]/[Product]/[Asset].md`
+- **Exemptions**: `PROFILE.md` or `stakeholders.md` may exist at the `[Company]` root, but all initiative-specific docs MUST be nested into a product folder.
+- **Enforcement**: Non-compliant files will be flagged by `#vacuum`.
+
+---
+
 ## TIER 1: CORE PLAYBOOKS
 
 | Playbook      | Purpose                | Output                                |

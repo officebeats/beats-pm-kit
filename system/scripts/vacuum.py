@@ -126,8 +126,8 @@ def clean_skeleton():
     """
     Senior Engineer Cleanup: Analyze and clean the repo skeleton.
     - Cleans old reports (keeps last 5)
-    - Flags orphan/unknown files at root
     - Reports potential stale items
+    - Hierarchical Integrity Audit (Folders 1, 2, 4)
     """
     print("\n--- 🦴 Skeleton Cleanup (Senior Engineer Audit) ---")
     
@@ -202,6 +202,33 @@ def clean_skeleton():
     if empty_dirs:
         print(f"  ⚠️  Empty directories at root: {empty_dirs}")
         issues_found += len(empty_dirs)
+    
+    # 5. Hierarchical Integrity Audit (Folders 1, 2, 4)
+    print("  🔍 Auditing Hierarchical Integrity...")
+    monitored_folders = ["1. Company", "2. Products", "4. People"]
+    for folder in monitored_folders:
+        folder_path = BRAIN_ROOT / folder
+        if not folder_path.exists():
+            continue
+            
+        for entity in folder_path.iterdir():
+            if entity.is_dir() and not entity.name.startswith("."):
+                # Profile Exception: Check for loose files that AREN'T PROFILE.md or stakeholders.md
+                loose_files = []
+                allowed_at_entity_root = ["PROFILE.md", "stakeholders.md", "STAKEHOLDER_MAP.md", "SENTIMENT_LOG.md", ".gitkeep"]
+                allowed_subdirs = ["Profiles"] # Allow Profiles folder for people
+                
+                for item in entity.iterdir():
+                    if item.is_file():
+                        if item.name not in allowed_at_entity_root:
+                            loose_files.append(item.name)
+                    elif item.is_dir():
+                        # Only allow Product subfolders or whitelisted subdirs
+                        pass
+                
+                if loose_files:
+                    print(f"  🛑 SLOPPY ALERT: Loose files in {folder}/{entity.name}: {loose_files}")
+                    issues_found += len(loose_files)
     
     if issues_found == 0:
         print("  🎯 Skeleton is lean and optimized.")
@@ -312,7 +339,15 @@ def main():
     print("\n--- 🗄️ Archiving Old Data ---")
     
     # Vaccum Trackers
-    targets = ["tasks.md", "bugs-master.md", "boss-requests.md", "TASK_MASTER.md"]
+    targets = [
+        "TASK_MASTER.md", 
+        "BUG_TRACKER.md", 
+        "BOSS_REQUESTS.md", 
+        "PROJECT_TRACKER.md",
+        "DELEGATED_TASKS.md",
+        "ENG_TASKS.md",
+        "UX_TASKS.md"
+    ]
     total_cleaned = 0
     for t in targets:
         total_cleaned += vacuum_tracker(t)

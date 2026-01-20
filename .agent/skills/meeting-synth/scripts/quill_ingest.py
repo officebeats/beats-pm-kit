@@ -1,10 +1,4 @@
-#!/usr/bin/env python3
-"""
-Quill Ingest Script (Centrifuge Protocol)
-
-Stateful ingestion of meeting transcripts from the Quill SQLite database.
-"""
-
+import argparse
 import json
 import sqlite3
 import sys
@@ -68,6 +62,13 @@ def get_monday_anchor() -> int:
 
 def main() -> None:
     """Main ingestion pipeline."""
+    parser = argparse.ArgumentParser(description="Sync meetings from Quill database.")
+    parser.add_argument("--days", type=int, help="Number of days to look back.")
+    parser.add_argument(
+        "--start-date", type=str, help="Start date in YYYY-MM-DD format."
+    )
+    args = parser.parse_args()
+
     print(f"🔄 Connecting to Quill DB: {DB_PATH}")
 
     if not DB_PATH.exists():
@@ -78,11 +79,23 @@ def main() -> None:
     processed_ids: Set[str] = set(state.get("processed_ids", []))
     last_run = state.get("last_run", 0)
 
-    # Calculate Monday anchor
-    monday_ms = get_monday_anchor()
-
-    # Use last_run if it exists, otherwise fall back to Monday.
-    query_cutoff = last_run if last_run > 0 else monday_ms
+    # Determine cutoff
+    query_cutoff = 0
+    if args.start_date:
+        try:
+            dt = datetime.strptime(args.start_date, "%Y-%m-%d")
+            query_cutoff = int(dt.timestamp() * 1000)
+        except ValueError:
+            print(f"❌ Invalid date format: {args.start_date}. Use YYYY-MM-DD.")
+            sys.exit(1)
+    elif args.days:
+        dt = datetime.now() - timedelta(days=args.days)
+        # Reset to midnight
+        dt = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        query_cutoff = int(dt.timestamp() * 1000)
+    else:
+        # Use last_run if it exists, otherwise fall back to Monday metadata anchor.
+        query_cutoff = last_run if last_run > 0 else get_monday_anchor()
 
     dt_str = datetime.fromtimestamp(query_cutoff / 1000).strftime("%Y-%m-%d %H:%M:%S")
     print(f"⏱️  Syncing from: {dt_str}")
@@ -116,7 +129,9 @@ def main() -> None:
     for row in rows:
         m_id, start_ms, title, json_content = row
 
-        if m_id in processed_ids:
+        # If user explicitly provided a start date or days, we might want to allow re-processing?
+        # But for now, let's respect processed_ids to avoid duplicate files unless forced.
+        if m_id in processed_ids and not (args.start_date or args.days):
             continue
 
         print(f"📥 Processing: {title} ({m_id})")
@@ -152,12 +167,13 @@ def main() -> None:
         processed_ids.add(m_id)
         new_count += 1
 
-    # Update state
-    state["processed_ids"] = list(processed_ids)
-    state["last_run"] = current_time_ms
-    save_state(state)
+    # Update state only if we didn't use an override (to keep normal stateful flow intact)
+    if not (args.start_date or args.days):
+        state["processed_ids"] = list(processed_ids)
+        state["last_run"] = current_time_ms
+        save_state(state)
 
-    print(f"✨ Done. Ingested {new_count} new transcripts.")
+    print(f"✨ Done. Ingested {new_count} transcripts.")
 
 
 if __name__ == "__main__":
