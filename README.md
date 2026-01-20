@@ -52,12 +52,22 @@
 
 ### 🐣 For Everyone (Simple)
 
-```bash
-1. Install Google Antigravity (https://github.com/anthropics/claude-code or Gemini CLI)
-2. Download this repo (Code → Download ZIP → Extract)
-3. Open Antigravity and drag the folder into the window
-4. Type: /setup
-```
+**Step 1: Get the Tools**
+
+1. Install [Google Antigravity](https://github.com/anthropics/claude-code) (Claude Code) or the Gemini CLI.
+2. Open your terminal and run: `claude login` (or `gemini login`) to authenticate with your Google Account.
+
+**Step 2: Get the Brain**
+
+1. Scroll to the top of this page.
+2. Click the green **Code** button -> **Download ZIP**.
+3. Extract the ZIP file to a folder on your computer (e.g., `Documents/Antigravity`).
+
+**Step 3: Launch**
+
+1. Open Antigravity (your terminal).
+2. Drag the extracted folder into the terminal window to navigate to it.
+3. Type `/setup` and hit Enter.
 
 ### ⚡ For Engineers (Advanced)
 
