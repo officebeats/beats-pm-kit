@@ -24,7 +24,7 @@ author: Beats PM Brain
 
 ### Tools
 
-- `view_file`: Read `DECISION_LOG.md` and `bugs-master.md`.
+- `view_file`: Read `5. Trackers/DECISION_LOG.md` and `5. Trackers/bugs/bugs-master.md`.
 - `write_to_file`: Log ADR.
 - `turbo_dispatch`: Index technical docs.
 

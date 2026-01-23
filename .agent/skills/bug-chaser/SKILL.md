@@ -24,7 +24,7 @@ author: Beats PM Brain
 
 ### Tools
 
-- `view_file`: Read `bugs-master.md`.
+- `view_file`: Read `5. Trackers/bugs/bugs-master.md`.
 - `turbo_dispatch`: Vacuum cleaned bugs.
 
 ## 2. Cognitive Protocol
@@ -47,6 +47,11 @@ Consult `SETTINGS.md` logic:
 - **P1 (High)**: Core features broken. (Fix: 24h).
 - **P2 (Med)**: Broken but workaround exists. (Fix: Sprint).
 - **P3 (Low)**: Cosmetic. (Fix: Backlog).
+
+### Phase 2.5: FAANG Quality Gates
+
+- **Customer Impact**: # users affected, revenue risk, or trust impact.
+- **Evidence**: Screenshot, log, or reproduction environment.
 
 ### Phase 3: The Log Protocol
 

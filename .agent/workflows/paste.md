@@ -12,33 +12,37 @@ description: Capture clipboard content (text, images, files) and save for proces
 
 // turbo
 
-1.  **Execute Clipboard Bridge**:
+1.  **Antigravity Native Capture (Primary)**:
+    - Use Antigravity clipboard ingest for text/images/files.
+    - Proceed directly to classification via `inbox-processor`.
+
+2.  **CLI Fallback (Secondary)**:
     - Run: `python system/scripts/clipboard_bridge.py`
     - Script auto-detects content type (text, image, or files).
 
-2.  **Execute File Organizer (The Concierge)**:
+3.  **Execute File Organizer (The Concierge)**:
     - Run: `python system/scripts/file_organizer.py`
     - Scans `0. Incoming/` for new files.
     - Prompts user for intent: "Task Source? Reference? Spec?"
     - Moves processed files to `0. Incoming/processed/`.
 
-3.  **Content Detection Priority**:
+4.  **Content Detection Priority**:
     - **Files** (copied from file manager) → Saved to `0. Incoming/staging/`
     - **Image** (screenshot to clipboard) → Saved to `0. Incoming/staging/`
     - **Text** (copied text) → Saved to `0. Incoming/raw/`
 
-4.  **Classification** (via `inbox-processor` skill):
-    - **Bug** (error, crash, broken) → Route to `bugs-master.md`
-    - **Boss Ask** (VIP speaker, urgent, ASAP) → Route to `boss-requests.md`
-    - **Task** (TODO, action item, deadline) → Route to `TASK_MASTER.md`
-    - **Decision** (decided, agreed, go/no-go) → Route to `DECISION_LOG.md`
+5.  **Classification** (via `inbox-processor` skill):
+    - **Bug** (error, crash, broken) → Route to `5. Trackers/bugs/bugs-master.md`
+    - **Boss Ask** (VIP speaker, urgent, ASAP) → Route to `5. Trackers/critical/boss-requests.md`
+    - **Task** (TODO, action item, deadline) → Route to `5. Trackers/TASK_MASTER.md`
+    - **Decision** (decided, agreed, go/no-go) → Route to `5. Trackers/DECISION_LOG.md`
     - **FYI** (heads up, no action) → Keep in `0. Incoming/fyi/`
     - **Unclear** → Route to `BRAIN_DUMP.md` (Parking Lot)
 
-5.  **Entity Tagging**:
+6.  **Entity Tagging**:
     - Tag with `[Company A]`, `[Company B]`, or ask if unclear.
 
-6.  **Output**:
+7.  **Output**:
     - Confirmation table of what was captured and where it was routed.
 
 ## Supported Content Types

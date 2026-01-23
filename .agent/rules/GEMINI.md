@@ -6,6 +6,19 @@ This file defines the Operating System for the Product Management Brain.
 
 ---
 
+## ⚡ Runtime Priority (Antigravity-First)
+
+**Primary Runtime:** Google Antigravity (native agent mesh, parallel fan-out, deep file access).
+
+**Secondary Runtime:** CLI tools (Gemini CLI, Claude Code) with graceful degradation.
+
+### Capability Notes
+
+- **Antigravity**: Parallel fan-out, dynamic skill activation, native clipboard/file ingest.
+- **CLI**: Sequential tool use may be required; file ingest falls back to scripts.
+
+---
+
 ## 🛑 CRITICAL: AGENT & SKILL PROTOCOL
 
 **MANDATORY:** You MUST read the appropriate agent file and its skills BEFORE performing any implementation.
@@ -20,6 +33,15 @@ Agent activated → Check frontmatter "skills:" field in `.agent/agents/`
 
 - **Selective Reading:** DO NOT read ALL files. Load context lazily.
 - **Rule Priority:** P0 (GEMINI.md) > P1 (Agent Persona) > P2 (Skill).
+
+### 1.5 Command Alias Map (Antigravity ↔ Slash)
+
+- `#paste` → `/paste`
+- `#transcript` → `/transcript`
+- `#day` → `/day`
+- `#plan` → `/plan`
+- `#meet` → `/meet`
+- `#review` → `/review`
 
 ### 2. Privacy Protocol (CORE DIRECTIVE)
 
@@ -60,6 +82,8 @@ Before ANY action, classify the request:
 
 - **Action**: Read `system/content_index.json` to find files.
 
+> **Runtime Exception**: Antigravity-native system scripts may scan known intake folders (e.g., `0. Incoming/`) for capture workflows. This is allowed as internal tooling.
+
 ### 3. Tiered Memory Management
 
 - **Hot**: Active Projects (Root / 2. Products)
@@ -75,6 +99,17 @@ Before ANY action, classify the request:
 - **Structure**: `[Folder]/[Company]/[Product]/[Asset].md`
 - **Exemptions**: `PROFILE.md` or `stakeholders.md` may exist at the `[Company]` root, but all initiative-specific docs MUST be nested into a product folder.
 - **Enforcement**: Non-compliant files will be flagged by `#vacuum`.
+
+---
+
+### 5. Routing Precedence (Canonical)
+
+1. **Boss Ask** → `5. Trackers/critical/boss-requests.md`
+2. **Bug** → `5. Trackers/bugs/bugs-master.md`
+3. **Task** → `5. Trackers/TASK_MASTER.md`
+4. **Decision** → `5. Trackers/DECISION_LOG.md`
+5. **Delegated** → `5. Trackers/DELEGATED_TASKS.md`
+6. **FYI/Reference** → `0. Incoming/fyi/`
 
 ---
 

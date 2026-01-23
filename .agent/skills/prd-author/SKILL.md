@@ -27,6 +27,11 @@ author: Beats PM Brain
 - `write_to_file`: Generate PRD.
 - `turbo_dispatch`: Index new PRD.
 
+### Runtime Capability
+
+- **Antigravity**: Conductor templates preferred; parallel section drafting.
+- **CLI**: Sequential drafting; prompt for missing Core 4 fields.
+
 ## 2. Cognitive Protocol
 
 ### Phase 1: The Product Anchor Check
@@ -46,6 +51,13 @@ Before generating text, you must validate the **Core 4**:
 4.  **Metric**: How do we measure success?
 
 _If any are missing, ASK the user first. Do not hallucinate requirements._
+
+### Phase 2.5: FAANG/BCG Quality Gates
+
+- **Baseline + Target** required for primary metric.
+- **Out of Scope** explicitly listed.
+- **Assumptions & Risks** documented.
+- **Decision Log** entry created for major tradeoffs.
 
 ### Phase 3: The Conductor Template
 

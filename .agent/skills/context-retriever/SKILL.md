@@ -27,7 +27,7 @@ When user runs `/prep [Person/Topic]`:
 1.  **Scan Ledger (`TASK_MASTER.md`)**:
     - Find all _Incomplete_ tasks where `[Person]` is Delegatee or Owner.
     - Find all _Completed_ tasks from the last 7 days related to `[Topic]`.
-2.  **Scan Decisions (`DECISION_LOG.md`)**:
+2.  **Scan Decisions (`5. Trackers/DECISION_LOG.md`)**:
     - Find recent decisions involving `[Person]`.
 3.  **Scan Transcripts (`3. Meetings/`)**:
     - Search for `[Person]` in filenames of last 3 files.

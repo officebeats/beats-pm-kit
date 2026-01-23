@@ -23,7 +23,7 @@ author: Beats PM Brain
 
 ## 2. Cognitive Protocol
 
-1.  **Hydrate**: Read `STATUS.md`, `5. Trackers/TASK_MASTER.md`, `boss-requests.md`, `bugs-master.md`.
+1.  **Hydrate**: Read `STATUS.md`, `5. Trackers/TASK_MASTER.md`, `5. Trackers/critical/boss-requests.md`, `5. Trackers/bugs/bugs-master.md`.
 2.  **Phase Logic**:
     - **Morning (<12:00)**: Define **"Big Rocks"** (Top 3 Absolutes). Temporal Logic: Focus on output.
     - **Midday**: Pivot check.
@@ -55,4 +55,10 @@ author: Beats PM Brain
 ## 📅 Schedule
 
 - [Time]: [Event]
+
+## 🧭 Exec Snapshot (FAANG/BCG)
+
+- **Metric Movement**: [Metric → Delta]
+- **Top Risk**: [Risk + mitigation]
+- **Decision Needed**: [Decision + owner]
 ```

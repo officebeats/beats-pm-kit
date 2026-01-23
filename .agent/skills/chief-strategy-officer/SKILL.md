@@ -18,7 +18,7 @@ author: Beats PM Brain
 ## 1. Native Interface
 
 - **Inputs**: `/strategy` (Vision), `/decide` (Choice), `/roadmap` (Plan).
-- **Context**: `SETTINGS.md` (OKRs), `DECISION_LOG.md` (Immutability).
+- **Context**: `SETTINGS.md` (OKRs), `5. Trackers/DECISION_LOG.md` (Immutability).
 - **Tools**: `view_file` (Read History), `write_to_file` (Log Decision).
 
 ## 2. Cognitive Protocol
@@ -30,6 +30,11 @@ author: Beats PM Brain
     - **SCQA**: For Memos. (Situation, Complication, Question, Answer).
     - **Horizons**: For Roadmaps (H1=Now, H2=Next, H3=Moonshot).
     - **Moats**: Check **7 Powers** (Network Effects, Switching Costs, etc.).
+
+### A.1 FAANG/BCG Strategy Rigor
+
+- **Issue Tree**: Break down problem into MECE branches.
+- **One-Page Exec Summary**: BLUF + 3 insights + 3 decisions.
 
 ### B. Decision Engineering (`/decide`)
 

@@ -26,6 +26,11 @@ author: Beats PM Brain
 - `write_to_file`: Append to `TASK_MASTER.md`, `bugs-master.md`, `boss-requests.md`.
 - Cross-skill: `visual-processor` (for image analysis).
 
+### Runtime Capability
+
+- **Antigravity**: Native clipboard ingest for text/images/files; parallel extraction allowed.
+- **CLI**: Fallback to scripts for clipboard/file ingest; sequential extraction.
+
 ## 2. The Protocol: "Chaos to Order"
 
 ### Phase 1: Ingest & Normalize
@@ -55,6 +60,13 @@ Analyze the normalized content for **Implicit** and **Explicit** obligations.
     - → **Delegated**: "[Item] (Who: [Name])" (to `DELEGATED_TASKS.md`).
 6.  **Boss Asks** (Override): Sender is VIP (from `SETTINGS.md`).
     - → **Boss Ask**: "[VIP Name]: [Request]" (P0).
+
+#### Priority Rubric (FAANG/BCG)
+
+- **P0**: Revenue/Trust/Security risk, executive request, or outage.
+- **P1**: Critical path delivery or key launch blocker.
+- **P2**: Important but not blocking; can slip one sprint.
+- **P3**: Nice-to-have or backlog.
 
 ### Phase 2.5: File Artifacts (The Concierge)
 
@@ -89,7 +101,7 @@ Route the item to the correct Ledger. **Do not create new files.**
 | **Bug**       | Software defect, error code   | `5. Trackers/bugs/bugs-master.md`       | `Open`    |
 | **Task**      | Anything actionable           | `5. Trackers/TASK_MASTER.md`            | `New`     |
 | **Delegated** | "Waiting for", "Sent to"      | `5. Trackers/DELEGATED_TASKS.md`        | `Pending` |
-| **Decision**  | "Agreed", "Decided"           | `1. Company/DECISION_LOG.md`            | `Logged`  |
+| **Decision**  | "Agreed", "Decided"           | `5. Trackers/DECISION_LOG.md`           | `Logged`  |
 | **Ref/FYI**   | Non-actionable info           | `0. Incoming/fyi/[Date]_[Topic].md`     | N/A       |
 | **Unclear**   | Total gibberish               | `0. Incoming/BRAIN_DUMP.md`             | N/A       |
 

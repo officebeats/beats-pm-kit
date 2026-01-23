@@ -49,8 +49,8 @@
 
 > Filled by the agent after processing.
 
-- **Decisions Logged**: [Count] → `DECISION_LOG.md`
-- **Tasks Created**: [Count] → `tasks-master.md`
+- **Decisions Logged**: [Count] → `5. Trackers/DECISION_LOG.md`
+- **Tasks Created**: [Count] → `5. Trackers/TASK_MASTER.md`
 - **Quotes Indexed**: [Count] → `quote-index.md`
 - **Items Parked**: [Count] → `BRAIN_DUMP.md`
 

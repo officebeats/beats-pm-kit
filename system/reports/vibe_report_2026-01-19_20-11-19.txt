@@ -1,4 +1,0 @@
-[96m--- Antigravity Vibe Check (Windows) ---[0m
-[96mReport saved to: C:\Users\admin-beats\OneDrive\xo Vibe Coding xo\beats-pm-antigravity-brain\system\reports\vibe_report_2026-01-19_20-11-19.txt[0m
-[96m
-Toolchain:[0m

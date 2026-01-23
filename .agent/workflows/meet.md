@@ -14,7 +14,7 @@ This workflow guides the **Staff PM** to handle the meeting lifecycle.
 
 2.  **Prep Mode**:
     - Read `4. People/[Name].md`.
-    - Check `5. Trackers/BOSS_ASKS.md` for outstanding items.
+    - Check `5. Trackers/critical/boss-requests.md` for outstanding items.
     - Output: A 3-bullet agenda.
 
 3.  **Process Mode**:
@@ -22,7 +22,7 @@ This workflow guides the **Staff PM** to handle the meeting lifecycle.
     - **Action**: Run `meeting-synth` skill.
     - **Extract**:
       - **Action Items** -> Add to `/track`.
-      - **Decisions** -> Add to `DECISION_LOG.md`.
+      - **Decisions** -> Add to `5. Trackers/DECISION_LOG.md`.
       - **Quotes** -> Add to `quote-index.md`.
 
 4.  **Output**:

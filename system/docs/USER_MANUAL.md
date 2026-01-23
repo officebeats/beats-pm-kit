@@ -67,6 +67,26 @@ This edition is re-engineered as a **Skills-First Orchestration** system. It lev
 
 ---
 
+## ✅ Runtime Priority (Antigravity-First)
+
+The system is optimized for **Google Antigravity** first, with CLI tools as a safe fallback.
+
+| Runtime | Priority | Strengths | Fallback Behavior |
+| :------ | :------- | :-------- | :---------------- |
+| **Antigravity** | Primary | Native clipboard ingest, parallel fan-out, deep file access | N/A |
+| **Gemini CLI / Claude Code** | Secondary | Terminal workflows, direct file access | Sequential tool use + scripts |
+
+### Command Alias Map (Antigravity ↔ Slash)
+
+- `#paste` → `/paste`
+- `#transcript` → `/transcript`
+- `#day` → `/day`
+- `#plan` → `/plan`
+- `#meet` → `/meet`
+- `#review` → `/review`
+
+---
+
 ## 🤖 Meet Your AI Team
 
 You aren't just talking to one AI. You have a mesh of specialized "experts" working for you in the background. Each agent has a specific role and expertise.

@@ -23,7 +23,7 @@ author: Beats PM Brain
 
 ### Tools
 
-- `view_file`: Read `SETTINGS.md` (Hierarchy) and `boss-requests.md`.
+- `view_file`: Read `SETTINGS.md` (Hierarchy) and `5. Trackers/critical/boss-requests.md`.
 - `write_to_file`: Immutable Log.
 
 ## 2. Cognitive Protocol
@@ -52,6 +52,12 @@ For every new ask, generate a **Reaction Plan**:
 1.  **Acknowledge**: "I have this. Will update by X."
 2.  **Triangulate**: Who else needs to know? (Eng Lead, Design).
 3.  **Track**: Add to `TASK_MASTER.md` as **P0 (CRITICAL)**.
+
+### Phase 3.5: Executive Update Format
+
+- **What Changed**: [1 line]
+- **Why It Matters**: [1 line]
+- **Next Step**: [Owner + date]
 
 ### Phase 4: Output Rendering
 

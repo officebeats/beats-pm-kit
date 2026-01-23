@@ -28,6 +28,11 @@ author: Beats PM Brain
 - `write_to_file`: Generate Report.
 - `turbo_dispatch`: Archive original transcript.
 
+### Runtime Capability
+
+- **Antigravity**: Parallel extraction of decisions, tasks, quotes, bugs.
+- **CLI**: Sequential extraction with explicit user confirmation when needed.
+
 ## 2. Cognitive Protocol
 
 ### Phase 1: Context Hydration
@@ -80,6 +85,12 @@ You MUST use the standard template structure in `3. Meetings/reports/`:
 | :----- | :---- | :------- |
 | [Task] | @name | P1       |
 ```
+
+### FAANG/BCG Addendum
+
+- **Decision Owner**: Every decision has an explicit DRI.
+- **Assumptions**: Capture top 1–3 assumptions.
+- **Risks**: Capture top 1–3 risks.
 
 ### Phase 4: Long Term Memory Commit
 

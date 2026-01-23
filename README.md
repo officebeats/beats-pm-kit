@@ -48,15 +48,16 @@
 
 ### 🐣 For Everyone (Simple)
 
-**Step 1: Get the Tools**
+**Step 1: Get the Tools (Antigravity First)**
 
-Install your preferred AI coding assistant:
+Install your preferred AI assistant (Antigravity is primary; CLI tools are secondary):
 
-| Tool            | Install Command                                                                             | Auth Command         |
-| --------------- | ------------------------------------------------------------------------------------------- | -------------------- |
-| **Gemini CLI**  | `npm install -g @anthropic-ai/claude-code`                                                  | `gemini login`       |
-| **Claude Code** | `npm install -g @anthropic-ai/claude-code`                                                  | `claude login`       |
-| **Kilo Code**   | [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=kilocode.kilo-code) | Configure in VS Code |
+| Tool                | Install Command                                                                             | Auth Command         |
+| ------------------- | ------------------------------------------------------------------------------------------- | -------------------- |
+| **Antigravity**     | [Download App](https://antigravity.google/)                                                 | In-app auth          |
+| **Gemini CLI**      | `npm install -g @google/gemini-cli`                                                         | `gemini login`       |
+| **Claude Code**     | `npm install -g @anthropic-ai/claude-code`                                                  | `claude login`       |
+| **Kilo Code (IDE)** | [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=kilocode.kilo-code) | Configure in VS Code |
 
 **Step 2: Get the Brain**
 
@@ -94,11 +95,12 @@ This kit uses a **single source of truth** (`.agent/`) that automatically syncs 
 
 ### Supported Tools
 
-| Tool            | Config Folder | Status             |
-| --------------- | ------------- | ------------------ |
-| **Gemini CLI**  | `.gemini/`    | ✅ Auto-configured |
-| **Claude Code** | `.claude/`    | ✅ Auto-configured |
-| **Kilo Code**   | `.kilocode/`  | ✅ Auto-configured |
+| Tool                | Config Folder | Status             |
+| ------------------- | ------------- | ------------------ |
+| **Antigravity**     | `.agent/`     | ✅ Primary runtime |
+| **Gemini CLI**      | `.gemini/`    | ✅ Auto-configured |
+| **Claude Code**     | `.claude/`    | ✅ Auto-configured |
+| **Kilo Code (IDE)** | `.kilocode/`  | ✅ Auto-configured |
 
 ### Setup by Tool
 

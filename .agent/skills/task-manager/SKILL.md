@@ -20,9 +20,14 @@ author: Beats PM Brain
 - **Inputs**: `/task`, `/triage`. `BRAIN_DUMP.md` (Inbox). `TASK_MASTER.md` (Ledger).
 - **Tools**: `view_file`, `write_to_file`.
 
+### Runtime Capability
+
+- **Antigravity**: Parallel triage of bugs/features/tasks.
+- **CLI**: Sequential triage with user confirmation when ambiguous.
+
 ## 2. Cognitive Protocol
 
-### A. Triage (`#triage`)
+### A. Triage (`#triage` → `/triage`)
 
 1.  **Parse**: Split chaotic `BRAIN_DUMP.md`.
 2.  **Route**:
@@ -40,9 +45,14 @@ author: Beats PM Brain
   - **Complete**: Mark ✅.
   - **Scale**: P0=Blocker, P1=Next. S=Hours, XL=Months.
 
+### C. FAANG/BCG Rigor
+
+- **Outcome Field**: Every task includes expected outcome/metric.
+- **Owner + Date**: Required for P0/P1 items.
+- **Dependency Tag**: `Depends on [Team/Task]` when applicable.
+
 ## 3. Output
 
-- **Table**: Show exactly what moved Inbox -> Ledger.
 - **Table**: Show exactly what moved Inbox -> Ledger.
 - **Next Action**: Suggest top P0 item from `5. Trackers/TASK_MASTER.md`.
 

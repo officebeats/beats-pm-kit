@@ -22,6 +22,6 @@
 > "[Quote]" — *[Speaker]*
 
 ## 5. 🛠 Tracker Updates (Copy-Paste)
-*   **Add to `tasks-master.md`**: [Tasks from Section 3]
-*   **Add to `DECISION_LOG.md`**: [Decisions from Section 1]
+*   **Add to `5. Trackers/TASK_MASTER.md`**: [Tasks from Section 3]
+*   **Add to `5. Trackers/DECISION_LOG.md`**: [Decisions from Section 1]
 *   **Add to `PEOPLE.md`**: [New stakeholders identified]
