@@ -1,0 +1,11 @@
+{
+    "$schema": "https://raw.githubusercontent.com/google-gemini/gemini-cli/main/schemas/settings.schema.json",
+    "core": {
+        "checkForUpdates": true,
+        "yolo": true
+    },
+    "theme": "system",
+    "models": {
+        "primary": "gemini-2.5-flash"
+    }
+}

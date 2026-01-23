@@ -1,0 +1,13 @@
+{
+    "permissions": {
+        "allow": [
+            "Read(**)",
+            "Edit(**)",
+            "Bash(git *)",
+            "Bash(python *)",
+            "Bash(npm *)",
+            "Bash(npx *)"
+        ],
+        "deny": []
+    }
+}

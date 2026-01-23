@@ -50,19 +50,24 @@
 
 **Step 1: Get the Tools**
 
-1. Install [Google Antigravity](https://github.com/anthropics/claude-code) (Claude Code) or the Gemini CLI.
-2. Open your terminal and run: `claude login` (or `gemini login`) to authenticate with your Google Account.
+Install your preferred AI coding assistant:
+
+| Tool            | Install Command                                                                             | Auth Command         |
+| --------------- | ------------------------------------------------------------------------------------------- | -------------------- |
+| **Gemini CLI**  | `npm install -g @anthropic-ai/claude-code`                                                  | `gemini login`       |
+| **Claude Code** | `npm install -g @anthropic-ai/claude-code`                                                  | `claude login`       |
+| **Kilo Code**   | [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=kilocode.kilo-code) | Configure in VS Code |
 
 **Step 2: Get the Brain**
 
 1. Scroll to the top of this page.
-2. Click the green **Code** button -> **Download ZIP**.
+2. Click the green **Code** button → **Download ZIP**.
 3. Extract the ZIP file to a folder on your computer (e.g., `Documents/Antigravity`).
 
 **Step 3: Launch**
 
-1. Open Antigravity (your terminal).
-2. Drag the extracted folder into the terminal window to navigate to it.
+1. Open your AI tool (terminal or VS Code).
+2. Navigate to the extracted folder.
 3. Type `/setup` and hit Enter.
 
 ### ⚡ For Engineers (Advanced)
@@ -72,6 +77,62 @@ git clone https://github.com/officebeats/beats-pm-antigravity-brain
 cd beats-pm-antigravity-brain
 # Type /setup in your AI CLI to initialize
 ```
+
+---
+
+## 🔧 Works With Your Favorite AI Tool
+
+This kit uses a **single source of truth** (`.agent/`) that automatically syncs to all three major AI coding assistants via symlinks.
+
+```
+.agent/                    ← SOURCE OF TRUTH (edit here)
+    │
+    ├── .gemini/           ← Gemini CLI reads this
+    ├── .claude/           ← Claude Code reads this
+    └── .kilocode/         ← Kilo Code reads this
+```
+
+### Supported Tools
+
+| Tool            | Config Folder | Status             |
+| --------------- | ------------- | ------------------ |
+| **Gemini CLI**  | `.gemini/`    | ✅ Auto-configured |
+| **Claude Code** | `.claude/`    | ✅ Auto-configured |
+| **Kilo Code**   | `.kilocode/`  | ✅ Auto-configured |
+
+### Setup by Tool
+
+<details>
+<summary><strong>🟢 Gemini CLI</strong></summary>
+
+1. Install: `npm install -g @google/gemini-cli`
+2. Authenticate: `gemini login`
+3. Navigate to this folder and type `gemini`
+4. The kit loads automatically via `.gemini/GEMINI.md`
+
+</details>
+
+<details>
+<summary><strong>🟣 Claude Code</strong></summary>
+
+1. Install: `npm install -g @anthropic-ai/claude-code`
+2. Authenticate: `claude login`
+3. Navigate to this folder and type `claude`
+4. The kit loads automatically via `.claude/CLAUDE.md`
+
+</details>
+
+<details>
+<summary><strong>🔵 Kilo Code (VS Code)</strong></summary>
+
+1. Install from [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=kilocode.kilo-code)
+2. Open this folder in VS Code
+3. Kilo Code reads `.kilocode/rules/` automatically
+4. Skills and workflows are pre-configured
+
+</details>
+
+> 💡 **Single Source of Truth**: Edit files in `.agent/` only. Changes sync to all tools automatically via symlinks.
 
 ---
 
@@ -118,14 +179,14 @@ Here's the secret: **You may never pay for AI again.**
 
 Antigravity supports multiple AI models with generous free tiers. This kit works identically across all of them.
 
-| Model | Provider | Free Tier (Est.) | Best For |
-| :---- | :------- | :-------- | :------- |
-| **Gemini 3 Flash** | Google | High Daily Quota | Fast daily tasks |
-| **Gemini 3 Pro** | Google | **Weekly Quota** | Complex PRDs & Strategy |
-| **Claude Sonnet** | Anthropic | **Weekly Quota** | Balanced work |
-| **Claude Opus** | Anthropic | Limited Weekly | Maximum quality |
+| Model              | Provider  | Free Tier (Est.) | Best For                |
+| :----------------- | :-------- | :--------------- | :---------------------- |
+| **Gemini 3 Flash** | Google    | High Daily Quota | Fast daily tasks        |
+| **Gemini 3 Pro**   | Google    | **Weekly Quota** | Complex PRDs & Strategy |
+| **Claude Sonnet**  | Anthropic | **Weekly Quota** | Balanced work           |
+| **Claude Opus**    | Anthropic | Limited Weekly   | Maximum quality         |
 
-_*Both Google Antigravity and Anthropic have shifted to Weekly Quotas for their best models._
+_\*Both Google Antigravity and Anthropic have shifted to Weekly Quotas for their best models._
 
 ### The Rotation Strategy
 
@@ -290,14 +351,28 @@ beats-pm-antigravity-brain/
 ├── 3. Meetings/           # Transcripts (LOCAL ONLY)
 ├── 4. People/             # Stakeholders (LOCAL ONLY)
 ├── 5. Trackers/           # Task Ledgers (LOCAL ONLY)
-├── .agent/
+│
+├── .agent/                # ⭐ SOURCE OF TRUTH
 │   ├── agents/            # Virtual Team Personas
-│   ├── rules/             # GEMINI.md (Core Rules)
+│   ├── rules/GEMINI.md    # Core Rules File
 │   ├── skills/            # 18 Modular Skills
 │   ├── templates/         # FAANG Document Templates
 │   └── workflows/         # 16 Playbooks
+│
+├── .gemini/               # Gemini CLI (symlinks to .agent/)
+│   ├── GEMINI.md          → .agent/rules/GEMINI.md
+│   └── settings.json      # Gemini CLI config
+│
+├── .claude/               # Claude Code (symlinks to .agent/)
+│   ├── CLAUDE.md          → .agent/rules/GEMINI.md
+│   └── commands/          → .agent/workflows/
+│
+├── .kilocode/             # Kilo Code (symlinks to .agent/)
+│   ├── rules/             → .agent/rules/
+│   ├── skills/            → .agent/skills/
+│   └── workflows/         → .agent/workflows/
+│
 ├── system/                # Python Scripts & Utils
-├── GEMINI.md              # System Instructions
 ├── SETTINGS.md            # Your Configuration
 └── STATUS.md              # Current Dashboard
 ```
