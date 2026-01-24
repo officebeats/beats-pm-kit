@@ -1,5 +1,5 @@
 ---
-name: daily-synthesizer
+name: daily-synth
 description: Daily briefing and planning.
 triggers:
   - "/day"

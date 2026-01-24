@@ -5,7 +5,7 @@ triggers:
   - "/prep"
   - "/recall"
   - "/history"
-version: 1.0.0
+version: 2.0.0 (Native Optimized)
 author: Beats PM Brain
 ---
 
@@ -20,20 +20,16 @@ author: Beats PM Brain
 
 ## 2. Cognitive Protocol
 
-### A. The Mining Operation (`/prep`)
+### A. Parallel Context Dragnet
 
-When user runs `/prep [Person/Topic]`:
+**Goal**: Identify "Trace Evidence" of the target.
 
-1.  **Scan Ledger (`TASK_MASTER.md`)**:
-    - Find all _Incomplete_ tasks where `[Person]` is Delegatee or Owner.
-    - Find all _Completed_ tasks from the last 7 days related to `[Topic]`.
-2.  **Scan Decisions (`5. Trackers/DECISION_LOG.md`)**:
-    - Find recent decisions involving `[Person]`.
-3.  **Scan Transcripts (`3. Meetings/`)**:
-    - Search for `[Person]` in filenames of last 3 files.
-    - Extract "Action Items" from those files.
-4.  **Scan Profile (`4. People/`)**:
-    - Read `[Person].md` for Role, Influence, and "How to work with me".
+1.  **Parallel Execution**:
+    - **Action**: In a SINGLE turn:
+      - Scan `5. Trackers/` for open tasks/decisions.
+      - Search `3. Meetings/` filenames for `[Person]`.
+      - Read `4. People/[Person].md` (if exists).
+2.  **Synthesis**: Combine findings into a "Dossier".
 
 ### B. Synthesis (The Cheat Sheet)
 

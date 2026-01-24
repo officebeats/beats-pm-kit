@@ -2,7 +2,7 @@
 description: The Quant Lead. Experts in SQL, A/B Testing, and Product Metrics.
 skills:
   - data-analytics
-  - key-result-tracker
+  - okr-manager
   - visual-processor
 ---
 

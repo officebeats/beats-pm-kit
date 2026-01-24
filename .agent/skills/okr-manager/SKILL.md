@@ -34,15 +34,16 @@ author: Beats PM Brain
 ## 4. Output Format
 
 ```markdown
-# OKRs — [Quarter]
+# OKR — [Quarter]
 
 ## Objective 1: [Outcome]
-| Key Result | Owner | Baseline | Target | Due |
-| :--------- | :---- | :------- | :----- | :-- |
-| KR1        | @name | X        | Y      | Date |
+
+| Key Result | Baseline | Target | Owner | Due  | Status   |
+| :--------- | :------- | :----- | :---- | :--- | :------- |
+| KR1        | 10%      | 25%    | @name | Date | On Track |
 ```
 
 ## 5. Safety Rails
 
-- Avoid output metrics that are not controllable by the team.
-- Flag missing ownership or missing baselines.
+- **Metrics Only**: "Improve UX" is not a KR. "Reduce click depth by 2" is.
+- **Ownership**: Every KR must have a single DRI (Directly Responsible Individual).

@@ -31,9 +31,9 @@ and read SETTINGS.md for my configuration. Help me get started.
 Now use the chat for PM work:
 
 ```
-#boss CFO needs budget projections by Monday
-#bug Login fails for SSO users
-#morning
+/boss CFO needs budget projections by Monday
+/bug Login fails for SSO users
+/morning
 ```
 
 ---
@@ -43,7 +43,7 @@ Now use the chat for PM work:
 Use `@` to reference specific files in your prompts:
 
 ```
-@system/agents/daily-synthesizer.md Generate my morning brief
+@.agent/skills/daily-synth/SKILL.md Generate my morning brief
 
 @5. Trackers/critical/boss-requests.md What's overdue?
 
@@ -60,13 +60,13 @@ Create a `.cursorrules` file in your PM brain folder to auto-load context:
 You are helping me manage my PM work using the Beats PM Antigravity Brain system.
 
 Key files to be aware of:
-- system/agents/ contains AI agent prompts for different PM functions
+- .agent/skills/ contains AI skill prompts for different PM functions
 - SETTINGS.md contains my personal configuration
 - 5. Trackers/critical/ contains boss requests and escalations
 - 5. Trackers/bugs/ contains bug tracking
-- system/inbox/ is where I drop raw items to be processed
+- 0. Incoming/ is where I drop raw items to be processed
 
-When I use # commands, process them according to the agent definitions.
+When I use / commands, process them according to the skill definitions.
 ```
 
 ---
@@ -75,19 +75,19 @@ When I use # commands, process them according to the agent definitions.
 
 | Command       | Action                   |
 | ------------- | ------------------------ |
-| `#boss`       | Boss request (Critical)  |
-| `#bug`        | Bug entry                |
-| `#task`       | Task                     |
-| `#feature`    | Feature request          |
-| `#ux`         | UX task                  |
-| `#eng`        | Engineering item         |
-| `#note`       | Quick note               |
-| `#transcript` | Paste meeting transcript |
-| `#morning`    | Morning brief            |
-| `#lunch`      | Midday brief             |
-| `#eod`        | End of day brief         |
-| `#weekly`     | Weekly summary           |
-| `#monthly`    | Monthly summary          |
+| `/boss`       | Boss request (Critical)  |
+| `/bug`        | Bug entry                |
+| `/task`       | Task                     |
+| `/feature`    | Feature request          |
+| `/ux`         | UX task                  |
+| `/eng`        | Engineering item         |
+| `/note`       | Quick note               |
+| `/transcript` | Paste meeting transcript |
+| `/morning`    | Morning brief            |
+| `/lunch`      | Midday brief             |
+| `/eod`        | End of day brief         |
+| `/weekly`     | Weekly summary           |
+| `/monthly`    | Monthly summary          |
 
 ---
 

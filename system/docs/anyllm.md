@@ -6,7 +6,7 @@
 
 ## The Agents Are Portable Markdown
 
-The magic of this system is that the agents in `system/agents/` are just markdown files with detailed prompts. You can copy-paste them into **any** LLM.
+The magic of this system is that the skills in `.agent/skills/` are just markdown files with detailed prompts. You can copy-paste them into **any** LLM.
 
 ---
 
@@ -26,7 +26,7 @@ Download this repository to your computer
 
 ### Step 3: Paste an Agent Prompt
 
-1. Open the agent file you want to use from `system/agents/`
+1. Open the skill file you want to use from `.agent/skills/`
 2. Copy the entire contents
 3. Paste it into your LLM chat
 4. Start interacting!
@@ -35,23 +35,23 @@ Download this repository to your computer
 
 ## Which Agent to Use?
 
-| I want to...                    | Use this agent                |
+| I want to...                    | Use this skill                |
 | ------------------------------- | ----------------------------- |
-| Organize my messy thoughts      | `requirements-translator.md`  |
-| Get my morning/daily brief      | `daily-synthesizer.md`        |
-| Get my weekly summary           | `weekly-synthesizer.md`       |
-| Track boss requests             | `boss-tracker.md`             |
-| Track and chase bugs            | `bug-chaser.md`               |
-| Manage stakeholder updates      | `stakeholder-manager.md`      |
-| Work with engineering           | `engineering-collaborator.md` |
-| Work with UX/design             | `ux-collaborator.md`          |
-| Find patterns and opportunities | `strategy-synthesizer.md`     |
+| Organize my messy thoughts      | `requirements-translator/SKILL.md`  |
+| Get my morning/daily brief      | `daily-synth/SKILL.md`               |
+| Get my weekly summary           | `weekly-synth/SKILL.md`              |
+| Track boss requests             | `boss-tracker/SKILL.md`              |
+| Track and chase bugs            | `bug-chaser/SKILL.md`                |
+| Manage stakeholder updates      | `stakeholder-mgr/SKILL.md`           |
+| Work with engineering           | `engineering-collab/SKILL.md`        |
+| Work with UX/design             | `ux-collaborator/SKILL.md`           |
+| Find patterns and opportunities | `strategy-synth/SKILL.md`            |
 
 ---
 
 ## Example: Using Daily Synthesizer
 
-1. Open `system/agents/daily-synthesizer.md`
+1. Open `.agent/skills/daily-synth/SKILL.md`
 2. Copy entire contents
 3. Paste into ChatGPT/Claude/etc
 4. Then say: "Generate my morning brief"
@@ -65,19 +65,19 @@ When talking to the LLM with an agent loaded, use these commands:
 
 | Command       | Action                   |
 | ------------- | ------------------------ |
-| `#boss`       | Boss request (Critical)  |
-| `#bug`        | Bug entry                |
-| `#task`       | Task                     |
-| `#feature`    | Feature request          |
-| `#ux`         | UX task                  |
-| `#eng`        | Engineering item         |
-| `#note`       | Quick note               |
-| `#transcript` | Paste meeting transcript |
-| `#morning`    | Morning brief            |
-| `#lunch`      | Midday brief             |
-| `#eod`        | End of day brief         |
-| `#weekly`     | Weekly summary           |
-| `#monthly`    | Monthly summary          |
+| `/boss`       | Boss request (Critical)  |
+| `/bug`        | Bug entry                |
+| `/task`       | Task                     |
+| `/feature`    | Feature request          |
+| `/ux`         | UX task                  |
+| `/eng`        | Engineering item         |
+| `/note`       | Quick note               |
+| `/transcript` | Paste meeting transcript |
+| `/morning`    | Morning brief            |
+| `/lunch`      | Midday brief             |
+| `/eod`        | End of day brief         |
+| `/weekly`     | Weekly summary           |
+| `/monthly`    | Monthly summary          |
 
 ---
 

@@ -8,30 +8,33 @@ description: Capture clipboard content (text, images, files) and save for proces
 
 > **Value Prop**: One command to capture Slack messages, screenshots, emails, or files directly from the clipboard, classify them, and route to the correct tracker.
 
-## Steps
+3.  **Analysis & Auto-Mining**:
+    - **Context Check**: Does the paste have clear context?
+    - **Action**: If NO, run `grep_search` and `view_file` in PARALLEL on potential matches (transcripts, tasks) to find where this belongs.
 
-// turbo
-
-1.  **Antigravity Native Capture (Primary)**:
+4.  **Router**:
+    - **Option A (Text)**: Append to `0. Incoming/raw/YYYY-MM-DD_clipboard.md`.
+    - **Option B (Image)**: Save to `0. Incoming/staging/` and invoke `visual-processor`.
+    - **Option C (File)**: Move to `0. Incoming/staging/`.
     - Use Antigravity clipboard ingest for text/images/files.
     - Proceed directly to classification via `inbox-processor`.
 
-2.  **CLI Fallback (Secondary)**:
+5.  **CLI Fallback (Secondary)**:
     - Run: `python system/scripts/clipboard_bridge.py`
     - Script auto-detects content type (text, image, or files).
 
-3.  **Execute File Organizer (The Concierge)**:
+6.  **Execute File Organizer (The Concierge)**:
     - Run: `python system/scripts/file_organizer.py`
     - Scans `0. Incoming/` for new files.
     - Prompts user for intent: "Task Source? Reference? Spec?"
     - Moves processed files to `0. Incoming/processed/`.
 
-4.  **Content Detection Priority**:
+7.  **Content Detection Priority**:
     - **Files** (copied from file manager) → Saved to `0. Incoming/staging/`
     - **Image** (screenshot to clipboard) → Saved to `0. Incoming/staging/`
     - **Text** (copied text) → Saved to `0. Incoming/raw/`
 
-5.  **Classification** (via `inbox-processor` skill):
+8.  **Classification** (via `inbox-processor` skill):
     - **Bug** (error, crash, broken) → Route to `5. Trackers/bugs/bugs-master.md`
     - **Boss Ask** (VIP speaker, urgent, ASAP) → Route to `5. Trackers/critical/boss-requests.md`
     - **Task** (TODO, action item, deadline) → Route to `5. Trackers/TASK_MASTER.md`
@@ -39,10 +42,10 @@ description: Capture clipboard content (text, images, files) and save for proces
     - **FYI** (heads up, no action) → Keep in `0. Incoming/fyi/`
     - **Unclear** → Route to `BRAIN_DUMP.md` (Parking Lot)
 
-6.  **Entity Tagging**:
+9.  **Entity Tagging**:
     - Tag with `[Company A]`, `[Company B]`, or ask if unclear.
 
-7.  **Output**:
+10. **Output**:
     - Confirmation table of what was captured and where it was routed.
 
 ## Supported Content Types

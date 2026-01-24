@@ -27,15 +27,15 @@ author: Beats PM Brain
 
 ## 2. Cognitive Protocol
 
-### A. Triage (`#triage` → `/triage`)
+### A. Parallel Triage (`#triage` → `/triage`)
 
 1.  **Parse**: Split chaotic `BRAIN_DUMP.md`.
-2.  **Route**:
-    - **Bug** -> `bug-chaser`.
-    - **Feature** -> `prd-author`.
-    - **Idea** -> `strategy-synth`.
-    - **Task** -> Move to Ledger.
-3.  **Clean**: Ensure `BRAIN_DUMP.md` is empty -> "Inbox Zero".
+2.  **Parallel Routing**:
+    - **Action**: In a SINGLE turn, use `multi_replace_file_content` to:
+      - Append Bugs to `bugs-master.md`.
+      - Append Tasks to `TASK_MASTER.md`.
+      - Clear `BRAIN_DUMP.md`.
+3.  **Zero State**: Ensure Inbox Zero is achieved in one move.
 
 ### B. Ledger Management (`/task`)
 

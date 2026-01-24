@@ -15,7 +15,7 @@ This workflow guides the **Tech Lead** or **Staff PM** to enforce quality.
 
 2.  **Code Review**:
     - Run `code-simplifier` (#simplify).
-    - Run `vibe_check.py` to ensure no regressions.
+    - Run `python system/scripts/vibe_check.py` to ensure no regressions.
     - Check for PII violations (Privacy Rule).
 
 3.  **Doc Review**:

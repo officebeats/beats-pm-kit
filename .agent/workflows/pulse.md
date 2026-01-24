@@ -12,12 +12,11 @@ description: Check system health and context (Time, Task Load, Stale State).
 
 // turbo
 
-1.  **Execute Pulse Script**:
-    - Run: `python system/scripts/pulse.py`
-    - Logic:
-      - Checks Time of Day (Morning, Lunch, EOD).
-      - Counts P0/High Tasks in `TASK_MASTER.md`.
-      - Checks age of `STATUS.md`.
+1.  **Native Pulse Check**:
+    - **Time Check**: Get local time.
+    - **Task Scan**: Parallel read `TASK_MASTER.md` and `boss-requests.md`.
+    - **Logic**: Count "P0" tags and "Overdue" dates.
+    - **Stale Check**: Check last modified date of `STATUS.md`.
 
 ## Output
 

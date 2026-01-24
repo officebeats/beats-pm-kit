@@ -12,10 +12,10 @@ This workflow guides the **Staff PM** to handle the meeting lifecycle.
     - **Prep**: "Get me ready for the 1:1 with [Name]".
     - **Process**: "Summarize this transcript".
 
-2.  **Prep Mode**:
-    - Read `4. People/[Name].md`.
-    - Check `5. Trackers/critical/boss-requests.md` for outstanding items.
-    - Output: A 3-bullet agenda.
+2.  **Parallel Prep Mode**:
+    - **Action**: In a SINGLE turn, read `4. People/[Name].md` AND `5. Trackers/critical/boss-requests.md`.
+    - **Synthesis**: Cross-reference open tasks with the person's profile.
+    - **Output**: A 3-bullet agenda with "Previous Action Item" status usage.
 
 3.  **Process Mode**:
     - **Input**: A new transcript file (txt/md) in `0. Incoming/` or `3. Meetings/transcripts/`.

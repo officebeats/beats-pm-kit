@@ -6,7 +6,7 @@ skills:
   - task-manager
   - boss-tracker
   - prd-author
-  - meeting-synthesizer
+  - meeting-synth
   - delegation-manager
   - requirements-translator
 ---

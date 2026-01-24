@@ -7,7 +7,7 @@ triggers:
   - "/roadmap"
   - "/vision"
   - "/okr"
-version: 4.0.0 (Native Unified)
+version: 4.1.0 (Consolidated)
 author: Beats PM Brain
 ---
 
@@ -43,8 +43,21 @@ author: Beats PM Brain
 3.  **Verdict**: Pick one. Justify via Trade-offs.
 4.  **Log**: Append to `5. Trackers/DECISION_LOG.md`.
 
+### C. Strategy Pulse (Signal Synthesis)
+
+1.  **Collect**: In a SINGLE turn, sample recent entries from `bugs-master.md`, `TASK_MASTER.md`, and `DECISION_LOG.md`.
+2.  **Cluster**: Group into 3–5 recurring themes (e.g., "Tech Debt", "Mobile Adoption").
+3.  **Output**: Save to `1. Company/STRATEGY_PULSE.md`.
+
 ## 3. Output Rules
 
 - **Decisions**: Use the "Decision Diamond" format (Context -> Options -> Verdict).
+- **Pulse**: Use format:
+  ```markdown
+  ## Theme 1: [Name]
+
+  - **Signal**: ...
+  - **Impact**: High/Medium/Low
+  ```
 - **Roadmaps**: Group by **Horizon**, not dates.
 - **Language**: No jargon ("synergy"). Data-backed confidence only.

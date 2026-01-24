@@ -54,13 +54,13 @@ Install these community plugins for the best experience:
 If you install the **Obsidian Copilot** plugin:
 
 1. Configure it with your API key (OpenAI, Anthropic, etc.)
-2. Open any agent file from `system/agents/`
+2. Open any skill file from `.agent/skills/`
 3. Use the AI chat to interact with your PM brain
 
 Example prompts:
 
 ```
-Based on the daily-synthesizer agent, generate my morning brief
+Based on the daily-synth skill, generate my morning brief
 
 Look at 5. Trackers/critical/boss-requests.md and tell me what's overdue
 
@@ -93,23 +93,23 @@ Your vault will look like this:
 
 ## Command Reference
 
-When using with an AI plugin, use these # commands:
+When using with an AI plugin, use these `/` commands:
 
 | Command       | Action                   |
 | ------------- | ------------------------ |
-| `#boss`       | Boss request (Critical)  |
-| `#bug`        | Bug entry                |
-| `#task`       | Task                     |
-| `#feature`    | Feature request          |
-| `#ux`         | UX task                  |
-| `#eng`        | Engineering item         |
-| `#note`       | Quick note               |
-| `#transcript` | Paste meeting transcript |
-| `#morning`    | Morning brief            |
-| `#lunch`      | Midday brief             |
-| `#eod`        | End of day brief         |
-| `#weekly`     | Weekly summary           |
-| `#monthly`    | Monthly summary          |
+| `/boss`       | Boss request (Critical)  |
+| `/bug`        | Bug entry                |
+| `/task`       | Task                     |
+| `/feature`    | Feature request          |
+| `/ux`         | UX task                  |
+| `/eng`        | Engineering item         |
+| `/note`       | Quick note               |
+| `/transcript` | Paste meeting transcript |
+| `/morning`    | Morning brief            |
+| `/lunch`      | Midday brief             |
+| `/eod`        | End of day brief         |
+| `/weekly`     | Weekly summary           |
+| `/monthly`    | Monthly summary          |
 
 ---
 
@@ -118,7 +118,7 @@ When using with an AI plugin, use these # commands:
 ### Morning
 
 1. Open Obsidian
-2. Ask AI: `#morning` (or manually review CRITICAL folder)
+2. Ask AI: `/morning` (or manually review CRITICAL folder)
 3. Check `_QUEUE` for items needing your input
 
 ### Throughout the Day
@@ -129,7 +129,7 @@ When using with an AI plugin, use these # commands:
 
 ### End of Day
 
-1. Ask AI: `#eod`
+1. Ask AI: `/eod`
 2. Review what was accomplished
 3. Prep tomorrow's priorities
 

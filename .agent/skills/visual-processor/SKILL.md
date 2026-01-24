@@ -36,13 +36,13 @@ author: Beats PM Brain
 - **Rename**: Move from temp name to semantic name (e.g., `2024-01-20_LoginError.png`).
 - **Store**: Place in `0. Incoming/staging/`.
 
-### Step 2: Content Extraction (The "OCR" Mindset)
+### Step 2: Parallel Analysis Mesh
 
-_Simulated Vision Analysis:_
+**Rule**: Extract all modalities simultaneously to reduce latency.
 
-- **Text**: What does it say? (Error codes, headlines).
-- **Elements**: Buttons, Forms, Graphs.
-- **Context**: What app/website is this?
+1.  **OCR**: Extract all visible text.
+2.  **UI Detection**: Identify components (Buttons, Modals, Nav).
+3.  **Logic Map**: Infer the flow or state change implied.
 
 ### Step 3: Execution Strategy
 

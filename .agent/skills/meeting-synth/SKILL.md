@@ -1,5 +1,5 @@
 ---
-name: meeting-synthesizer
+name: meeting-synth
 description: Process meeting transcripts into notes.
 triggers:
   - "/transcript"

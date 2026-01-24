@@ -1,6 +1,6 @@
 # GEMINI.md - Maestro Configuration
 
-**Version 5.0.0** - Beats PM Antigravity Kit
+**Version 6.5.0** - Beats PM Antigravity Kit
 
 This file defines the Operating System for the Product Management Brain.
 
@@ -52,6 +52,44 @@ Agent activated → Check frontmatter "skills:" field in `.agent/agents/`
 
 ---
 
+## 🚀 TIER 0.5: AGENTIC PROTOCOL (Antigravity V2)
+
+> This tier defines the agent's behavior when running in **Antigravity's native agentic mode**.
+
+### 1. State Machine Protocol
+
+For any task classified as "Deep Work" (creation, planning, complex research), the agent MUST:
+
+1.  **ENTER PLANNING**: Call `task_boundary` with `Mode: PLANNING`. Create `implementation_plan.md` in the artifacts directory.
+2.  **TRANSITION TO EXECUTION**: After user approval, switch `Mode: EXECUTION`. Use `task.md` for progress tracking.
+3.  **FINALIZE WITH VERIFICATION**: Switch `Mode: VERIFICATION`. Create `walkthrough.md` with visual proof (screenshots, recordings).
+
+### 2. Parallelism Mandate (CRITICAL)
+
+**Rule**: Maximize parallel tool calls. Never make sequential calls for independent operations.
+
+| Scenario               | Sequential (BAD)             | Parallel (GOOD)                               |
+| :--------------------- | :--------------------------- | :-------------------------------------------- |
+| Multi-file audit       | Read file A, then B, then C  | Read files A, B, C simultaneously             |
+| Research + Template    | Search, wait, then read file | `grep_search` + `view_file` in single turn    |
+| Multi-skill activation | Load skill 1, then skill 2   | `view_file` for both `SKILL.md`s in one block |
+
+### 3. Visual Excellence Protocol
+
+**Rule**: All PRDs, Roadmaps, and Walkthroughs MUST include visual elements.
+
+- **Mermaid Diagrams**: Required for any workflow, architecture, or flowchart.
+- **Tables**: Required for feature lists, milestones, and comparisons.
+- **Carousels**: Required in `walkthrough.md` to display related screenshots or code snippets.
+- **GitHub Alerts**: Use `[!IMPORTANT]`, `[!TIP]`, `[!WARNING]` to highlight key decisions.
+
+### 4. Stitch-First Design (OPTIONAL)
+
+When creating a PRD or Feature Spec for a _user-facing_ feature, the agent SHOULD:
+
+1.  Ask the user if they want a UI mockup generated.
+2.  If yes, invoke the `/stitch` workflow to produce a visual prototype alongside the document.
+
 ## 🗳️ REQUEST CLASSIFIER
 
 Before ANY action, classify the request:
@@ -94,7 +132,7 @@ Before ANY action, classify the request:
 
 ### 4. Hierarchical Integrity Protocol (MANDATORY)
 
-**Rule**: No loose files are permitted at the root of Folders 1, 2, or 4. 
+**Rule**: No loose files are permitted at the root of Folders 1, 2, or 4.
 
 - **Structure**: `[Folder]/[Company]/[Product]/[Asset].md`
 - **Exemptions**: `PROFILE.md` or `stakeholders.md` may exist at the `[Company]` root, but all initiative-specific docs MUST be nested into a product folder.
@@ -115,15 +153,16 @@ Before ANY action, classify the request:
 
 ## TIER 1: CORE PLAYBOOKS
 
-| Playbook      | Purpose                | Output                                |
-| :------------ | :--------------------- | :------------------------------------ |
-| **`/track`**  | **Battlefield View**   | Table of P0/P1 Tasks + Boss Asks      |
-| **`/create`** | **Document Factory**   | PRD, One-Pager, or Strategy Memo      |
-| **`/plan`**   | **Strategic War Room** | Roadmap, OKRs, Decision Log           |
-| **`/meet`**   | **Meeting Synthesis**  | Action Items, Decisions, Notes        |
-| **`/review`** | **Quality Control**    | UX Audit, Spec Review, Code Review    |
-| **`/launch`** | **GTM Strategy**       | Launch Checklist, Marketing Assets    |
-| **`/data`**   | **Analytics**          | SQL Queries, Success Metrics, Funnels |
+| Playbook      | Purpose                 | Output                                |
+| :------------ | :---------------------- | :------------------------------------ |
+| **`/track`**  | **Battlefield View**    | Table of P0/P1 Tasks + Boss Asks      |
+| **`/create`** | **Document Factory**    | PRD, One-Pager, or Strategy Memo      |
+| **`/plan`**   | **Strategic War Room**  | Roadmap, OKRs, Decision Log           |
+| **`/meet`**   | **Meeting Synthesis**   | Action Items, Decisions, Notes        |
+| **`/review`** | **Quality Control**     | UX Audit, Spec Review, Code Review    |
+| **`/launch`** | **GTM Strategy**        | Launch Checklist, Marketing Assets    |
+| **`/data`**   | **Analytics**           | SQL Queries, Success Metrics, Funnels |
+| **`/vacuum`** | **System Optimization** | Archive Tasks, Cleanup, & Audit       |
 
 ---
 
@@ -145,15 +184,15 @@ beats-pm-antigravity-brain/
 
 ## 🧩 THE VIRTUAL TEAM (Roles)
 
-| Agent                     | Focus                | Key Skills                                    |
-| :------------------------ | :------------------- | :-------------------------------------------- |
-| **Chief Product Officer** | Strategy & Org       | `chief-strategy-officer`, `boss-tracker`      |
-| **Staff PM**              | Execution & Delivery | `task-manager`, `prd-author`, `meeting-synth` |
-| **Product Strategist**    | Market & Vision      | `chief-strategy-officer`, `okr-manager`       |
-| **Tech Lead**             | Feasibility & Eng    | `engineering-collab`, `code-simplifier`       |
-| **Data Scientist**        | Quant Insights       | `data-analytics`                              |
-| **UX Researcher**         | Qual Insights        | `ux-researcher`                               |
-| **GTM Lead**              | Launch & Growth      | `product-marketer`                            |
+| Agent                     | Focus                | Key Skills                                                       |
+| :------------------------ | :------------------- | :--------------------------------------------------------------- |
+| **Chief Product Officer** | Strategy & Org       | `chief-strategy-officer`, `boss-tracker`, `vacuum-protocol`      |
+| **Staff PM**              | Execution & Delivery | `task-manager`, `prd-author`, `meeting-synth`, `vacuum-protocol` |
+| **Product Strategist**    | Market & Vision      | `chief-strategy-officer`, `okr-manager`                          |
+| **Tech Lead**             | Feasibility & Eng    | `engineering-collab`, `code-simplifier`, `vacuum-protocol`       |
+| **Data Scientist**        | Quant Insights       | `data-analytics`                                                 |
+| **UX Researcher**         | Qual Insights        | `ux-researcher`                                                  |
+| **GTM Lead**              | Launch & Growth      | `product-marketer`                                               |
 
 ---
 

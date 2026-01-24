@@ -8,9 +8,9 @@ description: Plan the current and upcoming week.
 
 ## Steps
 
-1.  **Context Mining**:
-    - **Deadlines**: Scan `5. Trackers/TASK_MASTER.md` for dates in the next 14 days.
-    - **Urgency**: Scan `5. Trackers/critical/boss-requests.md` for "ASAP" or "P0".
+1.  **Parallel Context Mining**:
+    - **Action**: In a SINGLE turn, read `5. Trackers/TASK_MASTER.md` AND `5. Trackers/critical/boss-requests.md`.
+    - **Deadlines**: Scan for dates in the next 14 days.
     - **Calendar**: Ask user "Any key meetings this week?" (Interactive).
 
 2.  **Synthesis (Staff PM)**:

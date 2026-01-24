@@ -37,9 +37,9 @@ The **Kernel (`KERNEL.md`)** is the system's "operating system." It governs agen
   - **Autonomous Decisioning**: If confidence is >85%, write directly to target tracker. If <85%, route to `system/queue/needs-clarification.md`.
   - **Yield Logic**: Must yield to `Visual Processor` if an image/screenshot is provided.
 
-#### **2.2.2 Meeting Synthesizer (`meeting-synthesizer.md`)**
+#### **2.2.2 Meeting Synthesizer (`meeting-synth/SKILL.md`)**
 
-- **Trigger**: `#transcript`, `#meeting`, `#call`, `#1on1`.
+- **Trigger**: `/transcript`, `/meeting`, `/call`, `/1on1`.
 - **Operational Requirements**:
   - **Parallel Fan-Out**: Identify action items and dispatch them to worker agents (Boss, Bug, Eng, UX) **simultaneously**.
   - **Product Contextualization**: Identify **Product DNA** from `vault/products/` and segment summaries by product if multiple are discussed.
@@ -84,8 +84,8 @@ The **Kernel (`KERNEL.md`)** is the system's "operating system." It governs agen
 
 ### 3.4 Engineering & UX Collaborators
 
-- **Engineering (`engineering-collaborator.md`)**: Convert feedback into "Technical Spikes" (🔬) or "Architecture Decisions" (🏗️) in `5. Trackers/people/engineering-items.md`.
-- **UX (`ux-collaborator.md`)**: Track Discovery (🔍), Wireframes (📐), and Mockups (🎨) in `5. Trackers/people/ux-tasks.md`. Link screenshots/Figma URLs directly to tasks.
+- **Engineering (`engineering-collab/SKILL.md`)**: Convert feedback into "Technical Spikes" (🔬) or "Architecture Decisions" (🏗️) in `5. Trackers/people/engineering-items.md`.
+- **UX (`ux-collaborator/SKILL.md`)**: Track Discovery (🔍), Wireframes (📐), and Mockups (🎨) in `5. Trackers/people/ux-tasks.md`. Link screenshots/Figma URLs directly to tasks.
 
 ---
 
@@ -100,7 +100,7 @@ The **Kernel (`KERNEL.md`)** is the system's "operating system." It governs agen
 
 ### 4.2 Weekly Synthesizer (The "Auditor")
 
-- **Trigger**: Fridays @ 4 PM or `#weekly`.
+- **Trigger**: Fridays @ 4 PM or `/weekly`.
 - **Cleanup Protocol**:
   - Archive `[x]` tasks older than 7 days.
   - Flag `[ ]` tasks older than 14 days as `⚠️ Stale`.

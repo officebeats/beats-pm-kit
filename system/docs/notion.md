@@ -77,7 +77,7 @@ Create these pages/databases in Notion:
 
 ### Step 2: Copy Agent Prompts
 
-Create a page called "Agents" and paste the contents of each file from `system/agents/`
+Create a page called "Skills" and paste the contents of each file from `.agent/skills/`
 
 ### Step 3: Use with Notion AI
 
@@ -118,7 +118,7 @@ Create a page called "Agents" and paste the contents of each file from `system/a
 
 ### Load an Agent
 
-1. Copy contents of an agent file (e.g., `system/agents/daily-synthesizer.md`)
+1. Copy contents of a skill file (e.g., `.agent/skills/daily-synth/SKILL.md`)
 2. Create a new Notion page
 3. Paste the agent prompt
 4. Then ask Notion AI to follow those instructions
@@ -126,36 +126,36 @@ Create a page called "Agents" and paste the contents of each file from `system/a
 ### Example Prompts
 
 ```
-Following the daily-synthesizer instructions above,
+Following the daily-synth instructions above,
 generate my morning brief based on this context:
 [paste your current priorities]
 
 Following the boss-tracker instructions above,
 help me track this request:
-#boss CEO wants competitive analysis by Friday
+/boss CEO wants competitive analysis by Friday
 ```
 
 ---
 
 ## Command Reference
 
-When using with Notion AI, prefix with `#`:
+When using with Notion AI, prefix with `/`:
 
 | Command       | Action                   |
 | ------------- | ------------------------ |
-| `#boss`       | Boss request (Critical)  |
-| `#bug`        | Bug entry                |
-| `#task`       | Task                     |
-| `#feature`    | Feature request          |
-| `#ux`         | UX task                  |
-| `#eng`        | Engineering item         |
-| `#note`       | Quick note               |
-| `#transcript` | Paste meeting transcript |
-| `#morning`    | Morning brief            |
-| `#lunch`      | Midday brief             |
-| `#eod`        | End of day brief         |
-| `#weekly`     | Weekly summary           |
-| `#monthly`    | Monthly summary          |
+| `/boss`       | Boss request (Critical)  |
+| `/bug`        | Bug entry                |
+| `/task`       | Task                     |
+| `/feature`    | Feature request          |
+| `/ux`         | UX task                  |
+| `/eng`        | Engineering item         |
+| `/note`       | Quick note               |
+| `/transcript` | Paste meeting transcript |
+| `/morning`    | Morning brief            |
+| `/lunch`      | Midday brief             |
+| `/eod`        | End of day brief         |
+| `/weekly`     | Weekly summary           |
+| `/monthly`    | Monthly summary          |
 
 ---
 

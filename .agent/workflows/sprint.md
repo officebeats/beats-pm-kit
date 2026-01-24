@@ -8,10 +8,9 @@ description: Generate a prioritized sprint backlog for dev team planning.
 
 ## Steps
 
-1.  **Context Gathering**:
-    - Read `5. Trackers/TASK_MASTER.md` for tasks tagged `[Eng]` or with an Eng `Delegatee`.
-    - Read `5. Trackers/bugs/bugs-master.md` for active bugs.
-    - Read `5. Trackers/critical/boss-requests.md` for leadership asks impacting Eng.
+1.  **Parallel Context Gathering**:
+    - **Action**: In a SINGLE turn, read `5. Trackers/TASK_MASTER.md`, `5. Trackers/bugs/bugs-master.md`, and `5. Trackers/critical/boss-requests.md`.
+    - **Filter**: Isolate tasks tagged `[Eng]` or with engineering owners.
 
 2.  **Prioritization**:
     - Group by Priority: P0 (Blockers) → P1 (Sprint) → P2 (Backlog).

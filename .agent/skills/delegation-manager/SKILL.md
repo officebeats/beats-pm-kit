@@ -1,47 +1,60 @@
----
 name: delegation-manager
 description: Track delegated tasks and prevent accountability gaps.
 triggers:
-  - "/delegate"
-  - "/delegation"
-  - "/followup"
-version: 1.0.0 (Antigravity-First)
-author: Beats PM Brain
+
+- "/delegate"
+- "/delegation"
+- "/followup"
+- "/nag"
+  version: 2.0.0 (Person-Aware)
+  author: Beats PM Brain
+
 ---
 
 # Delegation Manager Skill
 
-> **Role**: Keep delegated work visible. Ensure every handoff has an owner, due date, and next follow-up.
+> **Role**: The "Boomerang" Manager. You throw tasks out, but you ensure they come back completed. You track the "Who", the "When", and best of all, the "Or Else" (Risks).
 
-## 1. Runtime Capability
+## 1. Native Interface
 
-- **Antigravity**: Parallel extraction of Owners, Dates, and Dependencies.
-- **CLI**: Sequential parsing with user clarification if missing fields.
+- **Inputs**: `/delegate`, `/followup`, `/nag`.
+- **Context**: `5. Trackers/DELEGATED_TASKS.md`, `4. People/`.
+- **Tools**: `view_file`, `grep_search`, `write_to_file`.
 
-## 2. Native Interface
+## 2. Cognitive Protocol
 
-- **Inputs**: `/delegate`, `/followup`
-- **Context**: `5. Trackers/DELEGATED_TASKS.md`, `SETTINGS.md`
-- **Tools**: `view_file`, `write_to_file`
+### Phase 1: Identity Resolution
 
-## 3. Cognitive Protocol
+1.  **Parse**: Extract `@name` from input.
+2.  **Verify**: Use `find_by_name` in `4. People/` to see if a specific profile exists for context (e.g., "Always late", "Prefers Slack").
+3.  **Link**: Associate the task with the Person file if found.
 
-1. **Normalize**: Identify the task, owner, due date, and rationale.
-2. **Confirm**: If owner or due date missing, ask once.
-3. **Track**: Append to `5. Trackers/DELEGATED_TASKS.md` with status.
-4. **Remind**: Surface follow-up date in output.
+### Phase 2: The Contract
 
-## 4. Output Format
+- **Drafting**: Every delegation must have:
+  - **What**: Clear output description.
+  - **Who**: Single owner (Never "The Team").
+  - **When**: Specific date/time.
+- **Logging**: Append to `5. Trackers/DELEGATED_TASKS.md`.
+
+### Phase 3: The Nag Protocol (`/nag` or Auto-Check)
+
+- **Check**: Compare Current Date vs Due Date.
+- **Action**:
+  - **Yellow (Due Soon)**: "Gentle nudge."
+  - **Red (Overdue)**: "Escalation draft."
+
+## 3. Output Format
 
 ```markdown
-# Delegated Tasks
+# Delegation Log Update
 
-| Task | Owner | Due | Status | Next Follow-up |
-| :--- | :---- | :-- | :----- | :------------- |
-| ...  | ...   | ... | Pending | YYYY-MM-DD |
+| Task | 👤 Owner | 📅 Due | Status | Action |
+| :--- | :------- | :----- | :----- | :----- |
+| ...  | @Jeff    | Friday | 🟡     | Nudge  |
 ```
 
-## 5. Safety Rails
+## 4. Safety Rails
 
-- Never record PII beyond names/titles.
-- Flag overdue tasks as **At Risk**.
+- **Bus Factor**: Flag if too many tasks are delegated to one person.
+- **Trust but Verify**: For critical tasks, require an interim check-in date.

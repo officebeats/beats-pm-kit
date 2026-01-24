@@ -56,7 +56,7 @@
     "description": "System health and diagnostics.",
     "triggers": []
   },
-  "daily-synthesizer": {
+  "daily-synth": {
     "path": ".agent/skills/daily-synth/SKILL.md",
     "description": "Daily briefing and planning.",
     "triggers": [
@@ -76,7 +76,7 @@
       "/analyze"
     ]
   },
-  "engineering-collaborator": {
+  "engineering-collab": {
     "path": ".agent/skills/engineering-collab/SKILL.md",
     "description": "Architecture, tech debt, and spike management.",
     "triggers": [
@@ -105,7 +105,7 @@
       "/capture"
     ]
   },
-  "meeting-synthesizer": {
+  "meeting-synth": {
     "path": ".agent/skills/meeting-synth/SKILL.md",
     "description": "Process meeting transcripts into notes.",
     "triggers": [
@@ -134,7 +134,7 @@
       "/gtm"
     ]
   },
-  "stakeholder-manager": {
+  "stakeholder-mgr": {
     "path": ".agent/skills/stakeholder-mgr/SKILL.md",
     "description": "Manage relationships, 1:1s, and stakeholder communication.",
     "triggers": [
@@ -143,6 +143,37 @@
       "/1on1",
       "/whois",
       "/update"
+    ]
+  },
+  "key-result-tracker": {
+    "path": ".agent/skills/key-result-tracker/SKILL.md",
+    "description": "Track OKRs and key results with owners, targets, and status.",
+    "triggers": [
+      "/okr",
+      "/krs",
+      "/keyresults",
+      "/key-results"
+    ]
+  },
+  "ux-collaborator": {
+    "path": ".agent/skills/ux-collaborator/SKILL.md",
+    "description": "Coordinate UX workstreams, research asks, and design debt.",
+    "triggers": [
+      "/ux",
+      "/design",
+      "/wireframe",
+      "/mockup",
+      "/prototype"
+    ]
+  },
+  "weekly-synth": {
+    "path": ".agent/skills/weekly-synth/SKILL.md",
+    "description": "Weekly and monthly rollups with accomplishments and risks.",
+    "triggers": [
+      "/week",
+      "/weekly",
+      "/month",
+      "/monthly"
     ]
   },
   "task-manager": {

@@ -8,14 +8,12 @@ This workflow guides the **Staff PM** to manage daily execution.
 
 ## Steps
 
-1.  **State Check**:
-    - Read `5. Trackers/TASK_MASTER.md`.
-    - Read `5. Trackers/critical/boss-requests.md`.
-    - Read `5. Trackers/bugs/bugs-master.md`.
+1.  **Parallel State Check**:
+    - **Action**: In a SINGLE turn, read `5. Trackers/TASK_MASTER.md`, `5. Trackers/critical/boss-requests.md`, and `5. Trackers/bugs/bugs-master.md`.
 
-2.  **Triage**:
-    - **Input**: User Brain Dump ("I need to fix X, email Y, and plan Z").
-    - **Action**: Parse input and route to the correct file.
+2.  **Turbo Triage**:
+    - **Input**: User Brain Dump.
+    - **Action**: Parse input and route to the correct file using `multi_replace_file_content` to update all necessary trackers in PARALLEL.
     - **Priority**: Assign P0 (Today), P1 (This Week), P2 (Backlog).
 
 3.  **FAANG/BCG Quality Gate**:

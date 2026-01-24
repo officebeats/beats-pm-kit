@@ -18,7 +18,7 @@ author: Beats PM Brain
 ## 1. Native Interface
 
 - **Inputs**: `/crm`, `/1on1` (Sync), `/stakeholder` (Map), `/update` (Comms).
-- **Context**: `PEOPLE.md`, `TASK_MASTER.md` (Delegation), `STATUS.md`.
+- **Context**: `4. People/`, `TASK_MASTER.md` (Delegation), `STATUS.md`.
 - **Tools**: `view_file`, `write_to_file`.
 
 ## 2. Cognitive Protocol

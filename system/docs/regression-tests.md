@@ -58,6 +58,6 @@ This suite implements **Defensive Testing**, **Chaos Engineering**, and **Fuzzy 
 This script automates the validation of the above.
 
 1. **Initialize Chaos**: Create 2 similarly named products and 2 similar stakeholders.
-2. **Inject Malformed Input**: Send #bug commands with table-breaking characters.
+2. **Inject Malformed Input**: Send `/bug` commands with table-breaking characters.
 3. **Trigger Concurrent Agents**: Simulate 3 handoffs in a single turn.
 4. **Audit Structural Integrity**: Run `grep` for broken pipes or unassigned `null` entities.

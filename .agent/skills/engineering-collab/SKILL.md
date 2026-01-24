@@ -1,5 +1,5 @@
 ---
-name: engineering-collaborator
+name: engineering-collab
 description: Architecture, tech debt, and spike management.
 triggers:
   - "/eng"

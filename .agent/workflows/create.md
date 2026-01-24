@@ -13,18 +13,20 @@ This workflow guides the **Staff PM** to turn chaos (notes/transcripts) into ord
     - **One-Pager**: "Brief for the leadership team".
     - **Bug Report**: "Formalize this issue".
 
-2.  **Context Mining (Crucial)**:
-    - **Query**: "What existing files or transcripts should I reference?"
-    - **Action**: Search `3. Meetings/transcripts/` for keywords related to the topic.
+2.  **Context Mining (Parallel Fan-out)**:
+    - **Action**: In a single turn, run `grep_search` on `3. Meetings/transcripts/` AND `view_file` on related `2. Products/` docs.
     - **Synthesis**: Summarize relevant points from the transcripts _before_ writing.
 
 3.  **Template Application**:
     - Select the matching template from `.agent/templates/`.
-    - using `prd-author` or `requirements-translator`.
+    - **Rule**: Check `templates/system/` first if you are starting a new implementation plan.
 
-4.  **Drafting**:
-    - Write the file to `2. Products/[Product]/features/`.
+4.  **Drafting & Visuals (Stitch-First)**:
+    - **Stitch Check**: Ask if the user wants a UI mockup generated alongside the PRD.
+    - **Action**: If yes, invoke `/stitch` after drafting the document.
+    - **Location**: Write the file to `2. Products/[Product]/features/`.
 
-5.  **Task Connection**:
+5.  **Task Connection (State Transition)**:
+    - Call `task_boundary` to mark completion of the drafting phase.
     - Ask: "Should I add a task to track this doc's completion?"
     - If yes -> Trigger `/track`.

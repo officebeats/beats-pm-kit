@@ -25,12 +25,12 @@ and read SETTINGS.md for my configuration.
 
 ### Step 3: Start Capturing
 
-Now you can use natural language or # commands:
+Now you can use natural language or `/` commands:
 
 ```
-#boss Sarah needs the Q1 metrics by Friday
-#bug The checkout page is broken on mobile Safari
-#transcript [paste your meeting notes]
+/boss Sarah needs the Q1 metrics by Friday
+/bug The checkout page is broken on mobile Safari
+/transcript [paste your meeting notes]
 Give me my morning brief
 ```
 
@@ -41,14 +41,14 @@ Give me my morning brief
 | Agent File                    | What It Does                   | Example Command              |
 | ----------------------------- | ------------------------------ | ---------------------------- |
 | `requirements-translator.md`  | Organizes chaos into structure | _"Sort through my inbox"_    |
-| `daily-synthesizer.md`        | Generates daily briefs         | `#morning`, `#lunch`, `#eod` |
-| `weekly-synthesizer.md`       | Weekly summaries               | `#weekly`                    |
-| `boss-tracker.md`             | Tracks boss requests           | `#boss [request]`            |
-| `bug-chaser.md`               | Bug SLA tracking               | `#bug [description]`         |
-| `stakeholder-manager.md`      | Stakeholder updates            | _"Draft update for [name]"_  |
-| `engineering-collaborator.md` | Engineering work               | `#eng [item]`                |
-| `ux-collaborator.md`          | UX tasks                       | `#ux [task]`                 |
-| `strategy-synthesizer.md`     | Pattern recognition            | `#strategy`                  |
+| `daily-synth.md`              | Generates daily briefs         | `/morning`, `/lunch`, `/eod` |
+| `weekly-synth.md`             | Weekly summaries               | `/weekly`                    |
+| `boss-tracker.md`             | Tracks boss requests           | `/boss [request]`            |
+| `bug-chaser.md`               | Bug SLA tracking               | `/bug [description]`         |
+| `stakeholder-mgr.md`          | Stakeholder updates            | _"Draft update for [name]"_  |
+| `engineering-collab.md`       | Engineering work               | `/eng [item]`                |
+| `ux-collaborator.md`          | UX tasks                       | `/ux [task]`                 |
+| `strategy-synth.md`           | Pattern recognition            | `/strategy`                  |
 
 ---
 
@@ -57,13 +57,13 @@ Give me my morning brief
 For best results, you can explicitly load agents:
 
 ```
-Please read system/agents/daily-synthesizer.md and generate my morning brief
+Please read .agent/skills/daily-synth/SKILL.md and generate my morning brief
 ```
 
 Or load multiple:
 
 ```
-Read system/agents/boss-tracker.md and system/agents/bug-chaser.md,
+Read .agent/skills/boss-tracker/SKILL.md and .agent/skills/bug-chaser/SKILL.md,
 then show me all critical items I need to follow up on today
 ```
 
@@ -82,19 +82,19 @@ then show me all critical items I need to follow up on today
 
 | Command       | Action                   |
 | ------------- | ------------------------ |
-| `#boss`       | Boss request (Critical)  |
-| `#bug`        | Bug entry                |
-| `#task`       | Task                     |
-| `#feature`    | Feature request          |
-| `#ux`         | UX task                  |
-| `#eng`        | Engineering item         |
-| `#note`       | Quick note               |
-| `#transcript` | Paste meeting transcript |
-| `#morning`    | Morning brief            |
-| `#lunch`      | Midday brief             |
-| `#eod`        | End of day brief         |
-| `#weekly`     | Weekly summary           |
-| `#monthly`    | Monthly summary          |
+| `/boss`       | Boss request (Critical)  |
+| `/bug`        | Bug entry                |
+| `/task`       | Task                     |
+| `/feature`    | Feature request          |
+| `/ux`         | UX task                  |
+| `/eng`        | Engineering item         |
+| `/note`       | Quick note               |
+| `/transcript` | Paste meeting transcript |
+| `/morning`    | Morning brief            |
+| `/lunch`      | Midday brief             |
+| `/eod`        | End of day brief         |
+| `/weekly`     | Weekly summary           |
+| `/monthly`    | Monthly summary          |
 
 ---
 

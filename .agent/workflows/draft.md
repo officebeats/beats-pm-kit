@@ -8,9 +8,10 @@ description: Create placeholder documents (PRDs, Specs, Memos) that evolve as co
 
 ## Steps
 
-1.  **Intent Clarification**:
-    - Ask: "What type of document?" (PRD, Spec, Memo, One-Pager)
-    - Ask: "Which Company/Product?"
+1.  **Intent & Parallel Search**:
+    - **Ask**: "What type of document?" (PRD, Spec, Memo, One-Pager)
+    - **Action**: While waiting, parallel search `templates/docs/` for best match.
+    - **Query**: "Which Company/Product?"
 
 2.  **Stub Creation**:
     - Use template from `.agent/templates/docs/draft-prd.md` (or equivalent).

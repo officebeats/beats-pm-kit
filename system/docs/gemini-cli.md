@@ -30,12 +30,12 @@ and read SETTINGS.md for my personal configuration.
 
 ### Step 4: Start Working
 
-Now use natural language or # commands:
+Now use natural language or `/` commands:
 
 ```
-#boss CEO wants a product demo next Tuesday
-#bug Users can't reset their passwords
-#morning
+/boss CEO wants a product demo next Tuesday
+/bug Users can't reset their passwords
+/morning
 ```
 
 ---
@@ -46,13 +46,13 @@ You can use individual agent files as system prompts for focused sessions:
 
 ```bash
 # For a daily brief session
-gemini --system-instruction "system/agents/daily-synthesizer.md"
+gemini --system-instruction ".agent/skills/daily-synth/SKILL.md"
 
 # For bug triage
-gemini --system-instruction "system/agents/bug-chaser.md"
+gemini --system-instruction ".agent/skills/bug-chaser/SKILL.md"
 
 # For stakeholder management
-gemini --system-instruction "system/agents/stakeholder-manager.md"
+gemini --system-instruction ".agent/skills/stakeholder-mgr/SKILL.md"
 ```
 
 ---
@@ -61,19 +61,19 @@ gemini --system-instruction "system/agents/stakeholder-manager.md"
 
 | Command       | Action                                  |
 | ------------- | --------------------------------------- |
-| `#boss`       | Boss request (Critical)                 |
-| `#bug`        | Bug entry                               |
-| `#task`       | Task                                    |
-| `#feature`    | Feature request                         |
-| `#ux`         | UX task                                 |
-| `#eng`        | Engineering item                        |
-| `#note`       | Quick note                              |
-| `#transcript` | Paste meeting transcript for processing |
-| `#morning`    | Morning brief                           |
-| `#lunch`      | Midday brief                            |
-| `#eod`        | End of day brief                        |
-| `#weekly`     | Weekly summary                          |
-| `#monthly`    | Monthly summary                         |
+| `/boss`       | Boss request (Critical)                 |
+| `/bug`        | Bug entry                               |
+| `/task`       | Task                                    |
+| `/feature`    | Feature request                         |
+| `/ux`         | UX task                                 |
+| `/eng`        | Engineering item                        |
+| `/note`       | Quick note                              |
+| `/transcript` | Paste meeting transcript for processing |
+| `/morning`    | Morning brief                           |
+| `/lunch`      | Midday brief                            |
+| `/eod`        | End of day brief                        |
+| `/weekly`     | Weekly summary                          |
+| `/monthly`    | Monthly summary                         |
 
 ---
 
@@ -82,26 +82,26 @@ gemini --system-instruction "system/agents/stakeholder-manager.md"
 ### Morning Routine
 
 ```
-#morning
+/morning
 ```
 
 ### Capture from a Meeting
 
 ```
-#transcript
+/transcript
 [paste your meeting transcript here]
 ```
 
 ### Track a Boss Request
 
 ```
-#boss VP of Sales needs competitive analysis by end of week
+/boss VP of Sales needs competitive analysis by end of week
 ```
 
 ### End of Day Wrap
 
 ```
-#eod
+/eod
 ```
 
 ---
@@ -134,7 +134,7 @@ The PM Brain is pre-configured for **Conductor**, Google's context-driven develo
 | `.gemini/context.md` | System architecture, folder structure, agents |
 | `.gemini/style-guide.md` | Markdown conventions |
 | `.gemini/workflow-preferences.md` | Behavior settings |
-| `.gemini/templates/` | Feature and bug-fix spec templates |
+| `.agent/templates/` | Feature and bug-fix spec templates |
 
 ### Conductor Commands
 

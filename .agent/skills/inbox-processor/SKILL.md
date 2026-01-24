@@ -40,6 +40,14 @@ author: Beats PM Brain
     - **File**: Read file content (if text/pdf).
     - **Text**: Strip whitespace, email headers, "Forwarded message" lines.
 
+### Phase 1.5: Hypothesis-Driven Parallel Search
+
+**Rule**: Do not ask the user for context immediately.
+
+1.  **Extract**: Identify 3 keywords from the raw input (e.g., "Login", "API", "Q3").
+2.  **Fan-Out**: In a SINGLE turn, run `grep_search` across `5. Trackers/`, `3. Meetings/`, and `2. Products/`.
+3.  **Hypothesis**: Form a likely connection (e.g., "This looks like the Login Refactor task").
+
 ### Phase 2: Aggressive Task Extraction (The Core Logic)
 
 > **Rule**: If it _can_ be a task, it _is_ a task.
