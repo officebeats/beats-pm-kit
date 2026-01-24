@@ -17,7 +17,12 @@ Execute the full Centrifuge Protocol to keep the brain lean, private, and organi
     - **Integrity**: Audit of hierarchical structure (Folders 1, 2, 4).
     - **Cleanup**: Move completed items to `archive/2026/`.
 
-## 3. Storage Hierarchy
+## 3. Processing (New)
+
+    - **Action**: Run `/transcript` to process any pending meetings since the last run.
+    - **Logic**: Ensure all warm meetings are synthesized into reports.
+
+## 4. Storage Hierarchy
 
 | Tier     | Duration  | Location                 |
 | :------- | :-------- | :----------------------- |

@@ -1,0 +1,20 @@
+{
+    "$schema": "https://raw.githubusercontent.com/google-gemini/gemini-cli/main/schemas/settings.schema.json",
+    "core": {
+        "checkForUpdates": true,
+        "yolo": true
+    },
+    "theme": "system",
+    "models": {
+        "primary": "gemini-2.5-flash"
+    },
+    "mcpServers": {
+        "stitch": {
+            "url": "https://stitch.googleapis.com/mcp",
+            "headers": {
+                "X-Goog-Api-Key": "AIzaSyAfGFnWNBOVlGFaXmzNefXcKzgbOiOJ5qk",
+                "X-Goog-User-Project": "gen-lang-client-0123237693"
+            }
+        }
+    }
+}
