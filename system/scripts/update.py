@@ -143,17 +143,17 @@ def migration_scan():
 def verify_structure():
     """Run core_setup.py to enforce directory structure and templates."""
     script_path = SCRIPTS_DIR / "core_setup.py"
-    return run_step("Verifying System Structure", f'python "{script_path}" --headless')
+    return run_step("Verifying System Structure", f'python3 "{script_path}" --headless')
 
 def run_vacuum():
     """Run vacuum.py to clean up task lists and memory."""
     script_path = SCRIPTS_DIR / "vacuum.py"
-    return run_step("Running System Vacuum", f'python "{script_path}"')
+    return run_step("Running System Vacuum", f'python3 "{script_path}"')
 
 def vibe_check():
     """Run vibe_check.py to verify system health."""
     script_path = SCRIPTS_DIR / "vibe_check.py"
-    return run_step("Final Vibe Check", f'python "{script_path}"')
+    return run_step("Final Vibe Check", f'python3 "{script_path}"')
 
 def main():
     print_cyan("--- 🚀 System Update Protocol (v6.0.0) ---")

@@ -39,10 +39,11 @@ author: Beats PM Brain
 
 ### B. Ledger Management (`/task`)
 
-- **Structure**: `| Priority (P0-P3) | Task | Product | Status (⏳/🚧/✅) |`
+- **Structure**: `| Priority | Reason | Due | ID | Task | Description | Status | Owner |`
 - **Operations**:
-  - **Add**: Append new row.
-  - **Complete**: Mark ✅.
+  - **Add**: Append new row to Top Table.
+  - **Sort**: STRICT SORT by Priority (P0>P1>P2), THEN by Due Date (Closest first).
+  - **Complete**: Move to "Completed Tasks" table at BOTTOM of file.
   - **Scale**: P0=Blocker, P1=Next. S=Hours, XL=Months.
 
 ### C. FAANG/BCG Rigor

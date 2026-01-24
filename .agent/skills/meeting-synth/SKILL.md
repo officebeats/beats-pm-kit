@@ -56,6 +56,10 @@ Process the text ONCE. Extract these streams simultaneously:
 4.  **Bugs** 🐞: "It's broken".
     - _Action_: Route to `bug-chaser`.
 
+5.  **Task Reconciliation** 📋: Cross-reference `5. Trackers/TASK_MASTER.md`.
+    - _Action_: If a task appears to be completed, update the status to "Complete?" for user confirmation.
+    - _Context_: Look for explicit "I did X" or "X is done" statements.
+
 ### Phase 3: Artifact Generation (Conductor Protocol)
 
 You MUST use the standard template structure in `3. Meetings/reports/`:
