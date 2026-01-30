@@ -1,12 +1,12 @@
 ---
-description: Orchestrate and track PI Planning activities for Ascension's 3-day format.
+description: Orchestrate and track PI Planning activities for Company's 3-day format.
 ---
 
 # 🏗️ PI Planning Playbook (`/pi`)
 
-This workflow guides the PM through Ascension's 3-day Program Increment Planning ceremony.
+This workflow guides the PM through Company's 3-day Program Increment Planning ceremony.
 
-## Ascension PI Format
+## Company PI Format
 - **Day 1**: Vision & Draft Plans
 - **Day 2**: Pre-Read (Team Refinement & Breakouts)
 - **Day 3**: Final Read (Commit, Vote, Risk Review)
@@ -15,7 +15,7 @@ This workflow guides the PM through Ascension's 3-day Program Increment Planning
 
 ## Step 1: Pre-PI Prep (Before Day 1)
 Before you enter the room, ensure the following:
-- [ ] **Gabriel Mandates Confirmed**: Have you synced with leadership on top priorities?
+- [ ] **Leadership Mandates Confirmed**: Have you synced with leadership on top priorities?
 - [ ] **Backlog Pre-Baked**: Top features and stories drafted; not discovering from scratch.
 - [ ] **Risks Identified**: Known blockers (e.g., Salesforce/R1 parity) documented.
 - [ ] **Architect Pre-Sync**: Critical architecture questions answered beforehand.

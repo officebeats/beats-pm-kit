@@ -130,3 +130,12 @@ requirements.txt
 
 # Generated Indices
 /Beats-PM-System/system/content_index.json
+
+# Core System Runtime Ignored (Privacy)
+/system/content_index.json
+/system/context_cache.json
+/system/reports/**
+/system/queue/failed/**
+/system/queue/pending/**
+/system/test_logs/**
+/system/debug_logs/**

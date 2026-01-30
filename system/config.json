@@ -4,7 +4,7 @@
     "name": "Beats Product Management Antigravity Kit"
   },
   "paths": {
-    "root": "C:\\Users\\admin-beats\\OneDrive\\xo Vibe Coding xo\\beats-pm-antigravity-brain",
+    "root": ".",
     "staging": "0. Incoming/staging",
     "trackers": "5. Trackers",
     "archive": "5. Trackers/archive",

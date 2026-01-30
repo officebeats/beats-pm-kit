@@ -6,6 +6,8 @@ description: Plan the current and upcoming week.
 
 **Trigger**: User types `/week`.
 
+> **🗓️ Key Checkpoint**: Boss 1:1 is **every Friday around lunch**. The weekly plan should always anchor around this meeting. Boss Asks should be resolved *before* Friday.
+
 ## Steps
 
 1.  **Parallel Context Mining**:

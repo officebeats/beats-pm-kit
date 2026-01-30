@@ -6,9 +6,12 @@ description: Generate a Focused Executive Briefing on Immediate Priorities (P0) 
 
 This workflow generates a high-signal briefing on the *immediate* state of play. It forces focus on P0 criticals and provides a full battlefield view.
 
+> **🗓️ Key Checkpoint**: Boss 1:1 is **every Friday around lunch**. All "Boss Ask" items should be weighted against this weekly deadline. Today's date determines urgency.
+
 ## 1. Context Acquisition
 
 1.  **Read Ledger**: Read `5. Trackers/TASK_MASTER.md` to get the latest task state.
+2.  **Calculate Days to Boss 1:1**: Determine how many days remain until Friday. Use this to escalate "Boss Ask" priorities accordingly.
 
 ## 2. Synthesis & Output
 
