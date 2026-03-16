@@ -1,0 +1,799 @@
+{
+  "ab-test-analysis": {
+    "path": ".agent/skills/ab-test-analysis/SKILL.md",
+    "description": "Analyze A/B test results with statistical significance, sample size validatio...",
+    "triggers": [
+      "/ab-test",
+      "/experiment-results",
+      "/stats"
+    ]
+  },
+  "acquisition-channel-advisor": {
+    "path": ".agent/skills/acquisition-channel-advisor/SKILL.md",
+    "description": "Evaluate acquisition channels using unit economics, customer quality, and sca...",
+    "triggers": [
+      "/channel",
+      "/cac",
+      "/ltv",
+      "/acquisition"
+    ]
+  },
+  "ai-shaped-readiness-advisor": {
+    "path": ".agent/skills/ai-shaped-readiness-advisor/SKILL.md",
+    "description": "Assess whether your product work is AI-first or AI-shaped. Use when evaluatin...",
+    "triggers": [
+      "/ai-ready",
+      "/ai-readiness",
+      "/ai-strategy"
+    ]
+  },
+  "altitude-horizon-framework": {
+    "path": ".agent/skills/altitude-horizon-framework/SKILL.md",
+    "description": "Understand the PM-to-Director transition through altitude and horizon thinkin...",
+    "triggers": [
+      "/altitude",
+      "/horizon",
+      "/career-path"
+    ]
+  },
+  "analyze-feature-requests": {
+    "path": ".agent/skills/analyze-feature-requests/SKILL.md",
+    "description": "No description",
+    "triggers": []
+  },
+  "ansoff-matrix": {
+    "path": ".agent/skills/ansoff-matrix/SKILL.md",
+    "description": "No description",
+    "triggers": []
+  },
+  "beachhead-segment": {
+    "path": ".agent/skills/beachhead-segment/SKILL.md",
+    "description": "No description",
+    "triggers": []
+  },
+  "boss-tracker": {
+    "path": ".agent/skills/boss-tracker/SKILL.md",
+    "description": "Track high-priority leadership requests.",
+    "triggers": [
+      "/boss",
+      "/leadership",
+      "/urgent",
+      "/critical"
+    ]
+  },
+  "brainstorm-experiments-existing": {
+    "path": ".agent/skills/brainstorm-experiments-existing/SKILL.md",
+    "description": "No description",
+    "triggers": []
+  },
+  "brainstorm-experiments-new": {
+    "path": ".agent/skills/brainstorm-experiments-new/SKILL.md",
+    "description": "No description",
+    "triggers": []
+  },
+  "brainstorm-ideas-existing": {
+    "path": ".agent/skills/brainstorm-ideas-existing/SKILL.md",
+    "description": "Brainstorm product ideas for an existing product using multi-perspective idea...",
+    "triggers": []
+  },
+  "brainstorm-ideas-new": {
+    "path": ".agent/skills/brainstorm-ideas-new/SKILL.md",
+    "description": "Brainstorm feature ideas for a new product in initial discovery from PM, Desi...",
+    "triggers": []
+  },
+  "bug-chaser": {
+    "path": ".agent/skills/bug-chaser/SKILL.md",
+    "description": "Manage bug lifecycle and SLAs.",
+    "triggers": [
+      "/bug",
+      "/issue",
+      "/defect",
+      "/broken",
+      "/crash"
+    ]
+  },
+  "business-health-diagnostic": {
+    "path": ".agent/skills/business-health-diagnostic/SKILL.md",
+    "description": "Diagnose SaaS business health across growth, retention, efficiency, and capit...",
+    "triggers": []
+  },
+  "business-model": {
+    "path": ".agent/skills/business-model/SKILL.md",
+    "description": "Generate a Business Model Canvas with all 9 building blocks. Use when creatin...",
+    "triggers": []
+  },
+  "chat-with-gmail": {
+    "path": ".agent/skills/chat-with-gmail/SKILL.md",
+    "description": "Interactive agent for querying and chatting directly with your Gmail inbox.",
+    "triggers": []
+  },
+  "chief-strategy-officer": {
+    "path": ".agent/skills/chief-strategy-officer/SKILL.md",
+    "description": "Synthesize strategic roadmaps and document key decisions.",
+    "triggers": [
+      "/strategy",
+      "/decide",
+      "/roadmap",
+      "/vision",
+      "/okr"
+    ]
+  },
+  "code-simplifier": {
+    "path": ".agent/skills/code-simplifier/SKILL.md",
+    "description": "Expert code simplification. Use for /simplify, /refactor, /cleanup.",
+    "triggers": [
+      "/simplify",
+      "/refactor",
+      "/cleanup",
+      "/optimize",
+      "/profile"
+    ]
+  },
+  "cohort-analysis": {
+    "path": ".agent/skills/cohort-analysis/SKILL.md",
+    "description": "Perform cohort analysis on user engagement data \u2014 retention curves, feature a...",
+    "triggers": []
+  },
+  "communication-crafter": {
+    "path": ".agent/skills/communication-crafter/SKILL.md",
+    "description": "Draft executive updates, stakeholder emails, escalations, and Slack summaries...",
+    "triggers": [
+      "/draft-email",
+      "/escalate",
+      "/status-update",
+      "/recap",
+      "/communicate"
+    ]
+  },
+  "company-profiler": {
+    "path": ".agent/skills/company-profiler/SKILL.md",
+    "description": "Conducts deep-dive research to create a strategic dossier on a target company.",
+    "triggers": []
+  },
+  "competitive-battlecard": {
+    "path": ".agent/skills/competitive-battlecard/SKILL.md",
+    "description": "Create sales-ready competitive battlecards comparing your product against a s...",
+    "triggers": []
+  },
+  "competitive-intel": {
+    "path": ".agent/skills/competitive-intel/SKILL.md",
+    "description": "Analyze competitors with strengths, weaknesses, and differentiation opportuni...",
+    "triggers": []
+  },
+  "context-engineering-advisor": {
+    "path": ".agent/skills/context-engineering-advisor/SKILL.md",
+    "description": "Diagnose context stuffing vs. context engineering. Use when an AI workflow fe...",
+    "triggers": []
+  },
+  "context-retriever": {
+    "path": ".agent/skills/context-retriever/SKILL.md",
+    "description": "The \"Recall Engine\". Fetches history, decisions, and tasks related to a perso...",
+    "triggers": [
+      "/prep",
+      "/recall",
+      "/history"
+    ]
+  },
+  "core-utility": {
+    "path": ".agent/skills/core-utility/SKILL.md",
+    "description": "System health and diagnostics.",
+    "triggers": []
+  },
+  "cover-letter-writer": {
+    "path": ".agent/skills/cover-letter-writer/SKILL.md",
+    "description": "Generates tailored, narrative-driven cover letters based on Resume and Job De...",
+    "triggers": []
+  },
+  "customer-journey-map": {
+    "path": ".agent/skills/customer-journey-map/SKILL.md",
+    "description": "Create an end-to-end customer journey map with stages, touchpoints, emotions,...",
+    "triggers": []
+  },
+  "daily-synth": {
+    "path": ".agent/skills/daily-synth/SKILL.md",
+    "description": "Daily briefing and planning.",
+    "triggers": [
+      "/day",
+      "/status",
+      "/morning",
+      "/lunch",
+      "/eod",
+      "/brief"
+    ]
+  },
+  "data-analytics": {
+    "path": ".agent/skills/data-analytics/SKILL.md",
+    "description": "Execute SQL, analyze funnels, and define success metrics.",
+    "triggers": [
+      "/data",
+      "/analyze",
+      "/metrics",
+      "/experiment-analyze",
+      "/funnel"
+    ]
+  },
+  "delegation-manager": {
+    "path": ".agent/skills/delegation-manager/SKILL.md",
+    "description": "Track delegated tasks and prevent accountability gaps.",
+    "triggers": [
+      "/delegate",
+      "/delegation",
+      "/followup",
+      "/nag"
+    ]
+  },
+  "dependency-tracker": {
+    "path": ".agent/skills/dependency-tracker/SKILL.md",
+    "description": "Map, score, and visualize cross-team dependencies for programs and releases.",
+    "triggers": [
+      "/depend",
+      "/dependency",
+      "/critical-path",
+      "/blocked"
+    ]
+  },
+  "director-readiness-advisor": {
+    "path": ".agent/skills/director-readiness-advisor/SKILL.md",
+    "description": "Guide the PM-to-Director transition across preparing, interviewing, landing, ...",
+    "triggers": []
+  },
+  "discovery-coach": {
+    "path": ".agent/skills/discovery-coach/SKILL.md",
+    "description": "Run structured product discovery using Opportunity Solution Trees, assumption...",
+    "triggers": [
+      "/discover",
+      "/hypothesis",
+      "/experiment",
+      "/ost",
+      "/assumption"
+    ]
+  },
+  "document-exporter": {
+    "path": ".agent/skills/document-exporter/SKILL.md",
+    "description": "Convert standard Markdown documents into high-fidelity PDF, HTML, or DOCX for...",
+    "triggers": []
+  },
+  "draft-nda": {
+    "path": ".agent/skills/draft-nda/SKILL.md",
+    "description": "Draft a detailed Non-Disclosure Agreement between two parties covering inform...",
+    "triggers": []
+  },
+  "dummy-dataset": {
+    "path": ".agent/skills/dummy-dataset/SKILL.md",
+    "description": "Generate realistic dummy datasets for testing with customizable columns, cons...",
+    "triggers": []
+  },
+  "engineering-collab": {
+    "path": ".agent/skills/engineering-collab/SKILL.md",
+    "description": "Architecture, tech debt, and spike management.",
+    "triggers": [
+      "/eng",
+      "/tech",
+      "/spike",
+      "/architecture",
+      "/adr"
+    ]
+  },
+  "eol-message": {
+    "path": ".agent/skills/eol-message/SKILL.md",
+    "description": "Write a clear, empathetic EOL announcement with rationale, customer impact, a...",
+    "triggers": []
+  },
+  "epic-breakdown-advisor": {
+    "path": ".agent/skills/epic-breakdown-advisor/SKILL.md",
+    "description": "Break down epics into user stories with Humanizing Work split patterns. Use w...",
+    "triggers": []
+  },
+  "epic-hypothesis": {
+    "path": ".agent/skills/epic-hypothesis/SKILL.md",
+    "description": "Frame an epic as a testable hypothesis with target user, expected outcome, an...",
+    "triggers": []
+  },
+  "executive-onboarding-playbook": {
+    "path": ".agent/skills/executive-onboarding-playbook/SKILL.md",
+    "description": "Plan a VP or CPO 30-60-90 day diagnostic onboarding path. Use when entering a...",
+    "triggers": []
+  },
+  "finance-metrics-quickref": {
+    "path": ".agent/skills/finance-metrics-quickref/SKILL.md",
+    "description": "Look up SaaS finance metrics, formulas, and benchmarks fast. Use when you nee...",
+    "triggers": []
+  },
+  "frontend-engineer": {
+    "path": ".agent/skills/frontend-engineer/SKILL.md",
+    "description": "Build, test, and style premium UI components with WCAG compliance.",
+    "triggers": [
+      "/frontend",
+      "/frontend-build",
+      "/ui",
+      "/test-ui"
+    ]
+  },
+  "grammar-check": {
+    "path": ".agent/skills/grammar-check/SKILL.md",
+    "description": "Identify grammar, logical, and flow errors in text and suggest targeted fixes...",
+    "triggers": []
+  },
+  "growth-loops": {
+    "path": ".agent/skills/growth-loops/SKILL.md",
+    "description": "Identify growth loops (flywheels) for sustainable traction. Evaluates 5 loop ...",
+    "triggers": []
+  },
+  "gtm-motions": {
+    "path": ".agent/skills/gtm-motions/SKILL.md",
+    "description": "Identify the best GTM motions and tools across 7 motion types: Inbound, Outbo...",
+    "triggers": []
+  },
+  "ideal-customer-profile": {
+    "path": ".agent/skills/ideal-customer-profile/SKILL.md",
+    "description": "Identify the Ideal Customer Profile (ICP) from research data with demographic...",
+    "triggers": []
+  },
+  "identify-assumptions-existing": {
+    "path": ".agent/skills/identify-assumptions-existing/SKILL.md",
+    "description": "Identify risky assumptions for a feature idea in an existing product across V...",
+    "triggers": []
+  },
+  "identify-assumptions-new": {
+    "path": ".agent/skills/identify-assumptions-new/SKILL.md",
+    "description": "Identify risky assumptions for a new product idea across 8 risk categories in...",
+    "triggers": []
+  },
+  "inbox-processor": {
+    "path": ".agent/skills/inbox-processor/SKILL.md",
+    "description": "The \"Black Hole\" for chaos. Aggressively extracts tasks from raw input and ro...",
+    "triggers": [
+      "/paste",
+      "/inbox",
+      "/capture"
+    ]
+  },
+  "intelligent-routing": {
+    "path": ".agent/skills/intelligent-routing/SKILL.md",
+    "description": "Automatic agent selection and intelligent task routing. Analyzes user request...",
+    "triggers": []
+  },
+  "interview-script": {
+    "path": ".agent/skills/interview-script/SKILL.md",
+    "description": "Create a structured customer interview script with JTBD probing questions, wa...",
+    "triggers": []
+  },
+  "interview-simulator": {
+    "path": ".agent/skills/interview-simulator/SKILL.md",
+    "description": "Conducting interactive mock interviews with real-time feedback.",
+    "triggers": []
+  },
+  "launch-strategy": {
+    "path": ".agent/skills/launch-strategy/SKILL.md",
+    "description": "Multi-agent system for product launch intelligence and strategy, analyzing ma...",
+    "triggers": []
+  },
+  "lean-canvas": {
+    "path": ".agent/skills/lean-canvas/SKILL.md",
+    "description": "Generate a Lean Canvas with problem, solution, metrics, cost structure, UVP, ...",
+    "triggers": []
+  },
+  "market-segments": {
+    "path": ".agent/skills/market-segments/SKILL.md",
+    "description": "Identify 3-5 potential customer segments with demographics, JTBD, and product...",
+    "triggers": []
+  },
+  "market-sizing": {
+    "path": ".agent/skills/market-sizing/SKILL.md",
+    "description": "Estimate market size using TAM, SAM, and SOM with top-down and bottom-up appr...",
+    "triggers": []
+  },
+  "marketing-ideas": {
+    "path": ".agent/skills/marketing-ideas/SKILL.md",
+    "description": "Generate 5 creative, cost-effective marketing ideas with channels, messaging,...",
+    "triggers": []
+  },
+  "meeting-synth": {
+    "path": ".agent/skills/meeting-synth/SKILL.md",
+    "description": "Synthesize a single meeting transcript into structured action items, decision...",
+    "triggers": [
+      "/meet",
+      "/transcript"
+    ]
+  },
+  "memory-consolidator": {
+    "path": ".agent/skills/memory-consolidator/SKILL.md",
+    "description": "Consolidates memories and generates cross-cutting strategic insights from dis...",
+    "triggers": []
+  },
+  "metrics-dashboard": {
+    "path": ".agent/skills/metrics-dashboard/SKILL.md",
+    "description": "Define and design a product metrics dashboard with key metrics, data sources,...",
+    "triggers": []
+  },
+  "monetization-strategy": {
+    "path": ".agent/skills/monetization-strategy/SKILL.md",
+    "description": "Brainstorm 3-5 monetization strategies with audience fit, risks, and validati...",
+    "triggers": []
+  },
+  "react-best-practices": {
+    "path": ".agent/skills/nextjs-react-expert/SKILL.md",
+    "description": "React and Next.js performance optimization from Vercel Engineering. Use when ...",
+    "triggers": [
+      "/react-perf",
+      "/optimize-react",
+      "/nextjs-perf"
+    ]
+  },
+  "north-star-metric": {
+    "path": ".agent/skills/north-star-metric/SKILL.md",
+    "description": "Define a North Star Metric and 3-5 supporting input metrics that form a metri...",
+    "triggers": []
+  },
+  "okr-manager": {
+    "path": ".agent/skills/okr-manager/SKILL.md",
+    "description": "Brainstorm team-level OKRs aligned with company objectives \u2014 qualitative obje...",
+    "triggers": []
+  },
+  "opportunity-solution-tree": {
+    "path": ".agent/skills/opportunity-solution-tree/SKILL.md",
+    "description": "Build an Opportunity Solution Tree (OST) to structure product discovery \u2014 map...",
+    "triggers": []
+  },
+  "outcome-roadmap": {
+    "path": ".agent/skills/outcome-roadmap/SKILL.md",
+    "description": "Transform an output-focused roadmap into an outcome-focused one that communic...",
+    "triggers": []
+  },
+  "pestle-analysis": {
+    "path": ".agent/skills/pestle-analysis/SKILL.md",
+    "description": "Perform a PESTLE analysis covering Political, Economic, Social, Technological...",
+    "triggers": []
+  },
+  "pol-probe-advisor": {
+    "path": ".agent/skills/pol-probe-advisor/SKILL.md",
+    "description": "Select the right Proof of Life (PoL) probe based on hypothesis, risk, and res...",
+    "triggers": []
+  },
+  "porters-five-forces": {
+    "path": ".agent/skills/porters-five-forces/SKILL.md",
+    "description": "Perform Porter's Five Forces analysis \u2014 competitive rivalry, supplier power, ...",
+    "triggers": []
+  },
+  "positioning-ideas": {
+    "path": ".agent/skills/positioning-ideas/SKILL.md",
+    "description": "Brainstorm product positioning ideas differentiated from competitors. Identif...",
+    "triggers": []
+  },
+  "positioning-workshop": {
+    "path": ".agent/skills/positioning-workshop/SKILL.md",
+    "description": "Run a positioning workshop that surfaces target customer, unmet need, categor...",
+    "triggers": []
+  },
+  "prd-author": {
+    "path": ".agent/skills/prd-author/SKILL.md",
+    "description": "Author comprehensive Product Requirements Documents (PRDs) using a strict 8-s...",
+    "triggers": []
+  },
+  "pre-mortem": {
+    "path": ".agent/skills/pre-mortem/SKILL.md",
+    "description": "Run a pre-mortem risk analysis on a PRD or launch plan. Categorizes risks as ...",
+    "triggers": []
+  },
+  "press-release": {
+    "path": ".agent/skills/press-release/SKILL.md",
+    "description": "Write an Amazon-style press release that defines customer value before buildi...",
+    "triggers": []
+  },
+  "pricing-strategy": {
+    "path": ".agent/skills/pricing-strategy/SKILL.md",
+    "description": "Analyze and design pricing strategies including pricing models, competitive p...",
+    "triggers": []
+  },
+  "prioritization-engine": {
+    "path": ".agent/skills/prioritization-engine/SKILL.md",
+    "description": "Prioritize a backlog of feature ideas based on impact, effort, risk, and stra...",
+    "triggers": []
+  },
+  "prioritization-frameworks": {
+    "path": ".agent/skills/prioritization-frameworks/SKILL.md",
+    "description": "Reference guide to 9 prioritization frameworks with formulas, when-to-use gui...",
+    "triggers": []
+  },
+  "prioritize-assumptions": {
+    "path": ".agent/skills/prioritize-assumptions/SKILL.md",
+    "description": "Prioritize assumptions using an Impact \u00d7 Risk matrix and suggest experiments ...",
+    "triggers": []
+  },
+  "privacy-policy": {
+    "path": ".agent/skills/privacy-policy/SKILL.md",
+    "description": "Draft a detailed privacy policy covering data types, jurisdiction, GDPR and c...",
+    "triggers": []
+  },
+  "problem-framing-canvas": {
+    "path": ".agent/skills/problem-framing-canvas/SKILL.md",
+    "description": "Guide teams through MITRE's Problem Framing Canvas. Use when you need a clear...",
+    "triggers": []
+  },
+  "problem-statement": {
+    "path": ".agent/skills/problem-statement/SKILL.md",
+    "description": "Write a user-centered problem statement with who is blocked, what they are tr...",
+    "triggers": []
+  },
+  "product-marketer": {
+    "path": ".agent/skills/product-marketer/SKILL.md",
+    "description": "Create a go-to-market strategy covering marketing channels, messaging, succes...",
+    "triggers": []
+  },
+  "product-name": {
+    "path": ".agent/skills/product-name/SKILL.md",
+    "description": "Brainstorm 5 unique, memorable product names with rationale aligned to brand ...",
+    "triggers": []
+  },
+  "product-strategy": {
+    "path": ".agent/skills/product-strategy/SKILL.md",
+    "description": "Create a comprehensive product strategy using the 9-section Product Strategy ...",
+    "triggers": []
+  },
+  "product-vision": {
+    "path": ".agent/skills/product-vision/SKILL.md",
+    "description": "Brainstorm an inspiring, achievable, and emotional product vision that motiva...",
+    "triggers": []
+  },
+  "proto-persona": {
+    "path": ".agent/skills/proto-persona/SKILL.md",
+    "description": "Create a proto-persona from current research, market signals, and team knowle...",
+    "triggers": []
+  },
+  "recommendation-canvas": {
+    "path": ".agent/skills/recommendation-canvas/SKILL.md",
+    "description": "Evaluate an AI product idea across outcomes, hypotheses, risks, and positioni...",
+    "triggers": []
+  },
+  "release-manager": {
+    "path": ".agent/skills/release-manager/SKILL.md",
+    "description": "Generate user-facing release notes from tickets, PRDs, or changelogs. Creates...",
+    "triggers": []
+  },
+  "requirements-translator": {
+    "path": ".agent/skills/requirements-translator/SKILL.md",
+    "description": "Create job stories using the 'When [situation], I want to [motivation], so I ...",
+    "triggers": []
+  },
+  "retrospective": {
+    "path": ".agent/skills/retrospective/SKILL.md",
+    "description": "Facilitate a structured sprint retrospective \u2014 what went well, what didn't, a...",
+    "triggers": []
+  },
+  "review-resume": {
+    "path": ".agent/skills/review-resume/SKILL.md",
+    "description": "Comprehensive PM resume review and tailoring against 10 best practices includ...",
+    "triggers": []
+  },
+  "risk-guardian": {
+    "path": ".agent/skills/risk-guardian/SKILL.md",
+    "description": "Systematic risk analysis for docs and plans.",
+    "triggers": [
+      "/risk",
+      "/premortem",
+      "/risk-audit"
+    ]
+  },
+  "saas-economics-efficiency-metrics": {
+    "path": ".agent/skills/saas-economics-efficiency-metrics/SKILL.md",
+    "description": "Evaluate SaaS unit economics and capital efficiency. Use when deciding whethe...",
+    "triggers": []
+  },
+  "saas-revenue-growth-metrics": {
+    "path": ".agent/skills/saas-revenue-growth-metrics/SKILL.md",
+    "description": "Calculate SaaS revenue, retention, and growth metrics. Use when diagnosing mo...",
+    "triggers": []
+  },
+  "sales-automator": {
+    "path": ".agent/skills/sales-automator/SKILL.md",
+    "description": "AI agent team for sales intelligence, lead analysis, and outreach automation.",
+    "triggers": []
+  },
+  "sentiment-analysis": {
+    "path": ".agent/skills/sentiment-analysis/SKILL.md",
+    "description": "Analyze user feedback data to identify segments with sentiment scores, JTBD, ...",
+    "triggers": []
+  },
+  "shadcn-ui": {
+    "path": ".agent/skills/shadcn-ui/SKILL.md",
+    "description": "Expert UI engineering capabilities using shadcn/ui. Integrates accessible, ta...",
+    "triggers": []
+  },
+  "sprint-plan": {
+    "path": ".agent/skills/sprint-plan/SKILL.md",
+    "description": "Plan a sprint with capacity estimation, story selection, dependency mapping, ...",
+    "triggers": []
+  },
+  "sql-queries": {
+    "path": ".agent/skills/sql-queries/SKILL.md",
+    "description": "Generate SQL queries from natural language descriptions. Supports BigQuery, P...",
+    "triggers": []
+  },
+  "stakeholder-map": {
+    "path": ".agent/skills/stakeholder-map/SKILL.md",
+    "description": "Build a stakeholder map using a power/interest grid, identify communication s...",
+    "triggers": []
+  },
+  "stakeholder-mgr": {
+    "path": ".agent/skills/stakeholder-mgr/SKILL.md",
+    "description": "Manage relationships, 1:1s, and stakeholder communication.",
+    "triggers": [
+      "/stakeholder",
+      "/crm",
+      "/1on1",
+      "/whois",
+      "/update"
+    ]
+  },
+  "startup-analyst": {
+    "path": ".agent/skills/startup-analyst/SKILL.md",
+    "description": "AI consulting agent providing startup analysis, competitive research, and bus...",
+    "triggers": []
+  },
+  "startup-canvas": {
+    "path": ".agent/skills/startup-canvas/SKILL.md",
+    "description": "Generate a Startup Canvas combining Product Strategy (9 sections) and Busines...",
+    "triggers": []
+  },
+  "startup-financial-modeling": {
+    "path": ".agent/skills/startup-financial-modeling/SKILL.md",
+    "description": "AI finance team for startup financial modeling, investment analysis, and proj...",
+    "triggers": []
+  },
+  "stitch": {
+    "path": ".agent/skills/stitch/SKILL.md",
+    "description": "Official interface for the Stitch AI UI/UX design tool via MCP.",
+    "triggers": [
+      "/stitch",
+      "/stitch-design"
+    ]
+  },
+  "storyboard": {
+    "path": ".agent/skills/storyboard/SKILL.md",
+    "description": "Create a six-frame storyboard that shows a user's journey from problem to sol...",
+    "triggers": []
+  },
+  "summarize-interview": {
+    "path": ".agent/skills/summarize-interview/SKILL.md",
+    "description": "Summarize a customer interview transcript into a structured template with JTB...",
+    "triggers": []
+  },
+  "swot-analysis": {
+    "path": ".agent/skills/swot-analysis/SKILL.md",
+    "description": "Perform a detailed SWOT analysis \u2014 strengths, weaknesses, opportunities, and ...",
+    "triggers": []
+  },
+  "system-validation": {
+    "path": ".agent/skills/system-validation/SKILL.md",
+    "description": "Validates the three-tier mgechev architecture constraints of the Antigravity ...",
+    "triggers": []
+  },
+  "task-manager": {
+    "path": ".agent/skills/task-manager/SKILL.md",
+    "description": "Manage tasks and priorities.",
+    "triggers": [
+      "/task",
+      "/todo",
+      "/triage",
+      "/plan",
+      "/organize"
+    ]
+  },
+  "test-scenarios": {
+    "path": ".agent/skills/test-scenarios/SKILL.md",
+    "description": "Create comprehensive test scenarios from user stories with test objectives, s...",
+    "triggers": []
+  },
+  "tutorial-engineer": {
+    "path": ".agent/skills/tutorial-engineer/SKILL.md",
+    "description": "A team of AI agents designed to teach programming, concepts, and write tutori...",
+    "triggers": []
+  },
+  "ui-ux-designer": {
+    "path": ".agent/skills/ui-ux-designer/SKILL.md",
+    "description": "A team of multimodal agents for UI/UX design, visual analysis, and creative i...",
+    "triggers": []
+  },
+  "user-segmentation": {
+    "path": ".agent/skills/user-segmentation/SKILL.md",
+    "description": "Segment users from feedback data based on behavior, JTBD, and needs. Identifi...",
+    "triggers": []
+  },
+  "user-stories": {
+    "path": ".agent/skills/user-stories/SKILL.md",
+    "description": "Create user stories following the 3 C's (Card, Conversation, Confirmation) an...",
+    "triggers": []
+  },
+  "user-story-mapping": {
+    "path": ".agent/skills/user-story-mapping/SKILL.md",
+    "description": "Create a user story map that lays out activities, steps, tasks, and release s...",
+    "triggers": []
+  },
+  "user-story-mapping-workshop": {
+    "path": ".agent/skills/user-story-mapping-workshop/SKILL.md",
+    "description": "Run a user story mapping workshop with adaptive questions and a structured ma...",
+    "triggers": []
+  },
+  "user-story-splitting": {
+    "path": ".agent/skills/user-story-splitting/SKILL.md",
+    "description": "Break a large story or epic into smaller deliverable stories using proven spl...",
+    "triggers": []
+  },
+  "ux-collaborator": {
+    "path": ".agent/skills/ux-collaborator/SKILL.md",
+    "description": "Coordinate UX workstreams, research asks, and design debt.",
+    "triggers": [
+      "/ux",
+      "/ux-design",
+      "/wireframe",
+      "/mockup",
+      "/ux-audit"
+    ]
+  },
+  "ux-researcher": {
+    "path": ".agent/skills/ux-researcher/SKILL.md",
+    "description": "Create refined user personas from research data \u2014 3 personas with JTBD, pains...",
+    "triggers": []
+  },
+  "vacuum-protocol": {
+    "path": ".agent/skills/vacuum-protocol/SKILL.md",
+    "description": "Execute the full Centrifuge Protocol to keep the brain lean, private, and org...",
+    "triggers": []
+  },
+  "value-prop-statements": {
+    "path": ".agent/skills/value-prop-statements/SKILL.md",
+    "description": "Generate value proposition statements for marketing, sales, and onboarding fr...",
+    "triggers": []
+  },
+  "value-proposition": {
+    "path": ".agent/skills/value-proposition/SKILL.md",
+    "description": "Design a detailed value proposition using a 6-part JTBD template \u2014 Who, Why, ...",
+    "triggers": []
+  },
+  "visual-architect": {
+    "path": ".agent/skills/visual-architect/SKILL.md",
+    "description": "Expert in visualizing concepts through code. Generates Mermaid.js diagrams, A...",
+    "triggers": []
+  },
+  "visual-processor": {
+    "path": ".agent/skills/visual-processor/SKILL.md",
+    "description": "Extract text and context from images for PM analysis.",
+    "triggers": [
+      "/paste-image",
+      "/dump",
+      "image analysis",
+      "/screenshot"
+    ]
+  },
+  "vp-cpo-readiness-advisor": {
+    "path": ".agent/skills/vp-cpo-readiness-advisor/SKILL.md",
+    "description": "Guide the transition to VP or CPO across preparing, interviewing, landing, an...",
+    "triggers": []
+  },
+  "weekly-synth": {
+    "path": ".agent/skills/weekly-synth/SKILL.md",
+    "description": "Weekly and monthly rollups with accomplishments and risks.",
+    "triggers": [
+      "/week",
+      "/weekly",
+      "/month",
+      "/monthly",
+      "/report"
+    ]
+  },
+  "workshop-facilitation": {
+    "path": ".agent/skills/workshop-facilitation/SKILL.md",
+    "description": "Facilitate workshop sessions in a one-step, multi-turn flow. Use when an inte...",
+    "triggers": []
+  },
+  "wwas": {
+    "path": ".agent/skills/wwas/SKILL.md",
+    "description": "Create product backlog items in Why-What-Acceptance format \u2014 independent, val...",
+    "triggers": []
+  },
+  "youtube-summarizer": {
+    "path": ".agent/skills/youtube-summarizer/SKILL.md",
+    "description": "Advanced agent for chatting with and summarizing YouTube videos.",
+    "triggers": []
+  }
+}

@@ -1,0 +1,32 @@
+# Line Ending Normalization (Cross-Platform)
+# Ensures consistent LF line endings across macOS, Windows, and Linux.
+
+* text=auto eol=lf
+
+# Markdown files
+*.md text eol=lf
+
+# Python scripts
+*.py text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+
+# PowerShell scripts
+*.ps1 text eol=lf
+
+# TOML/YAML config
+*.toml text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# JSON
+*.json text eol=lf
+
+# Ignore binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.pdf binary

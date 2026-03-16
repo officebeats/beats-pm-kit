@@ -1,0 +1,322 @@
+import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
+import { exec } from 'child_process';
+
+// discord-rpc doesn't have official types in the main package, so we use require
+const RPC = require('discord-rpc');
+
+const clientId = '1440730997460172810';
+const brainDir = path.join(os.homedir(), '.gemini', 'antigravity', 'brain');
+
+let client: any;
+let statusBarItem: vscode.StatusBarItem;
+let agentStatus = '';
+let agentTaskName = '';
+let currentConversationId: string | null = null;
+let watchedTaskFile: string | null = null;
+let fileWatcher: boolean = false;
+let activityStartTime = Date.now();
+let lastSlackStatus = '';
+let slackDebounceTimer: NodeJS.Timeout | null = null;
+
+export function activate(context: vscode.ExtensionContext) {
+    console.log('Antigravity RPC is now active!');
+
+    // Create status bar item
+    statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+    statusBarItem.text = "$(broadcast) RPC: Connecting...";
+    statusBarItem.show();
+    context.subscriptions.push(statusBarItem);
+
+    // Initialize RPC
+    initRPC();
+
+    // Register event listeners for activity updates
+    context.subscriptions.push(
+        vscode.window.onDidChangeActiveTextEditor(() => updateActivity()),
+        vscode.workspace.onDidChangeTextDocument(() => updateActivity())
+    );
+
+    // Watch for agent status changes
+    watchAgentStatus();
+}
+
+function watchAgentStatus() {
+    // Initial check
+    findActiveConversation();
+
+    // Poll for conversation changes every 3.33 seconds
+    setInterval(() => {
+        findActiveConversation();
+    }, 3330);
+}
+
+function findActiveConversation() {
+    fs.readdir(brainDir, (err, items) => {
+        if (err) {
+            console.error('Error reading brain directory:', err);
+            return;
+        }
+
+        // Filter for conversation directories (UUID format)
+        const conversationDirs = items.filter(item => {
+            const fullPath = path.join(brainDir, item);
+            try {
+                return fs.statSync(fullPath).isDirectory() &&
+                    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(item);
+            } catch (e) {
+                return false;
+            }
+        });
+
+        if (conversationDirs.length === 0) {
+            return;
+        }
+
+        // Find the most recently modified task.md
+        let mostRecentTime = 0;
+        let mostRecentConversation: string | null = null;
+        const STALE_THRESHOLD = 5 * 60 * 1000; // 5 minutes
+
+        conversationDirs.forEach(dir => {
+            const taskFile = path.join(brainDir, dir, 'task.md');
+            try {
+                const stats = fs.statSync(taskFile);
+                if (stats.mtimeMs > mostRecentTime) {
+                    mostRecentTime = stats.mtimeMs;
+                    mostRecentConversation = dir;
+                }
+            } catch (e) {
+                // task.md doesn't exist in this conversation, skip
+            }
+        });
+
+        // Check if the most recent activity is stale
+        if (Date.now() - mostRecentTime > STALE_THRESHOLD) {
+            if (currentConversationId !== null) {
+                // Clear status if we were tracking something
+                currentConversationId = null;
+                if (watchedTaskFile) {
+                    fs.unwatchFile(watchedTaskFile);
+                    watchedTaskFile = null;
+                }
+                agentStatus = '';
+                agentTaskName = '';
+                updateActivity();
+            }
+            return;
+        }
+
+        if (mostRecentConversation && mostRecentConversation !== currentConversationId) {
+            // Switch to new conversation
+            currentConversationId = mostRecentConversation;
+            const newTaskFile = path.join(brainDir, mostRecentConversation, 'task.md');
+
+            // Unwatch old file
+            if (watchedTaskFile && fileWatcher) {
+                fs.unwatchFile(watchedTaskFile);
+            }
+
+            // Watch new file
+            watchedTaskFile = newTaskFile;
+            checkStatusFile();
+
+            fs.watchFile(watchedTaskFile, { interval: 1000 }, (curr, prev) => {
+                if (curr.mtimeMs !== prev.mtimeMs) {
+                    checkStatusFile();
+                }
+            });
+
+            fileWatcher = true;
+        } else if (mostRecentConversation && mostRecentConversation === currentConversationId) {
+            // Same conversation — re-check the file on every poll so stale [/] tasks are cleared promptly
+            checkStatusFile();
+        }
+    });
+}
+
+function checkStatusFile() {
+    if (!watchedTaskFile) return;
+
+    fs.readFile(watchedTaskFile, 'utf8', (err, data) => {
+        if (err) {
+            // File might not exist yet
+            return;
+        }
+
+        // Parse task.md sequentially to find the context of the active task
+        const lines = data.split('\n');
+        let activeTask = '';
+        let taskName = '';
+
+        let currentMainHeader = '';
+        let currentSectionHeader = '';
+
+        for (const line of lines) {
+            const trimmedLine = line.trim();
+
+            if (trimmedLine.startsWith('# ')) {
+                currentMainHeader = trimmedLine.substring(2).trim();
+                // Reset section header when a new main header is found
+                currentSectionHeader = '';
+            } else if (trimmedLine.startsWith('## ')) {
+                currentSectionHeader = trimmedLine.substring(3).trim();
+            } else if (trimmedLine.includes('[/]')) {
+                // Found the active task
+                const match = trimmedLine.match(/\[\/\]\s*(.*?)(?:<!--|$)/);
+                if (match && match[1]) {
+                    activeTask = match[1].trim();
+
+                    // Use the most specific header available: Section > Main
+                    taskName = currentSectionHeader || currentMainHeader;
+                    break; // Stop after finding the first active task
+                }
+            }
+        }
+
+        let statusChanged = false;
+        if (activeTask !== agentStatus) {
+            agentStatus = activeTask;
+            statusChanged = true;
+        }
+        if (taskName !== agentTaskName) {
+            agentTaskName = taskName;
+            statusChanged = true;
+        }
+
+        if (statusChanged) {
+            updateActivity();
+        }
+    });
+}
+
+function initRPC() {
+    client = new RPC.Client({ transport: 'ipc' });
+
+    client.on('ready', () => {
+        console.log('Discord RPC connected');
+        statusBarItem.text = "$(check) RPC: Active";
+        updateActivity();
+    });
+
+    client.on('disconnected', () => {
+        statusBarItem.text = "$(error) RPC: Disconnected";
+        setTimeout(initRPC, 10000); // Auto-reconnect
+    });
+
+    client.login({ clientId }).catch(console.error);
+}
+
+function updateSlack(statusString: string) {
+    if (slackDebounceTimer) {
+        clearTimeout(slackDebounceTimer);
+    }
+    
+    slackDebounceTimer = setTimeout(() => {
+        let text = statusString;
+        let emoji = ":computer:";
+        
+        if (statusString === "Vibe Coding") {
+            emoji = ":brain:";
+        }
+        
+        if (text === lastSlackStatus) return;
+        lastSlackStatus = text;
+        
+        const scriptPath = path.join(__dirname, '..', 'set_slack_status.py');
+        const cmd = `python "${scriptPath}" "${text}" "${emoji}"`;
+        
+        exec(cmd, (error) => {
+            if (error) {
+                console.error(`Slack sync error: ${error.message}`);
+            }
+        });
+    }, 3000); // Debounce to avoid hitting API limits
+}
+
+function updateActivity() {
+    if (!client) return;
+
+    let details = 'Vibe Coding';
+    let state = 'In Google Antigravity';
+    let smallImageKey = undefined;
+    let smallImageText = undefined;
+
+    // Priority: Agent Status > Editor Activity
+    if (agentStatus || agentTaskName) {
+        // Show the active task item as details
+        if (agentStatus) {
+            details = agentStatus;
+        } else if (agentTaskName) {
+            details = agentTaskName;
+        }
+
+        // Show the task name as state if we have both
+        if (agentTaskName && agentStatus) {
+            state = agentTaskName;
+        } else {
+            // Try to get the current workspace folder name
+            const editor = vscode.window.activeTextEditor;
+            if (editor) {
+                const folder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
+                if (folder) {
+                    state = `Github Repo Project`;
+                }
+            } else if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+                // Fallback if no active editor
+                state = `Github Repo Project`;
+            } else {
+                state = 'Agent Active';
+            }
+        }
+
+        smallImageKey = 'robot';
+        smallImageText = 'Agent Working';
+    } else {
+        const editor = vscode.window.activeTextEditor;
+        const workspaceFolders = vscode.workspace.workspaceFolders;
+        
+        if (editor) {
+            const fileName = editor.document.fileName.split(/[\\\/]/).pop();
+            details = `Editing ${fileName}`;
+
+            const folder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
+            if (folder) {
+                state = `Github Repo Project`;
+            }
+        } else if (currentConversationId) {
+            details = 'Vibe Coding';
+            if (workspaceFolders && workspaceFolders.length > 0) {
+                state = `Github Repo Project`;
+            }
+        } else if (workspaceFolders && workspaceFolders.length > 0) {
+            details = 'Vibe Coding';
+            state = `Github Repo Project`;
+        }
+    }
+
+    client.setActivity({
+        details,
+        state,
+        startTimestamp: activityStartTime,
+        largeImageKey: 'antigravity_logo',
+        largeImageText: 'Google Antigravity',
+        smallImageKey,
+        smallImageText,
+        instance: false,
+    }).catch((err: any) => console.error(err));
+
+    updateSlack(details);
+}
+
+export function deactivate() {
+    updateSlack("CLEAR");
+    if (client) {
+        client.clearActivity().catch(() => {}).finally(() => client.destroy());
+    }
+    if (watchedTaskFile) {
+        fs.unwatchFile(watchedTaskFile);
+    }
+}
