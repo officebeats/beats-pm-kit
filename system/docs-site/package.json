@@ -1,0 +1,15 @@
+{
+  "name": "antigravity-docs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "node scripts/generate-docs.js && vitepress build",
+    "docs:preview": "vitepress preview",
+    "generate": "node scripts/generate-docs.js"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.3"
+  }
+}
