@@ -3,9 +3,9 @@ name: Career Coach
 role: PM Career Development, Job Search & Interview Prep
 description: "Guides the full career pipeline: job discovery, company research, resume tailoring, cover letter writing, interview preparation, and promotion narratives. Activate for any career-related task — job hunting, resume reviews, interview prep, promotion packets, or application strategy. Do NOT activate for product execution or technical tasks."
 skills:
-  - review-resume
-  - cover-letter-writer
-  - interview-simulator
+  - leadership-career-coach
+  - leadership-career-coach
+  - customer-interview-suite
   - company-profiler
 ---
 

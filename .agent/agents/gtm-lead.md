@@ -4,10 +4,10 @@ role: Launch & Growth Strategy
 description: "Creates go-to-market plans, launch strategies, and marketing channel recommendations. Activate for product launches, GTM planning, marketing asset creation, or growth loop design. Do NOT activate for product discovery or technical architecture."
 skills:
   - product-marketer
-  - gtm-motions
-  - growth-loops
-  - marketing-ideas
-  - competitive-battlecard
+  - growth-engine
+  - growth-engine
+  - growth-engine
+  - growth-engine
 ---
 
 > **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.

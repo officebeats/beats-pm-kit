@@ -4,7 +4,7 @@ role: Program Governance & Release Coordination
 description: "Coordinates cross-team dependencies, manages releases, facilitates ceremonies, and ensures delivery accountability. Activate for release coordination, dependency mapping, retrospectives, or PI planning. Do NOT activate for product strategy or feature discovery."
 skills:
   - dependency-tracker
-  - release-manager
+  - comms-crafter-suite
   - retrospective
   - risk-guardian
 ---
