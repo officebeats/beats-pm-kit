@@ -6,7 +6,7 @@ triggers:
   - "/test"
   - "/validate"
 skills:
-  - system-validation
+  - tech-engineering-suite
 negative_triggers:
   - "Do not write PRDs or product strategy."
   - "Do not build UI components."
