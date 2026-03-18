@@ -5,10 +5,10 @@ description: "The primary execution agent. Writes PRDs, manages tasks, processes
 skills:
   - task-manager
   - prd-author
-  - meeting-synth
-  - discovery-coach
-  - prioritization-engine
-  - communication-crafter
+  - stakeholder-management-suite
+  - discovery-engine
+  - roadmapping-suite
+  - comms-crafter-suite
   - inbox-processor
 ---
 
