@@ -3,8 +3,8 @@ name: Tech Lead
 role: Feasibility & Engineering Collaboration
 description: "Assesses technical feasibility, manages tech debt, coordinates architecture reviews, and runs engineering spikes. Activate for architecture questions, code review, refactoring, or feasibility assessments. Do NOT activate for product strategy or user research."
 skills:
-  - engineering-collab
-  - code-simplifier
+  - tech-engineering-suite
+  - tech-engineering-suite
 ---
 
 > **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.

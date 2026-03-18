@@ -25,13 +25,13 @@
 <!-- VALUE PROP PILLS -->
 
 <p>
-  <img src="https://img.shields.io/badge/🚀_Execution-107%2B_PM_Skills-00A651?style=flat-square" alt="107+ AI Skills"/>
+  <img src="https://img.shields.io/badge/🚀_Execution-50_Master_Suites-00A651?style=flat-square" alt="50 Master Suites"/>
    • 
   <img src="https://img.shields.io/badge/🔒_100%25_Local-Zero_Cloud_Storage-00A651?style=flat-square" alt="Privacy First"/>
    • 
   <img src="https://img.shields.io/badge/💼_Exec_Layer-The_Boss_Protocol-00A651?style=flat-square" alt="The Boss Protocol"/>
    • 
-  <img src="https://img.shields.io/badge/🤖_Agents-11_Specialist_Personas-00A651?style=flat-square" alt="11 Agents"/>
+  <img src="https://img.shields.io/badge/🤖_Agents-24_Specialist_Personas-00A651?style=flat-square" alt="24 Agents"/>
 </p>
 
 <br/>
@@ -48,16 +48,12 @@
 
 ### Step 1: Install Your Runtime
 
-The kit supports **4 AI runtimes**. Pick one (or use multiple):
+This kit relies heavily on the **native parallel execution** of [Google Antigravity](https://antigravity.google/). 
 
-| Runtime                             | Install                                  | Notes                                   |
-| :---------------------------------- | :--------------------------------------- | :-------------------------------------- |
-| **Antigravity** (Recommended) | [Download App](https://antigravity.google/) | Native parallel agents, best experience |
-| **Gemini CLI**                | `npm install -g @google/gemini-cli`    | Terminal-first workflow                 |
-| **Claude Code**               | [Install](https://claude.ai/code)           | Via `.claude/` adapter                |
-| **KiloCode**                  | VS Code Extension                        | Via `.kilocode/` adapter              |
+1. **[Download the Antigravity App](https://antigravity.google/)**
+2. Initialize it in this folder.
 
-> **Cross-CLI Sync:** Run `python system/scripts/sync_cli_adapters.py` to keep agents, skills, and workflows synchronized across all runtimes.
+> **Note on Alternative CLIs:** While Antigravity is the primary intended runtime, the kit explicitly supports alternative terminal/editor tools (Gemini CLI, Claude Code, and KiloCode) by maintaining hidden adapter folders (`.gemini/`, `.claude/`, etc.). See the **Runtime Compatibility** section at the bottom for instructions on how to sync setups if you bounce between different CLIs.
 
 ### Step 2: Get the Kit
 
@@ -126,7 +122,7 @@ You need to write a PRD for a new "Single Sign-On" feature but you're staring at
 
 The Beats PM Kit operates on a hyper-efficient 3-Layer architecture:
 
-### 🤖 1. The Virtual PM Team (11 Persona Agents)
+### 🤖 1. The Virtual PM Team (24 Persona Agents)
 
 The _Identity_ layer. Who is doing the work?
 
@@ -144,9 +140,9 @@ The _Identity_ layer. Who is doing the work?
 | **QA Engineer**           | Quality Assurance     | System Validation            |
 | **Career Coach**          | Growth & Development  | Career Strategy              |
 
-### 🎯 2. The Core Playbooks (20+ Orchestration Workflows)
+### 🎯 2. The Core Playbooks (14 Active Workflows)
 
-The _Routing_ layer. Lean shortcuts to trigger complex operations:
+The _Routing_ layer. Lean shortcuts to trigger complex operations. Keeping active workflows under 20 ensures zero MCP warnings:
 
 | Command              | Purpose                                  |
 | :------------------- | :--------------------------------------- |
@@ -171,11 +167,24 @@ The _Routing_ layer. Lean shortcuts to trigger complex operations:
 | `/sprint`          | Sprint backlog generation                |
 | `/track`           | Battlefield View of P0 Tasks & Bugs      |
 
-### 🚀 3. The Capability Engine (107+ Atomic Skills)
+### 🚀 3. The Capability Engine (50 Master Suites)
 
-The _Execution_ layer. Atomic verbs loaded Just-In-Time to keep the context window lightning fast.
+The _Execution_ layer. Capability Engines are loaded Just-In-Time to keep the context window lightning fast. 
 
-Includes: `prd-author`, `meeting-synth`, `task-manager`, `opportunity-solution-tree`, `competitive-battlecard`, `cohort-analysis`, `shadcn-ui`, `discovery-coach`, `boss-tracker`, `memory-consolidator`, `communication-crafter`, `market-sizing`, `lean-canvas`, `sprint-plan`, and **90+ more**.
+| Master PM Suite | Consolidated Frameworks / Examples |
+| :--- | :--- |
+| **`business-strategy-suite`** | Lean Canvas, SWOT, PESTLE, Ansoff Matrix, Business Models |
+| **`growth-engine`** | TAM/SAM/SOM Sizing, Competitive Battlecards, Pricing strategies |
+| **`metrics-finance-suite`** | North Star Metrics, SaaS Economics dashboards, Startup Models |
+| **`discovery-engine`** | Opportunity Solution Trees, Pre-mortems, Idea validation |
+| **`roadmapping-suite`** | RICE/ICE Prioritization, Outcome-Roadmaps, OKRs, Sprint Plans |
+| **`ux-research-suite`** | Journey Maps, Proto-Personas, User Segments, Sentiment Analysis|
+| **`tech-engineering-suite`** | Next.js/React review, SQL generation, Architecture Design |
+| **`comms-crafter-suite`** | Press Releases, Release Notes, NDAs, EOL messages |
+| **`leadership-career-coach`** | Executive Onboarding, Altitude mapping, Resume formatting |
+| **`stakeholder-mgmt-suite`** | Delegation tracking, Stakeholder mapping, Async Workshops |
+
+_Plus 40 standalone playbooks (`prd-author`, `meeting-synth`, etc.) mapping exact PM workflows._
 
 ---
 
@@ -193,9 +202,9 @@ beats-pm-antigravity-brain/
 ├── .agent/                # ⭐ SOURCE OF TRUTH (The AI Engine)
 │   ├── agents/            # 11 Virtual Team Personas
 │   ├── rules/GEMINI.md    # The System Constitution
-│   ├── skills/            # 107+ PM & Tech Capabilities
+│   ├── skills/            # 50 Master PM & Tech Suites
 │   ├── templates/         # Document & Report Templates
-│   └── workflows/         # 20+ Core Slash Commands
+│   └── workflows/         # 14 Active Playbooks
 │
 ├── .claude/               # Claude Code adapter (symlinked)
 ├── .kilocode/             # KiloCode adapter (symlinked)
@@ -223,9 +232,9 @@ The kit is built on a **single source of truth** (`.agent/`) with adapters for e
 | Capability | Antigravity | Gemini CLI | Claude Code | KiloCode |
 | :--- | :---: | :---: | :---: | :---: |
 | **Parallel Fan-Out** | ✅ Native multi-agent | ❌ Sequential only | ❌ Sequential only | ❌ Sequential only |
-| **Agent Personas (11)** | ✅ Full mesh | ✅ | ✅ | ✅ |
-| **Skills (107+)** | ✅ Instant JIT load | ✅ | ✅ | ✅ |
-| **Slash Commands (20+)** | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` |
+| **Agent Personas (24)** | ✅ Full mesh | ✅ | ✅ | ✅ |
+| **Skills (50)** | ✅ Instant JIT load | ✅ | ✅ | ✅ |
+| **Slash Commands (14)** | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` |
 | **Clipboard Ingest** | ✅ Native | ⚠️ Script fallback | ⚠️ Script fallback | ⚠️ Script fallback |
 | **Deep File Access** | ✅ Native | ✅ | ✅ | ✅ |
 | **Context Window** | ✅ Optimized | ⚠️ Standard | ⚠️ Standard | ⚠️ Standard |
@@ -233,15 +242,19 @@ The kit is built on a **single source of truth** (`.agent/`) with adapters for e
 
 > **What "Parallel Fan-Out" means:** When you run `/fan-out`, Antigravity dispatches multiple specialist agents simultaneously (e.g., CPO + Staff PM + Tech Lead analyzing the same problem from different angles). Other runtimes process these agents one-at-a-time, making complex workflows 3-5x slower.
 
-### Cross-Runtime Sync
+### Advanced: Cross-Runtime CLI Sync
 
-All runtimes share the same `.agent/` directory. After making changes to agents, skills, or workflows:
+If you bounce between different command-line tools (e.g., using Claude Code in your terminal, KiloCode in VS Code, and Antigravity locally on your desktop), you must keep their configuration adapters manually synchronized with the master `.agent/` directory. 
+
+After making *any* changes to agents, skills, or workflows across this kit, you should run:
 
 ```bash
 python system/scripts/sync_cli_adapters.py
 ```
 
-This keeps `.claude/`, `.kilocode/`, and `.gemini/` adapters in perfect sync with the source of truth.
+This script pushes the Antigravity configuration out to the `.claude/`, `.kilocode/`, and `.gemini/` adapters so the other tools don't lose context. 
+
+> **Important:** If you are exclusively using Antigravity, **you never need to run this.** You can ignore the sync script completely.
 
 ---
 
