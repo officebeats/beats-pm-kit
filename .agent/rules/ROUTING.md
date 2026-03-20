@@ -25,6 +25,7 @@
 | `/review` | Quality Control | Tech Lead | — | P1 |
 | `/regression` | CI Tests | QA Engineer | `system-validation` | P2 |
 | `/help` | User Manual | System | — | P2 |
+| `/update` | Pull Latest Kit Version | System | `core-utility` | P0 |
 
 ## Alias Map (Antigravity ↔ Slash)
 
