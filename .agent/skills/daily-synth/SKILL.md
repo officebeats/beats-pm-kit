@@ -1,6 +1,8 @@
 ---
 name: daily-synth
 description: Daily briefing and planning.
+priority: P0
+maxTokens: 2000
 triggers:
   - "/day"
   - "/status"

@@ -1,6 +1,8 @@
 ---
 name: context-retriever
-description: The "Recall Engine". Fetches history, decisions, and tasks related to a person or topic.
+description: "The 'Recall Engine'. Fetches history, decisions, and tasks related to a person or topic."
+priority: P0
+maxTokens: 2000
 triggers:
   - "/prep"
   - "/recall"
