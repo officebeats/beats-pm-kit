@@ -1,6 +1,6 @@
 # GEMINI.md - Maestro Configuration
 
-**Version 9.7.0** - Beats PM Antigravity Kit
+**Version 10.0.0** - Beats PM Antigravity Kit
 
 This file defines the Operating System for the Product Management Brain.
 
@@ -48,6 +48,8 @@ Agent activated → Check frontmatter "skills:" field in `.agent/agents/`
 
 - **Selective Reading:** DO NOT read ALL files. Load context lazily.
 - **Rule Priority:** P0 (GEMINI.md) > P1 (Agent Persona) > P2 (Skill).
+- **Token Budget:** Respect `maxTokens` from `MANIFEST.json`. Do NOT load full skill content beyond budget.
+- **Priority Tiers:** P0 skills loaded eagerly. P1/P2 skills loaded JIT only when triggered.
 
 ### 1.5 Command Alias Map (Antigravity ↔ Slash)
 
@@ -94,26 +96,10 @@ The Antigravity Kit is strictly organized into three separate layers to maximize
 
 ## 🗳️ UNIVERSAL SYSTEM ROUTING
 
-Before ANY action, classify the request against the 15 verified core playbooks:
+> **SSOT:** See [`.agent/rules/ROUTING.md`](ROUTING.md) for the complete, unified routing table.
+> **Manifest:** See [`.agent/MANIFEST.json`](../MANIFEST.json) for machine-readable index with token budgets.
 
-| Playbook          | Purpose                                 | Agent Triggered                      |
-| :---------------- | :-------------------------------------- | :----------------------------------- |
-| **`/boss`**       | Prepare for Friday 1:1 sync             | `CPO` → `boss-tracker`               |
-| **`/day`**        | Daily briefing and synthesis            | `CPO` → `daily-synth`                |
-| **`/track`**      | Battlefield View (Tasks + Bugs)         | `Staff PM` → `task-manager`          |
-| **`/meet`**       | Synthesize transcript to Action Items   | `Staff PM` → `meeting-synth`         |
-| **`/create`**     | Document Factory (PRD, Spec, One-Pager) | `Staff PM` → `prd-author`            |
-| **`/plan`**       | Strategic War Room (Roadmaps, OKRs)     | `Strategist` → `okr-manager`         |
-| **`/retro`**      | Action-driven Retrospective             | `Program Manager` → `retrospective`  |
-| **`/vacuum`**     | System Optimization & File Archive      | `CPO` → `vacuum-protocol`            |
-| **`/fan-out`**    | Complex Parallel Agent Dispatch         | `CPO` → Orchestrator                 |
-| **`/sprint`**     | Sprint Plan Generation                  | `Program Manager` → `sprint-plan`    |
-| **`/discover`**   | Product Discovery & OST Mapping         | `Staff PM` → `discovery-coach`       |
-| **`/prioritize`** | Backlog Scoring (RICE, etc)             | `Staff PM` → `prioritization-engine` |
-| **`/paste`**      | Capture clipboard to triage             | `Staff PM` → `inbox-processor`       |
-| **`/review`**     | Code/Spec/Design Quality Control        | `Tech Lead`                          |
-| **`/regression`** | Run full CI tests on Antigravity Kit    | `QA Engineer` → `system-validation`  |
-| **`/help`**       | User Manual & System Docs               | _System_                             |
+Before ANY action, classify the request against the core playbooks defined in `ROUTING.md`.
 
 ---
 
@@ -122,10 +108,13 @@ Before ANY action, classify the request against the 15 verified core playbooks:
 ```
 beats-pm-antigravity-brain/
 ├── .agent/
-│   ├── agents/            # The Virtual Team (Personas)
-│   ├── rules/             # GEMINI.md (This File)
-│   ├── skills/            # Domain Expertise
-│   └── workflows/         # Playbook Instructions
+│   ├── MANIFEST.json      # Machine-readable index (agents, skills, workflows)
+│   ├── ARCHITECTURE.md    # System architecture overview
+│   ├── agents/            # The Virtual Team (24 Personas)
+│   ├── rules/             # GEMINI.md + ROUTING.md
+│   ├── skills/            # Domain Expertise (50 Skills, P0/P1/P2)
+│   ├── workflows/         # Playbook Instructions (16 Commands)
+│   └── templates/         # Document templates (JIT loaded)
 ├── system/                # Python Core Logic
 └── 1. Company/            # Strategy (Local)
     ... (Standard Folders 2-5)
@@ -145,6 +134,24 @@ beats-pm-antigravity-brain/
 | **Data Scientist**        | Quant Insights        | `data-analytics`                                                                                                   |
 | **UX Researcher**         | Qual Insights         | `ux-researcher`                                                                                                    |
 | **GTM Lead**              | Launch & Growth       | `product-marketer`                                                                                                 |
+
+---
+
+## 🔋 TOKEN OPTIMIZATION PROTOCOL (v10.0)
+
+### Context Rot Prevention
+
+1. **Research → Plan → Reset → Implement**: Clear context between phases to prevent accumulated noise.
+2. **Session Windowing**: Use Antigravity KI system to persist cross-session learnings. Don't re-explain.
+3. **Index, Don't Inline**: SKILL.md files should be indexes pointing to `assets/`. Never inline templates.
+4. **Priority Loading**: Load P0 skills eagerly, P1/P2 only when triggered.
+5. **Single Source of Truth**: `ROUTING.md` for routing. `MANIFEST.json` for registry. No duplicates.
+
+### Skill Archival Protocol
+
+- Skills unused for 30+ days are candidates for archival via `/vacuum`.
+- Archived skills move to `.agent/archive/skills/` and are removed from active MANIFEST.json.
+- Reactivation: Move back to `.agent/skills/` and update MANIFEST.json.
 
 ---
 
@@ -179,4 +186,4 @@ When backlog exceeds 20 items or stakeholders disagree on priority:
 
 ---
 
-_End of System Config_
+_End of System Config — v10.0.0_

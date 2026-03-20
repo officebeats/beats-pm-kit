@@ -1,6 +1,8 @@
 ---
 name: boss-tracker
 description: Track high-priority leadership requests.
+priority: P0
+maxTokens: 3000
 triggers:
   - "/boss"
   - "/leadership"

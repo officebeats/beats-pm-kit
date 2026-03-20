@@ -1,6 +1,8 @@
 ---
 name: prd-author
 description: "Author comprehensive Product Requirements Documents (PRDs) using a strict 8-section unified template. Use when the user requests /prd, needs to draft new product specifications, or outlines a new feature. Do NOT use this for meeting summaries or task trackers."
+priority: P0
+maxTokens: 2000
 ---
 
 > **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.

@@ -1,6 +1,8 @@
 ---
 name: task-manager
 description: Manage tasks and priorities.
+priority: P0
+maxTokens: 3000
 triggers:
   - "/task"
   - "/todo"
