@@ -141,7 +141,7 @@ skill-name/
 | **Total Workflows** | 16 |
 | **Total Skill Surface** | ~391KB |
 | **P0 Core Surface** | ~33KB |
-| **Architecture Version** | 10.0.0 |
+| **Architecture Version** | 10.0.1 |
 
 ---
 
