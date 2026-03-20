@@ -63,14 +63,14 @@
         {"id": "test-scenarios", "maxTokens": 4000, "bytes": 3657},
         {"id": "requirements-translator", "maxTokens": 3500, "bytes": 3462},
         {"id": "wwas", "maxTokens": 3500, "bytes": 3567},
-        {"id": "epic-hypothesis", "maxTokens": 10000, "bytes": 11400},
-        {"id": "epic-breakdown-advisor", "maxTokens": 20000, "bytes": 23431},
+        {"id": "epic-hypothesis", "maxTokens": 2000, "bytes": 5164},
+        {"id": "epic-breakdown-advisor", "maxTokens": 3000, "bytes": 7937},
         {"id": "discovery-engine", "maxTokens": 1000, "bytes": 823},
         {"id": "company-profiler", "maxTokens": 1500, "bytes": 1207}
       ],
       "P2_specialist": [
-        {"id": "ai-shaped-readiness-advisor", "maxTokens": 40000, "bytes": 42777},
-        {"id": "context-engineering-advisor", "maxTokens": 30000, "bytes": 31771},
+        {"id": "ai-shaped-readiness-advisor", "maxTokens": 5000, "bytes": 12678},
+        {"id": "context-engineering-advisor", "maxTokens": 5000, "bytes": 12429},
         {"id": "customer-interview-suite", "maxTokens": 1200, "bytes": 1048},
         {"id": "agile-story-crafter", "maxTokens": 1000, "bytes": 978},
         {"id": "assumption-mapper", "maxTokens": 1000, "bytes": 972},
