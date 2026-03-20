@@ -123,10 +123,10 @@ beats-pm-antigravity-brain/
 ├── .agent/
 │   ├── MANIFEST.json      # Machine-readable index (agents, skills, workflows)
 │   ├── ARCHITECTURE.md    # System architecture overview
-│   ├── agents/            # The Virtual Team (24 Personas)
+│   ├── agents/            # The Virtual Team (12 PM Personas)
 │   ├── rules/             # GEMINI.md + ROUTING.md
-│   ├── skills/            # Domain Expertise (50 Skills, P0/P1/P2)
-│   ├── workflows/         # Playbook Instructions (16 Commands)
+│   ├── skills/            # Domain Expertise (46 Skills, P0/P1/P2)
+│   ├── workflows/         # Playbook Instructions (17 Commands)
 │   └── templates/         # Document templates (JIT loaded)
 ├── system/                # Python Core Logic
 └── 1. Company/            # Strategy (Local)
@@ -147,6 +147,10 @@ beats-pm-antigravity-brain/
 | **Data Scientist**        | Quant Insights        | `data-analytics`                                                                                                   |
 | **UX Researcher**         | Qual Insights         | `ux-researcher`                                                                                                    |
 | **GTM Lead**              | Launch & Growth       | `product-marketer`                                                                                                 |
+| **QA Engineer**           | Quality Assurance     | `test-scenarios`, `bug-chaser`                                                                                     |
+| **Career Coach**          | PM Career Growth      | `leadership-career-coach`                                                                                          |
+| **Doc Writer**            | PRDs & Specs          | `prd-author`, `document-exporter`                                                                                  |
+| **Orchestrator**          | Multi-agent Coord     | Routes to all agents above                                                                                         |
 
 ---
 
