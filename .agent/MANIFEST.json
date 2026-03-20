@@ -1,5 +1,5 @@
 {
-  "version": "10.0.0",
+  "version": "10.0.1",
   "generated": "2026-03-18T19:40:00Z",
   "description": "Machine-readable index of all agents, skills, and workflows. Enables cache-based loading.",
   "agents": {

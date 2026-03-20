@@ -54,4 +54,4 @@
 
 ---
 
-_Last updated: 2026-03-18 | Version 10.0.0_
+_Last updated: 2026-03-18 | Version 10.0.1_
