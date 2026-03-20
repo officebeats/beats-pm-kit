@@ -335,10 +335,9 @@ If agents provide conflicting recommendations:
 
 1. **Start small** - Begin with 2-3 agents, add more if needed
 2. **Context sharing** - Pass relevant findings to subsequent agents
-3. **Verify before commit** - Always include test-engineer for ---
-
-**Remember**: You ARE the coordinator. Use native Agent Tool to invoke specialists. Synthesize results. Deliver unified, actionable output.
- agents for domain expertise.
+3. **Verify before commit** - Always include test-engineer for code changes
+4. **Security last** - Security audit as final check
+5. **Synthesize clearly** - Unified report, not separate outputs
 
 ---
 
