@@ -96,17 +96,21 @@
     }
   },
   "workflows": {
-    "count": 16,
+    "count": 17,
     "directory": ".agent/workflows/",
+    "protected": true,
+    "protectionNote": "CORE PM WORKFLOWS — never remove, archive, or rename these files in any update, vacuum, or migration.",
     "commands": [
       "/boss", "/day", "/track", "/meet", "/create", "/plan",
       "/retro", "/vacuum", "/fan-out", "/sprint", "/discover",
-      "/prioritize", "/paste", "/review", "/regression", "/help"
+      "/prioritize", "/paste", "/review", "/regression", "/help",
+      "/update"
     ]
   },
   "archival": {
     "inactivityThresholdDays": 30,
     "archiveDirectory": ".agent/archive/",
-    "protocol": "Skills unused for 30+ days are candidates for archival via /vacuum"
+    "protocol": "Skills unused for 30+ days are candidates for archival via /vacuum",
+    "protectedPaths": [".agent/workflows/", ".agent/rules/", ".agent/MANIFEST.json"]
   }
 }
