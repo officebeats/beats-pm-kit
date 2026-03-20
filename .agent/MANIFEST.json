@@ -3,7 +3,7 @@
   "generated": "2026-03-18T19:40:00Z",
   "description": "Machine-readable index of all agents, skills, and workflows. Enables cache-based loading.",
   "agents": {
-    "count": 24,
+    "count": 12,
     "directory": ".agent/agents/",
     "registry": [
       {"id": "orchestrator", "file": "orchestrator.md", "focus": "Multi-agent coordination", "priority": "P0"},
@@ -17,23 +17,11 @@
       {"id": "gtm-lead", "file": "gtm-lead.md", "focus": "Launch & Growth", "priority": "P2"},
       {"id": "qa-engineer", "file": "qa-engineer.md", "focus": "Quality Assurance", "priority": "P2"},
       {"id": "career-coach", "file": "career-coach.md", "focus": "PM Career Growth", "priority": "P2"},
-      {"id": "frontend-specialist", "file": "frontend-specialist.md", "focus": "Web UI/UX", "priority": "P2"},
-      {"id": "backend-specialist", "file": "backend-specialist.md", "focus": "API & Business Logic", "priority": "P2"},
-      {"id": "database-architect", "file": "database-architect.md", "focus": "Schema & SQL", "priority": "P2"},
-      {"id": "mobile-developer", "file": "mobile-developer.md", "focus": "iOS/Android/RN", "priority": "P2"},
-      {"id": "devops-engineer", "file": "devops-engineer.md", "focus": "CI/CD & Docker", "priority": "P2"},
-      {"id": "security-auditor", "file": "security-auditor.md", "focus": "Security Compliance", "priority": "P2"},
-      {"id": "penetration-tester", "file": "penetration-tester.md", "focus": "Offensive Security", "priority": "P2"},
-      {"id": "debugger", "file": "debugger.md", "focus": "Root Cause Analysis", "priority": "P2"},
-      {"id": "performance-optimizer", "file": "performance-optimizer.md", "focus": "Speed & Web Vitals", "priority": "P2"},
-      {"id": "seo-specialist", "file": "seo-specialist.md", "focus": "Ranking & Visibility", "priority": "P2"},
-      {"id": "documentation-writer", "file": "documentation-writer.md", "focus": "Docs & Manuals", "priority": "P2"},
-      {"id": "code-archaeologist", "file": "code-archaeologist.md", "focus": "Legacy & Refactoring", "priority": "P2"},
-      {"id": "explorer-agent", "file": "explorer-agent.md", "focus": "Codebase Analysis", "priority": "P2"}
+      {"id": "documentation-writer", "file": "documentation-writer.md", "focus": "Docs & Manuals", "priority": "P2"}
     ]
   },
   "skills": {
-    "count": 50,
+    "count": 46,
     "directory": ".agent/skills/",
     "tiers": {
       "P0_core": [
@@ -76,17 +64,16 @@
         {"id": "assumption-mapper", "maxTokens": 1000, "bytes": 972},
         {"id": "brainstorming-engine", "maxTokens": 1000, "bytes": 967},
         {"id": "launch-strategy", "maxTokens": 1000, "bytes": 937},
-        {"id": "startup-analyst", "maxTokens": 1000, "bytes": 909},
+
         {"id": "business-strategy-suite", "maxTokens": 1000, "bytes": 907},
         {"id": "ui-ux-designer", "maxTokens": 1000, "bytes": 902},
-        {"id": "sales-automator", "maxTokens": 1000, "bytes": 892},
+
         {"id": "product-strategy-suite", "maxTokens": 1000, "bytes": 876},
-        {"id": "chat-with-gmail", "maxTokens": 1000, "bytes": 871},
-        {"id": "youtube-summarizer", "maxTokens": 1000, "bytes": 864},
+
         {"id": "positioning-strategist", "maxTokens": 1000, "bytes": 829},
         {"id": "metrics-finance-suite", "maxTokens": 1000, "bytes": 800},
         {"id": "growth-engine", "maxTokens": 1000, "bytes": 797},
-        {"id": "tech-engineering-suite", "maxTokens": 1000, "bytes": 785},
+
         {"id": "stakeholder-management-suite", "maxTokens": 1000, "bytes": 768},
         {"id": "ux-research-suite", "maxTokens": 1000, "bytes": 763},
         {"id": "roadmapping-suite", "maxTokens": 1000, "bytes": 753},
