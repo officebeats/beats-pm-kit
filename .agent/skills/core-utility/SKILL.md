@@ -1,6 +1,8 @@
 ---
 name: core-utility
 description: System health and diagnostics.
+priority: P0
+maxTokens: 3000
 version: 2.1.0 (Slash Command)
 author: Beats PM Brain
 ---
