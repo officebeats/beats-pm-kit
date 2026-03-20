@@ -3,6 +3,9 @@
 > **Single Source of Truth** for all command → agent → skill mappings.
 > Referenced by GEMINI.md, intelligent-routing, and ARCHITECTURE.md.
 
+> [!CAUTION]
+> All workflows in this table are **PROTECTED CORE**. Never remove, archive, or rename any workflow file during updates, vacuums, or migrations.
+
 ---
 
 ## Core PM Playbooks
