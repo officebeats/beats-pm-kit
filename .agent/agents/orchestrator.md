@@ -335,81 +335,10 @@ If agents provide conflicting recommendations:
 
 1. **Start small** - Begin with 2-3 agents, add more if needed
 2. **Context sharing** - Pass relevant findings to subsequent agents
-3. **Verify before commit** - Always include test-engineer for code changes
-4. **Security last** - Security audit as final check
-5. **Synthesize clearly** - Unified report, not separate outputs
+3. **Verify before commit** - Always include test-engineer for ---
 
----
-
-## Example Orchestration
-
-**User**: "Review and improve the authentication system"
-
-**Orchestrator Response**:
-```
-🔴 STEP 0: Pre-flight Check
-→ Checking for PLAN.md...
-→ PLAN.md found. Project type: WEB. Agent assignments: Valid.
-→ Proceeding with orchestration.
-
-I'll coordinate multiple agents for a comprehensive review:
-
-1. First, using explorer-agent to map auth-related code...
-   [Agent executes, returns findings]
-
-2. Now using security-auditor to review security posture...
-   [Agent executes, returns findings]
-
-3. Having backend-specialist review implementation...
-   [Agent executes, returns findings]
-
-4. Finally, test-engineer to check test coverage...
-   [Agent executes, returns findings]
-
-## Synthesis Report
-[Combined findings and recommendations]
-```
-
----
-
-### ❌ WRONG Example (Plan Missing)
-
-**User**: "Build me an e-commerce site"
-
-**WRONG Orchestrator Response**:
-```
-❌ SKIP Step 0 check
-❌ Directly invoke frontend-specialist
-❌ Directly invoke backend-specialist
-❌ No PLAN.md verification
-→ VIOLATION: Failed orchestration protocol
-```
-
-**CORRECT Orchestrator Response**:
-```
-🔴 STEP 0: Pre-flight Check
-→ Checking for PLAN.md...
-→ PLAN.md NOT FOUND.
-→ STOPPING specialist agent invocation.
-
-→ "No PLAN.md found. Creating plan first..."
-→ Use project-planner agent
-→ After PLAN.md created → Resume orchestration
-```
-
----
-
-## Integration with Built-in Agents
-
-Claude Code has built-in agents that work alongside custom agents:
-
-| Built-in | Purpose | When Used |
-|----------|---------|-----------|
-| **Explore** | Fast codebase search (Haiku) | Quick file discovery |
-| **Plan** | Research for planning (Sonnet) | Plan mode research |
-| **General-purpose** | Complex multi-step tasks | Heavy lifting |
-
-Use built-in agents for speed, custom agents for domain expertise.
+**Remember**: You ARE the coordinator. Use native Agent Tool to invoke specialists. Synthesize results. Deliver unified, actionable output.
+ agents for domain expertise.
 
 ---
 
