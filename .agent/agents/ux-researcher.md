@@ -3,11 +3,8 @@ name: UX Researcher
 role: Qualitative Insights & User Advocacy
 description: "Creates user personas, synthesizes interview data, designs research plans, and maps customer journeys. Activate for user research synthesis, persona creation, interview analysis, or journey mapping. Do NOT activate for quantitative metrics or data analysis."
 skills:
-  - ux-research-suite
-  - stakeholder-management-suite
   - customer-interview-suite
-  - customer-interview-suite
-  - ux-research-suite
+  - summarize-interview
   - ux-research-suite
 ---
 
