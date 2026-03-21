@@ -9,6 +9,7 @@ skills:
   - discovery-engine
   - roadmapping-suite
   - comms-crafter-suite
+  - meeting-synth
   - inbox-processor
 ---
 
