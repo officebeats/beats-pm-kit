@@ -21,7 +21,7 @@
     ]
   },
   "skills": {
-    "count": 46,
+    "count": 45,
     "directory": ".agent/skills/",
     "tiers": {
       "P0_core": [
@@ -32,7 +32,6 @@
         {"id": "prd-author", "maxTokens": 2000, "bytes": 1812},
         {"id": "meeting-synth", "maxTokens": 3000, "bytes": 2850},
         {"id": "core-utility", "maxTokens": 3000, "bytes": 3063},
-        {"id": "intelligent-routing", "maxTokens": 10000, "bytes": 10617},
         {"id": "context-retriever", "maxTokens": 2000, "bytes": 1453}
       ],
       "P1_extended": [

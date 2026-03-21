@@ -53,7 +53,7 @@ TEMPLATES = [
 
 CORE_SCRIPTS = [
     "core_setup.py", "vibe_check.py", "vacuum.py",
-    "kernel_utils.py", "queue_worker.py", "dispatch.py"
+    "kernel_utils.py"
 ]
 
 # KERNEL.md was renamed to GEMINI.md; SETTINGS.md is local-only (gitignored)
@@ -201,19 +201,6 @@ class TestCriticalFiles(unittest.TestCase):
         for filename in CRITICAL_FILES:
             with self.subTest(file=filename):
                 self.assertTrue((ROOT_DIR / filename).exists(), f"Missing: {filename}")
-
-
-class TestAsyncQueue(unittest.TestCase):
-    """Verify async queue system works."""
-
-    def test_queue_directories_exist(self):
-        from scripts import queue_worker
-        queue_worker.setup_directories()
-
-        for d in [queue_worker.PENDING_DIR, queue_worker.PROCESSING_DIR,
-                  queue_worker.COMPLETED_DIR, queue_worker.FAILED_DIR]:
-            with self.subTest(dir=d):
-                self.assertTrue(os.path.isdir(d))
 
 
 if __name__ == '__main__':

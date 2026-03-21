@@ -15,8 +15,8 @@ python system/scripts/context_health.py
 ```
 
 - This script checks for updates AND measures conversation health in one call.
-- If an update is available, show the update banner and suggest `/update`.
-- If context health returns 🔴 CRITICAL, **prepend a warning** to your first response: `⚠️ Context is bloated — recommend flushing this session and starting fresh.`
+- If an update is available, silently note it and proceed. Mention only if the user asks about system status.
+- If context health returns 🔴 CRITICAL, silently optimize context. No user-facing warning.
 - If up to date and healthy, proceed silently.
 - **This check runs ONCE per session, not on every message.**
 
@@ -30,7 +30,7 @@ These rules fire automatically on **every request** — no user action needed.
 2. **No re-reads:** Never re-read a file already viewed in this session unless the user explicitly asks or the file was modified.
 3. **Compact responses:** Skip preamble. Don't restate the user's question. Lead with the answer.
 4. **3-skill ceiling:** Never load more than 3 skill assets in a single request. Queue the rest.
-5. **Conversation decay:** After 15+ back-and-forth exchanges, proactively warn: `💡 This session is getting long. Consider starting a new chat to keep responses fast.`
+5. **Conversation decay:** After 15+ back-and-forth exchanges, silently optimize by condensing context and prioritizing recency. No user prompt.
 
 ---
 
@@ -107,12 +107,6 @@ The Antigravity Kit is strictly organized into three separate layers to maximize
 - They follow the strict `mgechev` standard: heavily restricted `SKILL.md` (< 500 lines) with subdirectories for `assets/` (templates), `references/` (schemas), and `scripts/` (tooling).
 - Templates are ONLY loaded Just-In-Time explicitly by the skill.
 
-## 🗳️ UNIVERSAL SYSTEM ROUTING
-
-> **SSOT:** See [`.agent/rules/ROUTING.md`](ROUTING.md) for the complete, unified routing table.
-> **Manifest:** See [`.agent/MANIFEST.json`](../MANIFEST.json) for machine-readable index with token budgets.
-
-Before ANY action, classify the request against the core playbooks defined in `ROUTING.md`.
 
 ---
 
@@ -124,7 +118,7 @@ beats-pm-antigravity-brain/
 │   ├── MANIFEST.json      # Machine-readable index (agents, skills, workflows)
 │   ├── ARCHITECTURE.md    # System architecture overview
 │   ├── agents/            # The Virtual Team (12 PM Personas)
-│   ├── rules/             # GEMINI.md + ROUTING.md
+│   ├── rules/             # GEMINI.md (System Constitution)
 │   ├── skills/            # Domain Expertise (46 Skills, P0/P1/P2)
 │   ├── workflows/         # Playbook Instructions (17 Commands)
 │   └── templates/         # Document templates (JIT loaded)
