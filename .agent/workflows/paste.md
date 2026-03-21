@@ -10,13 +10,26 @@ description: Capture clipboard content (text, images, files) and save for proces
 
 **Trigger**: User types `/paste` to capture whatever is on their clipboard.
 
-> **Value Prop**: One command to capture Slack messages, screenshots, emails, or files directly from the clipboard, classify them, and route to the correct tracker.
+> **Value Prop**: One command to capture **both** the active clipboard (Slack, images, files) **and** any items manually dropped into the `0. Incoming/` folder (The Drop Zone).
 
-3.  **Analysis & Auto-Mining**:
-    - **Context Check**: Does the paste have clear context?
-    - **Action**: If NO, run `grep_search` and `view_file` in PARALLEL on potential matches (transcripts, tasks) to find where this belongs.
+---
 
-4.  **Router**:
+## ⚡ Step 1: Dual-Path Capture (Parallel)
+
+In a **single turn**, perform BOTH of the following:
+
+1. **Clipboard Ingest**: Capture text, images, or files currently on the system clipboard.
+2. **Drop Zone Scan**: Scan `0. Incoming/` for new, unprocessed files.
+
+// turbo
+```powershell
+# Scan for unprocessed items in the Drop Zone
+Get-ChildItem -Path "0. Incoming/" -Recurse | Where-Object { $_.PSIsContainer -eq $false -and $_.FullName -notmatch "processed" } | Select-Object Name, FullName, LastWriteTime
+```
+
+---
+
+## ⚡ Step 2: Intake & Classification
     - **Option A (Text)**: Append to `0. Incoming/raw/YYYY-MM-DD_clipboard.md`.
     - **Option B (Image)**: Save to `0. Incoming/staging/` and invoke `visual-processor`.
     - **Option C (File)**: Move to `0. Incoming/staging/`.
