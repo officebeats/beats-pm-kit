@@ -223,6 +223,7 @@ Community extensions that supercharge your Antigravity IDE experience. Install f
 | Extension | Description | Install |
 |:---|:---|:---:|
 | **[Antigravity Cockpit](https://open-vsx.org/vscode/item?itemName=jlcodes.antigravity-cockpit)** | Premium dashboard-style quota monitor for Antigravity AI — track usage, limits, and spending at a glance | `jlcodes.antigravity-cockpit` |
+| **[Antigravity iOS App](https://open-vsx.org/vscode/item?itemName=uladluch.antigravity-mobile-connector)** | Control Antigravity from your iPhone — send prompts, monitor generations, and manage projects on the go | `uladluch.antigravity-mobile-connector` |
 | **[AG Auto Click & Scroll](https://open-vsx.org/vscode/item?itemName=zixfel.ag-auto-click-scroll)** | Auto-click Run and Allow buttons, plus auto-scroll the chat panel with a visual settings UI | `zixfel.ag-auto-click-scroll` |
 | **[Pencil](https://open-vsx.org/vscode/item?itemName=highagency.pencildev)** | Design files directly in Antigravity — create, edit, and preview `.pen` design files with AI assistance | `highagency.pencildev` |
 | **[Antigravity Flush](https://open-vsx.org/vscode/item?itemName=pkkkkkkkkkkkkk.antigravity-flush)** | Fix Opus model crashes by clearing context to prevent token limit truncation errors | `pkkkkkkkkkkkkk.antigravity-flush` |
