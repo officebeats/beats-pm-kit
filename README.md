@@ -208,13 +208,11 @@ Built on a **single source of truth** (`.agent/`) with adapters for each runtime
 
 For advanced users who want to supercharge their workflow:
 
-**[OpenCLI](https://github.com/jackwener/opencli)** — A universal CLI hub that transforms any website, Electron app, or local binary into a standardized command-line interface, purpose-built for AI agents.
-- CLI-ify anything — auto-discovers APIs, generates adapters, and finds auth strategies
-- Reuses your browser's logged-in state; credentials never leave Chrome
+| Tool | Description |
+|:---|:---|
+| **[OpenCLI](https://github.com/jackwener/opencli)** | Universal CLI hub for AI agents. Transform any website, Electron app, or local binary into scriptable CLI commands. Reuses browser login session and auto-generates adapters. |
+| **[Horizon](https://github.com/peters/horizon)** | GPU-accelerated spatial terminal observatory. Manage terminals, AI agents, and dev tools on an infinite canvas with Claude Code integration and git status monitoring. |
 
-**[Horizon](https://github.com/peters/horizon)** — A GPU-accelerated spatial terminal observatory. Manage terminals, AI agents, and dev tools on an infinite canvas.
-- First-class Claude Code, Codex, and OpenCode integration with live token tracking
-- Session persistence, built-in git status, remote host discovery, and markdown editing
 ---
 
 ## 🚀 Antigravity Enhancements
