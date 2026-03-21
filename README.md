@@ -114,9 +114,9 @@ The _Identity_ layer. Who is doing the work?
 | **Doc Writer**            | PRDs & Specs          | `prd-author`, `document-exporter`                            |
 | **Orchestrator**          | Multi-agent Coord     | Routes to all agents above                                   |
 
-### 🎯 2. The Core Playbooks (17 Protected Workflows)
+### 🎯 2. The Core Playbooks (18 Protected Workflows)
 
-The _Routing_ layer. Lean slash commands that trigger complex operations. All 17 are **protected core** — they can never be accidentally removed.
+The _Routing_ layer. Lean slash commands that trigger complex operations. All 18 are **protected core** — they can never be accidentally removed.
 
 | Command        | Purpose                                  |
 | :------------- | :--------------------------------------- |
@@ -135,6 +135,7 @@ The _Routing_ layer. Lean slash commands that trigger complex operations. All 17
 | `/review`      | Doc / Spec quality control               |
 | `/sprint`      | Sprint backlog generation                |
 | `/track`       | Battlefield View of Tasks & Bugs         |
+| `/transcript`  | Process all Quill meetings from last 10 business days |
 | `/update`      | Pull latest kit version from GitHub      |
 | `/vacuum`      | System optimization & cleanup            |
 
@@ -197,7 +198,7 @@ Built on a **single source of truth** (`.agent/`) with adapters for each runtime
 | **Parallel Fan-Out** | ✅ Native | ❌ Sequential | ❌ Sequential | ❌ Sequential |
 | **Agent Personas (12)** | ✅ Full mesh | ✅ | ✅ | ✅ |
 | **Skills (46)** | ✅ JIT load | ✅ | ✅ | ✅ |
-| **Slash Commands (17)** | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` |
+| **Slash Commands (18)** | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` |
 | **Clipboard Ingest** | ✅ Native | ⚠️ Script | ⚠️ Script | ⚠️ Script |
 | **Context Guard** | ✅ Auto | ✅ | ✅ | ✅ |
 | **Speed** | ⚡ Fastest | 🟡 Good | 🟡 Good | 🟡 Good |

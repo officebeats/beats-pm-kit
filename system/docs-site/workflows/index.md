@@ -34,6 +34,7 @@ Run `npm run generate` to refresh this page.
 | `/sprint` | Generate a prioritized sprint backlog for dev team planning. |
 | `/test` | Test generation and test running command. Creates and executes tests for code. |
 | `/track` | Manage the battlefield. Tasks, Bugs, and Boss Asks. |
+| `/transcript` | Process all Quill meetings from last 10 business days. |
 | `/update` | Upgrade the Beats PM kit to the latest release from GitHub. |
 
 <!-- GENERATED:WORKFLOWS:END -->

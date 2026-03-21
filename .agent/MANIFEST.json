@@ -21,7 +21,7 @@
     ]
   },
   "skills": {
-    "count": 45,
+    "count": 46,
     "directory": ".agent/skills/",
     "tiers": {
       "P0_core": [
@@ -61,6 +61,7 @@
         {"id": "customer-interview-suite", "maxTokens": 1200, "bytes": 1048},
         {"id": "agile-story-crafter", "maxTokens": 1000, "bytes": 978},
         {"id": "assumption-mapper", "maxTokens": 1000, "bytes": 972},
+        {"id": "summarize-interview", "maxTokens": 2000, "bytes": 2221},
         {"id": "brainstorming-engine", "maxTokens": 1000, "bytes": 967},
         {"id": "launch-strategy", "maxTokens": 1000, "bytes": 937},
 
@@ -82,7 +83,7 @@
     }
   },
   "workflows": {
-    "count": 17,
+    "count": 18,
     "directory": ".agent/workflows/",
     "protected": true,
     "protectionNote": "CORE PM WORKFLOWS — never remove, archive, or rename these files in any update, vacuum, or migration.",
@@ -90,7 +91,7 @@
       "/boss", "/day", "/track", "/meet", "/create", "/plan",
       "/retro", "/vacuum", "/fan-out", "/sprint", "/discover",
       "/prioritize", "/paste", "/review", "/regression", "/help",
-      "/update"
+      "/update", "/transcript"
     ]
   },
   "archival": {
