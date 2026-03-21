@@ -63,7 +63,6 @@ Each skill is a self-contained capability module with its own SKILL.md, template
 | `identify-assumptions-existing` | "Identify risky assumptions for a feature idea in an existing product across Value, Usability, Viability, and Feasibility. Uses multi-perspective devil's advocate thinking. Use when stress-testing a feature idea, doing risk assessment, or preparing for assumption mapping." |
 | `identify-assumptions-new` | "Identify risky assumptions for a new product idea across 8 risk categories including Go-to-Market, Strategy, and Team. Use when evaluating startup risks, assessing a new product concept, or mapping assumptions for a new venture." |
 | `inbox-processor` | The "Black Hole" for chaos. Aggressively extracts tasks from raw input and routes them to the ledger. |
-| `intelligent-routing` | Automatic agent selection and intelligent task routing. Analyzes user requests and automatically selects the best specialist agent(s) without requiring explicit user mentions. |
 | `interview-script` | "Create a structured customer interview script with JTBD probing questions, warm-up, core exploration, and wrap-up sections. Follows The Mom Test principles — no leading questions, no pitching, focus on past behavior. Use when preparing for user interviews, creating interview guides, or planning discovery research." |
 | `interview-simulator` | Conducting interactive mock interviews with real-time feedback. |
 | `launch-strategy` | Multi-agent system for product launch intelligence and strategy, analyzing markets and competitors. |

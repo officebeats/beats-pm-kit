@@ -421,7 +421,7 @@ OfficeBeats "Beats" — Product Management leader & AI enthusiast.
 
 ---
 
-`<strong>`Built by PMs, for PMs.`</strong><br>`
+`<strong>`Built by product people, for product people.`</strong><br>`
 `<em>`Stop chasing status updates. Start driving strategy.`</em>`
 
 </div>
