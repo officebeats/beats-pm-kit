@@ -231,6 +231,7 @@ Community extensions that supercharge your Antigravity IDE experience. Install f
 | **[Gemini Image Editor](https://open-vsx.org/vscode/item?itemName=Zazmic.palm-api-image-editor)** | In-editor image tools — convert to WebP, resize, and remove backgrounds with Gemini | `Zazmic.palm-api-image-editor` |
 | **[Antigravity Sync](https://open-vsx.org/vscode/item?itemName=samador.antigravity-settings-sync)** | Sync your Antigravity settings and extensions across machines using GitHub | `samador.antigravity-settings-sync` |
 | **[Better Antigravity](https://open-vsx.org/vscode/item?itemName=kanezal.better-antigravity)** | Community-driven fixes and improvements — auto-run fix, chat rename, and more | `kanezal.better-antigravity` |
+| **[Antigravity Autopilot](https://github.com/timteh/antigravity-autopilot)** | Auto-accept agent steps using OS-level accessibility (Windows UI Automation) — works when other extensions fail | `timteh.antigravity-autopilot` |
 
 ---
 
