@@ -48,11 +48,7 @@ flowchart TD
 
 ### Step 1: Task Classification
 
-Before dispatching, identify the task type:
-
-```
-Task Context → Keyword Matching → Agent Roster Selection
-```
+Before dispatching, identify the task type and select the agent roster:
 
 | Keywords | Recommended Roster |
 |:---------|:------------------|
@@ -63,46 +59,28 @@ Task Context → Keyword Matching → Agent Roster Selection
 | "user research", "interview" | `ux-researcher` |
 | "release", "dependency" | `program-manager`, `staff-pm` |
 
-### Step 2: Parallel Dispatch
+### Step 2: Native Parallel Dispatch
 
-**Rule**: All independent agents MUST be dispatched simultaneously.
-**Never**: Chain agents sequentially if their tasks are independent.
+**Rule**: All independent agents MUST be dispatched simultaneously using the runtime's native parallelism.
 
-```python
-# system/scripts/agent_dispatcher.py
-from system.scripts.agent_dispatcher import fan_out
+- **Antigravity**: Use `waitForPreviousTools: false` to invoke multiple agent tool calls in parallel
+- **CLI runtimes**: Execute agents sequentially (graceful degradation)
 
-results = fan_out(
-    task={"type": "prd", "context": "Notification center feature"},
-    agents=["staff-pm", "ux-researcher", "tech-lead"]
-)
-```
+For each selected agent:
+1. Load the agent persona from `.agent/agents/{agent}.md`
+2. Load the relevant skills from the agent's `skills:` frontmatter
+3. Execute the agent's task with the loaded context
 
 ### Step 3: Result Synthesis
 
-After all agents complete:
+After all agents complete, synthesize their outputs:
 
-```python
-# system/scripts/result_synthesizer.py
-from system.scripts.result_synthesizer import merge_to_markdown
+1. **Merge** outputs from all agents into a unified response
+2. **Detect conflicts** where agents produce contradictory recommendations
+3. **Escalate** strategic conflicts to CPO
+4. **Log** decisions in `5. Trackers/DECISION_LOG.md`
 
-summary = merge_to_markdown(
-    task={"type": "prd", "context": "..."},
-    results=results,
-    output_file=Path("artifacts/fan-out-synthesis.md")
-)
-```
-
-### Step 4: Conflict Resolution
-
-If the synthesizer detects conflicts:
-
-1. **Check** `merged_output.conflicts` for the specific keys
-2. **Escalate** to CPO for strategic conflicts
-3. **Decide** using Evidence-Based Decision Protocol (GEMINI.md Tier 2)
-4. **Log** decision in `5. Trackers/DECISION_LOG.md`
-
-### Step 5: Route to Trackers
+### Step 4: Route to Trackers
 
 Apply the synthesized output using standard routing:
 
@@ -118,29 +96,12 @@ Apply the synthesized output using standard routing:
 
 ## Output Format
 
-``> **Output Formatting**: Read the template at .agent/skills/core-utility/assets/fan_out_synthesis_template.md and use it to format your output.``
-
----
-
-## Fan-Out Queue Job
-
-For async background execution, submit via queue:
-
-```python
-from system.scripts.dispatch import submit_job
-
-job_id = submit_job("agent_fan_out", {
-    "task": {"type": "prd", "context": "Notification center feature"},
-    "agents": ["staff-pm", "ux-researcher"]
-})
-```
+`> **Output Formatting**: Read the template at .agent/skills/core-utility/assets/fan_out_synthesis_template.md and use it to format your output.`
 
 ---
 
 ## Notes
 
-- **Concurrency**: Tasks fan out via `concurrent.futures.ThreadPoolExecutor`
-- **Timeout**: Each agent has 30s default timeout (configurable)
+- **Concurrency**: Antigravity dispatches agents natively in parallel; CLIs run sequentially
 - **Failure Isolation**: One agent failure does NOT block other agents
 - **Privacy**: Fan-out results inherit the same privacy rules (no PII in outputs)
-- **GPS**: After fan-out, run `/vibe` to re-index new artifacts
