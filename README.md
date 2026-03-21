@@ -153,7 +153,7 @@ The _Execution_ layer. Skills are loaded Just-In-Time to keep the context window
 | **GTM** | `product-marketer`, `launch-strategy`, `positioning-strategist` |
 | **Meetings** | `meeting-synth`, `daily-synth`, `weekly-synth`, `boss-tracker` |
 | **Communication** | `comms-crafter-suite`, `stakeholder-management-suite`, `document-exporter` |
-| **System** | `intelligent-routing`, `core-utility`, `vacuum-protocol`, `context-retriever`, `inbox-processor`, `memory-consolidator` |
+| **System** | `core-utility`, `vacuum-protocol`, `context-retriever`, `inbox-processor`, `memory-consolidator` |
 | **Growth** | `leadership-career-coach`, `ai-shaped-readiness-advisor`, `context-engineering-advisor` |
 
 ---
@@ -171,7 +171,7 @@ beats-pm-kit/
 │
 ├── .agent/                # ⭐ SOURCE OF TRUTH (The AI Engine)
 │   ├── agents/            # 12 Virtual PM Team Personas
-│   ├── rules/             # GEMINI.md + ROUTING.md
+│   ├── rules/             # GEMINI.md (System Constitution)
 │   ├── skills/            # 46 PM Skills (P0/P1/P2 tiers)
 │   ├── templates/         # Document & Report Templates
 │   ├── workflows/         # 17 Protected Playbooks
@@ -204,16 +204,43 @@ Built on a **single source of truth** (`.agent/`) with adapters for each runtime
 
 > **Parallel Fan-Out:** When you run `/fan-out`, Antigravity dispatches multiple specialist agents simultaneously. Other runtimes process agents sequentially, making complex workflows 3-5x slower.
 
+### 🔌 Power User Tools
+
+For advanced users who want to supercharge their workflow:
+
+**[OpenCLI](https://github.com/jackwener/opencli)** — A universal CLI hub that transforms any website, Electron app, or local binary into a standardized command-line interface, purpose-built for AI agents.
+- CLI-ify anything — auto-discovers APIs, generates adapters, and finds auth strategies
+- Reuses your browser's logged-in state; credentials never leave Chrome
+
+**[Horizon](https://github.com/peters/horizon)** — A GPU-accelerated spatial terminal observatory. Manage terminals, AI agents, and dev tools on an infinite canvas.
+- First-class Claude Code, Codex, and OpenCode integration with live token tracking
+- Session persistence, built-in git status, remote host discovery, and markdown editing
+---
+
+## 🚀 Antigravity Enhancements
+
+Community extensions that supercharge your Antigravity IDE experience. Install from the Extensions panel or via the [Open VSX Registry](https://open-vsx.org/).
+
+| Extension | Description | Install |
+|:---|:---|:---:|
+| **[Antigravity Cockpit](https://open-vsx.org/vscode/item?itemName=jlcodes.antigravity-cockpit)** | Premium dashboard-style quota monitor for Antigravity AI — track usage, limits, and spending at a glance | `jlcodes.antigravity-cockpit` |
+| **[AG Auto Click & Scroll](https://open-vsx.org/vscode/item?itemName=zixfel.ag-auto-click-scroll)** | Auto-click Run and Allow buttons, plus auto-scroll the chat panel with a visual settings UI | `zixfel.ag-auto-click-scroll` |
+| **[Pencil](https://open-vsx.org/vscode/item?itemName=highagency.pencildev)** | Design files directly in Antigravity — create, edit, and preview `.pen` design files with AI assistance | `highagency.pencildev` |
+| **[Antigravity Flush](https://open-vsx.org/vscode/item?itemName=pkkkkkkkkkkkkk.antigravity-flush)** | Fix Opus model crashes by clearing context to prevent token limit truncation errors | `pkkkkkkkkkkkkk.antigravity-flush` |
+| **[Antigravity Remote Control](https://open-vsx.org/vscode/item?itemName=hasugoii.antigravity-remote-control)** | Control Antigravity from your phone — 1-click tunnel, QR code, real-time chat | `hasugoii.antigravity-remote-control` |
+| **[Gemini Image Editor](https://open-vsx.org/vscode/item?itemName=Zazmic.palm-api-image-editor)** | In-editor image tools — convert to WebP, resize, and remove backgrounds with Gemini | `Zazmic.palm-api-image-editor` |
+| **[Antigravity Sync](https://open-vsx.org/vscode/item?itemName=samador.antigravity-settings-sync)** | Sync your Antigravity settings and extensions across machines using GitHub | `samador.antigravity-settings-sync` |
+| **[Better Antigravity](https://open-vsx.org/vscode/item?itemName=kanezal.better-antigravity)** | Community-driven fixes and improvements — auto-run fix, chat rename, and more | `kanezal.better-antigravity` |
+
 ---
 
 ## 🔧 System Rules
 
-The kit operates on two rule files that govern all agent behavior:
+The kit operates on a single rule file that governs all agent behavior:
 
 | Rule File | Purpose |
 | :--- | :--- |
 | **`GEMINI.md`** | The system constitution — startup sequence, Context Guard (auto-fires every request), agent/skill loading protocol, privacy directives, architecture overview |
-| **`ROUTING.md`** | Single Source of Truth for all command → agent → skill mappings. All 17 workflows are marked as protected core. |
 
 ### Context Guard (Auto-Fires Every Request)
 
@@ -223,11 +250,11 @@ Built directly into `GEMINI.md`, these rules reduce token waste without any manu
 2. **No re-reads** — Never re-read files already viewed in session
 3. **Compact responses** — Skip preamble, lead with the answer
 4. **3-skill ceiling** — Max 3 skill assets per request
-5. **Conversation decay** — Auto-warns at 15+ exchanges to keep sessions fast
+5. **Conversation decay** — Auto-manages context after 15+ exchanges to keep sessions fast
 
 ---
 
-## 👨‍💻 Built by PMs, for PMs.
+## 👨‍💻 Built by product people, for product people.
 
 <div align="center">
 
