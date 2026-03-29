@@ -3,7 +3,7 @@
   "generated": "2026-03-18T19:40:00Z",
   "description": "Machine-readable index of all agents, skills, and workflows. Enables cache-based loading.",
   "agents": {
-    "count": 12,
+    "count": 20,
     "directory": ".agent/agents/",
     "registry": [
       {"id": "orchestrator", "file": "orchestrator.md", "focus": "Multi-agent coordination", "priority": "P0"},
@@ -17,11 +17,19 @@
       {"id": "gtm-lead", "file": "gtm-lead.md", "focus": "Launch & Growth", "priority": "P2"},
       {"id": "qa-engineer", "file": "qa-engineer.md", "focus": "Quality Assurance", "priority": "P2"},
       {"id": "career-coach", "file": "career-coach.md", "focus": "PM Career Growth", "priority": "P2"},
-      {"id": "documentation-writer", "file": "documentation-writer.md", "focus": "Docs & Manuals", "priority": "P2"}
+      {"id": "documentation-writer", "file": "documentation-writer.md", "focus": "Docs & Manuals", "priority": "P2"},
+      {"id": "architect", "file": "architect.md", "focus": "System Architecture", "priority": "P1"},
+      {"id": "critic", "file": "critic.md", "focus": "Plan & Spec Validation", "priority": "P1"},
+      {"id": "planner", "file": "planner.md", "focus": "Task Dependency Graphing", "priority": "P1"},
+      {"id": "executor", "file": "executor.md", "focus": "Code Implementation", "priority": "P1"},
+      {"id": "code-reviewer", "file": "code-reviewer.md", "focus": "PR & Diff Review", "priority": "P2"},
+      {"id": "debugger", "file": "debugger.md", "focus": "Error Resolution", "priority": "P2"},
+      {"id": "designer", "file": "designer.md", "focus": "UI/UX styling", "priority": "P2"},
+      {"id": "security-reviewer", "file": "security-reviewer.md", "focus": "Vuln Audits", "priority": "P2"}
     ]
   },
   "skills": {
-    "count": 46,
+    "count": 51,
     "directory": ".agent/skills/",
     "tiers": {
       "P0_core": [
@@ -53,7 +61,12 @@
         {"id": "epic-hypothesis", "maxTokens": 2000, "bytes": 5164},
         {"id": "epic-breakdown-advisor", "maxTokens": 3000, "bytes": 7937},
         {"id": "discovery-engine", "maxTokens": 1000, "bytes": 823},
-        {"id": "company-profiler", "maxTokens": 1500, "bytes": 1207}
+        {"id": "company-profiler", "maxTokens": 1500, "bytes": 1207},
+        {"id": "deep-interview", "maxTokens": 4000, "bytes": 31936},
+        {"id": "team-orchestrator", "maxTokens": 4500, "bytes": 44395},
+        {"id": "engineering-planner", "maxTokens": 5000, "bytes": 20000},
+        {"id": "autopilot", "maxTokens": 6000, "bytes": 20000},
+        {"id": "cross-model-bridge", "maxTokens": 1000, "bytes": 5000}
       ],
       "P2_specialist": [
         {"id": "ai-shaped-readiness-advisor", "maxTokens": 5000, "bytes": 12678},
@@ -83,7 +96,7 @@
     }
   },
   "workflows": {
-    "count": 18,
+    "count": 21,
     "directory": ".agent/workflows/",
     "protected": true,
     "protectionNote": "CORE PM WORKFLOWS — never remove, archive, or rename these files in any update, vacuum, or migration.",
@@ -91,7 +104,7 @@
       "/boss", "/day", "/track", "/meet", "/create", "/plan",
       "/retro", "/vacuum", "/fan-out", "/sprint", "/discover",
       "/prioritize", "/paste", "/review", "/regression", "/help",
-      "/update", "/transcript"
+      "/update", "/transcript", "/build", "/interview", "/team"
     ]
   },
   "archival": {
