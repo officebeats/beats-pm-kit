@@ -72,6 +72,9 @@ Agent activated → Check frontmatter "skills:" field in `.agent/agents/`
 - `#plan` → `/plan`
 - `#meet` → `/meet`
 - `#review` → `/review`
+- `#build` → `/build`
+- `#interview` → `/interview`
+- `#team` → `/team`
 
 ### 2. Privacy Protocol (CORE DIRECTIVE)
 
@@ -145,6 +148,10 @@ beats-pm-antigravity-brain/
 | **Career Coach**          | PM Career Growth      | `leadership-career-coach`                                                                                          |
 | **Doc Writer**            | PRDs & Specs          | `prd-author`, `document-exporter`                                                                                  |
 | **Orchestrator**          | Multi-agent Coord     | Routes to all agents above                                                                                         |
+| **Architect**             | System Architecture   | `engineering-planner`                                                                                              |
+| **Critic**                | Plan & Spec Validation| `engineering-planner`                                                                                              |
+| **Executor**              | Code Implementation   | `autopilot`, `team-orchestrator`                                                                                   |
+| **Planner**               | Task Graphs           | `engineering-planner`, `team-orchestrator`                                                                         |
 
 ---
 
