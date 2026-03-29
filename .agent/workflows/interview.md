@@ -1,0 +1,36 @@
+---
+description: Run a Socratic deep interview to clarify ambiguous requirements before planning.
+---
+
+> **Compatibility Directive**: Native to Antigravity and Claude Code.
+
+# /interview — Socratic Deep Interview Workflow
+
+**Trigger**: `/interview [vague idea]` or when user indicates they don't know exactly what they want or want to ensure you fully understand assumptions.
+
+> **Capability**: Employs mathematical ambiguity gating to ask Socratic questions until the requirement's ambiguity score drops below 20%.
+
+---
+
+## Execution Protocol
+
+### Step 1: Initialization
+1. Invoke the `deep-interview` skill.
+2. The agent reads the initial problem space and scans the current codebase (`explore` agent) to establish Context.
+
+### Step 2: Interview Loop
+1. The agent identifies the weakest dimension of clarity (Goal, Constraint, Success Criteria, Context).
+2. The agent asks EXACTLY ONE targeted question aimed at exposing assumptions in that weakest dimension.
+3. **Ambiguity Gating**: Evaluates ambiguity score mathematically after each answer.
+4. If Ambiguity > 0.2 (20%), go back to 2.
+
+### Step 3: Challenge Injection
+- **Round 4**: Contrarian mode ("What if the opposite were true?").
+- **Round 6**: Simplifier mode ("What's the absolute simplest version?").
+- **Round 8**: Ontologist mode ("What IS this, fundamentally?").
+
+### Step 4: Spec Crystallization
+When ambiguity Drops below 20%, writes the fully crystallized spec to `.omc/specs/deep-interview-{slug}.md`.
+
+### Step 5: Handoff
+Recommend execution via `/build` or `/plan`.
