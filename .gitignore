@@ -150,3 +150,8 @@ requirements.txt
 /6. Career/**
 Feb24.md
 Feb25.md
+
+# Build artifacts
+system/task-viewer/.next/
+system/task-viewer/node_modules/
+7. Tools/termcraft/
