@@ -349,10 +349,10 @@ class TestRealWorldScenarios(unittest.TestCase):
         self.assertIn('task-manager', skills, "task-manager skill missing")
 
     def test_sprint_planning_path_exists(self):
-        """PM runs sprint planning → sprint-plan skill + /sprint workflow exist."""
+        """PM runs sprint planning → roadmapping-suite skill + /sprint workflow exist."""
         skills = _discover_skills()
         workflows = _discover_workflows()
-        self.assertIn('sprint-plan', skills, "sprint-plan skill missing")
+        self.assertIn('roadmapping-suite', skills, "roadmapping-suite skill missing")
         self.assertIn('sprint', workflows, "/sprint workflow missing")
 
     def test_retrospective_path_exists(self):
@@ -363,35 +363,35 @@ class TestRealWorldScenarios(unittest.TestCase):
         self.assertIn('retro', workflows, "/retro workflow missing")
 
     def test_stakeholder_management_path_exists(self):
-        """PM manages stakeholders → stakeholder-mgr skill exists."""
+        """PM manages stakeholders → stakeholder-management-suite skill exists."""
         skills = _discover_skills()
-        self.assertIn('stakeholder-mgr', skills, "stakeholder-mgr skill missing")
+        self.assertIn('stakeholder-management-suite', skills, "stakeholder-management-suite skill missing")
 
     def test_discovery_workshop_path_exists(self):
-        """PM runs discovery → discovery-coach + /discover workflow exist."""
+        """PM runs discovery → discovery-engine + /discover workflow exist."""
         skills = _discover_skills()
         workflows = _discover_workflows()
-        self.assertIn('discovery-coach', skills, "discovery-coach missing")
+        self.assertIn('discovery-engine', skills, "discovery-engine missing")
         self.assertIn('discover', workflows, "/discover workflow missing")
 
     def test_competitive_analysis_path_exists(self):
-        """PM does competitive analysis → competitive-intel skill exists."""
+        """PM does competitive analysis → growth-engine skill exists."""
         skills = _discover_skills()
-        self.assertIn('competitive-intel', skills, "competitive-intel missing")
+        self.assertIn('growth-engine', skills, "growth-engine missing")
 
     def test_okr_management_path_exists(self):
-        """PM sets OKRs → okr-manager skill + /plan workflow exist."""
+        """PM sets OKRs → roadmapping-suite skill + /plan workflow exist."""
         skills = _discover_skills()
         workflows = _discover_workflows()
-        self.assertIn('okr-manager', skills, "okr-manager missing")
+        self.assertIn('roadmapping-suite', skills, "roadmapping-suite missing")
         self.assertIn('plan', workflows, "/plan workflow missing")
 
     def test_bug_tracking_path_exists(self):
-        """PM triages bugs → bug-chaser skill + /bug workflow exist."""
+        """PM triages bugs → bug-chaser skill + /track workflow exist."""
         skills = _discover_skills()
         workflows = _discover_workflows()
         self.assertIn('bug-chaser', skills, "bug-chaser missing")
-        self.assertIn('bug', workflows, "/bug workflow missing")
+        self.assertIn('track', workflows, "/track workflow missing")
 
 
 # ============================================================================
