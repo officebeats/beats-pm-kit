@@ -16,6 +16,7 @@ build/
 .git/
 .DS_Store
 Thumbs.db
+.venv/
 
 # Large media files
 *.mp4
@@ -25,35 +26,72 @@ Thumbs.db
 *.zip
 *.tar.gz
 
+# ========================================
+# SYMLINK DOUBLE-SCAN PREVENTION
+# ========================================
+# .agent/ is the SINGLE canonical source of truth.
+# All of these are symlinks back to .agent/ and cause
+# 2x-6x duplicate scanning of agents, skills, workflows.
+# Blocking them saves ~500KB+ of redundant indexing.
+#
+# Works on macOS/Linux (real symlinks) and Windows
+# (where Git stores symlinks as text files unless
+# core.symlinks=true).
+.agents/
+_agent/
+_agents/
+
+# .gemini/ subdirs are symlinks to .agent/ content
+.gemini/agents/
+.gemini/skills/
+.gemini/workflows/
+.gemini/templates/
+
+# .claude/ contains symlinks to .agent/ content
+.claude/
+
+# .kilocode/ contains symlinks to .agent/ content
+.kilocode/
+
+# ========================================
+# NON-ESSENTIAL ROOT FILES
+# ========================================
+# Reference docs — AI can read on-demand if asked
+AGENT_FLOW.md
+README.md
+CHANGELOG.md
+Feb24.md
+Feb25.md
+
+# ========================================
+# SYSTEM BUILD ARTIFACTS & TOOLING
+# ========================================
+# These are apps/tools, not PM working files
+system/task-viewer/
+system/docs-site/
+system/pm-dashboard/
+system/dashboard/
+system/test_logs/
+system/extensions/
+system/examples/
+system/reports/
+system/debug_schema.txt
+
 # ----------------------------------------
 # LARGE DATA FOLDERS (Exclude from initial indexing)
 # ----------------------------------------
-# These can contain 100KB+ of data and pollute the context.
-# The AI will read them on-demand when you reference them.
-
-# Raw intake - now accessible for visual AI processing
-# /0. Incoming/**
-# !/0. Incoming/.gitkeep
-
-# Archived briefs (old data, load on demand)
 /3. Meetings/archive/**
 !/3. Meetings/archive/.gitkeep
-
-# Raw transcripts (large files, but we need write access)
-# NOTE: Transcripts are stored here but excluded from *initial* indexing by the AI
-# The AI can still read/write on demand
-# /3. Meetings/transcripts/**
-# !/3. Meetings/transcripts/.gitkeep
 
 # ----------------------------------------
 # ACTIVE WORKING FILES (ALWAYS ACCESSIBLE)
 # ----------------------------------------
-# These are intentionally NOT ignored so the system works:
-# - SETTINGS.md (user config)
-# - KERNEL.md (routing rules)
-# - STATUS.md (current state)
-# - 5. Trackers/ (bugs, boss-requests, projects)
-# - 1-4 Company/Products/Meetings/People (accessible on demand)
+# These are intentionally NOT ignored:
+# - SETTINGS.md, STATUS.md
+# - .agent/ (canonical — single scan)
+# - .gemini/GEMINI.md (rules — needed by Gemini runtime)
+# - system/scripts/, system/config.json
+# - Folders 1-5 (PM working data)
 
 # ----------------------------------------
 # LEGACY FOLDERS (DELETED - IGNORE IF PRESENT)
