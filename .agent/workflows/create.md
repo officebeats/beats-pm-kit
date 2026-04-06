@@ -18,8 +18,8 @@ This workflow guides the **Staff PM** to turn chaos (notes/transcripts) into ord
     - **Bug Report**: "Formalize this issue".
 
 2.  **Context Mining & Guardrails**:
-    - **Action**: ALWAYS read `1. Company/MCG-Health-Profile.md` and related `2. Products/` docs (e.g., Indicia-Synapse AI specs).
-    - **Synthesis**: Summarize relevant points, specifically evaluating the concept against "AI Trust" and "CMS Regulation" guardrails before writing.
+    - **Action**: ALWAYS read `1. Company/Company-Profile.md` and related `2. Products/` docs.
+    - **Synthesis**: Summarize relevant points, specifically evaluating the concept against "North Star Metrics" and "Strategic Defensibility" guardrails before writing.
 
 3.  **Template Application**:
     - Select the matching template from `.agent/templates/`.
