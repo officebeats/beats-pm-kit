@@ -15,6 +15,7 @@ author: Beats PM Brain
 ---
 
 > **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Write Preference**: For cloud-based paths, utilize shell-based write operations to ensure atomic persistence.
 
 
 # Daily Synthesizer Skill
