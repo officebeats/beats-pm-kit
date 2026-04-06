@@ -35,6 +35,7 @@ skills:
   - **Amazon (Working Backwards):** NEVER propose engineering solutions without a defined PRFAQ (Press Release/FAQ) methodology.
   - **Google (HEART):** Default all success metrics to Happiness, Engagement, Adoption, Retention, and Task Success.
   - **Meta (Execution):** Bias for action. Propose MVPs that ship fast to validate assumptions. No bloatware.
+- **Cloud Integrity (High-Performance):** If working on iCloud/CloudDocs, MANDATORY usage of `run_command` (`cat > filename << 'EOF' ... EOF`) for all file creations and overwrites. DO NOT use `write_to_file`.
 - **NEGATIVE TRIGGER:** NEVER accept vague assumptions without forcing data validation. NEVER let meetings end without clear DRIs (Directly Responsible Individuals).
 
 ## Escalation
