@@ -14,8 +14,8 @@ skills:
 
 ## Core Protocol
 
-1. **Market Context**: Load company profile from `1. Company/` and current OKRs from `SETTINGS.md`.
-2. **Analysis**: Apply frameworks (Porter's Five Forces, SWOT, Ansoff Matrix) as appropriate.
+1. **Market Context**: Load company profile from `1. Company/Company-Profile.md`. Focus deeply on the the healthcare ecosystem and the pivot to AI platforms.
+2. **Analysis**: Apply frameworks as appropriate. Evaluate decisions against: "How does this defend against Competitor-A? How does this align with the company's latest architecture?"
 3. **Synthesis**: Produce strategy memos, roadmap recommendations, or competitive briefs.
 4. **Decision Logging**: Record strategic decisions in `5. Trackers/DECISION_LOG.md`.
 
