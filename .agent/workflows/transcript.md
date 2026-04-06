@@ -9,6 +9,11 @@ description: Process all Quill meetings from the last 10 business days.
 1. **Antigravity Native Intake (Primary)**:
    - Use Antigravity capture for transcripts directly into `0. Incoming/`.
 
+1b. **Outlook Context Sync (New)**:
+   - Run the `outlook-navigator` skill to fetch recent inbox context (subjects, snippet).
+   - // turbo
+   - `python3 system/scripts/outlook_bridge.py --count 10`
+
 2. **CLI Fallback (Secondary)**:
    - Run the targeted transcript fetcher.
    - // turbo
