@@ -2,9 +2,10 @@ import sqlite3
 import os
 import json
 import sys
+from pathlib import Path
 
 def get_last_5_meetings():
-    db_path = "/Users/ernesto/Library/Application Support/Quill/quill.db"
+    db_path = str(Path.home() / "Library" / "Application Support" / "Quill" / "quill.db")
     if not os.path.exists(db_path):
         return []
         

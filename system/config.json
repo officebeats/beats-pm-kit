@@ -58,6 +58,14 @@
   "ai": {
     "default_model": "gemini-3-flash-preview"
   },
+  "obsidian": {
+    "enabled": true,
+    "vault_path": "~/Ernest0",
+    "target_folder": "MCG",
+    "strategy": "sync",
+    "mcp_server": "obsidian-mcp",
+    "sync_folders": ["0. Incoming", "1. Company", "2. Products", "3. Meetings", "4. People", "5. Trackers"]
+  },
   "extensions": [
     {
       "id": "pesosz.antigravity-auto-accept",
