@@ -20,7 +20,7 @@ description: Run a Socratic deep interview to clarify ambiguous requirements bef
 
 ### Step 2: Interview Loop
 1. The agent identifies the weakest dimension of clarity (Goal, Constraint, Success Criteria, Context).
-2. The agent asks EXACTLY ONE targeted question aimed at exposing assumptions in that weakest dimension.
+2. The agent asks EXACTLY ONE targeted question aimed at exposing assumptions in that weakest dimension, paying special attention to clinical workflow integration, EHR limits (Epic/Cerner), and physician pushback.
 3. **Ambiguity Gating**: Evaluates ambiguity score mathematically after each answer.
 4. If Ambiguity > 0.2 (20%), go back to 2.
 
