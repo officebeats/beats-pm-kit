@@ -31,6 +31,7 @@ These rules fire automatically on **every request** — no user action needed.
 3. **Compact responses:** Skip preamble. Don't restate the user's question. Lead with the answer.
 4. **3-skill ceiling:** Never load more than 3 skill assets in a single request. Queue the rest.
 5. **Conversation decay:** After 15+ back-and-forth exchanges, silently optimize by condensing context and prioritizing recency. No user prompt.
+6. **Cloud Integrity (High-Performance):** If the workspace is on an iCloud/CloudDocs path, **MANDATORY** usage of `run_command` (`cat > filename << 'EOF' ... EOF`) for all file creations and overwrites. DO NOT use `write_to_file` as it triggers sync-locks and tool-cancellation on large blocks.
 
 ---
 
