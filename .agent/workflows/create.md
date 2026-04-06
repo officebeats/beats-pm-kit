@@ -17,9 +17,9 @@ This workflow guides the **Staff PM** to turn chaos (notes/transcripts) into ord
     - **One-Pager**: "Brief for the leadership team".
     - **Bug Report**: "Formalize this issue".
 
-2.  **Context Mining (Parallel Fan-out)**:
-    - **Action**: In a single turn, run `grep_search` on `3. Meetings/transcripts/` AND `view_file` on related `2. Products/` docs.
-    - **Synthesis**: Summarize relevant points from the transcripts _before_ writing.
+2.  **Context Mining & Guardrails**:
+    - **Action**: ALWAYS read `1. Company/MCG-Health-Profile.md` and related `2. Products/` docs (e.g., Indicia-Synapse AI specs).
+    - **Synthesis**: Summarize relevant points, specifically evaluating the concept against "AI Trust" and "CMS Regulation" guardrails before writing.
 
 3.  **Template Application**:
     - Select the matching template from `.agent/templates/`.

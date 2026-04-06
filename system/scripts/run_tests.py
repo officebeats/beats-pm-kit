@@ -8,9 +8,8 @@ from pathlib import Path
 # Setup Paths
 CURRENT_FILE = Path(__file__).resolve()
 SYSTEM_DIR = CURRENT_FILE.parent.parent
-REPO_ROOT = SYSTEM_DIR.parent.parent
-BEATS_PM_SYSTEM = REPO_ROOT / "Beats-PM-System"
-LOG_DIR = BEATS_PM_SYSTEM / "test_logs"
+REPO_ROOT = SYSTEM_DIR.parent
+LOG_DIR = REPO_ROOT / "test_logs"
 
 def setup_logging():
     """Ensure log directory exists and handle rotation (Max 2 files)."""
@@ -71,7 +70,7 @@ def run_tests_and_log():
             # Run the actual tests matching test_full_suite logic
             loader = unittest.TestLoader()
             # Discover from tests dir
-            tests_dir = BEATS_PM_SYSTEM / "tests"
+            tests_dir = SYSTEM_DIR / "tests"
             suite = loader.discover(str(tests_dir), pattern='test_*.py')
             
             runner = unittest.TextTestRunner(stream=sys.stdout, verbosity=2)

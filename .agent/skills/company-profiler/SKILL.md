@@ -15,6 +15,7 @@ Use this skill when the user wants to research a company (`/prep` or "tell me ab
     *   Find "Investor Relations" or "About Us" for core mission.
     *   Search `[Company] strategy 2026` or `[Company] roadmap`.
     *   Search `[Company] competitors` and `[Company] employee reviews`.
+    *   Search for recent CMS rulings affecting the company, EHR vendor moves, and competitor AI funding rounds (e.g. Cohere Health).
 
 2.  **Synthesis (The Dossier)**:
     *   Create a markdown file in `6. Career/Intel/[Company]_Dossier.md`.
