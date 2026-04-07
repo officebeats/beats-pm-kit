@@ -46,39 +46,53 @@
 
 ## ⚡ Quick Start
 
-### Option A: One-Line Install (Recommended)
-
-```bash
-git clone https://github.com/officebeats/beats-pm-kit && cd beats-pm-kit && chmod +x install.sh && ./install.sh
-```
-
-The installer auto-detects your platform, creates folders, fixes symlinks, and runs a health check.
-
-### Option B: Manual Setup
+### 1. Clone & Install
 
 ```bash
 git clone https://github.com/officebeats/beats-pm-kit
 cd beats-pm-kit
-python3 system/scripts/core_setup.py
+chmod +x install.sh && ./install.sh
 ```
 
-### Step 2: Open in Your AI Runtime
+That's it. The installer creates your folder structure, detects your AI runtime, fixes symlinks, and runs a health check. Takes ~10 seconds.
 
-| Runtime | How to Launch | Status |
-|:--------|:-------------|:------:|
-| **[Google Antigravity](https://antigravity.google/)** | Open folder in Antigravity IDE | ⭐ Primary — full parallel fan-out |
-| **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** | `cd beats-pm-kit && gemini` | ✅ Supported |
-| **[Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)** | `cd beats-pm-kit && claude` | ✅ Supported |
-| **[KiloCode](https://kilocode.ai/)** | Open folder in VS Code + KiloCode extension | ✅ Supported |
+> **Requires:** Python 3.8+ (pre-installed on macOS/most Linux). No `pip install`, no `npm`, no Docker.
 
-### Step 3: First-Time Setup
+---
 
-Type **`/start`** for a guided 2-minute setup wizard. It will:
-1. Ask your name, manager, and product focus
-2. Seed your task trackers and stakeholder profiles
-3. Show you the core commands
+### 2. Launch Your Runtime
 
-Or skip straight to **`/help`** to see all available commands.
+Open the `beats-pm-kit` folder in any of these AI coding tools. **All are CLIs unless noted.**
+
+| Runtime | Type | Launch Command | Capabilities |
+|:--------|:-----|:---------------|:-------------|
+| **[Google Antigravity](https://antigravity.google/)** | Desktop IDE | Open folder in Antigravity | ⭐ Primary — parallel fan-out, MCP tools, browser agent |
+| **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** | CLI | `gemini` | File access, web search, tool use |
+| **[Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)** | CLI | `claude` | File access, subagents, tool use |
+| **[OpenAI Codex CLI](https://github.com/openai/codex)** | CLI | `codex` | File access, code execution |
+| **[KiloCode](https://kilocode.ai/)** | VS Code Extension | Open folder in VS Code | File access, tool use |
+
+> **Which should I use?** If you have Antigravity, use it — the kit was designed for its parallel execution. Otherwise, any CLI above works. The kit auto-adapts via adapter folders (`.gemini/`, `.claude/`, etc.).
+
+---
+
+### 3. First-Time Setup (The `/start` Wizard)
+
+On your **first session**, the kit auto-detects it's a fresh install and walks you through a 2-minute setup:
+
+```
+You open your CLI → Kit detects no .initialized file → Runs /start automatically
+```
+
+The wizard asks 3 questions:
+1. **Your name** — for task ownership and doc headers
+2. **Your manager** — seeds the Boss Protocol for 1:1 prep
+3. **Your product focus** — configures your strategic context
+
+Then it shows you the **6 core commands** and you're ready to go.
+
+> **Skip the wizard?** Type `/help` instead to jump straight to the command reference.
+> **Re-run it later?** Type `/start` anytime.
 
 ---
 
@@ -207,15 +221,15 @@ beats-pm-kit/
 
 Built on a **single source of truth** (`.agent/`) with adapters for each runtime. **Antigravity is the gold standard.**
 
-| Capability | Antigravity | Gemini CLI | Claude Code | KiloCode |
-| :--- | :---: | :---: | :---: | :---: |
-| **Parallel Fan-Out** | ✅ Native | ❌ Sequential | ❌ Sequential | ❌ Sequential |
-| **Agent Personas (12)** | ✅ Full mesh | ✅ | ✅ | ✅ |
-| **Skills (46)** | ✅ JIT load | ✅ | ✅ | ✅ |
-| **Slash Commands (18)** | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` |
-| **Clipboard Ingest** | ✅ Native | ⚠️ Script | ⚠️ Script | ⚠️ Script |
-| **Context Guard** | ✅ Auto | ✅ | ✅ | ✅ |
-| **Speed** | ⚡ Fastest | 🟡 Good | 🟡 Good | 🟡 Good |
+| Capability | Antigravity (Desktop) | Gemini CLI | Claude Code CLI | Codex CLI | KiloCode (VS Code) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Parallel Fan-Out** | ✅ Native | ❌ Sequential | ❌ Sequential | ❌ Sequential | ❌ Sequential |
+| **Agent Personas (12)** | ✅ Full mesh | ✅ | ✅ | ✅ | ✅ |
+| **Skills (46)** | ✅ JIT load | ✅ | ✅ | ✅ | ✅ |
+| **Slash Commands (18)** | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` | ✅ `/command` |
+| **Clipboard Ingest** | ✅ Native | ⚠️ Script | ⚠️ Script | ⚠️ Script | ⚠️ Script |
+| **Context Guard** | ✅ Auto | ✅ | ✅ | ✅ | ✅ |
+| **Speed** | ⚡ Fastest | 🟡 Good | 🟡 Good | 🟡 Good | 🟡 Good |
 
 > **Parallel Fan-Out:** When you run `/fan-out`, Antigravity dispatches multiple specialist agents simultaneously. Other runtimes process agents sequentially, making complex workflows 3-5x slower.
 
