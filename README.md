@@ -46,25 +46,39 @@
 
 ## ⚡ Quick Start
 
-### Step 1: Install Your Runtime
+### Option A: One-Line Install (Recommended)
 
-This kit relies heavily on the **native parallel execution** of [Google Antigravity](https://antigravity.google/). 
+```bash
+git clone https://github.com/officebeats/beats-pm-kit && cd beats-pm-kit && chmod +x install.sh && ./install.sh
+```
 
-1. **[Download the Antigravity App](https://antigravity.google/)**
-2. Initialize it in this folder.
+The installer auto-detects your platform, creates folders, fixes symlinks, and runs a health check.
 
-> **Note on Alternative CLIs:** While Antigravity is the primary intended runtime, the kit supports alternative tools (Gemini CLI, Claude Code, KiloCode) via adapter folders (`.gemini/`, `.claude/`, etc.). See **Runtime Compatibility** below.
-
-### Step 2: Get the Kit
+### Option B: Manual Setup
 
 ```bash
 git clone https://github.com/officebeats/beats-pm-kit
 cd beats-pm-kit
+python3 system/scripts/core_setup.py
 ```
 
-### Step 3: Launch
+### Step 2: Open in Your AI Runtime
 
-Open your AI tool in the root folder and type `/help` to see all available commands.
+| Runtime | How to Launch | Status |
+|:--------|:-------------|:------:|
+| **[Google Antigravity](https://antigravity.google/)** | Open folder in Antigravity IDE | ⭐ Primary — full parallel fan-out |
+| **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** | `cd beats-pm-kit && gemini` | ✅ Supported |
+| **[Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)** | `cd beats-pm-kit && claude` | ✅ Supported |
+| **[KiloCode](https://kilocode.ai/)** | Open folder in VS Code + KiloCode extension | ✅ Supported |
+
+### Step 3: First-Time Setup
+
+Type **`/start`** for a guided 2-minute setup wizard. It will:
+1. Ask your name, manager, and product focus
+2. Seed your task trackers and stakeholder profiles
+3. Show you the core commands
+
+Or skip straight to **`/help`** to see all available commands.
 
 ---
 

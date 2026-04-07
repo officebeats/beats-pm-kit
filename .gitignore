@@ -155,3 +155,6 @@ Feb25.md
 system/task-viewer/.next/
 system/task-viewer/node_modules/
 7. Tools/termcraft/
+
+# First-run marker
+.initialized
