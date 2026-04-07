@@ -150,6 +150,13 @@ if command -v claude &>/dev/null || [ -d ".claude" ]; then
     RUNTIMES_FOUND=$((RUNTIMES_FOUND + 1))
 fi
 
+
+# OpenAI Codex CLI
+if command -v codex &>/dev/null || [ -d ".codex" ]; then
+    print_ok "Codex CLI: Ready"
+    RUNTIMES_FOUND=$((RUNTIMES_FOUND + 1))
+fi
+
 # KiloCode
 if [ -d ".kilocode" ]; then
     print_ok "KiloCode: Ready (.kilocode/ detected)"
