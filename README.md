@@ -152,7 +152,9 @@ The _Identity_ layer. Who is doing the work?
 
 ### 🎯 2. The Core Playbooks (26 Protected Workflows)
 
-The _Routing_ layer. Lean slash commands that trigger complex operations. All 18 are **protected core** — they can never be accidentally removed.
+The _Routing_ layer. Lean slash commands that trigger complex operations. All 26 are **protected core**.
+
+> **💡 Natural Conversation vs Commands:** You are **not required** to use slash commands. If you just talk to the AI naturally (e.g., "Summarize this meeting" or "Help me plan my day"), the system will organically load the correct Agents and Skills. The `/commands` are simply explicit playbook shortcuts to guarantee a highly specific logic sequence (like the exact 7 steps of `/meet`). Both methods seamlessly pull from the same `.agent/` architecture.
 
 | Command        | Purpose                                  |
 | :------------- | :--------------------------------------- |
@@ -227,7 +229,7 @@ beats-pm-kit/
 │   ├── scripts/           # Agent dispatcher, setup, vacuum, health check
 │   └── tests/             # Test suites
 │
-├── GEMINI.md              # System config (v10.0.2)
+├── GEMINI.md              # System config (v10.4.0)
 └── README.md              # ← You are here
 ```
 
