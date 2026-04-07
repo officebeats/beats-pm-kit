@@ -112,6 +112,9 @@ requirements.txt
 # They are auto-generated dynamically by install.sh
 /.gemini/
 /.claude/
+/.agents
+/_agent
+/_agents
 /.kilocode/
 /.codex/
 /AGENTS.md
