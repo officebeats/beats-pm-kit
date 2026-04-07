@@ -64,13 +64,13 @@ That's it. The installer creates your folder structure, detects your AI runtime,
 
 Open the `beats-pm-kit` folder in any of these AI coding tools. **All are CLIs unless noted.**
 
-| Runtime | Type | Launch Command | Capabilities |
-|:--------|:-----|:---------------|:-------------|
-| **[Google Antigravity](https://antigravity.google/)** | Desktop IDE | Open folder in Antigravity | ⭐ Primary — parallel fan-out, MCP tools, browser agent |
-| **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** | CLI | `gemini` | File access, web search, tool use |
-| **[Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)** | CLI | `claude` | File access, subagents, tool use |
-| **[OpenAI Codex CLI](https://github.com/openai/codex)** | CLI | `codex` | File access, code execution |
-| **[KiloCode](https://kilocode.ai/)** | VS Code Extension | Open folder in VS Code | File access, tool use |
+| Runtime | Launch Command | Capabilities |
+|:--------|:---------------|:-------------|
+| **[Google Antigravity](https://antigravity.google/)** (Desktop IDE) | Open folder in Antigravity | ⭐ Primary — parallel fan-out, MCP tools, browser agent |
+| **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** (CLI) | `gemini` | File access, web search, tool use |
+| **[Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)** (CLI) | `claude` | File access, subagents, tool use |
+| **[OpenAI Codex](https://github.com/openai/codex)** (CLI) | `codex` | File access, code execution |
+| **[KiloCode](https://kilocode.ai/)** (CLI) | `kilo` | File access, tool use |
 
 > **Which should I use?** If you have Antigravity, use it — the kit was designed for its parallel execution. Otherwise, any CLI above works. The kit auto-adapts via adapter folders (`.gemini/`, `.claude/`, etc.).
 
@@ -221,7 +221,7 @@ beats-pm-kit/
 
 Built on a **single source of truth** (`.agent/`) with adapters for each runtime. **Antigravity is the gold standard.**
 
-| Capability | Antigravity (Desktop) | Gemini CLI | Claude Code CLI | Codex CLI | KiloCode (VS Code) |
+| Capability | Antigravity (Desktop IDE) | Gemini (CLI) | Claude Code (CLI) | Codex (CLI) | KiloCode (CLI) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Parallel Fan-Out** | ✅ Native | ❌ Sequential | ❌ Sequential | ❌ Sequential | ❌ Sequential |
 | **Agent Personas (12)** | ✅ Full mesh | ✅ | ✅ | ✅ | ✅ |
