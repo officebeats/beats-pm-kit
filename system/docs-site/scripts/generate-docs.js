@@ -19,7 +19,7 @@ const DOCS_ROOT = path.resolve(__dirname, '..');
 function generateSkillsIndex() {
   const skillsDir = path.join(BRAIN_ROOT, '.agents', 'skills');
   if (!fs.existsSync(skillsDir)) {
-    console.log('⚠ .agents/skills/ not found, skipping skills index');
+    console.log('⚠ .agent/skills/ not found, skipping skills index');
     return;
   }
 
@@ -62,7 +62,7 @@ function generateSkillsIndex() {
 function generateWorkflowsIndex() {
   const workflowsDir = path.join(BRAIN_ROOT, '.agents', 'workflows');
   if (!fs.existsSync(workflowsDir)) {
-    console.log('⚠ .agents/workflows/ not found, skipping workflows index');
+    console.log('⚠ .agent/workflows/ not found, skipping workflows index');
     return;
   }
 
