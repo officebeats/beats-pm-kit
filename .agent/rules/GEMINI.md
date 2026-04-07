@@ -1,14 +1,22 @@
 # GEMINI.md - Maestro Configuration
 
-**Version 10.0.1** - Beats PM Antigravity Kit
+**Version 10.3.0** - Beats PM Antigravity Kit
 
 This file defines the Operating System for the Product Management Brain.
 
 ---
 
-## 🔄 STARTUP: Update Check (FIRST ACTION EVERY SESSION)
+## 🔄 STARTUP: First-Run + Health Check (FIRST ACTION EVERY SESSION)
 
-**On the FIRST user message of every new session**, silently run:
+**On the FIRST user message of every new session**, execute this sequence:
+
+### A. First-Run Detection
+Check if `.initialized` exists in the project root:
+- **If `.initialized` is MISSING** → This is a fresh install. Trigger the `/start` workflow (read `.agents/workflows/start.md`) to run the interactive setup wizard. After the wizard completes, create the `.initialized` marker file.
+- **If `.initialized` EXISTS** → Proceed to Step B.
+
+### B. Health Check
+Silently run:
 
 ```bash
 python system/scripts/context_health.py
