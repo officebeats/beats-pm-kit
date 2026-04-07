@@ -25,13 +25,13 @@
 <!-- VALUE PROP PILLS -->
 
 <p>
-  <img src="https://img.shields.io/badge/🚀_Execution-46_PM_Skills-00A651?style=flat-square" alt="46 PM Skills"/>
+  <img src="https://img.shields.io/badge/🚀_Execution-52_PM_Skills-00A651?style=flat-square" alt="52 PM Skills"/>
    • 
   <img src="https://img.shields.io/badge/🔒_100%25_Local-Zero_Cloud_Storage-00A651?style=flat-square" alt="Privacy First"/>
    • 
   <img src="https://img.shields.io/badge/💼_Exec_Layer-The_Boss_Protocol-00A651?style=flat-square" alt="The Boss Protocol"/>
    • 
-  <img src="https://img.shields.io/badge/🤖_Agents-12_PM_Personas-00A651?style=flat-square" alt="12 PM Agents"/>
+  <img src="https://img.shields.io/badge/🤖_Agents-20_Personas-00A651?style=flat-square" alt="20 Agents"/>
 </p>
 
 <br/>
@@ -123,7 +123,7 @@ Folders 1-5 are `.gitignored` by default. Your private data stays on your machin
 
 ## 🧬 Inside the Engine: Three-Tier Architecture
 
-### 🤖 1. The Virtual PM Team (12 Persona Agents)
+### 🤖 1. The Virtual PM Team (20 Persona Agents)
 
 The _Identity_ layer. Who is doing the work?
 
@@ -141,48 +141,64 @@ The _Identity_ layer. Who is doing the work?
 | **Career Coach**          | PM Career Growth      | `leadership-career-coach`                                    |
 | **Doc Writer**            | PRDs & Specs          | `prd-author`, `document-exporter`                            |
 | **Orchestrator**          | Multi-agent Coord     | Routes to all agents above                                   |
+| **Architect**             | System Architecture   | `engineering-planner`                                       |
+| **Code Reviewer**         | Code Quality          | `engineering-collab`                                        |
+| **Critic**                | Plan & Spec Validation| `engineering-planner`                                       |
+| **Debugger**              | Issue Resolution      | `code-simplifier`                                           |
+| **Designer**              | Multimodal Design     | `ui-ux-designer`                                            |
+| **Executor**              | Code Implementation   | `autopilot`, `team-orchestrator`                            |
+| **Planner**               | Task Graphs           | `engineering-planner`, `team-orchestrator`                  |
+| **Security Reviewer**     | Vulnerability Audit   | `risk-guardian`                                             |
 
-### 🎯 2. The Core Playbooks (18 Protected Workflows)
+### 🎯 2. The Core Playbooks (26 Protected Workflows)
 
 The _Routing_ layer. Lean slash commands that trigger complex operations. All 18 are **protected core** — they can never be accidentally removed.
 
 | Command        | Purpose                                  |
 | :------------- | :--------------------------------------- |
 | `/boss`        | The 1:1 "Managing Up" Prep               |
+| `/build`       | Handoff PRD to Engineering Agents        |
 | `/create`      | Generate PRDs, Specs, and One-Pagers     |
 | `/day`         | Daily briefing & planning                |
 | `/discover`    | Build Opportunity Solution Trees         |
 | `/fan-out`     | Parallel multi-agent dispatch            |
 | `/help`        | User manual & system docs                |
+| `/interview`   | Socratic deep interview on requirements  |
 | `/meet`        | Transcript → structured action items    |
 | `/paste`       | Clipboard → structured intake           |
 | `/plan`        | Strategic roadmaps & OKRs                |
+| `/prep`        | Interview prep, research & roleplay      |
 | `/prioritize`  | Backlog scoring via RICE / Kano / MoSCoW |
+| `/quill`       | 5-meeting compact rollup w/ action items |
 | `/regression`  | Full CI tests on the kit                 |
 | `/retro`       | Sprint / PI retrospective                |
-| `/review`      | Doc / Spec quality control               |
+| `/review`      | Doc / Spec / Code quality control        |
 | `/sprint`      | Sprint backlog generation                |
+| `/start`       | Interactive First-Time Setup Wizard      |
+| `/team`        | Coordinated multi-agent execution        |
 | `/track`       | Battlefield View of Tasks & Bugs         |
 | `/transcript`  | Process all Quill meetings from last 10 business days |
 | `/update`      | Pull latest kit version from GitHub      |
 | `/vacuum`      | System optimization & cleanup            |
+| `/vibe`        | System health and diagnostics            |
+| `/week`        | Weekly briefing & recap                  |
 
-### 🚀 3. The Capability Engine (46 PM Skills)
+### 🚀 3. The Capability Engine (52 PM Skills)
 
 The _Execution_ layer. Skills are loaded Just-In-Time to keep the context window fast.
 
 | Category | Skills |
 | :--- | :--- |
 | **Strategy** | `chief-strategy-officer`, `business-strategy-suite`, `product-strategy-suite`, `positioning-strategist`, `company-profiler` |
-| **Discovery** | `discovery-engine`, `assumption-mapper`, `brainstorming-engine`, `epic-hypothesis`, `customer-interview-suite` |
-| **Execution** | `task-manager`, `prd-author`, `agile-story-crafter`, `epic-breakdown-advisor`, `requirements-translator`, `wwas` |
+| **Discovery** | `discovery-engine`, `assumption-mapper`, `brainstorming-engine`, `epic-hypothesis`, `customer-interview-suite`, `deep-interview` |
+| **Execution** | `task-manager`, `prd-author`, `agile-story-crafter`, `epic-breakdown-advisor`, `requirements-translator`, `wwas`, `autopilot`, `team-orchestrator`, `engineering-planner` |
 | **Roadmapping** | `roadmapping-suite`, `risk-guardian`, `dependency-tracker`, `ab-test-analysis` |
 | **Metrics** | `data-analytics`, `metrics-finance-suite`, `growth-engine` |
 | **Research** | `ux-research-suite`, `ui-ux-designer` |
 | **GTM** | `product-marketer`, `launch-strategy`, `positioning-strategist` |
-| **Meetings** | `meeting-synth`, `daily-synth`, `weekly-synth`, `boss-tracker` |
+| **Meetings** | `meeting-synth`, `daily-synth`, `weekly-synth`, `boss-tracker`, `outlook-navigator` |
 | **Communication** | `comms-crafter-suite`, `stakeholder-management-suite`, `document-exporter` |
-| **System** | `core-utility`, `vacuum-protocol`, `context-retriever`, `inbox-processor`, `memory-consolidator` |
+| **System** | `core-utility`, `vacuum-protocol`, `context-retriever`, `inbox-processor`, `memory-consolidator`, `cross-model-bridge` |
 | **Growth** | `leadership-career-coach`, `ai-shaped-readiness-advisor`, `context-engineering-advisor` |
 
 ---
@@ -201,7 +217,7 @@ beats-pm-kit/
 ├── .agent/                # ⭐ SOURCE OF TRUTH (The AI Engine)
 │   ├── agents/            # 12 Virtual PM Team Personas
 │   ├── rules/             # GEMINI.md (System Constitution)
-│   ├── skills/            # 46 PM Skills (P0/P1/P2 tiers)
+│   ├── skills/            # 52 PM Skills (P0/P1/P2 tiers)
 │   ├── templates/         # Document & Report Templates
 │   ├── workflows/         # 17 Protected Playbooks
 │   ├── archive/           # Archived agents & skills (recoverable)
