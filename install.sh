@@ -167,51 +167,12 @@ if [ "$RUNTIMES_FOUND" -eq 0 ]; then
     print_warn "No AI runtimes detected. Install one of: Antigravity, Gemini CLI, Claude Code"
 fi
 
-# ── Step 6: Fix symlinks ────────────────────────────────────
-print_step "Fixing symlinks..."
-
-# Fix .claude symlinks
-if [ -d ".claude" ]; then
-    # Remove broken 'commands 2' if it exists and is broken
-    if [ -L ".claude/commands 2" ] && [ ! -e ".claude/commands 2" ]; then
-        rm ".claude/commands 2"
-        print_ok "Removed broken .claude/commands 2 symlink"
-    fi
-    
-    # Fix CLAUDE.md symlink
-    if [ -L ".claude/CLAUDE.md" ]; then
-        TARGET=$(readlink ".claude/CLAUDE.md")
-        if [ ! -e ".claude/CLAUDE.md" ]; then
-            rm ".claude/CLAUDE.md"
-            ln -s "../.agent/rules/GEMINI.md" ".claude/CLAUDE.md"
-            print_ok "Fixed .claude/CLAUDE.md symlink"
-        else
-            print_skip ".claude/CLAUDE.md (working)"
-        fi
-    fi
-    
-    # Fix commands symlink
-    if [ -L ".claude/commands" ]; then
-        TARGET=$(readlink ".claude/commands")
-        if [ ! -e ".claude/commands" ]; then
-            rm ".claude/commands"
-            ln -s "../.agent/workflows" ".claude/commands"
-            print_ok "Fixed .claude/commands symlink"
-        else
-            print_skip ".claude/commands (working)"
-        fi
-    fi
-fi
-
-# Fix .gemini symlinks
-if [ -d ".gemini" ]; then
-    for link in "agents" "skills" "templates" "workflows"; do
-        if [ -L ".gemini/$link" ] && [ ! -e ".gemini/$link" ]; then
-            rm ".gemini/$link"
-            ln -s "../.agent/$link" ".gemini/$link"
-            print_ok "Fixed .gemini/$link symlink"
-        fi
-    done
+# ── Step 6: Generate CLI Adapters ─────────────────────────
+print_step "Generating CLI Adapters..."
+if python3 system/scripts/sync_cli_adapters.py > /dev/null 2>&1; then
+    print_ok "Generated adapters for .gemini, .claude, .kilocode, .codex"
+else
+    print_warn "Could not generate CLI adapters (non-critical)"
 fi
 
 # ── Step 7: Health check ────────────────────────────────────

@@ -106,15 +106,16 @@ requirements.txt
 !/Beats-PM-System/reports/.gitkeep
 
 # ----------------------------------------
-# 5. GEMINI CLI CONDUCTOR CONTEXT
+# 5. DYNAMIC CLI ADAPTERS
 # ----------------------------------------
-# Context files are safe to share (no sensitive data).
-!/.gemini/
-!/.gemini/**
-/.gemini/session-memory.md
-/.gemini/config.json
-/.gemini/state/
-/.gemini/BRAIN_DUMP.md
+# All non-Antigravity CLI configurations are ignored.
+# They are auto-generated dynamically by install.sh
+/.gemini/
+/.claude/
+/.kilocode/
+/.codex/
+/AGENTS.md
+
 
 # ----------------------------------------
 # 6. LEGACY FOLDERS (SHOULD BE DELETED)

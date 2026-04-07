@@ -135,7 +135,7 @@ def generate_claude_md():
     claude_md = os.path.join(claude_dir, 'CLAUDE.md')
 
     # Read the root GEMINI.md as the source
-    gemini_path = os.path.join(BASE_DIR, 'GEMINI.md')
+    gemini_path = os.path.join(CANONICAL, 'rules', 'GEMINI.md')
     if not os.path.exists(gemini_path):
         log_err('GEMINI.md not found at project root -- cannot generate CLAUDE.md')
         return
