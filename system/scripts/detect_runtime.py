@@ -55,6 +55,19 @@ def detect_runtime():
             "priority": 3
         })
 
+
+    # OpenAI Codex CLI
+    if shutil.which("codex") or (root / ".codex").is_dir():
+        runtimes.append({
+            "name": "codex_cli",
+            "display": "OpenAI Codex CLI",
+            "detected_by": "binary:codex" if shutil.which("codex") else ".codex/ directory",
+            "capabilities": ["sequential_tools", "file_access", "code_execution"],
+            "config_dir": ".codex/",
+            "rules_file": ".codex/rules.md",
+            "priority": 4
+        })
+
     # KiloCode
     if (root / ".kilocode").is_dir():
         runtimes.append({
@@ -64,7 +77,7 @@ def detect_runtime():
             "capabilities": ["sequential_tools", "file_access"],
             "config_dir": ".kilocode/",
             "rules_file": ".kilocode/rules.md",
-            "priority": 4
+            "priority": 5
         })
 
     # Determine primary
