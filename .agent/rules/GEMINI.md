@@ -114,6 +114,19 @@ The Antigravity Kit is strictly organized into three separate layers to maximize
 
 ---
 
+## 🤖 MULTI-AGENT RUNTIME INTEGRATION (Gold Standard)
+
+To ensure the BeatsPM Kit works seamlessly across different LLM agents:
+
+1. **Universal Gateway**: Use `python3 system/scripts/beats.py {command}` for all /slash logic.
+2. **Runtime Specifics**:
+   - **Antigravity**: Eagerly use parallel tool calls and `mcp-pencil` for UI tasks.
+   - **Codex (CLI/Desktop)**: Prioritize direct script execution in `system/scripts/`.
+   - **Claude Code**: Prioritize XML-structured status reports and `beats.py` for task mgmt.
+3. **Shared Context**: All runtimes MUST read `5. Trackers/STATUS.md` and `STRATEGIC_INSIGHTS.md` before starting.
+
+---
+
 ## 📁 SYSTEM DIRECTORY MAP
 
 ```
