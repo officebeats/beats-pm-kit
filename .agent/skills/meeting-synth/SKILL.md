@@ -1,12 +1,12 @@
 ---
 name: meeting-synth
-description: "Synthesize a single meeting transcript into structured action items, decisions, and follow-ups. Use when processing a meeting recording, cleaning up transcript notes, or extracting commitments from a conversation."
+description: "Synthesize a single meeting transcript into structured action items, decisions, follow-ups, and stakeholder profiles. Use when processing a meeting recording, cleaning up transcript notes, or extracting commitments from a conversation."
 priority: P0
 maxTokens: 3000
 triggers:
   - "/meet"
   - "/transcript"
-version: 4.0.0 (Token Optimized)
+version: 5.0.0 (Stakeholder-Aware)
 author: Beats PM Brain
 ---
 
@@ -14,7 +14,7 @@ author: Beats PM Brain
 
 # Meeting Synthesizer Skill
 
-> **Role**: Extract signal from noise. One meeting → structured output.
+> **Role**: Extract signal from noise. One meeting → structured output + stakeholder intelligence.
 
 ## 1. Native Interface
 
@@ -51,7 +51,14 @@ Transcripts match: `*.md`, `*.txt` files containing participant names, timestamp
 3. **Route** (parallel writes):
    - Action items → `5. Trackers/TASK_MASTER.md`
    - Boss Asks → `5. Trackers/critical/boss-requests.md`
-4. **Write Summary**: Output to `3. Meetings/summaries/` using template from `assets/meeting_template.md`.
+4. **Stakeholder Enrichment** (parallel with routing):
+   - For each person mentioned or participating in the meeting:
+     - Check if `4. People/{firstname-lastname}.md` exists.
+     - **If exists** → Append new context under a dated section: decisions, positions taken, preferences, quotes, action items involving them.
+     - **If new** → Create profile using the Stakeholder Profile Template (see §7).
+   - **Extract role/title** from: meeting intros, how others address them, context clues, any shared email signatures in the transcript.
+   - **Privacy Rule**: PII may be stored locally since `4. People/` is gitignored. Extract full contact info from signatures, intros, and context (work email, cell, office, pronouns).
+5. **Write Summary**: Output to `3. Meetings/summaries/` using template from `assets/meeting_template.md`.
 
 ## 4. Output Format
 
@@ -59,12 +66,47 @@ Read the template at `assets/meeting_template.md` and format output exactly as s
 
 ## 5. Token Efficiency Rules
 
-- **Single-pass extraction**: Read the transcript once, extract all four categories simultaneously.
+- **Single-pass extraction**: Read the transcript once, extract all five categories simultaneously (decisions, actions, questions, quotes, stakeholders).
 - **No re-reads**: If a transcript is >1000 lines, summarize in chunks — never load full transcript twice.
-- **Parallel writes**: Write summary + route action items in the same turn.
+- **Parallel writes**: Write summary + route action items + update stakeholder profiles in the same turn.
 - **Skip boilerplate**: Ignore "hi how are you" and logistics chatter — focus on substance.
 
 ## 6. Boundary
 
-- **This skill handles**: Single meeting transcript → structured summary with action items.
+- **This skill handles**: Single meeting transcript → structured summary with action items + stakeholder updates.
 - **NOT for**: Daily tactical planning (use `daily-synth`). Weekly/monthly rollups (use `weekly-synth`).
+
+## 7. Stakeholder Profile Template
+
+When creating a new stakeholder profile in `4. People/`, use this format:
+
+```markdown
+# {Full Name}
+
+> **Role**: {Title from intro, signature, or context}
+> **Organization**: {Company/Team}
+> **Relationship**: {Boss / Peer / Cross-Functional / Engineering / etc.}
+
+---
+
+## Context
+
+- {How you know them, who introduced them, first interaction}
+
+## Action Items
+
+- [ ] {Any pending actions involving this person}
+
+---
+
+*Last Updated: {date} · Source: {transcript name or email subject}*
+```
+
+When updating an existing profile, append a new section:
+
+```markdown
+## Update — {date}
+
+- {New context, decisions, positions, quotes from this interaction}
+- Source: {transcript or email reference}
+```

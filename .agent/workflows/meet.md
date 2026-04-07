@@ -24,7 +24,7 @@ Ask the user which input method they prefer:
 
 // turbo
 ```bash
-Get-ChildItem -Path "3. Meetings/transcripts/" -File -Filter "*.md" | Sort-Object LastWriteTime -Descending | Select-Object -First 5 Name, LastWriteTime
+ls -lt "3. Meetings/transcripts/" | head -10
 ```
 
 - Show user the list of recent files.
@@ -43,9 +43,19 @@ In a **single parallel turn**:
 - Append action items → `5. Trackers/TASK_MASTER.md`
 - Flag boss asks → `5. Trackers/critical/boss-requests.md` (if any)
 
-### Step 5: Confirm
+### Step 5: Stakeholder Enrichment
+
+For each person mentioned in the transcript:
+- **Check** if `4. People/{firstname-lastname}.md` exists.
+- **If exists** → Update with new context: decisions they made, positions they took, preferences expressed, role changes.
+- **If new** → Create profile with: Name, Role (from intro or context clues), Organization, Relationship to user, Context from the meeting, Action items involving them.
+- **Extract role/title** from how people introduce themselves, how others reference them, or from any shared email signatures.
+- **Privacy**: Store only professional context. No PII (personal phone, home address, personal email).
+
+### Step 6: Confirm
 
 Show user:
 - Summary file path
 - Count of action items routed
 - Any boss asks flagged
+- Stakeholder profiles created or updated

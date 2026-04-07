@@ -25,4 +25,12 @@ description: Process all Quill meetings from the last 10 business days.
 
 4. **Parallel Synthesis (Fan-Out)**:
    - **Action**: For ALL new transcripts, execute the `meeting-synth` skill in a SINGLE parallel turn.
-   - **Output**: Generate summary reports in `3. Meetings/reports/`.
+   - **Output**: Generate summary reports in `3. Meetings/summaries/`.
+
+5. **Stakeholder Enrichment (Post-Synthesis)**:
+   - For each person mentioned in transcripts or emails:
+     - Check if a profile exists in `4. People/{firstname-lastname}.md`.
+     - If **exists** → Append new context (role updates, quotes, decisions, preferences).
+     - If **new** → Create a profile using the standard template (see meeting-synth skill for format).
+   - Extract role/title from email signatures, meeting intros, or context clues.
+   - PII may be stored locally since `4. People/` is gitignored. Extract full contact info from email signatures (work email, cell, office, pronouns).
