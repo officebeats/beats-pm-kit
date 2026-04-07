@@ -142,10 +142,10 @@ beats-pm-antigravity-brain/
 ├── .agent/
 │   ├── MANIFEST.json      # Machine-readable index (agents, skills, workflows)
 │   ├── ARCHITECTURE.md    # System architecture overview
-│   ├── agents/            # The Virtual Team (12 PM Personas)
+│   ├── agents/            # The Virtual Team (20 PM Personas)
 │   ├── rules/             # GEMINI.md (System Constitution)
-│   ├── skills/            # Domain Expertise (46 Skills, P0/P1/P2)
-│   ├── workflows/         # Playbook Instructions (17 Commands)
+│   ├── skills/            # Domain Expertise (52 Skills, P0/P1/P2)
+│   ├── workflows/         # Playbook Instructions (26 Commands)
 │   └── templates/         # Document templates (JIT loaded)
 ├── system/                # Python Core Logic
 └── 1. Company/            # Strategy (Local)
@@ -154,26 +154,30 @@ beats-pm-antigravity-brain/
 
 ---
 
-## 🧩 THE VIRTUAL TEAM (Roles)
+## 🧩 THE VIRTUAL TEAM (20 Roles)
 
 | Agent                     | Focus                 | Key Skills                                                                                                         |
 | :------------------------ | :-------------------- | :----------------------------------------------------------------------------------------------------------------- |
 | **Chief Product Officer** | Strategy & Org        | `chief-strategy-officer`, `boss-tracker`, `vacuum-protocol`                                                        |
-| **Staff PM**              | Execution & Delivery  | `task-manager`, `prd-author`, `meeting-synth`, `discovery-coach`, `prioritization-engine`, `communication-crafter` |
-| **Product Strategist**    | Market & Vision       | `chief-strategy-officer`, `okr-manager`, `competitive-intel`                                                       |
-| **Program Manager**       | Governance & Releases | `dependency-tracker`, `release-manager`, `retrospective`, `risk-guardian`                                          |
-| **Tech Lead**             | Feasibility & Eng     | `engineering-collab`, `code-simplifier`, `vacuum-protocol`                                                         |
-| **Data Scientist**        | Quant Insights        | `data-analytics`                                                                                                   |
-| **UX Researcher**         | Qual Insights         | `ux-researcher`                                                                                                    |
-| **GTM Lead**              | Launch & Growth       | `product-marketer`                                                                                                 |
+| **Staff PM**              | Execution & Delivery  | `task-manager`, `prd-author`, `meeting-synth`                                                                      |
+| **Product Strategist**    | Market & Vision       | `chief-strategy-officer`, `okr-manager`, `positioning-strategist`                                                  |
+| **Program Manager**       | Governance & Releases | `dependency-tracker`, `retrospective`, `risk-guardian`                                                             |
+| **Tech Lead**             | Feasibility & Eng     | `engineering-planner`, `vacuum-protocol`                                                                           |
+| **Data Scientist**        | Quant Insights        | `data-analytics`, `metrics-finance-suite`                                                                          |
+| **UX Researcher**         | Qual Insights         | `ux-research-suite`                                                                                                |
+| **GTM Lead**              | Launch & Growth       | `product-marketer`, `launch-strategy`                                                                              |
 | **QA Engineer**           | Quality Assurance     | `test-scenarios`, `bug-chaser`                                                                                     |
 | **Career Coach**          | PM Career Growth      | `leadership-career-coach`                                                                                          |
 | **Doc Writer**            | PRDs & Specs          | `prd-author`, `document-exporter`                                                                                  |
+| **Designer**              | Multimodal Design     | `ui-ux-designer`                                                                                                   |
 | **Orchestrator**          | Multi-agent Coord     | Routes to all agents above                                                                                         |
 | **Architect**             | System Architecture   | `engineering-planner`                                                                                              |
-| **Critic**                | Plan & Spec Validation| `engineering-planner`                                                                                              |
+| **Code Reviewer**         | Code Quality          | `team-orchestrator`                                                                                                |
+| **Critic**                | Plan Validation       | `engineering-planner`                                                                                              |
+| **Debugger**              | Issue Resolution      | `autopilot`                                                                                                        |
 | **Executor**              | Code Implementation   | `autopilot`, `team-orchestrator`                                                                                   |
 | **Planner**               | Task Graphs           | `engineering-planner`, `team-orchestrator`                                                                         |
+| **Security Reviewer**     | Vulnerability Audit   | `risk-guardian`                                                                                                    |
 
 ---
 
