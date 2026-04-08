@@ -29,3 +29,9 @@
 
 - [Unresolved question 1]
 - [Unresolved question 2]
+
+---
+
+## 📝 Full Transcript
+
+[The full meeting transcript goes here]

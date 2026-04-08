@@ -14,6 +14,13 @@ description: Process all Quill meetings from the last 10 business days.
    - // turbo
    - `python3 system/scripts/outlook_bridge.py --count 10`
 
+
+1c. **Outlook Calendar Sync**:
+   - Run the updated bridge to fetch upcoming calendar meetings.
+   - // turbo
+   - `python3 system/scripts/outlook_bridge.py --calendar 14`
+   - **Action**: Check `5. Trackers/TASK_MASTER.md` for any tasks requiring a meeting to be scheduled. If that meeting exists in the calendar output, update the task status to `🗓️ Scheduled for [Date]` instead of completing it.
+
 2. **CLI Fallback (Secondary)**:
    - Run the targeted transcript fetcher.
    - // turbo

@@ -11,7 +11,6 @@ Usage:
 import unittest
 import os
 import re
-import yaml
 from pathlib import Path
 
 # ============================================================================
