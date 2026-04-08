@@ -1,3 +1,4 @@
+import os
 """
 Enhanced Skills Validation Test Suite
 Tests the enhanced SKILL.md files for proper structure and content.
@@ -16,23 +17,8 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 SKILLS_DIR = ROOT_DIR / ".agent" / "skills"
 
 # Skill inventory — use correct directory names (ux-collab was renamed to ux-collaborator)
-SKILLS = [
-    "requirements-translator",
-    "daily-synth",
-    "task-manager",
-    "visual-processor",
-    "prd-author",
-    "bug-chaser",
-    "boss-tracker",
-    "meeting-synth",
-    "stakeholder-mgr",
-    "engineering-collab",
-    "ux-collaborator",
-    "delegation-manager",
-    "chief-strategy-officer",
-    "weekly-synth",
-    "code-simplifier"
-]
+SKILLS_DIR = ROOT_DIR / '.agent' / 'skills'
+SKILLS = [d for d in os.listdir(SKILLS_DIR) if os.path.isdir(SKILLS_DIR / d)] if SKILLS_DIR.exists() else []
 
 
 @lru_cache(maxsize=20)
