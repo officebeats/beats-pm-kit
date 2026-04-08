@@ -54,7 +54,7 @@ def get_outlook_messages(count=5):
     end tell
     '''
     try:
-        result = subprocess.check_output(['osascript', '-e', script]).decode('utf-8').strip()
+        result = subprocess.check_output(['osascript', '-e', script]).decode('utf-8').strip().replace('\r', '\n')
         messages = []
         for raw in result.split('///'):
             if not raw.strip(): continue
@@ -111,20 +111,57 @@ def get_full_email_body(subject_filter):
     end tell
     '''
     try:
-        result = subprocess.check_output(['osascript', '-e', script]).decode('utf-8').strip()
+        result = subprocess.check_output(['osascript', '-e', script]).decode('utf-8').strip().replace('\r', '\n')
         return result
     except Exception as e:
         return f"Error: {{str(e)}}"
 
+
+
+def get_calendar_events(days=7):
+    """Fetch upcoming calendar events using AppleScript.
+    
+    Queries the local Microsoft Outlook app for calendar events within N days.
+    Returns plain text listing of events.
+    """
+    script = f'''
+    tell application "Microsoft Outlook"
+        set today to current date
+        set limit to today + ({days} * days)
+        set myEvents to calendar events whose start time >= today and start time <= limit
+        set output to ""
+        repeat with evt in myEvents
+            set evtStart to (start time of evt as string)
+            set output to output & "===== SUBJECT: " & subject of evt & " =====" & return
+            set output to output & "START: " & evtStart & return
+            try
+                set l to location of evt
+                if l is not "" then set output to output & "LOCATION: " & l & return
+            end try
+            set output to output & "===== END =====" & return & return
+        end repeat
+        return output
+    end tell
+    '''
+    try:
+        result = subprocess.check_output(['osascript', '-e', script]).decode('utf-8').strip().replace('\r', '\n')
+        if not result:
+            return "No upcoming events found from Outlook AppleScript."
+        return result
+    except Exception as e:
+        return f"Error: {e}"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--count", type=int, default=5)
     parser.add_argument("--search", type=str, default=None,
                         help="Search for full email body by subject keyword")
+    parser.add_argument("--calendar", type=int, default=None,
+                        help="Fetch calendar events for the next N days")
     args = parser.parse_args()
     
-    if args.search:
-        print(get_full_email_body(args.search))
+    if args.calendar is not None:
+        print(get_calendar_events(args.calendar))
+    elif args.search:        print(get_full_email_body(args.search))
     else:
         print(json.dumps(get_outlook_messages(args.count), indent=2))

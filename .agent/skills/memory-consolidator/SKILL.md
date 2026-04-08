@@ -1,4 +1,5 @@
 ---
+name: memory-consolidator
 description: Consolidates memories and generates cross-cutting strategic insights from disparate files.
 ---
 
