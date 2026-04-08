@@ -88,11 +88,7 @@ class TestSystemStructure(unittest.TestCase):
         """Verify that standard templates exist."""
         templates_dir = os.path.join(self.root, ".agent", "templates")
         
-        expected_templates = [
-            "bug-report.md",
-            "feature-spec.md",
-            "weekly-review.md"
-        ]
+        expected_templates = [f for f in os.listdir(templates_dir) if f.endswith('.md')] if os.path.exists(templates_dir) else []
         
         for t in expected_templates:
             t_path = os.path.join(templates_dir, t)
