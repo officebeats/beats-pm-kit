@@ -229,7 +229,7 @@ beats-pm-kit/
 │   ├── scripts/           # Agent dispatcher, setup, vacuum, health check
 │   └── tests/             # Test suites
 │
-├── GEMINI.md              # System config (v10.4.0)
+├── GEMINI.md              # System config (v10.5.0)
 └── README.md              # ← You are here
 ```
 
