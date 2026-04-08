@@ -14,6 +14,7 @@ description: Daily briefing and planning.
 If the user types `/day --focus` or `/now`, generate a compact executive briefing instead of the full daily synthesis:
 
 1. **Read** `5. Trackers/TASK_MASTER.md` and `5. Trackers/critical/boss-requests.md`.
+1b. **Sync Calendar**: `python3 system/scripts/outlook_bridge.py --calendar 3` to populate the `## 📅 Schedule` section of the exec brief and update tasks in the tracker to `🗓️ Scheduled for [Date]` if they match upcoming events.
 2. **Calculate** days until Friday Boss 1:1. Escalate Boss Ask priorities accordingly.
 3. **Output** the following structure:
    - **🚨 Critical Focus (Top 3 P0s)**: Ranked by Due Date (`NOW` > `ASAP`) and Impact (`Boss Ask` > `Blocker`). Each item gets a 1-sentence context note.
