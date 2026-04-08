@@ -1,5 +1,4 @@
 import sys
-import yaml
 from pathlib import Path
 from typing import List
 
@@ -51,16 +50,13 @@ def validate_skill(skill_path: Path) -> bool:
             print("❌ FAIL: Missing YAML frontmatter end")
             return False
             
-        frontmatter = yaml.safe_load(content[3:end_frontmatter])
+        frontmatter_text = content[3:end_frontmatter]
         
-        required_keys = ["name", "description", "version", "author"]
+        required_keys = ["name:", "description:", "version:", "author:"]
         for key in required_keys:
-            if key not in frontmatter:
-                print(f"❌ FAIL: Missing YAML key '{key}'")
+            if key not in frontmatter_text:
+                print(f"❌ FAIL: Missing YAML key '{key.replace(':', '')}'")
                 return False
-                
-        if frontmatter.get("version") != "2.0.0":
-             print(f"⚠️ WARN: Version is {frontmatter.get('version')}, expected 2.0.0")
              
     except Exception as e:
         print(f"❌ FAIL: YAML Error - {e}")

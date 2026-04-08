@@ -19,6 +19,7 @@ The outlook-navigator is the 'Eye' of the brain into the user's primary communic
 ## Inputs
 - `/outlook` (Fetch last 5)
 - `/outlook --count 10`
+- `/outlook --calendar 7` (Fetch calendar events for next N days)
 - `/inbox`
 
 ## Protocol
@@ -70,6 +71,14 @@ end tell'
 Write results to `0. Incoming/outlook_context.md` for downstream skills:
 - // turbo
 - `python3 system/scripts/outlook_bridge.py --count 10 > "0. Incoming/outlook_context.md"`
+
+
+### Step 3b: Read Calendar
+When calendar lookahead is required (e.g. for /transcript or /day tracking):
+```bash
+python3 system/scripts/outlook_bridge.py --calendar {days}
+```
+If an upcoming calendar event maps to an active task in `TASK_MASTER.md` to "Schedule a meeting with X", update the task status to `🗓️ Scheduled for [Date]` instead of completing it.
 
 ### Step 4: Analyze
 - Identify **Deadlines** (dates, "by Friday", "asap").
