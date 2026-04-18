@@ -44,6 +44,51 @@
 
 ---
 
+## 🎯 The Problem
+
+Product managers drown in context — meeting notes, Slack threads, stakeholder requests, competing priorities. Every day you context-switch between 6+ tools and lose critical signal in the noise. There's no system that captures the chaos and surfaces what actually matters. **So I built one.**
+
+## 🏗️ Architecture at a Glance
+
+A **multi-agent AI system** with 20 specialized personas orchestrating 52 PM skills across 5 runtimes. One source of truth (`.agent/`) powers all of them with a Context Guard that auto-optimizes every request.
+
+```
+User Input → Context Guard → Agent Router → Skill Loader (JIT) → Structured Output
+                                  ↓
+                        20 Persona Agents
+                     (Strategy · Execution · GTM · Research · Engineering)
+                                  ↓
+                          52 PM Skills (P0/P1/P2 tiered)
+                     (PRDs · Roadmaps · Meeting Synth · Task Tracking)
+```
+
+## 💡 Why This Approach
+
+| Decision | Rationale |
+|:---|:---|
+| **Agents over prompts** | Personas create consistent, role-scoped behavior that individual prompts can't. A "Staff PM" agent thinks differently than a "GTM Lead." |
+| **Skills as functions** | 52 modular skills (P0/P1/P2 tiered) allow JIT loading — only load what you need to manage token budgets. |
+| **Runtime-agnostic** | Same `.agent/` source of truth runs on Antigravity, Gemini CLI, Claude Code, Codex, and KiloCode. No vendor lock-in. |
+| **Local-first privacy** | All company data stays on your machine. Zero cloud sync. Enterprise-safe from day one. |
+
+## ⚖️ Tradeoffs I Made
+
+| Decision | Tradeoff |
+|:---|:---|
+| Single `.agent/` source of truth | Simpler sync across runtimes, but every adapter must respect the same contract |
+| 3-skill ceiling per request | Controls cost/latency, but limits complex multi-step operations in a single turn |
+| Parallel fan-out (Antigravity only) | 3-5x faster execution, but creates runtime preference for power users |
+| Slash commands as playbook triggers | Deterministic workflows, but adds a learning curve vs. pure natural language |
+
+## 🔄 What I'd Improve Next
+
+- **Automated eval harness** — Measure agent output quality across runtimes with standardized scoring rubrics
+- **Cost dashboard** — Token spend tracking per skill/agent to optimize the 3-skill ceiling budget
+- **RAG over meeting history** — Cross-session memory via retrieval-augmented generation for better context recall
+- **Agent quality benchmarks** — Comparative testing across model providers (Gemini vs Claude vs GPT) per skill category
+
+---
+
 ## ⚡ Quick Start
 
 ### 1. Clone & Install
