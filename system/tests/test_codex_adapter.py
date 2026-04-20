@@ -34,6 +34,7 @@ class TestCodexAdapter(unittest.TestCase):
             sync_cli_adapters.main()
 
         cls.workflow_meta = sync_cli_adapters.get_workflow_descriptions()
+        cls.command_catalog = sync_cli_adapters.get_command_catalog()
         cls.workflow_names = [name for name, _ in cls.workflow_meta]
         cls.command_index = (ROOT_DIR / "CODEX_COMMANDS.md").read_text(encoding="utf-8")
         cls.agents_md = (ROOT_DIR / "AGENTS.md").read_text(encoding="utf-8")
@@ -67,8 +68,22 @@ class TestCodexAdapter(unittest.TestCase):
             "CODEX_COMMANDS.md command count drifted from .agent/workflows",
         )
 
+    def test_codex_command_index_marks_promoted_skills(self):
+        """Promoted commands should advertise their native Codex skill adapters."""
+        self.assertIn("Native skill `beats-day`", self.command_index)
+        self.assertIn("Native skill `beats-track`", self.command_index)
+        self.assertIn("Native skill `beats-boss`", self.command_index)
+        self.assertIn("Native skill `beats-week`", self.command_index)
+
+    def test_codex_command_index_keeps_update_dispatch_only(self):
+        """Dangerous workflows should be available as guarded Codex skills."""
+        self.assertIn("| `/update` | `.agent/workflows/update.md` | Guarded skill `beats-update` |", self.command_index)
+        self.assertIn("| `/vacuum` | `.agent/workflows/vacuum.md` | Guarded skill `beats-vacuum` |", self.command_index)
+
     def test_agents_md_enforces_slash_command_dispatch(self):
         """AGENTS.md should tell Codex to treat leading /commands as workflow dispatch."""
+        self.assertIn("## Runtime Priority", self.agents_md)
+        self.assertIn("**Antigravity first**", self.agents_md)
         self.assertIn("## Slash Command Dispatch", self.agents_md)
         self.assertIn("If the user's message starts with `/command`:", self.agents_md)
         self.assertIn("Resolve it using `CODEX_COMMANDS.md`", self.agents_md)
@@ -89,6 +104,12 @@ class TestCodexAdapter(unittest.TestCase):
     def test_beats_resolve_workflow_known_command(self):
         """beats.resolve_workflow should map /day to the workflow file."""
         resolved = beats.resolve_workflow("/day")
+        self.assertIsNotNone(resolved)
+        self.assertEqual(resolved, ROOT_DIR / ".agent" / "workflows" / "day.md")
+
+    def test_beats_resolve_workflow_alias_command(self):
+        """Aliases in the command registry should resolve to the canonical workflow."""
+        resolved = beats.resolve_workflow("/status focus on blockers")
         self.assertIsNotNone(resolved)
         self.assertEqual(resolved, ROOT_DIR / ".agent" / "workflows" / "day.md")
 
