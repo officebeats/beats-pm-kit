@@ -13,8 +13,9 @@ SCRIPT_COMMANDS = {
     "sync": ["python3", "system/scripts/sync_cli_adapters.py"],
     "health": ["python3", "system/scripts/context_health.py"],
     "transcript": [
-        ["python3", "system/scripts/transcript_fetcher.py"],
         ["python3", "system/scripts/quill_mcp_client.py"],
+        ["python3", "system/scripts/transcript_fetcher.py"],
+        ["python3", "system/scripts/transcript_intake.py"],
     ],
     "outlook": ["python3", "system/scripts/outlook_bridge.py"],
     "teams": ["python3", "system/scripts/teams_bridge.py"],
