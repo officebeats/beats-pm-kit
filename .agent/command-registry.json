@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "runtime_priority": {
+    "primary": "antigravity",
+    "secondary": "codex",
+    "compatibility": [
+      "claude",
+      "gemini",
+      "kilocode",
+      "other-clis"
+    ]
+  },
+  "commands": {
+    "boss": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-boss",
+        "supporting_files": [
+          ".agent/skills/boss-tracker/SKILL.md",
+          "5. Trackers/TASK_MASTER.md",
+          "5. Trackers/critical/boss-requests.md",
+          "1. Company/ways-of-working.md"
+        ],
+        "optional_files": [
+          "4. People",
+          "3. Meetings/summaries"
+        ]
+      }
+    },
+    "day": {
+      "aliases": [
+        "status",
+        "morning",
+        "brief",
+        "now"
+      ],
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-day",
+        "supporting_files": [
+          ".agent/skills/daily-synth/SKILL.md",
+          "STATUS.md",
+          "5. Trackers/TASK_MASTER.md",
+          "5. Trackers/critical/boss-requests.md"
+        ],
+        "optional_files": [
+          "5. Trackers/bugs/bugs-master.md"
+        ]
+      }
+    },
+    "track": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-track",
+        "supporting_files": [
+          ".agent/skills/task-manager/SKILL.md",
+          "5. Trackers/TASK_MASTER.md",
+          "5. Trackers/critical/boss-requests.md"
+        ],
+        "optional_files": [
+          "5. Trackers/bugs/bugs-master.md"
+        ]
+      }
+    },
+    "paste": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-paste",
+        "supporting_files": [
+          ".agent/skills/inbox-processor/SKILL.md"
+        ]
+      }
+    },
+    "create": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-create",
+        "supporting_files": [
+          ".agent/skills/prd-author/SKILL.md"
+        ]
+      }
+    },
+    "plan": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-plan",
+        "supporting_files": [
+          ".agent/skills/chief-strategy-officer/SKILL.md"
+        ]
+      }
+    },
+    "meet": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-meet",
+        "supporting_files": [
+          ".agent/skills/meeting-synth/SKILL.md"
+        ]
+      }
+    },
+    "transcript": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-transcript",
+        "supporting_files": [
+          ".agent/skills/meeting-synth/SKILL.md",
+          "3. Meetings/transcripts"
+        ]
+      }
+    },
+    "vacuum": {
+      "aliases": [
+        "archive",
+        "cleanup"
+      ],
+      "dangerous": true,
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-vacuum",
+        "supporting_files": [
+          ".agent/skills/vacuum-protocol/SKILL.md",
+          "system/scripts/vacuum.py",
+          "system/scripts/enforce_structure.py",
+          "system/scripts/context_health.py"
+        ]
+      },
+      "note": "Guardrail: keep cleanup bounded to the repo's PM memory lanes. Do not archive active code or configurations, and confirm if the scope is ambiguous."
+    },
+    "update": {
+      "dangerous": true,
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-update",
+        "supporting_files": [
+          "system/scripts/update.py",
+          "system/scripts/context_health.py"
+        ]
+      },
+      "note": "Guardrail: inspect current branch and worktree before running. If the repo is dirty or not on main, summarize the risk before executing the update flow."
+    },
+    "week": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-week",
+        "supporting_files": [
+          ".agent/skills/weekly-synth/SKILL.md",
+          "5. Trackers/TASK_MASTER.md",
+          "5. Trackers/critical/boss-requests.md"
+        ],
+        "optional_files": [
+          "5. Trackers/WEEKLY_PLAN.md"
+        ]
+      }
+    }
+  }
+}
