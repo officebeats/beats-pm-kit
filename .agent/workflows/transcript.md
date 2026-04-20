@@ -25,9 +25,10 @@ description: Process all Quill meetings from the last 10 business days.
    - Run the targeted transcript fetcher.
    - // turbo
    - `python3 system/scripts/quill_mcp_client.py || python3 system/scripts/transcript_fetcher.py`
+   - **Normalization step (MANDATORY)**: After import, run `python3 system/scripts/transcript_intake.py` to move any date-stamped raw meeting files from `0. Incoming/` into `3. Meetings/transcripts/`.
 
 3. **Parallel Identification**:
-   - Scan `0. Incoming/` for new transcript files.
+   - Scan `3. Meetings/transcripts/` for new transcript files.
    - Group them for batch processing.
 
 4. **Parallel Synthesis (Fan-Out)**:
