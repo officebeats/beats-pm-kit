@@ -164,7 +164,7 @@ if [ -d ".kilocode" ]; then
 fi
 
 if [ "$RUNTIMES_FOUND" -eq 0 ]; then
-    print_warn "No AI runtimes detected. Install one of: Antigravity, Gemini CLI, Claude Code"
+    print_warn "No AI runtimes detected. Install one of: Antigravity, Gemini CLI, Claude Code, Codex CLI"
 fi
 
 # ── Step 6: Generate CLI Adapters ─────────────────────────
@@ -185,7 +185,7 @@ echo "  ────────────────────────
 printf "  ${GREEN}${BOLD}✅ Beats PM Kit is ready!${RESET}\n"
 echo ""
 printf "  ${BOLD}Next steps:${RESET}\n"
-printf "  ${CYAN}1.${RESET} Open this folder in your AI tool (Antigravity, Gemini CLI, Claude Code)\n"
+printf "  ${CYAN}1.${RESET} Open this folder in your AI tool (Antigravity, Gemini CLI, Claude Code, Codex CLI)\n"
 printf "  ${CYAN}2.${RESET} Type ${BOLD}/start${RESET} for guided setup (recommended for first-timers)\n"
 printf "  ${CYAN}3.${RESET} Or type ${BOLD}/help${RESET} to see all available commands\n"
 echo ""
