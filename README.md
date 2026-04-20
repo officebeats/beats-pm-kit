@@ -118,7 +118,7 @@ Open the `beats-pm-kit` folder in any of these AI coding tools. **All are CLIs u
 | **[KiloCode](https://kilocode.ai/)** (CLI) | `kilo` | File access, tool use |
 
 > **Which should I use?** If you have Antigravity, use it — the kit was designed for its parallel execution. Otherwise, any CLI above works. The kit auto-adapts via adapter folders (`.gemini/`, `.claude/`, etc.).
-> **Codex note:** Codex uses `AGENTS.md` as the primary adapter, `CODEX_COMMANDS.md` for explicit slash-command routing, and generated `.codex/` scaffolding for runtime notes. See [system/docs/codex.md](system/docs/codex.md).
+> **Codex note:** Codex uses `AGENTS.md` as the primary adapter, `CODEX_COMMANDS.md` for explicit slash-command routing, generated `.codex/` scaffolding for runtime notes, optional promoted local skills for the highest-frequency Beats commands, and repo git hooks plus CI to keep adapters synchronized. See [system/docs/codex.md](system/docs/codex.md).
 
 ---
 
