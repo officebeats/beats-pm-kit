@@ -156,6 +156,22 @@ def vibe_check():
     script_path = SCRIPTS_DIR / "vibe_check.py"
     return run_step("Final Vibe Check", f'"{sys.executable}" "{script_path}"')
 
+
+def sync_runtime_adapters():
+    """Regenerate runtime adapters after updates."""
+    cli_sync = SCRIPTS_DIR / "sync_cli_adapters.py"
+    codex_sync = SCRIPTS_DIR / "sync_codex_skill_adapters.py"
+    return (
+        run_step("Syncing CLI Adapters", f'"{sys.executable}" "{cli_sync}"', ignore_error=True)
+        and run_step("Syncing Codex Skill Adapters", f'"{sys.executable}" "{codex_sync}"', ignore_error=True)
+    )
+
+
+def install_git_hooks():
+    """Install repo-local git hooks for ongoing adapter sync."""
+    hook_script = SCRIPTS_DIR / "install_git_hooks.py"
+    return run_step("Installing Git Hooks", f'"{sys.executable}" "{hook_script}"', ignore_error=True)
+
 def main():
     print_cyan("--- 🚀 System Update Protocol (v6.0.0) ---")
     
@@ -184,6 +200,10 @@ def main():
         
     # 7. RESTORE STASH
     restore_stash()
+
+    # 8. RE-SYNC LOCAL RUNTIME ADAPTERS
+    sync_runtime_adapters()
+    install_git_hooks()
 
     print_success("\n✅ System Update Complete. Ready for action.")
 

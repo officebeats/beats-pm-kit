@@ -175,6 +175,22 @@ else
     print_warn "Could not generate CLI adapters (non-critical)"
 fi
 
+# ── Step 6b: Sync promoted Codex skills ───────────────────
+print_step "Syncing promoted Codex skill adapters..."
+if python3 system/scripts/sync_codex_skill_adapters.py > /dev/null 2>&1; then
+    print_ok "Promoted Codex skill adapters synced"
+else
+    print_warn "Could not sync Codex skill adapters (non-critical)"
+fi
+
+# ── Step 6c: Install repo git hooks ───────────────────────
+print_step "Installing repo git hooks..."
+if python3 system/scripts/install_git_hooks.py > /dev/null 2>&1; then
+    print_ok "Git hooks installed"
+else
+    print_warn "Could not install git hooks (non-critical)"
+fi
+
 # ── Step 7: Health check ────────────────────────────────────
 print_step "Running system health check..."
 python3 system/scripts/context_health.py 2>/dev/null || print_warn "Health check skipped (non-critical)"
