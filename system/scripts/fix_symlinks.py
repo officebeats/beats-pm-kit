@@ -1,6 +1,6 @@
 """
 Fix Symlinks Script
-Re-creates all .claude/, .gemini/, .kilocode/ symlinks pointing to .agent/.
+Re-creates the shared runtime symlinks that should point to .agent/.
 
 Uses RELATIVE symlinks (not absolute) so the repo stays portable across
 machines and clone locations.
@@ -22,8 +22,12 @@ BRAIN_ROOT = SYSTEM_ROOT.parent            # beats-pm-antigravity-brain/
 # Format: (link_path, target_path) — both relative to BRAIN_ROOT
 SYMLINKS = [
     # .claude/
-    (".claude/CLAUDE.md",    ".agent/rules/GEMINI.md"),
     (".claude/commands",     ".agent/workflows"),
+    # .codex/
+    (".codex/agents",        ".agent/agents"),
+    (".codex/skills",        ".agent/skills"),
+    (".codex/templates",     ".agent/templates"),
+    (".codex/workflows",     ".agent/workflows"),
     # .gemini/
     (".gemini/GEMINI.md",    ".agent/rules/GEMINI.md"),
     (".gemini/agents",       ".agent/agents"),

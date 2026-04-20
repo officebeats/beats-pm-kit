@@ -14,73 +14,101 @@ import sys
 from pathlib import Path
 
 
+def _has_env(*names):
+    """Return True when any listed environment variable is set."""
+    return any(os.environ.get(name) for name in names)
+
+
 def detect_runtime():
     """Detect which AI runtime is active and return its capabilities."""
     root = Path(__file__).resolve().parent.parent.parent
     runtimes = []
 
     # Antigravity
-    if os.environ.get("ANTIGRAVITY_ROOT") or (root / ".agent").is_dir():
+    antigravity_active = _has_env("ANTIGRAVITY_ROOT")
+    if antigravity_active or (root / ".agent").is_dir():
         runtimes.append({
             "name": "antigravity",
             "display": "Google Antigravity",
-            "detected_by": "env:ANTIGRAVITY_ROOT" if os.environ.get("ANTIGRAVITY_ROOT") else ".agent/ directory",
+            "detected_by": "env:ANTIGRAVITY_ROOT" if antigravity_active else ".agent/ directory",
             "capabilities": ["parallel_fan_out", "mcp_tools", "browser_agent", "native_clipboard", "pencil_design"],
             "config_dir": ".agent/",
             "rules_file": ".agent/rules/GEMINI.md",
-            "priority": 1
+            "priority": 10 if antigravity_active else 90,
+            "active": antigravity_active
         })
 
     # Gemini CLI
-    if shutil.which("gemini") or (root / ".gemini").is_dir():
+    gemini_active = _has_env("GEMINI_CLI")
+    if gemini_active or shutil.which("gemini") or (root / ".gemini").is_dir():
         runtimes.append({
             "name": "gemini_cli",
             "display": "Gemini CLI",
-            "detected_by": "binary:gemini" if shutil.which("gemini") else ".gemini/ directory",
+            "detected_by": (
+                "env:GEMINI_CLI" if gemini_active else
+                "binary:gemini" if shutil.which("gemini") else
+                ".gemini/ directory"
+            ),
             "capabilities": ["sequential_tools", "file_access", "web_search"],
             "config_dir": ".gemini/",
             "rules_file": ".gemini/GEMINI.md",
-            "priority": 2
+            "priority": 20 if gemini_active else 60,
+            "active": gemini_active
         })
 
     # Claude Code
-    if shutil.which("claude") or (root / ".claude").is_dir():
+    claude_active = _has_env("CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT")
+    if claude_active or shutil.which("claude") or (root / ".claude").is_dir():
         runtimes.append({
             "name": "claude_code",
             "display": "Claude Code",
-            "detected_by": "binary:claude" if shutil.which("claude") else ".claude/ directory",
+            "detected_by": (
+                "env:CLAUDECODE" if claude_active else
+                "binary:claude" if shutil.which("claude") else
+                ".claude/ directory"
+            ),
             "capabilities": ["sequential_tools", "file_access", "xml_output", "subagents"],
             "config_dir": ".claude/",
             "rules_file": ".claude/CLAUDE.md",
-            "priority": 3
+            "priority": 30 if claude_active else 70,
+            "active": claude_active
         })
 
 
     # OpenAI Codex CLI
-    if shutil.which("codex") or (root / ".codex").is_dir():
+    codex_active = _has_env("CODEX_SHELL", "CODEX_THREAD_ID", "CODEX_CI")
+    if codex_active or shutil.which("codex") or (root / ".codex").is_dir():
         runtimes.append({
             "name": "codex_cli",
             "display": "OpenAI Codex CLI",
-            "detected_by": "binary:codex" if shutil.which("codex") else ".codex/ directory",
+            "detected_by": (
+                "env:CODEX_SHELL" if codex_active else
+                "binary:codex" if shutil.which("codex") else
+                ".codex/ directory"
+            ),
             "capabilities": ["sequential_tools", "file_access", "code_execution"],
             "config_dir": ".codex/",
-            "rules_file": ".codex/rules.md",
-            "priority": 4
+            "rules_file": "AGENTS.md",
+            "priority": 40 if codex_active else 50,
+            "active": codex_active
         })
 
     # KiloCode
-    if (root / ".kilocode").is_dir():
+    kilocode_active = _has_env("KILOCODE")
+    if kilocode_active or (root / ".kilocode").is_dir():
         runtimes.append({
             "name": "kilocode",
             "display": "KiloCode CLI",
-            "detected_by": ".kilocode/ directory",
+            "detected_by": "env:KILOCODE" if kilocode_active else ".kilocode/ directory",
             "capabilities": ["sequential_tools", "file_access"],
             "config_dir": ".kilocode/",
             "rules_file": ".kilocode/rules.md",
-            "priority": 5
+            "priority": 50 if kilocode_active else 80,
+            "active": kilocode_active
         })
 
     # Determine primary
+    runtimes.sort(key=lambda runtime: runtime["priority"])
     primary = runtimes[0] if runtimes else None
 
     return {
@@ -101,9 +129,10 @@ def print_human(result):
     if result['count'] > 1:
         others = [r for r in result['details'] if r['name'] != result['primary']]
         for r in others:
-            print(f"   Also found: {r['display']} ({r['detected_by']})")
+            qualifier = "active" if r.get("active") else "available"
+            print(f"   Also found: {r['display']} ({qualifier}; {r['detected_by']})")
     elif result['count'] == 0:
-        print("   ⚠️  No AI runtimes detected. Install Antigravity, Gemini CLI, or Claude Code.")
+        print("   ⚠️  No AI runtimes detected. Install Antigravity, Gemini CLI, Claude Code, or Codex CLI.")
     print()
 
 
