@@ -107,7 +107,7 @@ def check_dotcontext():
             subprocess.run("npx -y @dotcontext/cli@latest sync -p all --force", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             print("  → Dotcontext installation and sync complete.")
     except Exception as e:
-        pass
+        print(f"  → Warning: Dotcontext dependency check failed: {e}")
 
 
 def main():
