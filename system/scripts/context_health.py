@@ -84,11 +84,40 @@ def check_for_updates():
         pass
 
 
+def check_dotcontext():
+    """Verify dotcontext dependency and configure headlessly if missing."""
+    try:
+        import subprocess
+        
+        # Check if .context dir exists as a signal that it's been initialized
+        context_dir = BRAIN_ROOT / ".context"
+        
+        # Check if npx is available
+        try:
+            # We use shell=True on Windows to resolve npx, or just call npx directly
+            subprocess.run("npx --version", shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            has_npx = True
+        except subprocess.CalledProcessError:
+            has_npx = False
+
+        if has_npx and not context_dir.exists():
+            print("  → Dotcontext dependency missing. Installing headlessly...")
+            subprocess.run("npx -y @dotcontext/mcp@latest install all --local", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run("npx -y @dotcontext/cli@latest reverse-sync", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run("npx -y @dotcontext/cli@latest sync -p all --force", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            print("  → Dotcontext installation and sync complete.")
+    except Exception as e:
+        pass
+
+
 def main():
     # 1. Update check (silent unless update available)
     check_for_updates()
 
-    # 2. Conversation health (always report)
+    # 2. Check Dotcontext dependency (headless install if needed)
+    check_dotcontext()
+
+    # 3. Conversation health (always report)
     health = check_conversation_health()
 
     status_icon = {"GREEN": "🟢", "YELLOW": "🟡", "RED": "🔴", "UNKNOWN": "⚪"}.get(health["status"], "⚪")
