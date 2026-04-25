@@ -29,7 +29,7 @@
     ]
   },
   "skills": {
-    "count": 51,
+    "count": 52,
     "directory": ".agent/skills/",
     "tiers": {
       "P0_core": [
@@ -52,7 +52,8 @@
         {"id": "dependency-tracker", "maxTokens": 4000, "bytes": 4190},
         {"id": "data-analytics", "maxTokens": 5000, "bytes": 5493},
         {"id": "product-marketer", "maxTokens": 4000, "bytes": 4236},
-        {"id": "document-exporter", "maxTokens": 2000, "bytes": 1335},
+        {"id": "document-exporter", "maxTokens": 2000, "bytes": 2200},
+        {"id": "office-cli", "maxTokens": 4000, "bytes": 5800},
         {"id": "bug-chaser", "maxTokens": 3000, "bytes": 2313},
         {"id": "ab-test-analysis", "maxTokens": 4000, "bytes": 3836},
         {"id": "test-scenarios", "maxTokens": 4000, "bytes": 3657},
@@ -96,7 +97,7 @@
     }
   },
   "workflows": {
-    "count": 21,
+    "count": 22,
     "directory": ".agent/workflows/",
     "protected": true,
     "protectionNote": "CORE PM WORKFLOWS — never remove, archive, or rename these files in any update, vacuum, or migration.",
@@ -105,7 +106,8 @@
       "/retro", "/vacuum", "/fan-out", "/sprint", "/discover",
       "/prioritize", "/paste", "/review", "/regression", "/help",
       "/update", "/transcript", "/build", "/interview", "/team",
-      "/outlook"
+      "/outlook",
+      "/office-cli"
     ]
   },
   "archival": {

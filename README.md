@@ -99,9 +99,10 @@ cd beats-pm-kit
 chmod +x install.sh && ./install.sh
 ```
 
-That's it. The installer creates your folder structure, detects your AI runtime, fixes symlinks, and runs a health check. Takes ~10 seconds.
+That's it. The installer creates your folder structure, detects your AI runtime, fixes symlinks, installs and syncs the Dotcontext headless dependency, and runs a health check. Takes ~10 seconds.
 
 > **Requires:** Python 3.8+ (pre-installed on macOS/most Linux). No `pip install`, no `npm`, no Docker.
+> **Note:** The system uses **Dotcontext** as a mandatory, headless dependency. The setup process and any future repository updates will automatically ensure Dotcontext is installed, synced, and initialized to maintain a consistent AI operating environment.
 
 ---
 
@@ -118,6 +119,7 @@ Open the `beats-pm-kit` folder in any of these AI coding tools. **All are CLIs u
 | **[KiloCode](https://kilocode.ai/)** (CLI) | `kilo` | File access, tool use |
 
 > **Which should I use?** If you have Antigravity, use it — the kit was designed for its parallel execution. Otherwise, any CLI above works. The kit auto-adapts via adapter folders (`.gemini/`, `.claude/`, etc.).
+> **Codex note:** Codex uses `AGENTS.md` as the primary adapter, `CODEX_COMMANDS.md` for explicit slash-command routing, generated `.codex/` scaffolding for runtime notes, optional promoted local skills for the highest-frequency Beats commands, and repo git hooks plus CI to keep adapters synchronized. See [system/docs/codex.md](system/docs/codex.md).
 
 ---
 
@@ -274,7 +276,7 @@ beats-pm-kit/
 │   ├── scripts/           # Agent dispatcher, setup, vacuum, health check
 │   └── tests/             # Test suites
 │
-├── GEMINI.md              # System config (v10.5.0)
+├── GEMINI.md              # System config (v10.6.0)
 └── README.md              # ← You are here
 ```
 
@@ -295,6 +297,7 @@ Built on a **single source of truth** (`.agent/`) with adapters for each runtime
 | **Speed** | ⚡ Fastest | 🟡 Good | 🟡 Good | 🟡 Good | 🟡 Good |
 
 > **Parallel Fan-Out:** When you run `/fan-out`, Antigravity dispatches multiple specialist agents simultaneously. Other runtimes process agents sequentially, making complex workflows 3-5x slower.
+> **Codex Operating Model:** Use `AGENTS.md` for the inventory, then load `.agent/workflows/<command>.md` and only the required `SKILL.md` files for the task.
 
 ### 🔌 Power User Tools
 
