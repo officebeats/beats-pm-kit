@@ -191,29 +191,7 @@ else
     print_warn "Could not install git hooks (non-critical)"
 fi
 
-# ── Step 7: Initialize Dotcontext ───────────────────────────
-print_step "Initializing Dotcontext MCP & CLI..."
-if command -v npx &>/dev/null; then
-    if npx -y @dotcontext/mcp@latest install all --local > /dev/null 2>&1; then
-        print_ok "Dotcontext MCP installed"
-    else
-        print_warn "Failed to install Dotcontext MCP"
-    fi
-    if npx -y @dotcontext/cli@latest reverse-sync > /dev/null 2>&1; then
-        print_ok "Dotcontext reverse-sync completed"
-    else
-        print_warn "Failed to reverse-sync Dotcontext"
-    fi
-    if npx -y @dotcontext/cli@latest sync -p all --force > /dev/null 2>&1; then
-        print_ok "Dotcontext sync completed"
-    else
-        print_warn "Failed to sync Dotcontext"
-    fi
-else
-    print_warn "npx not found, skipping Dotcontext setup"
-fi
-
-# ── Step 8: Health check ────────────────────────────────────
+# ── Step 7: Health check ────────────────────────────────────
 print_step "Running system health check..."
 python3 system/scripts/context_health.py 2>/dev/null || print_warn "Health check skipped (non-critical)"
 
