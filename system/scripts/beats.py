@@ -3,14 +3,19 @@ import shlex
 import subprocess
 import sys
 from pathlib import Path
-import re
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from system.utils.command_registry import build_command_catalog, resolve_command_name
 
 SCRIPT_COMMANDS = {
     "runtime": ["python3", "system/scripts/detect_runtime.py", "--human"],
     "sync": ["python3", "system/scripts/sync_cli_adapters.py"],
+    "codex-skills": ["python3", "system/scripts/sync_codex_skill_adapters.py"],
+    "guard": ["python3", "system/scripts/adapter_guard.py", "--mode", "fix"],
+    "hooks": ["python3", "system/scripts/install_git_hooks.py"],
     "health": ["python3", "system/scripts/context_health.py"],
     "transcript": [
         ["python3", "system/scripts/quill_mcp_client.py"],
@@ -24,13 +29,7 @@ SCRIPT_COMMANDS = {
 }
 
 WORKFLOW_HINTS = {
-    "start": ".agent/workflows/start.md",
-    "help": ".agent/workflows/help.md",
-    "day": ".agent/workflows/day.md",
-    "track": ".agent/workflows/track.md",
-    "meet": ".agent/workflows/meet.md",
-    "create": ".agent/workflows/create.md",
-    "plan": ".agent/workflows/plan.md",
+    entry["name"]: entry["workflow"] for entry in build_command_catalog(ROOT)
 }
 
 
@@ -46,7 +45,9 @@ def run_cmd(cmd):
 
 def resolve_workflow(command_text):
     """Resolve a slash command or bare workflow name to a workflow file."""
-    command = re.sub(r"^/", "", command_text.strip())
+    command = resolve_command_name(command_text, ROOT)
+    if command is None:
+        return None
     workflow_path = ROOT / ".agent" / "workflows" / f"{command}.md"
     if workflow_path.exists():
         return workflow_path
