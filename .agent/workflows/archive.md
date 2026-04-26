@@ -2,9 +2,10 @@
 
 ## Trigger
 - `/archive` - Query or search the plan archive
+- `/archive --export` (or `/export`) - Export current conversation to archive
 
 ## Purpose
-Enable historical research across archived plans using the DuckDB archive database.
+Enable historical research across archived plans and export current session data using the DuckDB archive database.
 
 ## Steps
 

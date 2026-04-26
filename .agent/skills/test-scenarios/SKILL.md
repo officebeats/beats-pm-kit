@@ -87,3 +87,29 @@ Create comprehensive test scenarios from user stories with test objectives, star
 - Observable expected outcomes after each step
 - Edge case and error scenario coverage
 - Ready for QA team execution and documentation
+
+## Engineering Test Generation (Unit/Integration)
+
+When generating code-level tests (Unit or Integration), follow this workflow:
+1. Identify the function/component to test
+2. List the behaviors that need testing
+3. Write tests for happy path scenarios
+4. Add tests for edge cases and boundaries
+5. Include error handling tests
+6. Mock external dependencies appropriately
+7. Verify tests are deterministic and isolated
+
+### Quality Bar for Code Tests
+- Test behavior, not implementation
+- Use descriptive test names that explain what and why
+- Follow Arrange-Act-Assert pattern
+- Keep tests independent and isolated
+- Don't test external libraries
+- Mock at the boundary, not everywhere
+- Aim for fast, reliable tests
+
+## Resource Strategy
+- Add `scripts/` only when the task is fragile, repetitive, or benefits from deterministic execution.
+- Add `references/` only when details are too large or too variant-specific to keep in `SKILL.md`.
+- Add `assets/` only for files that will be consumed in the final output.
+- Keep extra docs out of the skill folder; prefer `SKILL.md` plus only the resources that materially help.
