@@ -25,13 +25,13 @@
 <!-- VALUE PROP PILLS -->
 
 <p>
-  <img src="https://img.shields.io/badge/🚀_Execution-52_PM_Skills-00A651?style=flat-square" alt="52 PM Skills"/>
+  <img src="https://img.shields.io/badge/🚀_Execution-56_PM_Skills-00A651?style=flat-square" alt="56 PM Skills"/>
    • 
   <img src="https://img.shields.io/badge/🔒_100%25_Local-Zero_Cloud_Storage-00A651?style=flat-square" alt="Privacy First"/>
    • 
   <img src="https://img.shields.io/badge/💼_Exec_Layer-The_Boss_Protocol-00A651?style=flat-square" alt="The Boss Protocol"/>
    • 
-  <img src="https://img.shields.io/badge/🤖_Agents-20_Personas-00A651?style=flat-square" alt="20 Agents"/>
+  <img src="https://img.shields.io/badge/🤖_Agents-21_Personas-00A651?style=flat-square" alt="21 Agents"/>
 </p>
 
 <br/>
@@ -50,15 +50,15 @@ Product managers drown in context — meeting notes, Slack threads, stakeholder 
 
 ## 🏗️ Architecture at a Glance
 
-A **multi-agent AI system** with 20 specialized personas orchestrating 52 PM skills across 5 runtimes. One source of truth (`.agent/`) powers all of them with a Context Guard that auto-optimizes every request.
+A **multi-agent AI system** with 21 specialized personas orchestrating 56 PM skills across 8+ runtimes. One source of truth (`.agent/`) powers all of them with a Context Guard that auto-optimizes every request.
 
 ```
 User Input → Context Guard → Agent Router → Skill Loader (JIT) → Structured Output
                                   ↓
-                        20 Persona Agents
+                        21 Persona Agents
                      (Strategy · Execution · GTM · Research · Engineering)
                                   ↓
-                          52 PM Skills (P0/P1/P2 tiered)
+                          56 PM Skills (P0/P1/P2 tiered)
                      (PRDs · Roadmaps · Meeting Synth · Task Tracking)
 ```
 
@@ -67,8 +67,8 @@ User Input → Context Guard → Agent Router → Skill Loader (JIT) → Structu
 | Decision | Rationale |
 |:---|:---|
 | **Agents over prompts** | Personas create consistent, role-scoped behavior that individual prompts can't. A "Staff PM" agent thinks differently than a "GTM Lead." |
-| **Skills as functions** | 52 modular skills (P0/P1/P2 tiered) allow JIT loading — only load what you need to manage token budgets. |
-| **Runtime-agnostic** | Same `.agent/` source of truth runs on Antigravity, Gemini CLI, Claude Code, Codex, and KiloCode. No vendor lock-in. |
+| **Skills as functions** | 56 modular skills (P0/P1/P2 tiered) allow JIT loading — only load what you need to manage token budgets. |
+| **Runtime-agnostic** | Same `.agent/` source of truth runs on Antigravity, Gemini CLI, Claude Code, Codex, KiloCode, Trae, Windsurf, and Zed. No vendor lock-in. |
 | **Local-first privacy** | All company data stays on your machine. Zero cloud sync. Enterprise-safe from day one. |
 
 ## ⚖️ Tradeoffs I Made
@@ -170,7 +170,7 @@ Folders 1-5 are `.gitignored` by default. Your private data stays on your machin
 
 ## 🧬 Inside the Engine: Three-Tier Architecture
 
-### 🤖 1. The Virtual PM Team (20 Persona Agents)
+### 🤖 1. The Virtual PM Team (21 Persona Agents)
 
 The _Identity_ layer. Who is doing the work?
 
@@ -196,25 +196,38 @@ The _Identity_ layer. Who is doing the work?
 | **Executor**              | Code Implementation   | `autopilot`, `team-orchestrator`                            |
 | **Planner**               | Task Graphs           | `engineering-planner`, `team-orchestrator`                  |
 | **Security Reviewer**     | Vulnerability Audit   | `risk-guardian`                                             |
+| **Switchboard**           | Cross-IDE Comm        | Workflow routing and agent-to-agent messaging               |
 
-### 🎯 2. The Core Playbooks (26 Protected Workflows)
+### 🎯 2. The Core Playbooks (34 Protected Workflows)
 
-The _Routing_ layer. Lean slash commands that trigger complex operations. All 26 are **protected core**.
+The _Routing_ layer. Lean slash commands that trigger complex operations. All 34 are **protected core**.
 
 > **💡 Natural Conversation vs Commands:** You are **not required** to use slash commands. If you just talk to the AI naturally (e.g., "Summarize this meeting" or "Help me plan my day"), the system will organically load the correct Agents and Skills. The `/commands` are simply explicit playbook shortcuts to guarantee a highly specific logic sequence (like the exact 7 steps of `/meet`). Both methods seamlessly pull from the same `.agent/` architecture.
 
 | Command        | Purpose                                  |
 | :------------- | :--------------------------------------- |
+| `/accuracy`    | High accuracy mode with self-review      |
+| `/archive`     | Query or search the plan archive         |
 | `/boss`        | The 1:1 "Managing Up" Prep               |
 | `/build`       | Handoff PRD to Engineering Agents        |
+| `/challenge`   | Internal adversarial review workflow     |
+| `/chat`        | Activate chat consultation workflow      |
 | `/create`      | Generate PRDs, Specs, and One-Pagers     |
 | `/day`         | Daily briefing & planning                |
 | `/discover`    | Build Opportunity Solution Trees         |
+| `/export`      | Export current conversation to archive   |
 | `/fan-out`     | Parallel multi-agent dispatch            |
+| `/handoff`     | Delegate tasks to external agents        |
+| `/handoff-chat`| Clipboard/chat delegation workflow       |
+| `/handoff-lead`| One-shot lead execution workflow         |
+| `/handoff-relay`| Execute-now, stage-rest relay workflow  |
 | `/help`        | User manual & system docs                |
+| `/improve-plan`| Deep planning, dependency checks, review |
+| `/intel`       | Competitive intel and context capture    |
 | `/interview`   | Socratic deep interview on requirements  |
-| `/meet`        | Transcript → structured action items    |
-| `/paste`       | Clipboard → structured intake           |
+| `/meet`        | Transcript → structured action items     |
+| `/office-cli`  | Manage Office 365 integrations           |
+| `/paste`       | Clipboard → structured intake            |
 | `/plan`        | Strategic roadmaps & OKRs                |
 | `/prep`        | Interview prep, research & roleplay      |
 | `/prioritize`  | Backlog scoring via RICE / Kano / MoSCoW |
@@ -225,14 +238,16 @@ The _Routing_ layer. Lean slash commands that trigger complex operations. All 26
 | `/sprint`      | Sprint backlog generation                |
 | `/start`       | Interactive First-Time Setup Wizard      |
 | `/team`        | Coordinated multi-agent execution        |
+| `/teams`       | Teams chat ingestion and sync            |
 | `/track`       | Battlefield View of Tasks & Bugs         |
-| `/transcript`  | Process all Quill meetings from last 10 business days |
+| `/transcript`  | Process all meetings from last 10 days   |
+| `/trello`      | Synchronize tasks with Trello board      |
 | `/update`      | Pull latest kit version from GitHub      |
 | `/vacuum`      | System optimization & cleanup            |
 | `/vibe`        | System health and diagnostics            |
 | `/week`        | Weekly briefing & recap                  |
 
-### 🚀 3. The Capability Engine (52 PM Skills)
+### 🚀 3. The Capability Engine (56 PM Skills)
 
 The _Execution_ layer. Skills are loaded Just-In-Time to keep the context window fast.
 
@@ -264,11 +279,11 @@ beats-pm-kit/
 ├── 5. Trackers/           # Task Master Ledgers
 │
 ├── .agent/                # ⭐ SOURCE OF TRUTH (The AI Engine)
-│   ├── agents/            # 12 Virtual PM Team Personas
+│   ├── agents/            # 21 Virtual PM Team Personas
 │   ├── rules/             # GEMINI.md (System Constitution)
-│   ├── skills/            # 52 PM Skills (P0/P1/P2 tiers)
+│   ├── skills/            # 56 PM Skills (P0/P1/P2 tiers)
 │   ├── templates/         # Document & Report Templates
-│   ├── workflows/         # 17 Protected Playbooks
+│   ├── workflows/         # 34 Protected Playbooks
 │   ├── archive/           # Archived agents & skills (recoverable)
 │   └── MANIFEST.json      # Machine-readable index with token budgets
 │
@@ -289,8 +304,8 @@ Built on a **single source of truth** (`.agent/`) with adapters for each runtime
 | Capability | Antigravity (Desktop IDE) | Gemini (CLI) | Claude Code (CLI) | Codex (CLI) | KiloCode (CLI) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Parallel Fan-Out** | ✅ Native | ❌ Sequential | ❌ Sequential | ❌ Sequential | ❌ Sequential |
-| **Agent Personas (12)** | ✅ Full mesh | ✅ | ✅ | ✅ | ✅ |
-| **Skills (46)** | ✅ JIT load | ✅ | ✅ | ✅ | ✅ |
+| **Agent Personas (21)** | ✅ Full mesh | ✅ | ✅ | ✅ | ✅ |
+| **Skills (56)** | ✅ JIT load | ✅ | ✅ | ✅ | ✅ |
 | **Slash Commands (18)** | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` | ✅ `/command` |
 | **Clipboard Ingest** | ✅ Native | ⚠️ Script | ⚠️ Script | ⚠️ Script | ⚠️ Script |
 | **Context Guard** | ✅ Auto | ✅ | ✅ | ✅ | ✅ |
@@ -353,15 +368,15 @@ Built directly into `GEMINI.md`, these rules reduce token waste without any manu
 
 <div align="center">
 
-**Ernesto "Beats"**
+**[Your Name]**
 
-_ex-BCG Digital Product Lead · ex-Fetch Rewards Senior Product Lead_
+_Product Lead_
 
 Building the future of AI-powered product management. Stop chasing status updates. Start driving strategy.
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/productmg/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/)
 &nbsp;
-[![X (Twitter)](https://img.shields.io/badge/X-Follow-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/officebeats)
+[![X (Twitter)](https://img.shields.io/badge/X-Follow-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/)
 
 ⭐ **Star this repo** if it saves you 10 hours this week.
 
