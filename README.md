@@ -99,9 +99,10 @@ cd beats-pm-kit
 chmod +x install.sh && ./install.sh
 ```
 
-That's it. The installer creates your folder structure, detects your AI runtime, fixes symlinks, and runs a health check. Takes ~10 seconds.
+That's it. The installer creates your folder structure, detects your AI runtime, fixes symlinks, installs and syncs the Dotcontext headless dependency, and runs a health check. Takes ~10 seconds.
 
 > **Requires:** Python 3.8+ (pre-installed on macOS/most Linux). No `pip install`, no `npm`, no Docker.
+> **Note:** The system uses **Dotcontext** as a mandatory, headless dependency. The setup process and any future repository updates will automatically ensure Dotcontext is installed, synced, and initialized to maintain a consistent AI operating environment.
 
 ---
 

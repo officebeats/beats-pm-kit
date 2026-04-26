@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "dotcontext": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@dotcontext/mcp@latest"
+      ],
+      "env": {}
+    }
+  }
+}

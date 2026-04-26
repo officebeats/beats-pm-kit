@@ -1,3 +1,27 @@
 {
-    "chatgpt.openOnStartup": true
+    "chatgpt.openOnStartup": true,
+    "switchboard.accurateCoding.enabled": true,
+    "switchboard.reviewer.advancedMode": false,
+    "switchboard.leadCoder.inlineChallenge": false,
+    "switchboard.workspace.ignoreStrategy": "targetedGitignore",
+    "switchboard.workspace.ignoreRules": [],
+    "switchboard.jules.autoSync": false,
+    "switchboard.pairProgramming.aggressive": false,
+    "switchboard.planner.designDocEnabled": true,
+    "switchboard.team.strictPrompts": false,
+    "switchboard.planner.strictPrompts": false,
+    "switchboard.review.strictPrompts": false,
+    "mcpServers": {
+        "switchboard": {
+            "command": "node",
+            "args": [
+                "o:/beats-pm-kit/.switchboard/MCP/mcp-server.js"
+            ],
+            "env": {
+                "SWITCHBOARD_WORKSPACE_ROOT": "o:/beats-pm-kit"
+            },
+            "disabled": false,
+            "alwaysAllow": []
+        }
+    }
 }

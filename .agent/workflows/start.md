@@ -87,6 +87,12 @@ Display the Diamond 6 commands:
   /help     — Full command reference
   /outlook  — Sync your inbox for context (macOS + Outlook)
 
+🔧 Recommended Tools:
+  /office-cli — Install OfficeCLI to create PowerPoint, Word & Excel docs
+                (single binary, no Office needed — highly recommended!)
+
+💡 Kit is now Dotcontext-enabled: Unified context, workflows, and agents across all your tools (Claude, Cursor, Copilot, Windsurf, etc).
+
 💡 Tip: Start with /day to see your daily priorities, or /paste to capture something from your clipboard.
 ```
 

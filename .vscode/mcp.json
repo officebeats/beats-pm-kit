@@ -1,0 +1,23 @@
+{
+  "servers": {
+    "switchboard": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/.switchboard/MCP/mcp-server.js"
+      ],
+      "env": {
+        "SWITCHBOARD_WORKSPACE_ROOT": "o:/beats-pm-kit"
+      }
+    },
+    "dotcontext": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@dotcontext/mcp@latest"
+      ],
+      "env": {}
+    }
+  }
+}

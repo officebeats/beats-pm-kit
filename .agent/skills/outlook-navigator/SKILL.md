@@ -1,12 +1,6 @@
 ---
 name: outlook-navigator
 description: Read-only Outlook email scraper for context, task extraction, and stakeholder enrichment.
-priority: P1
-triggers:
-  - "/outlook"
-  - "/inbox"
-  - "/sync-mail"
-version: 2.1.0
 ---
 
 > **Compatibility Directive**: Optimized for Google Antigravity/macOS desktop clients.

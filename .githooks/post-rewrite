@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+python3 system/scripts/sync_cli_adapters.py >/dev/null || true
+python3 system/scripts/sync_codex_skill_adapters.py >/dev/null || true

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+python3 system/scripts/sync_cli_adapters.py >/dev/null
+python3 system/scripts/sync_codex_skill_adapters.py >/dev/null || true
+for generated in AGENTS.md CODEX_COMMANDS.md .codex/rules.md .claude/CLAUDE.md; do
+  if git ls-files --error-unmatch "$generated" >/dev/null 2>&1; then
+    git add "$generated"
+  fi
+done
+python3 system/scripts/adapter_guard.py --mode check
