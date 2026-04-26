@@ -8,7 +8,7 @@ description: Capture clipboard content (text, images, files) and save for proces
 
 # /paste - Clipboard Capture & Triage
 
-**Trigger**: User types `/paste` to capture whatever is on their clipboard.
+**Trigger**: User types `/paste` to capture whatever is on their clipboard, or `/paste --teams` (or `/ingest-teams`) to trigger Microsoft Teams ingest.
 
 > **Value Prop**: One command to capture **both** the active clipboard (Slack, images, files) **and** any items manually dropped into the `0. Incoming/` folder (The Drop Zone).
 
@@ -33,6 +33,7 @@ Get-ChildItem -Path "0. Incoming/" -Recurse | Where-Object { $_.PSIsContainer -e
     - **Option A (Text)**: Append to `0. Incoming/raw/YYYY-MM-DD_clipboard.md`.
     - **Option B (Image)**: Save to `0. Incoming/staging/` and invoke `visual-processor`.
     - **Option C (File)**: Move to `0. Incoming/staging/`.
+    - **Option D (Teams Context - if `--teams` flag used)**: Run `python3 system/scripts/beats.py teams --args "--json"` to ingest Teams chat.
     - Use Antigravity clipboard ingest for text/images/files.
     - Proceed directly to classification via `inbox-processor`.
 
@@ -50,6 +51,7 @@ Get-ChildItem -Path "0. Incoming/" -Recurse | Where-Object { $_.PSIsContainer -e
     - **Files** (copied from file manager) → Saved to `0. Incoming/staging/`
     - **Image** (screenshot to clipboard) → Saved to `0. Incoming/staging/`
     - **Text** (copied text) → Saved to `0. Incoming/raw/`
+    - **Teams** (if `--teams` used) → Fetch via Teams API/Bridge and route to `inbox-processor`.
 
 8.  **Classification** (via `inbox-processor` skill):
     - **Bug** (error, crash, broken) → Route to `5. Trackers/bugs/bugs-master.md`

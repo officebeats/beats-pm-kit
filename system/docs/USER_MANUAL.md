@@ -411,12 +411,12 @@ This is an open-source project. Contributions are welcome! Please feel free to s
 
 ## 👤 Created By
 
-Ernesto "Beats" — Product Management leader & AI enthusiast.
+**[Your Name]** — Product Management leader & AI enthusiast.
 
 <div align="center">
 
-`<a href="https://www.linkedin.com/in/productmg/"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn">``</a>`
-`<a href="https://x.com/officebeats"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" alt="X/Twitter">``</a>`
+`<a href="https://www.linkedin.com/"><img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn">``</a>`
+`<a href="https://x.com/"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" alt="X/Twitter">``</a>`
 `<a href="https://github.com/officebeats/beats-pm-antigravity-brain/issues"><img src="https://img.shields.io/badge/GitHub-Issues-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Issues">``</a>`
 
 ---

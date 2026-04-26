@@ -315,14 +315,14 @@ class TestRealWorldScenarios(unittest.TestCase):
     """Simulate what actually happens when a PM uses the kit day-to-day."""
 
     def test_daily_brief_path_exists(self):
-        """PM runs /day → daily-synth skill must exist and be functional."""
+        """PM runs /day → meeting-synth skill must exist and be functional."""
         skills = _discover_skills()
-        self.assertIn('daily-synth', skills,
-                      "PM runs /day but daily-synth skill is missing")
-        skill_md = skills['daily-synth'] / "SKILL.md"
+        self.assertIn('meeting-synth', skills,
+                      "PM runs /day but meeting-synth skill is missing")
+        skill_md = skills['meeting-synth'] / "SKILL.md"
         content = skill_md.read_text(encoding='utf-8', errors='replace')
         self.assertGreater(len(content), 200,
-                           "daily-synth SKILL.md is too short to be functional")
+                           "meeting-synth SKILL.md is too short to be functional")
 
     def test_boss_prep_path_exists(self):
         """PM prepares for 1:1 → boss-tracker skill exists with real instructions."""
@@ -386,10 +386,10 @@ class TestRealWorldScenarios(unittest.TestCase):
         self.assertIn('plan', workflows, "/plan workflow missing")
 
     def test_bug_tracking_path_exists(self):
-        """PM triages bugs → bug-chaser skill + /track workflow exist."""
+        """PM triages bugs → bug-investigation skill + /track workflow exist."""
         skills = _discover_skills()
         workflows = _discover_workflows()
-        self.assertIn('bug-chaser', skills, "bug-chaser missing")
+        self.assertIn('bug-investigation', skills, "bug-investigation missing")
         self.assertIn('track', workflows, "/track workflow missing")
 
 

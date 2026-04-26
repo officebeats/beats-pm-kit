@@ -113,3 +113,26 @@ Confirm all updates:
 - Single-pass extraction.
 - Skip logistics chatter.
 - For external-facing outputs: No emojis unless explicitly requested.
+
+---
+
+## 6. Daily Synthesis Mode (`/day`, `/morning`)
+**Trigger**: User requests a daily brief or status check.
+1. **Hydrate**: Read `STATUS.md`, `5. Trackers/TASK_MASTER.md`, `5. Trackers/critical/boss-requests.md`, `5. Trackers/bugs/bugs-master.md`.
+2. **Phase Logic**:
+   - **Morning (<12:00)**: Define **"Big Rocks"** (Top 3 Absolutes).
+   - **Midday**: Pivot check.
+   - **EOD (>16:00)**: Audit shipped items. Update `STATUS.md`.
+3. **Routing**: If Boss Ask Red → Suggest `/boss`.
+
+---
+
+## 7. Weekly/Monthly Synthesis Mode (`/week`, `/month`)
+**Trigger**: User requests a weekly or monthly rollup.
+1. **Scan Trackers**: Read `TASK_MASTER.md` (Completed this week/month) and `bugs-master.md` (New Criticals).
+2. **Check Pulse**: Read `5. Trackers/critical/boss-requests.md` (Status of P0s).
+3. **Synthesis**:
+   - **Wins**: Shipped features, resolved P0 bugs, key decisions.
+   - **Risks**: Overdue items, blocked dependencies, team burnout signals.
+   - **Metric**: Calibrate a "Confidence Score" (1-10) for the sprint/month.
+4. **Visuals**: Use ASCII Charts for trends and Emoji Signals (`🟢`, `🟡`, `🔴`) for Health. No fluff—outcome-oriented bullet points only.

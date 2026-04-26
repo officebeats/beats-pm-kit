@@ -27,12 +27,8 @@ Promoted Codex skill adapters can be synced locally with `python3 system/scripts
 | `/create` | `.agent/workflows/create.md` | Native skill `beats-create` | — | Draft PRDs, Specs, and One-Pagers from context (Transcripts/Tasks). |
 | `/day` | `.agent/workflows/day.md` | Native skill `beats-day` | `/status`, `/morning`, `/brief`, `/now` | Daily briefing and planning. |
 | `/discover` | `.agent/workflows/discover.md` | Dispatch only | — | Run a product discovery cycle with OST, assumption mapping, and experiment design. |
-| `/export` | `.agent/workflows/export.md` | Dispatch only | — | Export current conversation to archive database |
 | `/fan-out` | `.agent/workflows/fan-out.md` | Dispatch only | — | Fan-out a complex PM task to multiple specialized agents in parallel, then synthesize results. |
-| `/handoff-chat` | `.agent/workflows/handoff-chat.md` | Dispatch only | — | Clipboard/chat delegation workflow |
-| `/handoff-lead` | `.agent/workflows/handoff-lead.md` | Dispatch only | — | Lead Coder one-shot execution workflow |
-| `/handoff-relay` | `.agent/workflows/handoff-relay.md` | Dispatch only | — | Relay handoff workflow for model-switch pauses |
-| `/handoff` | `.agent/workflows/handoff.md` | Dispatch only | — | Default terminal delegation workflow |
+| `/handoff` | `.agent/workflows/handoff.md` | Dispatch only | — | Unified delegation and execution workflow (Default, Chat, Lead, Relay) |
 | `/help` | `.agent/workflows/help.md` | Dispatch only | — | The User Manual. Lists commands and explains the system. |
 | `/improve-plan` | `.agent/workflows/improve-plan.md` | Dispatch only | — | Deep planning, dependency checks, and adversarial review |
 | `/intel` | `.agent/workflows/intel.md` | Dispatch only | — | Capture product knowledge, competitive intelligence, and strategic context from slides, emails, or verbal notes. |
@@ -43,14 +39,12 @@ Promoted Codex skill adapters can be synced locally with `python3 system/scripts
 | `/plan` | `.agent/workflows/plan.md` | Native skill `beats-plan` | — | Create or update strategic plans, roadmaps, and OKRs. |
 | `/prep` | `.agent/workflows/prep.md` | Dispatch only | — | Prepare for an interview with research and roleplay. |
 | `/prioritize` | `.agent/workflows/prioritize.md` | Dispatch only | — | Score and rank a backlog using RICE, ICE, MoSCoW, Kano, or weighted scoring. |
-| `/quill` | `.agent/workflows/quill.md` | Dispatch only | — | Process and display the last 5 Quill meetings in a compact, color-coded bullet list with 3-point summaries and action items. |
 | `/regression` | `.agent/workflows/regression.md` | Dispatch only | — | See workflow file |
 | `/retro` | `.agent/workflows/retro.md` | Dispatch only | — | Run a sprint or PI retrospective with structured format and action tracking. |
 | `/review` | `.agent/workflows/review.md` | Dispatch only | — | Code review, Doc review, Release prep. |
 | `/sprint` | `.agent/workflows/sprint.md` | Dispatch only | — | Generate a prioritized sprint backlog for dev team planning. |
 | `/start` | `.agent/workflows/start.md` | Dispatch only | — | First-time guided setup wizard. Run on first session or manually with /start. |
 | `/team` | `.agent/workflows/team.md` | Dispatch only | — | N coordinated engineering/execution agents on a shared task list. |
-| `/teams` | `.agent/workflows/teams.md` | Dispatch only | — | Capture Teams chat context and update the Task Master. |
 | `/track` | `.agent/workflows/track.md` | Native skill `beats-track` | — | Manage the battlefield. Tasks, Bugs, and Boss Asks. |
 | `/transcript` | `.agent/workflows/transcript.md` | Native skill `beats-transcript` | — | Process all Quill meetings from the last 10 business days. |
 | `/trello` | `.agent/workflows/trello.md` | Dispatch only | — | Synchronize Beats PM Tracker IDs with a Trello Board, or attach files. |

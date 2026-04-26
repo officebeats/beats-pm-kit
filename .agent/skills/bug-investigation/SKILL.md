@@ -47,6 +47,33 @@ Update session middleware to return 401 when token expired.
 - Consider if bug exists elsewhere
 - Write a regression test with the fix
 
+## PM Bug Triage & SLA Protocols
+
+### Phase 1: The Inquisition (Triage)
+Reject any report that lacks the **Triad of Truth**:
+1.  **Steps**: How do I break it?
+2.  **Expected**: What should happen?
+3.  **Actual**: What did happen?
+_If missing, prompt the user immediately._
+
+### Phase 2: Severity Mapping (SLA Enforcement)
+Consult `SETTINGS.md` logic:
+- **P0 (Critical)**: Data Loss, Security, Global Outage. (Fix: 4h).
+- **P1 (High)**: Core features broken. (Fix: 24h).
+- **P2 (Med)**: Broken but workaround exists. (Fix: Sprint).
+- **P3 (Low)**: Cosmetic. (Fix: Backlog).
+
+### Phase 3: The Log Protocol
+1.  **Master Log**: Append to `5. Trackers/bugs/bugs-master.md`.
+    - Format: `| ID | Title | P-Level | Owner | Status |`
+2.  **Deep Dive**: If complex, create `2. Products/[Product]/bugs/BUG-[ID].md`.
+    - Use "Bug Report" Template.
+
+### Phase 4: Routing & Handoff
+- **To Eng**: Assign to specific Engineering Partner based on `SETTINGS.md`.
+- **To Task**: Create matching task in `TASK_MASTER.md`.
+- **To Visual**: If `#screenshot` provided, route to visual-processor.
+
 ## Resource Strategy
 - Add `scripts/` only when the task is fragile, repetitive, or benefits from deterministic execution.
 - Add `references/` only when details are too large or too variant-specific to keep in `SKILL.md`.

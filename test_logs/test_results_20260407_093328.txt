@@ -1,0 +1,153 @@
+test_loader_filtering (test_core_components.TestContextLoader)
+Test that context loader respects ignore rules. ... skipped 'Required modules not available'
+test_hash_calculation (test_core_components.TestUniversalClipboard)
+Test that hashing is deterministic and accurate. ... skipped 'Required modules not available'
+test_transcript_detection_negative (test_core_components.TestUniversalClipboard)
+Test that normal code or text is NOT detected as transcript. ... skipped 'Required modules not available'
+test_transcript_detection_positive (test_core_components.TestUniversalClipboard)
+Test transcript detection logic on valid transcripts. ... skipped 'Required modules not available'
+test_copy_template_file_skip_existing (test_core_setup.TestCoreSetup) ... ok
+test_copy_template_file_success (test_core_setup.TestCoreSetup) ... ok
+test_copy_templates (test_core_setup.TestCoreSetup) ... ok
+test_create_directories (test_core_setup.TestCoreSetup) ... ok
+test_initialize_tracker_file (test_core_setup.TestCoreSetup) ... [92m✓ Created path/to/tracker.md[0m
+ok
+test_install_extensions (test_core_setup.TestCoreSetup) ... [96m
+🚀 Optional Power-Ups:[0m
+[90m[skip] Extension 1 (Already installed)[0m
+ok
+test_check_anchor_rule_invalid (test_kernel.TestKernelUtils)
+Test that invalid paths fail the anchor rule. ... ok
+test_check_anchor_rule_valid (test_kernel.TestKernelUtils)
+Test that a valid company anchor passes. ... ok
+test_check_privacy_rule_clean (test_kernel.TestKernelUtils)
+Test that safe files pass privacy check. ... ok
+test_check_privacy_rule_violation (test_kernel.TestKernelUtils)
+Test that protected folders trigger privacy violation. ... ok
+test_get_suggested_template (test_kernel.TestKernelUtils)
+Test that intents map to correct templates. ... ok
+test_all_workflows_exist (test_regression.TestCommandRouting)
+All workflows inside .agent/workflows must be valid markdown files. ... ok
+test_command_count (test_regression.TestCommandRouting)
+Should have core commands. ... ok
+test_critical_files_exist (test_regression.TestCriticalFiles) ... ok
+test_required_folders_exist (test_regression.TestDirectoryStructure) ... ok
+test_anchor_rule_invalid (test_regression.TestKernelUtils)
+Anchor rule should block non-standard paths. ... ok
+test_anchor_rule_valid (test_regression.TestKernelUtils)
+Anchor rule should allow standard folder paths. ... ok
+test_privacy_rule (test_regression.TestKernelUtils)
+Privacy rule should detect protected folder leaks. ... ok
+test_template_mapping (test_regression.TestKernelUtils)
+All documented intents should map to templates. ... ok
+test_all_skills_exist (test_regression.TestSkillsInventory) ... ok
+test_core_scripts_exist (test_regression.TestSystemScripts) ... ok
+test_all_templates_exist (test_regression.TestTemplatesInventory) ... ok
+test_agent_has_skills_field (test_release_readiness.TestAgentQuality)
+Agents should reference skills they can use. ...   ⚠ Agents without skill references: ['code-reviewer', 'security-reviewer', 'architect', 'debugger', 'designer', 'executor', 'critic', 'planner']
+ok
+test_every_agent_has_content (test_release_readiness.TestAgentQuality)
+Agent files must have meaningful persona definitions (>200 chars). ... ok
+test_gemini_md_agent_references_valid (test_release_readiness.TestCrossReferenceIntegrity)
+GEMINI.md references agents → they must exist. ... ok
+test_no_broken_skill_symlinks (test_release_readiness.TestCrossReferenceIntegrity)
+If skills are symlinked between .agents/ and .agent/, both must resolve. ... ok
+test_no_duplicate_skill_names (test_release_readiness.TestPerformance)
+No two skills should have the exact same name across directories. ... ok
+test_no_empty_skill_directories (test_release_readiness.TestPerformance)
+Skill directories must not be empty (no orphaned folders). ... ok
+test_no_oversized_skill_files (test_release_readiness.TestPerformance)
+SKILL.md files should stay under 500 lines (mgechev standard). ...   ⚠ Oversized skills (>500 lines): ['deep-interview (650 lines)', 'ai-shaped-readiness-advisor (927 lines)', 'context-engineering-advisor (763 lines)', 'team-orchestrator (968 lines)', 'epic-breakdown-advisor (665 lines)']
+ok
+test_gitignore_blocks_sensitive_folders (test_release_readiness.TestPrivacyCompliance)
+Folders 1-5 must be in .gitignore. ... ok
+test_gitignore_exists (test_release_readiness.TestPrivacyCompliance)
+A .gitignore must exist. ... ok
+test_boss_prep_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM prepares for 1:1 → boss-tracker skill exists with real instructions. ... ok
+test_bug_tracking_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM triages bugs → bug-chaser skill + /track workflow exist. ... ok
+test_competitive_analysis_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM does competitive analysis → growth-engine skill exists. ... ok
+test_daily_brief_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM runs /day → daily-synth skill must exist and be functional. ... ok
+test_discovery_workshop_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM runs discovery → discovery-engine + /discover workflow exist. ... ok
+test_meeting_synthesis_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM processes a meeting transcript → meeting-synth exists. ... ok
+test_okr_management_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM sets OKRs → roadmapping-suite skill + /plan workflow exist. ... ok
+test_prd_authoring_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM writes a PRD → prd-author skill + /create workflow both exist. ... ok
+test_retrospective_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM facilitates a retro → retrospective skill + /retro workflow exist. ... ok
+test_sprint_planning_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM runs sprint planning → roadmapping-suite skill + /sprint workflow exist. ... ok
+test_stakeholder_management_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM manages stakeholders → stakeholder-management-suite skill exists. ... ok
+test_task_management_path_exists (test_release_readiness.TestRealWorldScenarios)
+PM manages tasks → task-manager skill exists. ... ok
+test_every_skill_has_skill_md (test_release_readiness.TestSkillQuality)
+Every skill directory MUST contain a SKILL.md file. ... ok
+test_every_skill_md_has_content (test_release_readiness.TestSkillQuality)
+SKILL.md must have meaningful content (>50 chars), not be empty. ... ok
+test_skill_md_has_description (test_release_readiness.TestSkillQuality)
+SKILL.md should contain a description (frontmatter or first paragraph). ... ok
+test_folder_structure_exists (test_release_readiness.TestStructuralIntegrity)
+PM installs kit → all 6 standard folders should exist. ... ok
+test_gemini_md_exists (test_release_readiness.TestStructuralIntegrity)
+System config must exist for the orchestrator to function. ... ok
+test_minimum_agent_count (test_release_readiness.TestStructuralIntegrity)
+Kit should have at least 8 agents (core team). ... ok
+test_minimum_skill_count (test_release_readiness.TestStructuralIntegrity)
+Kit should have at least 50 skills (PM + eng baseline). ... ok
+test_minimum_workflow_count (test_release_readiness.TestStructuralIntegrity)
+Kit should have at least 15 workflows (core playbooks). ... ok
+test_readme_exists (test_release_readiness.TestStructuralIntegrity)
+README.md is the entry point for every new user. ... ok
+test_core_scripts_exist (test_release_readiness.TestSystemScripts)
+vacuum.py, kernel_utils.py, vibe_check.py must exist. ... ok
+test_scripts_are_valid_python (test_release_readiness.TestSystemScripts)
+All .py scripts must parse without SyntaxError. ... ok
+test_every_workflow_has_content (test_release_readiness.TestWorkflowQuality)
+Workflow files must have actual instructions (>100 chars). ... ok
+test_workflow_has_description_frontmatter (test_release_readiness.TestWorkflowQuality)
+Workflows should have YAML frontmatter with description. ... ok
+test_no_hardcoded_pii (test_skills_validation.TestEdgeCases)
+Skills should not contain hardcoded PII. ... ok
+test_valid_system_paths (test_skills_validation.TestEdgeCases)
+Skills should reference valid file paths. ... ok
+test_skill_files_load_quickly (test_skills_validation.TestProcessingSpeed)
+All skill files should load in <100ms combined. ... ok
+test_skill_parsing_is_fast (test_skills_validation.TestProcessingSpeed)
+Parsing skill content should be fast (<200ms). ... ok
+test_skills_are_substantial (test_skills_validation.TestSkillSize)
+Enhanced skills should be at least 500 bytes each. ... ok
+test_total_skills_size (test_skills_validation.TestSkillSize)
+Total skills size should be >10KB. ... ok
+test_all_skills_have_activation_triggers (test_skills_validation.TestSkillStructure)
+Each skill must define activation triggers or be mapped in GEMINI.md. ... ok
+test_all_skills_have_frontmatter (test_skills_validation.TestSkillStructure)
+Each skill must have YAML frontmatter with name and description. ... ok
+test_valid_table_headers (test_skills_validation.TestTableFormats)
+Tables should have proper header separators. ... ok
+test_critical_files_exist (test_structure.TestSystemStructure)
+Verify GEMINI (rules), and Skills exist. ... ok
+test_required_directories_exist (test_structure.TestSystemStructure)
+Verify all critical directories mandated by config exist. ... ok
+test_skills_architecture (test_structure.TestSystemStructure)
+Verify that the Skills directory structure is valid (v3.0.0). ... ok
+test_templates_exist (test_structure.TestSystemStructure)
+Verify that standard templates exist. ... ok
+test_archive_transcripts (test_vacuum.TestVacuum)
+Test transcript archiving logic. ...   [Cold Storage] Moved 1 old transcript(s) to archive/.
+ok
+test_vacuum_tracker_file (test_vacuum.TestVacuum)
+Test that completed items are moved to archive. ... ok
+
+----------------------------------------------------------------------
+Ran 75 tests in 0.082s
+
+OK (skipped=4)
+
+TESTS PASSED.

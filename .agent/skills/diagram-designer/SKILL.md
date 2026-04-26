@@ -1,3 +1,8 @@
+---
+name: diagram-designer
+description: Editorial-quality architecture, flow, and strategy diagrams. Self-contained HTML + SVG.
+---
+
 # Diagram Designer Skill
 
 Editorial-quality architecture, flow, and strategy diagrams. Self-contained HTML + SVG. No shadows, no Mermaid-slop.

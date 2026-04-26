@@ -64,3 +64,18 @@ description: Process all Quill meetings from the last 10 business days.
      - **Scope changes** → Move tasks to ON HOLD or OUT OF SCOPE as directed.
      - **Calendar reconciliation**: Cross-check upcoming meetings against tasks with "🗓️ Scheduled" status.
    - Run the **Priority Gate** (task-manager § 2) on any new tasks from non-manager sources.
+
+8. **Recent Meetings Summary (Quill Output)**:
+   - Extract the last 5 processed meetings.
+   - For each meeting, generate a 3-point bullet summary and a list of Action Items (Owner + Task).
+   - Present the meetings in a compact bullet list format:
+     - 🟦 **[Title]**
+       - **Date**: [Formatted Date]
+       - **Participants**: [Participants]
+       - **Summary**:
+         - [Point 1]
+         - [Point 2]
+         - [Point 3]
+       - **Action Items**:
+         - [Action 1]
+         - [Action 2]
