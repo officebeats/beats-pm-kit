@@ -1,20 +1,20 @@
 {
   "name": "beats-pm-kit",
   "version": "10.6.0",
-  "generated": "2026-04-09T10:48:00Z",
+  "generated": "2026-04-26T00:00:00Z",
   "description": "Machine-readable index of all agents, skills, and workflows. Enables cache-based loading.",
   "agents": {
-    "count": 20,
+    "count": 21,
     "directory": ".agent/agents/",
     "active": ["Staff PM", "CPO", "Designer", "Tech Lead", "Strategist"]
   },
   "skills": {
-    "count": 52,
+    "count": 56,
     "directory": ".agent/skills/",
     "priority": ["task-manager", "prd-author", "meeting-synth", "roadmap-suite"]
   },
   "workflows": {
-    "count": 22,
+    "count": 34,
     "directory": ".agent/workflows/",
     "protected": true,
     "protectionNote": "CORE PM WORKFLOWS — never remove, archive, or rename these files in any update, vacuum, or migration.",
