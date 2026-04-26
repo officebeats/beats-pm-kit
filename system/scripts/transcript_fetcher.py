@@ -1,6 +1,6 @@
 """
 Transcript Fetcher (10 Business Day Logic)
-Fetches Quill transcripts and deposits them in 0. Incoming/
+Fetches Quill transcripts and deposits them in 3. Meetings/transcripts/
 """
 
 import sys
@@ -56,10 +56,11 @@ def main():
     import shutil
     import json
     
-    INCOMING_DIR = BRAIN_ROOT / "0. Incoming"
     TRANSCRIPTS_DIR = BRAIN_ROOT / "3. Meetings/transcripts"
     
     try:
+        TRANSCRIPTS_DIR.mkdir(parents=True, exist_ok=True)
+        INCOMING_DIR = BRAIN_ROOT / "0. Incoming"
         temp_db = INCOMING_DIR / "temp_quill_fetch.db"
         shutil.copy2(db_path, temp_db)
         
@@ -80,10 +81,9 @@ def main():
             safe_title = db_bridge.sanitize_filename(title)
             filename = f"{date_str}_{safe_title}.txt"
             
-            target_path = INCOMING_DIR / filename
-            processed_path = TRANSCRIPTS_DIR / filename
+            target_path = TRANSCRIPTS_DIR / filename
             
-            if target_path.exists() or processed_path.exists():
+            if target_path.exists():
                 continue
                 
             try:
@@ -107,7 +107,7 @@ def main():
         if count == 0:
             print_gray("No new meetings found in the last 10 business days.")
         else:
-            print_success(f"Successfully processed {count} new meetings.")
+            print_success(f"Successfully processed {count} new meetings into 3. Meetings/transcripts/.")
             
     except Exception as e:
         print(f"Error: {e}")

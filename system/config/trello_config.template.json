@@ -1,0 +1,12 @@
+{
+  "api_key": "YOUR_TRELLO_API_KEY",
+  "token": "YOUR_TRELLO_TOKEN",
+  "board_id": "YOUR_BOARD_ID",
+  "list_mapping": {
+    "🔴": "LIST_ID_FOR_TODO",
+    "🟡": "LIST_ID_FOR_IN_PROGRESS",
+    "✅": "LIST_ID_FOR_DONE",
+    "⬜": "LIST_ID_FOR_BLOCKED",
+    "⏸️": "LIST_ID_FOR_ON_HOLD"
+  }
+}
