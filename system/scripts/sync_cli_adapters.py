@@ -30,6 +30,13 @@ if sys.stdout.encoding != 'utf-8':
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 CANONICAL = os.path.join(BASE_DIR, '.agent')
 IS_WINDOWS = platform.system() == 'Windows'
+sys.path.insert(0, BASE_DIR)
+
+from system.utils.command_registry import (
+    build_command_catalog,
+    get_promoted_codex_commands,
+    get_runtime_priority,
+)
 
 # Folder aliases that should all point to .agent/
 FOLDER_ALIASES = ['.agents', '_agent', '_agents']
@@ -74,28 +81,14 @@ def normalize_gemini_content(content):
         return content[idx:]
     return content
 
-def get_workflow_descriptions():
-    """Return workflow names with a short description from frontmatter when available."""
-    workflows_dir = os.path.join(CANONICAL, 'workflows')
-    results = []
-    if not os.path.isdir(workflows_dir):
-        return results
+def get_command_catalog():
+    """Return the merged workflow + cross-runtime adapter catalog."""
+    return build_command_catalog(BASE_DIR)
 
-    for filename in sorted(os.listdir(workflows_dir)):
-        if not filename.endswith('.md'):
-            continue
-        name = filename[:-3]
-        path = os.path.join(workflows_dir, filename)
-        description = ''
-        with open(path, 'r', encoding='utf-8') as f:
-            text = f.read()
-        match = re.search(r'^description:\s*(.+)$', text, re.MULTILINE)
-        if match:
-            description = match.group(1).strip().strip('"')
-            if description in {'>-', '|', '|-', '>+', '|+'}:
-                description = ''
-        results.append((name, description))
-    return results
+
+def get_workflow_descriptions():
+    """Compatibility helper returning workflow descriptions from the shared catalog."""
+    return [(entry['name'], entry['description']) for entry in get_command_catalog()]
 
 def create_symlink(link_path, target, is_dir=True):
     """Create a symlink, handling Windows/Unix differences."""
@@ -216,8 +209,13 @@ def generate_agents_md():
     if os.path.isdir(agents_dir):
         agents = sorted([f.replace('.md', '') for f in os.listdir(agents_dir) if f.endswith('.md')])
 
-    workflow_meta = get_workflow_descriptions()
-    workflows = [name for name, _ in workflow_meta]
+    command_catalog = get_command_catalog()
+    workflows = [entry['name'] for entry in command_catalog]
+    promoted_codex = [entry for entry in command_catalog if entry['codex_promotion'] == 'skill']
+    runtime_priority = get_runtime_priority(BASE_DIR)
+    promoted_text = ', '.join(
+        f"`/{entry['name']}` → `{entry['codex_skill_name']}`" for entry in promoted_codex
+    ) or 'No promoted Codex skills configured.'
 
     # List current skills
     skills_dir = os.path.join(CANONICAL, 'skills')
@@ -238,6 +236,12 @@ This project uses a **Three-Tier Agent Architecture**:
 2. **Orchestration Layer** (`.agent/workflows/`) — What sequence is triggered
 3. **Capability Layer** (`.agent/skills/`) — How the work is done
 
+## Runtime Priority
+
+1. **{runtime_priority['primary'].title()} first** — canonical command behavior and orchestration semantics.
+2. **{runtime_priority['secondary'].title()} second** — native-feeling adapters only for the most-used commands: {promoted_text}
+3. **Compatibility CLIs next** — `{', '.join(runtime_priority['compatibility'])}` use generated adapters without redefining workflow logic.
+
 ## Codex Startup
 
 On a new Codex session:
@@ -247,8 +251,9 @@ On a new Codex session:
 3. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
 4. Load only the minimum `SKILL.md` files needed for the current task.
 5. Translate Antigravity-only primitives into Codex equivalents instead of failing.
-6. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
-7. For a manual re-bootstrap prompt, see `CODEX_PROMPT.md`.
+6. Prefer the promoted Codex skill adapters when they exist for the invoked command.
+7. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
+8. For a manual re-bootstrap prompt, see `CODEX_PROMPT.md`.
 
 ## Slash Command Dispatch
 
@@ -298,7 +303,7 @@ All of these directories resolve to `.agent/`:
 def generate_codex_commands():
     print('\nPhase 5: CODEX_COMMANDS.md Generation')
     commands_md = os.path.join(BASE_DIR, 'CODEX_COMMANDS.md')
-    workflow_meta = get_workflow_descriptions()
+    command_catalog = get_command_catalog()
 
     content = """# Codex Command Index
 
@@ -314,18 +319,28 @@ If the user's first non-whitespace token is `/command`:
 4. Treat any remaining user text as workflow input.
 5. If no match exists, report an unknown command and suggest `/help`.
 
+Promoted Codex skill adapters can be synced locally with `python3 system/scripts/sync_codex_skill_adapters.py`.
+
 ## Commands
 
-| Command | Workflow File | Purpose |
-| :--- | :--- | :--- |
+| Command | Workflow File | Codex Mode | Aliases | Purpose |
+| :--- | :--- | :--- | :--- | :--- |
 """
-    for name, description in workflow_meta:
-        purpose = description or "See workflow file"
-        content += f"| `/{name}` | `.agent/workflows/{name}.md` | {purpose} |\n"
+    for command in command_catalog:
+        aliases = ", ".join(f"`/{alias}`" for alias in command['aliases']) or "—"
+        mode = "Dispatch only"
+        if command['codex_promotion'] == 'skill':
+            mode = f"Native skill `{command['codex_skill_name']}`"
+            if command['dangerous']:
+                mode = f"Guarded skill `{command['codex_skill_name']}`"
+        content += (
+            f"| `/{command['name']}` | `{command['workflow']}` | "
+            f"{mode} | {aliases} | {command['description']} |\n"
+        )
 
     with open(commands_md, 'w', encoding='utf-8') as f:
         f.write(content)
-    log_ok(f'CODEX_COMMANDS.md generated ({len(workflow_meta)} commands)')
+    log_ok(f'CODEX_COMMANDS.md generated ({len(command_catalog)} commands)')
 
 # ─── Phase 6: .codex/rules.md Generation ────────────────────────────────────
 
@@ -343,7 +358,15 @@ def generate_codex_rules():
     with open(gemini_path, 'r', encoding='utf-8') as f:
         content = normalize_gemini_content(f.read())
 
-    header = """# rules.md -- Auto-generated from .agent/rules/GEMINI.md
+    promoted_codex = get_promoted_codex_commands(BASE_DIR)
+    promoted_lines = "\n".join(
+        f"- `/{entry['name']}` prefers the local Codex skill adapter `{entry['codex_skill_name']}`."
+        for entry in promoted_codex
+    )
+    if not promoted_lines:
+        promoted_lines = "- No promoted Codex skill adapters are configured."
+
+    header = f"""# rules.md -- Auto-generated from .agent/rules/GEMINI.md
 # DO NOT EDIT THIS FILE DIRECTLY.
 # Run: python system/scripts/sync_cli_adapters.py
 # Primary Codex adapter: AGENTS.md
@@ -353,10 +376,15 @@ def generate_codex_rules():
 - Use `AGENTS.md` as the primary inventory of agents, workflows, and skills.
 - On session start, read `SETTINGS.md` and `STATUS.md` before doing deeper work.
 - When the user invokes `/command`, follow the explicit dispatch rule in `CODEX_COMMANDS.md`.
+- Prefer promoted Codex skill adapters for the highest-frequency Beats commands when they are installed locally.
 - Load only the `SKILL.md` files required for the current task.
 - Translate Antigravity-only primitives into Codex equivalents instead of failing.
 - Keep all durable output in the repo so Antigravity and Codex share the same state.
 - For manual re-bootstrap, use `CODEX_PROMPT.md`.
+
+## Promoted Codex Skills
+
+{promoted_lines}
 
 ## Slash Command Dispatch
 

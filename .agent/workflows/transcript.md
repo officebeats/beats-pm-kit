@@ -21,6 +21,12 @@ description: Process all Quill meetings from the last 10 business days.
    - `python3 system/scripts/outlook_bridge.py --calendar 14`
    - **Action**: Check `5. Trackers/TASK_MASTER.md` for any tasks requiring a meeting to be scheduled. If that meeting exists in the calendar output, update the task status to `🗓️ Scheduled for [Date]` instead of completing it.
 
+1d. **Teams Context Sync (New)**:
+   - Run the Teams bridge to fetch recent chat context.
+   - // turbo
+   - `python3 system/scripts/beats.py teams --args "--json"`
+   - **Action**: Analyze for task updates (especially **BOSS-001**) and new tasks.
+
 2. **CLI Fallback (Secondary)**:
    - Run the targeted transcript fetcher.
    - // turbo
@@ -42,3 +48,19 @@ description: Process all Quill meetings from the last 10 business days.
      - If **new** → Create a profile using the standard template (see meeting-synth skill for format).
    - Extract role/title from email signatures, meeting intros, or context clues.
    - PII may be stored locally since `4. People/` is gitignored. Extract full contact info from email signatures (work email, cell, office, pronouns).
+
+6. **Manager Meeting Auto-Enrichment**:
+   - **Trigger**: If ANY transcript involves **the user's direct manager** (direct manager).
+   - **Action**: Activate meeting-synth **Manager Meeting Mode (§ 3A)**:
+     - Update `1. Company/ways-of-working.md` with new operating agreements, scope changes, process updates, and communication preferences.
+     - Update `4. People/the manager's profile` with new quotes, commitments, and interaction patterns.
+     - Extract stakeholder dynamics the manager shared about others → update relevant `4. People/` profiles.
+     - Extract any scope changes → update `5. Trackers/TASK_MASTER.md` (add new tasks, deprioritize removed ones).
+
+7. **Post-Meeting TASK_MASTER Sync**:
+   - After ALL meetings are synthesized, reconcile `5. Trackers/TASK_MASTER.md`:
+     - **New action items** from meetings → Add to active sprint with appropriate priority.
+     - **Completed/resolved items** mentioned in meetings → Mark as ✅.
+     - **Scope changes** → Move tasks to ON HOLD or OUT OF SCOPE as directed.
+     - **Calendar reconciliation**: Cross-check upcoming meetings against tasks with "🗓️ Scheduled" status.
+   - Run the **Priority Gate** (task-manager § 2) on any new tasks from non-manager sources.

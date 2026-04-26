@@ -64,6 +64,16 @@ requirements.txt
 !/5. Trackers/
 !/5. Trackers/.gitkeep
 
+# 7. Partners (technology & channel partners — contracts, contacts, runbooks)
+/7. Partners/**
+!/7. Partners/
+!/7. Partners/.gitkeep
+
+# 8. Clients (health plans, health systems — accounts, contacts, expansions)
+/8. Clients/**
+!/8. Clients/
+!/8. Clients/.gitkeep
+
 # ----------------------------------------
 # 3. USER CONFIGURATION (SENSITIVE)
 # ----------------------------------------
@@ -79,6 +89,13 @@ requirements.txt
 /tests/security_scan.sh
 *.csv
 *.pdf
+
+# Loose sensitive files (catch-all for raw notes, transcripts, scratch)
+paru_notes_clean.txt
+*.txt
+!/system/**/*.txt
+!/test_logs/**/*.txt
+/scratch/
 
 # ----------------------------------------
 # 4. SYSTEM LOGIC (VERSIONED - KEEP THESE)

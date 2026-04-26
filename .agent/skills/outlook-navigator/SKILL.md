@@ -106,8 +106,14 @@ For each person found in emails (senders, CC'd, mentioned, or in signatures):
 - This avoids browser authentication flows and works offline with cached mail.
 - **Known issue**: Some message types (meeting invites, `«class mtME»`) don't expose `name of sender`. The bridge handles this with try/catch fallback to `address of sender`.
 
+### HARD SAFETY RULES (Non-Negotiable)
+- **NEVER create calendar events or meeting invites** — not via AppleScript, MCP, or any other method. Calendar writes risk sending invites to attendees with wrong times, duplicates, or broken details that the user must manually undo. This applies even if the user asks to "schedule" something — always create **drafts only**.
+- **NEVER send emails directly**. Only create **outgoing message drafts** in Outlook that the user can review and send manually.
+- **NEVER delete, move, or modify existing emails or calendar events.**
+- Permitted write operations: creating email **drafts** only (via `make new outgoing message`).
+
 ### Privacy
-- This skill is **read-only**. It NEVER sends, replies, or deletes emails.
+- This skill is **read-only** for inbox/calendar. Draft creation is the only permitted write.
 - Email content persisted to `0. Incoming/` is gitignored and local-only.
 - Stakeholder profiles in `4. People/` are gitignored and local-only.
 

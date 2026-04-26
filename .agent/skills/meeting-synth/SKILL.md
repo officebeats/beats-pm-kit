@@ -6,7 +6,7 @@ maxTokens: 3000
 triggers:
   - "/meet"
   - "/transcript"
-version: 5.5.0 (Double-Click Integrated)
+version: 6.0.0 (Manager Meeting Mode)
 author: Beats PM Brain
 ---
 
@@ -20,14 +20,14 @@ author: Beats PM Brain
 
 ## 1. Native Interface
 
-- **Inputs**: /meet, /transcript. Raw transcript text or file path.
+- **Inputs**: /meet, /transcript. Raw transcript text, Quill paste, or file path.
 - **Tools**: run_command (cat), view_file.
 
 ---
 
 ## 2. Bounded Search Protocol
 
-1. **User provides transcript directly** → Process immediately.
+1. **User provides transcript directly** (paste or Quill format) → Process immediately.
 2. **User says "process latest"** → Search ONLY 3. Meetings/transcripts/ MaxDepth: 1, limit to 1-3 files.
 
 ---
@@ -35,15 +35,62 @@ author: Beats PM Brain
 ## 3. Cognitive Protocol (Double-Click Integration)
 
 1. **Ingest**: Read the transcript.
-2. **Extract** (single-pass):
+2. **Classify Meeting Type**:
+   - **Manager 1:1**: Attendees include direct manager (the user's direct manager) → Activate **§ 3A Manager Meeting Mode**.
+   - **Peer/Stakeholder**: Standard processing.
+   - **Customer/Partner**: Standard processing + competitive intel extraction.
+3. **Extract** (single-pass):
    - **Decisions**: Formalized agreements.
    - **Action Items**: Task + ID (if existing) + Owner + Due.
    - **Key Quotes**: Verbatim statements with attribution.
-3. **Route & Update** (Parallel Cloud-Safe Writes):
+4. **Route & Update** (Parallel Cloud-Safe Writes):
    - **New Action items** → 5. Trackers/TASK_MASTER.md + Create 5. Trackers/tasks/{ID}.md.
    - **Existing Task Updates**: If a TASK_ID (e.g. P1-001) is mentioned, update its detail file's "Progress Log" and "Stakeholder Quotes".
    - **Stakeholder Enrichment**: Update 4. People/{firstname-lastname}.md "Interaction Stream" with quotes and the "Active Tasks" or "Awaiting" sections.
-4. **Summary**: Write to 3. Meetings/summaries/ using assets/meeting_template.md. **MANDATORY**: Append the full raw transcript at the end of the file under a `# 📝 Full Transcript` section.
+5. **Summary**: Write to 3. Meetings/summaries/ using assets/meeting_template.md. **MANDATORY**: Append the full raw transcript at the end of the file under a `# 📝 Full Transcript` section.
+
+---
+
+## 3A. Manager Meeting Mode
+
+**Trigger**: Meeting includes the user's direct manager.
+
+In ADDITION to standard extraction (§ 3), extract and route the following:
+
+### Operating Agreements
+- New rules, protocols, or standing instructions the manager establishes
+- Changes to existing operating agreements
+- **Route to**: `1. Company/ways-of-working.md` — append under the relevant section
+
+### Scope Changes
+- Any new "IN SCOPE" or "OUT OF SCOPE" items
+- Changes to what the user should or shouldn't work on
+- New task assignments vs. tasks to deprioritize
+- **Route to**: `1. Company/ways-of-working.md` and `5. Trackers/TASK_MASTER.md`
+
+### Stakeholder Dynamics
+- How the manager describes other people's working styles, political positions, reliability, or goals
+- Relationship advice ("route through me", "don't escalate directly", "she's approachable")
+- Org chart or reporting line clarifications
+- **Route to**: Relevant `4. People/{person}.md` profile under "Working Preferences" or "Context"
+
+### Communication Preferences
+- New patterns in how the manager prefers to communicate
+- Things that frustrated or pleased her
+- Anti-patterns she warned about
+- **Route to**: `1. Company/ways-of-working.md` under "Communication Profile"
+
+### Process Intelligence
+- How things actually work at the company vs. how they're supposed to work
+- Workarounds, bottlenecks, dysfunction she identifies
+- PI Planning, release management, engineering process context
+- **Route to**: `1. Company/ways-of-working.md` or relevant `2. Products/` files
+
+### Strategic Context
+- Product roadmap shifts, market intelligence, competitive positioning
+- Partner relationship updates
+- Leadership changes or upcoming org shifts
+- **Route to**: Relevant `2. Products/` files or meeting summary
 
 ---
 
@@ -53,11 +100,16 @@ Confirm all updates:
 - Summary File created.
 - Task Details updated (list IDs).
 - Stakeholder Profiles updated (list Names).
+- **Manager Mode** (if triggered):
+  - Ways of Working sections updated (list which sections).
+  - Scope changes applied (list additions/removals).
+  - Stakeholder dynamics added (list people enriched with the manager context).
 
 ---
 
 ## 5. Privacy & Efficiency
 
-- Redact PII.
+- PII may be stored locally since `4. People/` is gitignored.
 - Single-pass extraction.
 - Skip logistics chatter.
+- For external-facing outputs: No emojis unless explicitly requested.
