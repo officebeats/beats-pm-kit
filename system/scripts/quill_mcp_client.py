@@ -17,7 +17,6 @@ from pathlib import Path
 CURRENT_FILE = Path(__file__).resolve()
 SYSTEM_ROOT = CURRENT_FILE.parent.parent    # system/
 BRAIN_DIR = SYSTEM_ROOT.parent              # beats-pm-antigravity-brain/
-INCOMING_DIR = BRAIN_DIR / "0. Incoming"
 TRANSCRIPT_ARCHIVE_DIR = BRAIN_DIR / "3. Meetings" / "transcripts"
 REPORT_DIR = BRAIN_DIR / "3. Meetings" / "reports"
 
@@ -110,12 +109,11 @@ async def main():
         
         # We don't have the explicit filename from MCP, so we use date and title.
         base_filename = f"{date_prefix}_{safe_title}.txt"
-        incoming_path = INCOMING_DIR / base_filename
         archive_path = TRANSCRIPT_ARCHIVE_DIR / base_filename
         report_path = REPORT_DIR / f"{date_prefix}_{safe_title}.md"
         
         # Check if we already processed or have this
-        if archive_path.exists() or report_path.exists() or incoming_path.exists():
+        if archive_path.exists() or report_path.exists():
             continue
             
         print(f"Fetching: {title} ({date_prefix})")
@@ -137,8 +135,8 @@ async def main():
             else:
                 transcript_text = t_xml  # fallback
             
-            # Write to incoming directory
-            with open(incoming_path, "w", encoding="utf-8") as f:
+            TRANSCRIPT_ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
+            with open(archive_path, "w", encoding="utf-8") as f:
                 f.write(transcript_text)
             new_meetings_count += 1
         else:
@@ -147,7 +145,7 @@ async def main():
     if new_meetings_count == 0:
         print("No new meetings to import.")
     else:
-        print(f"Successfully imported {new_meetings_count} new transcripts into 0. Incoming/")
+        print(f"Successfully imported {new_meetings_count} new transcripts into 3. Meetings/transcripts/")
 
     process.terminate()
 

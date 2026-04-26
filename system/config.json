@@ -61,7 +61,7 @@
   "obsidian": {
     "enabled": true,
     "vault_path": "~/Ernest0",
-    "target_folder": "MCG",
+    "target_folder": "Work",
     "strategy": "sync",
     "mcp_server": "obsidian-mcp",
     "sync_folders": ["0. Incoming", "1. Company", "2. Products", "3. Meetings", "4. People", "5. Trackers"]

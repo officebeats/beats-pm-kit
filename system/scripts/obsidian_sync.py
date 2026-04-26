@@ -32,7 +32,7 @@ KIT_ROOT = SCRIPT_DIR.parent.parent  # beats-pm-kit/
 
 # Default vault path — overridable via system/config.json
 DEFAULT_VAULT = Path.home() / "Ernest0"
-DEFAULT_TARGET_FOLDER = "MCG"
+DEFAULT_TARGET_FOLDER = "Work"
 
 # Folders to sync: kit_subfolder → obsidian_subfolder
 SYNC_MAP = {

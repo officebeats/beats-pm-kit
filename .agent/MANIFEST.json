@@ -1,100 +1,17 @@
 {
-  "version": "10.5.0",
-  "generated": "2026-04-08T16:00:00Z",
+  "name": "beats-pm-kit",
+  "version": "10.6.0",
+  "generated": "2026-04-09T10:48:00Z",
   "description": "Machine-readable index of all agents, skills, and workflows. Enables cache-based loading.",
   "agents": {
     "count": 20,
     "directory": ".agent/agents/",
-    "registry": [
-      {"id": "orchestrator", "file": "orchestrator.md", "focus": "Multi-agent coordination", "priority": "P0"},
-      {"id": "cpo", "file": "cpo.md", "focus": "Strategy & Org", "priority": "P0"},
-      {"id": "staff-pm", "file": "staff-pm.md", "focus": "Execution & Delivery", "priority": "P0"},
-      {"id": "strategist", "file": "strategist.md", "focus": "Market & Vision", "priority": "P1"},
-      {"id": "program-manager", "file": "program-manager.md", "focus": "Governance & Releases", "priority": "P1"},
-      {"id": "tech-lead", "file": "tech-lead.md", "focus": "Feasibility & Eng", "priority": "P1"},
-      {"id": "data-scientist", "file": "data-scientist.md", "focus": "Quant Insights", "priority": "P2"},
-      {"id": "ux-researcher", "file": "ux-researcher.md", "focus": "Qual Insights", "priority": "P2"},
-      {"id": "gtm-lead", "file": "gtm-lead.md", "focus": "Launch & Growth", "priority": "P2"},
-      {"id": "qa-engineer", "file": "qa-engineer.md", "focus": "Quality Assurance", "priority": "P2"},
-      {"id": "career-coach", "file": "career-coach.md", "focus": "PM Career Growth", "priority": "P2"},
-      {"id": "documentation-writer", "file": "documentation-writer.md", "focus": "Docs & Manuals", "priority": "P2"},
-      {"id": "architect", "file": "architect.md", "focus": "System Architecture", "priority": "P1"},
-      {"id": "critic", "file": "critic.md", "focus": "Plan & Spec Validation", "priority": "P1"},
-      {"id": "planner", "file": "planner.md", "focus": "Task Dependency Graphing", "priority": "P1"},
-      {"id": "executor", "file": "executor.md", "focus": "Code Implementation", "priority": "P1"},
-      {"id": "code-reviewer", "file": "code-reviewer.md", "focus": "PR & Diff Review", "priority": "P2"},
-      {"id": "debugger", "file": "debugger.md", "focus": "Error Resolution", "priority": "P2"},
-      {"id": "designer", "file": "designer.md", "focus": "UI/UX styling", "priority": "P2"},
-      {"id": "security-reviewer", "file": "security-reviewer.md", "focus": "Vuln Audits", "priority": "P2"}
-    ]
+    "active": ["Staff PM", "CPO", "Designer", "Tech Lead", "Strategist"]
   },
   "skills": {
     "count": 52,
     "directory": ".agent/skills/",
-    "tiers": {
-      "P0_core": [
-        {"id": "task-manager", "maxTokens": 3000, "bytes": 2273},
-        {"id": "daily-synth", "maxTokens": 2000, "bytes": 1733},
-        {"id": "boss-tracker", "maxTokens": 3000, "bytes": 2565},
-        {"id": "inbox-processor", "maxTokens": 6000, "bytes": 6060},
-        {"id": "prd-author", "maxTokens": 2000, "bytes": 1812},
-        {"id": "meeting-synth", "maxTokens": 3000, "bytes": 2850},
-        {"id": "core-utility", "maxTokens": 3000, "bytes": 3063},
-        {"id": "context-retriever", "maxTokens": 2000, "bytes": 1453}
-      ],
-      "P1_extended": [
-        {"id": "chief-strategy-officer", "maxTokens": 3000, "bytes": 2338},
-        {"id": "vacuum-protocol", "maxTokens": 2000, "bytes": 2032},
-        {"id": "risk-guardian", "maxTokens": 2000, "bytes": 1589},
-        {"id": "weekly-synth", "maxTokens": 2500, "bytes": 2123},
-        {"id": "memory-consolidator", "maxTokens": 2500, "bytes": 2146},
-        {"id": "retrospective", "maxTokens": 3000, "bytes": 3002},
-        {"id": "dependency-tracker", "maxTokens": 4000, "bytes": 4190},
-        {"id": "data-analytics", "maxTokens": 5000, "bytes": 5493},
-        {"id": "product-marketer", "maxTokens": 4000, "bytes": 4236},
-        {"id": "document-exporter", "maxTokens": 2000, "bytes": 2200},
-        {"id": "office-cli", "maxTokens": 4000, "bytes": 5800},
-        {"id": "bug-chaser", "maxTokens": 3000, "bytes": 2313},
-        {"id": "ab-test-analysis", "maxTokens": 4000, "bytes": 3836},
-        {"id": "test-scenarios", "maxTokens": 4000, "bytes": 3657},
-        {"id": "requirements-translator", "maxTokens": 3500, "bytes": 3462},
-        {"id": "wwas", "maxTokens": 3500, "bytes": 3567},
-        {"id": "epic-hypothesis", "maxTokens": 2000, "bytes": 5164},
-        {"id": "epic-breakdown-advisor", "maxTokens": 3000, "bytes": 7937},
-        {"id": "discovery-engine", "maxTokens": 1000, "bytes": 823},
-        {"id": "company-profiler", "maxTokens": 1500, "bytes": 1207},
-        {"id": "deep-interview", "maxTokens": 4000, "bytes": 31936},
-        {"id": "team-orchestrator", "maxTokens": 4500, "bytes": 44395},
-        {"id": "engineering-planner", "maxTokens": 5000, "bytes": 20000},
-        {"id": "autopilot", "maxTokens": 6000, "bytes": 20000},
-        {"id": "cross-model-bridge", "maxTokens": 1000, "bytes": 5000}
-      ],
-      "P2_specialist": [
-        {"id": "ai-shaped-readiness-advisor", "maxTokens": 5000, "bytes": 12678},
-        {"id": "context-engineering-advisor", "maxTokens": 5000, "bytes": 12429},
-        {"id": "customer-interview-suite", "maxTokens": 1200, "bytes": 1048},
-        {"id": "agile-story-crafter", "maxTokens": 1000, "bytes": 978},
-        {"id": "assumption-mapper", "maxTokens": 1000, "bytes": 972},
-        {"id": "summarize-interview", "maxTokens": 2000, "bytes": 2221},
-        {"id": "brainstorming-engine", "maxTokens": 1000, "bytes": 967},
-        {"id": "launch-strategy", "maxTokens": 1000, "bytes": 937},
-
-        {"id": "business-strategy-suite", "maxTokens": 1000, "bytes": 907},
-        {"id": "ui-ux-designer", "maxTokens": 1000, "bytes": 902},
-
-        {"id": "product-strategy-suite", "maxTokens": 1000, "bytes": 876},
-
-        {"id": "positioning-strategist", "maxTokens": 1000, "bytes": 829},
-        {"id": "metrics-finance-suite", "maxTokens": 1000, "bytes": 800},
-        {"id": "growth-engine", "maxTokens": 1000, "bytes": 797},
-
-        {"id": "stakeholder-management-suite", "maxTokens": 1000, "bytes": 768},
-        {"id": "ux-research-suite", "maxTokens": 1000, "bytes": 763},
-        {"id": "roadmapping-suite", "maxTokens": 1000, "bytes": 753},
-        {"id": "comms-crafter-suite", "maxTokens": 1000, "bytes": 747},
-        {"id": "leadership-career-coach", "maxTokens": 800, "bytes": 695}
-      ]
-    }
+    "priority": ["task-manager", "prd-author", "meeting-synth", "roadmap-suite"]
   },
   "workflows": {
     "count": 22,
@@ -104,16 +21,7 @@
     "commands": [
       "/boss", "/day", "/track", "/meet", "/create", "/plan",
       "/retro", "/vacuum", "/fan-out", "/sprint", "/discover",
-      "/prioritize", "/paste", "/review", "/regression", "/help",
-      "/update", "/transcript", "/build", "/interview", "/team",
-      "/outlook",
-      "/office-cli"
+      "/review", "/teams", "/start", "/quill", "/transcript", "/week"
     ]
-  },
-  "archival": {
-    "inactivityThresholdDays": 30,
-    "archiveDirectory": ".agent/archive/",
-    "protocol": "Skills unused for 30+ days are candidates for archival via /vacuum",
-    "protectedPaths": [".agent/workflows/", ".agent/rules/", ".agent/MANIFEST.json"]
   }
 }

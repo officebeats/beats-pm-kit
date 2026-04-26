@@ -10,53 +10,101 @@ description: Prepare for your 1:1 with your boss. Tracks all Boss Asks, pulls re
 
 **Trigger**: User types `/boss`.
 
-> **🗓️ Key Checkpoint**: Boss 1:1 is **every Friday around lunch**. This workflow prepares you for that meeting by synthesizing all open commitments and recent context.
+> **🗓️ Key Checkpoint**: Boss 1:1 is **every Friday @ 10:05 AM**. This workflow prepares you for that meeting by synthesizing progress, identifying blockers, and drafting a pre-brief DM.
 
 ## 1. Context Acquisition (Parallel)
 
 In a **single turn**, read:
-1.  `5. Trackers/TASK_MASTER.md` → Filter for `Reason = Boss Ask`.
-2.  `5. Trackers/critical/boss-requests.md` → Get the canonical list of active Boss Asks.
-3.  **Last 2 Boss Meeting Transcripts**: Search `3. Meetings/transcripts/` for files containing your boss's name in the filename. Select the 2 most recent.
-4.  **Last 2 Boss Meeting Reports**: Search `3. Meetings/reports/` for files containing your boss's name in the filename. Select the 2 most recent.
+1. `5. Trackers/TASK_MASTER.md` → Get full current sprint view.
+2. `1. Company/ways-of-working.md` → Review standing agreements and operating rules.
+3. The boss's people profile (e.g., `4. People/{boss-name}.md`) → Check committed tasks ("Awaiting") and interaction patterns.
+4. **Last 2 boss meeting summaries**: Search `3. Meetings/summaries/` for files containing the boss's name. Select the 2 most recent.
+5. **Calendar**: Run `python3 system/scripts/outlook_bridge.py --calendar 7` to pull upcoming meetings.
 
-## 2. Transcript Analysis
+## 2. Progress Analysis
 
-For each of the last 2 boss transcripts/reports:
-1.  **Extract Open Items**: Identify any action items your boss assigned that are NOT marked complete.
-2.  **Extract Themes**: Note any recurring topics or concerns your boss mentioned.
-3.  **Extract "Closing the Loop" Items**: Identify things your boss asked you to follow up on.
+For the period since last 1:1:
+1. **What's been completed**: Tasks moved to ✅ since last Friday.
+2. **What's in progress**: Active tasks with status updates.
+3. **People connected with**: New stakeholder interactions from meeting summaries and people profiles.
+4. **What's been learned**: Self-study, product insights, strategic context gathered.
+5. **Blockers**: Anything stuck, awaiting someone, or missing information.
 
-## 3. Stale Workstream Detection (CRITICAL)
+## 3. Boss's Commitments Check
+
+Review the boss's people profile Active Tasks section:
+- Items the boss committed to deliver (Confluence links, Slack access, introductions, etc.)
+- Flag any that are overdue or still pending — these are good follow-up items.
+
+## 4. Stale Workstream Detection
 
 **Definition**: A workstream is "stale" if:
-- It has a `Boss Ask` reason AND
 - The `Status` has not changed in >3 days OR
 - It has no recent transcript/report mentions.
 
-**Action**: Flag stale items in the output with a `🔴 STALE` warning and recommend:
-> "Get progress on this FIRST THING Friday morning before your 1:1."
+**Action**: Flag stale items with `🔴 STALE` warning.
 
-## 4. Synthesis & Output
+## 5. Question Generation
 
-Generate a structured 1:1 Prep Document:
+Based on the analysis above, generate 3-4 targeted questions that:
+- Reference specific context (not generic)
+- Address current blockers or decision points
+- Leverage the boss's direct candor (ask for opinions, not just information)
+- Include "Listen for" hints — what signals to pick up from her answer
 
-``> **Output Formatting**: Read the template at .agent/skills/boss-tracker/assets/boss_prep_template.md and use it to format your output.``
+Reference `1. Company/ways-of-working.md` → "How to DM Her" section for framing style.
 
-## 5. Output Location
+## 6. Output — Two Deliverables
 
-Save the generated prep doc to:
-`5. Trackers/critical/boss-prep-[date].md`
+### A. Cheat Sheet (Internal Reference)
+
+Save to `3. Meetings/summaries/YYYY-MM-DD_Boss_Prep.md`:
+
+Structure:
+- **PART 1: Progress Report** — Who I connected with, what I learned, deliverables in progress
+- **PART 2: Blockers & FYIs** — What's stuck, what the boss needs to know
+- **PART 3: Questions** — 3-4 targeted questions with context and "Listen for" hints
+- **PART 4: Talking Points** — Optional strategic topics if conversation opens up
+
+### B. Teams DM Draft (External Send)
+
+Generate a copy-paste-ready Teams DM that:
+- Uses **no emojis** (looks AI-generated)
+- Is succinct — bullets only, no prose
+- Covers: Who I connected with, What I learned, In Progress, Questions for today
+- Tone: Professional but personable, shows initiative without overdoing it
+
+Present the DM to the user for review before they send it.
+
+## 7. Post-Meeting Hook
+
+After the 1:1 concludes:
+- Remind user to run `/meet` or `/transcript` to process the boss transcript.
+- When processed, meeting-synth will auto-trigger **Manager Meeting Mode** (§ 3A) to update Ways of Working, scope, and stakeholder dynamics.
 
 ---
 
-## Example Stale Detection Logic
+## Example DM Output
 
-| Workstream | Last Mentioned | Days Stale | Flag |
-|------------|----------------|------------|------|
-| **Steering Agent Deck** | 2026-01-27 | 2 | ✅ OK |
-| **KU Residents Fix** | 2026-01-25 | 4 | 🔴 STALE |
-| **Athena Logic** | 2026-01-29 | 0 | ✅ OK |
+```
+Hi [Boss Name] — ahead of our sync, quick recap:
 
-For 🔴 STALE items, the output should say:
-> "🔴 **KU Residents Fix** has no updates since Jan 25. Get status from the owner FIRST THING Friday morning."
+Who I Connected With
+- [Person] — [1-line outcome]
+- [Person] — [1-line outcome]
+
+What I've Learned
+- [Topic] — [insight]
+- [Topic] — [insight]
+
+In Progress
+- [Task] — [status]
+- [Task] — [status]
+
+Questions for Today
+1. [Direct, specific question]
+2. [Direct, specific question]
+3. [Direct, specific question]
+
+Looking forward to it!
+```
