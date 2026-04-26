@@ -85,15 +85,17 @@ def get_full_email_body(subject_filter):
     """
     script = f'''
     tell application "Microsoft Outlook"
+        -- Search Inbox
         set msgs to messages of inbox
         set output to ""
         set counter to 0
         repeat with msg in msgs
-            if counter < 20 then
+            if counter < 100 then
                 set subj to subject of msg
                 if subj contains "{subject_filter}" then
                     set output to output & "===== SUBJECT: " & subj & " =====" & return
                     set output to output & "DATE: " & (time received of msg as string) & return
+                    set output to output & "FOLDER: Inbox" & return
                     set output to output & "BODY:" & return
                     try
                         set output to output & (plain text content of msg) & return
@@ -107,6 +109,32 @@ def get_full_email_body(subject_filter):
                 set counter to counter + 1
             end if
         end repeat
+        
+        -- Search Sent Items
+        set sentFolder to sent items
+        set sentMsgs to messages of sentFolder
+        set counter to 0
+        repeat with msg in sentMsgs
+            if counter < 100 then
+                set subj to subject of msg
+                if subj contains "{subject_filter}" then
+                    set output to output & "===== SUBJECT: " & subj & " =====" & return
+                    set output to output & "DATE: " & (time received of msg as string) & return
+                    set output to output & "FOLDER: Sent Items" & return
+                    set output to output & "BODY:" & return
+                    try
+                        set output to output & (plain text content of msg) & return
+                    on error
+                        try
+                            set output to output & (content of msg) & return
+                        end try
+                    end try
+                    set output to output & "===== END =====" & return & return
+                end if
+                set counter to counter + 1
+            end if
+        end repeat
+        
         return output
     end tell
     '''
@@ -114,15 +142,17 @@ def get_full_email_body(subject_filter):
         result = subprocess.check_output(['osascript', '-e', script]).decode('utf-8').strip().replace('\r', '\n')
         return result
     except Exception as e:
-        return f"Error: {{str(e)}}"
+        return f"Error: {str(e)}"
 
 
 
-def get_calendar_events(days=7):
-    """Fetch upcoming calendar events using AppleScript.
+def get_calendar_events(days=14):
+    """Fetch upcoming calendar events using AppleScript with de-duplication.
     
     Queries the local Microsoft Outlook app for calendar events within N days.
-    Returns plain text listing of events.
+    Only returns events from the user's personal 'Calendar' — excludes shared
+    and subscribed calendars (e.g., manager's calendar) to prevent ghost meetings.
+    Returns plain text listing of unique events.
     """
     script = f'''
     tell application "Microsoft Outlook"
@@ -131,14 +161,16 @@ def get_calendar_events(days=7):
         set myEvents to calendar events whose start time >= today and start time <= limit
         set output to ""
         repeat with evt in myEvents
+            set calName to name of calendar of evt
             set evtStart to (start time of evt as string)
-            set output to output & "===== SUBJECT: " & subject of evt & " =====" & return
-            set output to output & "START: " & evtStart & return
+            set output to output & subject of evt & "||" & evtStart & "||"
             try
                 set l to location of evt
-                if l is not "" then set output to output & "LOCATION: " & l & return
+                set output to output & l
+            on error
+                set output to output & "N/A"
             end try
-            set output to output & "===== END =====" & return & return
+            set output to output & "||" & calName & "///"
         end repeat
         return output
     end tell
@@ -147,7 +179,36 @@ def get_calendar_events(days=7):
         result = subprocess.check_output(['osascript', '-e', script]).decode('utf-8').strip().replace('\r', '\n')
         if not result:
             return "No upcoming events found from Outlook AppleScript."
-        return result
+        
+        seen = set()
+        clean_events = []
+        for raw in result.split('///'):
+            if not raw.strip(): continue
+            parts = raw.split('||')
+            if len(parts) >= 3:
+                cal_name = parts[3].strip() if len(parts) > 3 else "Unknown"
+                # FILTER: Only include events from the user's personal calendar
+                if cal_name != "Calendar":
+                    continue
+                key = (parts[0].strip(), parts[1].strip())
+                if key not in seen:
+                    seen.add(key)
+                    clean_events.append({
+                        "subject": parts[0],
+                        "start": parts[1],
+                        "location": parts[2] if len(parts) > 2 else "N/A"
+                    })
+        
+        # Format the unique events into a readable list
+        output = "📅 CALENDAR (Personal Events Only)\n"
+        output += "========================================\n\n"
+        for event in sorted(clean_events, key=lambda x: x['start']):
+            output += f"===== SUBJECT: {event['subject']} =====\n"
+            output += f"START: {event['start']}\n"
+            output += f"LOCATION: {event['location']}\n"
+            output += "===== END =====\n\n"
+            
+        return output
     except Exception as e:
         return f"Error: {e}"
 

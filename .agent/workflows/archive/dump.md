@@ -82,9 +82,9 @@ Generate a summary table:
 
 | Type | Company | Ledger | Summary | Priority |
 | :--- | :--- | :--- | :--- | :--- |
-| **Task** | [Ascension] | TASK_MASTER | Fix login issue | P1 |
-| **Bug** | [Ascension] | bugs-master | Error 500 on checkout | P0 |
-| **Boss** | [Ascension] | boss-requests | Review Q3 deck | **P0** |
+| **Task** | [Acme Corp] | TASK_MASTER | Fix login issue | P1 |
+| **Bug** | [Acme Corp] | bugs-master | Error 500 on checkout | P0 |
+| **Boss** | [Acme Corp] | boss-requests | Review Q3 deck | **P0** |
 
 > **Next**: Run `/now` to see updated priorities.
 ```
