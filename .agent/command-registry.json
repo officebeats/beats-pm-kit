@@ -98,6 +98,129 @@
         ]
       }
     },
+    "beats-slack": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-slack",
+        "supporting_files": [
+          ".agent/skills/slack-task-intake/SKILL.md",
+          ".agent/skills/chat-transcript-archive/SKILL.md",
+          ".agent/skills/atlassian-context-archive/SKILL.md",
+          ".agent/skills/task-manager/SKILL.md",
+          "system/scripts/chat_intake_state.py",
+          "system/scripts/atlassian_context_state.py",
+          "SETTINGS.md",
+          "1. Company/ways-of-working.md",
+          "5. Trackers/TASK_MASTER.md"
+        ],
+        "optional_files": [
+          "4. People",
+          "2. Products/partners",
+          "5. Trackers/tasks",
+          "3. Meetings/chat-transcripts/_manifest.json",
+          "3. Meetings/chat-transcripts/slack",
+          "3. Meetings/context-artifacts/atlassian/_manifest.json",
+          "3. Meetings/context-artifacts/atlassian/jira",
+          "3. Meetings/context-artifacts/atlassian/confluence",
+          "3. Meetings/reports/slack-runs"
+        ],
+        "execution_contract": [
+          "Require an explicit Slack scope before reading Slack; do not broad-scan workspaces, all channels, all DMs, or unknown unread surfaces.",
+          "When no time window is provided, compute the effective window with `python3 system/scripts/chat_intake_state.py window --platform slack --scope <SCOPE>`; default to 5 business days unless the manifest has a newer successful processed timestamp for that scope.",
+          "Use only read-only Slack search/read/thread/user/canvas operations.",
+          "Never send, schedule, draft, reply, react, edit, delete, pin, bookmark, upload, create canvases/files, or mutate Slack content/workspace state.",
+          "Preserve unread state; do not use tools that mark messages read/unread, set read cursors, acknowledge notifications, or clear unread indicators.",
+          "Save searchable Slack chat transcripts under `3. Meetings/chat-transcripts/slack/` and route accepted work only to local repo files.",
+          "Scan saved Slack transcripts for referenced Jira/Confluence items, fetch only those items with read-only Atlassian connector operations, and save local artifacts under `3. Meetings/context-artifacts/atlassian/` with full `source_url` values.",
+          "Never create, edit, transition, comment, assign, add worklogs, update pages, delete, or mutate Jira or Confluence during Slack intake.",
+          "Write a local Slack run report under `3. Meetings/reports/slack-runs/` and record successful local processing in `3. Meetings/chat-transcripts/_manifest.json`.",
+          "Call out issues and recommendations for connector gaps, read-state uncertainty, missing/broad scope, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
+        ]
+      }
+    },
+    "beats-teams": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-teams",
+        "supporting_files": [
+          ".agent/skills/teams-task-intake/SKILL.md",
+          ".agent/skills/chat-transcript-archive/SKILL.md",
+          ".agent/skills/atlassian-context-archive/SKILL.md",
+          ".agent/skills/task-manager/SKILL.md",
+          "system/scripts/chat_intake_state.py",
+          "system/scripts/atlassian_context_state.py",
+          "SETTINGS.md",
+          "1. Company/ways-of-working.md",
+          "5. Trackers/TASK_MASTER.md"
+        ],
+        "optional_files": [
+          "4. People",
+          "2. Products/partners",
+          "5. Trackers/tasks",
+          "3. Meetings/chat-transcripts/_manifest.json",
+          "3. Meetings/chat-transcripts/teams",
+          "3. Meetings/context-artifacts/atlassian/_manifest.json",
+          "3. Meetings/context-artifacts/atlassian/jira",
+          "3. Meetings/context-artifacts/atlassian/confluence",
+          "3. Meetings/reports/teams-runs"
+        ],
+        "execution_contract": [
+          "Require an explicit Teams scope before reading Teams; do not broad-scan all Teams, all channels, all chats, or unknown unread surfaces.",
+          "When no time window is provided, compute the effective window with `python3 system/scripts/chat_intake_state.py window --platform teams --scope <SCOPE>`; default to 5 business days unless the manifest has a newer successful processed timestamp for that scope.",
+          "Use only read-only Teams connector operations when surfaced; otherwise require user-provided export/text for unread-preserving intake.",
+          "Never send, draft, reply, create chats/channels, post channel messages, react, edit, delete, upload, create Planner tasks, or mutate Teams/Microsoft state.",
+          "Preserve unread state; do not use tools that mark messages read/unread, set read cursors, acknowledge notifications, or clear unread indicators.",
+          "Save searchable Teams chat transcripts under `3. Meetings/chat-transcripts/teams/` and route accepted work only to local repo files.",
+          "Scan saved Teams transcripts for referenced Jira/Confluence items, fetch only those items with read-only Atlassian connector operations, and save local artifacts under `3. Meetings/context-artifacts/atlassian/` with full `source_url` values.",
+          "Never create, edit, transition, comment, assign, add worklogs, update pages, delete, or mutate Jira or Confluence during Teams intake.",
+          "Write a local Teams run report under `3. Meetings/reports/teams-runs/` and record successful local processing in `3. Meetings/chat-transcripts/_manifest.json`.",
+          "Call out issues and recommendations for connector gaps, read-state uncertainty, missing/broad scope, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
+        ]
+      }
+    },
+    "beats-comms": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-comms",
+        "supporting_files": [
+          ".agent/workflows/beats-slack.md",
+          ".agent/workflows/beats-teams.md",
+          ".agent/skills/slack-task-intake/SKILL.md",
+          ".agent/skills/teams-task-intake/SKILL.md",
+          ".agent/skills/chat-transcript-archive/SKILL.md",
+          ".agent/skills/atlassian-context-archive/SKILL.md",
+          ".agent/skills/task-manager/SKILL.md",
+          "system/scripts/chat_intake_state.py",
+          "system/scripts/atlassian_context_state.py",
+          "SETTINGS.md",
+          "1. Company/ways-of-working.md",
+          "5. Trackers/TASK_MASTER.md"
+        ],
+        "optional_files": [
+          "4. People",
+          "2. Products/partners",
+          "5. Trackers/tasks",
+          "3. Meetings/chat-transcripts/_manifest.json",
+          "3. Meetings/chat-transcripts/slack",
+          "3. Meetings/chat-transcripts/teams",
+          "3. Meetings/context-artifacts/atlassian/_manifest.json",
+          "3. Meetings/context-artifacts/atlassian/jira",
+          "3. Meetings/context-artifacts/atlassian/confluence",
+          "3. Meetings/reports/chat-runs"
+        ],
+        "execution_contract": [
+          "Run scoped Slack and Teams intake independently, using each platform workflow's read-only and unread-preservation rules.",
+          "Require explicit platform scopes and use `chat_intake_state.py window` for any platform scope without a user-provided time window.",
+          "Never send, draft, schedule, reply, react, edit, delete, create chats/channels/canvases/files/Planner tasks, or mutate source-system state.",
+          "Save searchable platform transcripts under `3. Meetings/chat-transcripts/slack/` and `3. Meetings/chat-transcripts/teams/`.",
+          "Scan saved platform transcripts for referenced Jira/Confluence items, fetch only those references with read-only Atlassian connector operations, and save local artifacts under `3. Meetings/context-artifacts/atlassian/` with full `source_url` values.",
+          "Never create, edit, transition, comment, assign, add worklogs, update pages, delete, or mutate Jira or Confluence during communication intake.",
+          "Merge and deduplicate candidate tasks after evidence collection; route accepted work only to local repo files.",
+          "Write a combined communication run report under `3. Meetings/reports/chat-runs/`.",
+          "Call out issues and recommendations for connector gaps, read-state uncertainty, missing/broad scope, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
+        ]
+      }
+    },
     "transcript": {
       "codex": {
         "promotion": "skill",
@@ -107,6 +230,7 @@
           "system/scripts/beats.py",
           ".agent/skills/meeting-synth/SKILL.md",
           ".agent/skills/task-manager/SKILL.md",
+          "SETTINGS.md",
           "3. Meetings/transcripts",
           "3. Meetings/summaries",
           "3. Meetings/reports",
@@ -121,6 +245,7 @@
           "Run `python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json` before synthesis.",
           "Process only packet files listed in the prepare output; do not broad-scan transcripts for work selection.",
           "Use hybrid appendix summaries: source path, transcript SHA256, run id, key evidence, and Routed Updates; do not append full raw transcript by default.",
+          "When including Slack, use only read-only Slack search/read/thread/user/canvas operations; never send, schedule, draft, or mutate Slack state/read cursors, and preserve unread state until the user changes it manually.",
           "Run `python3 system/scripts/transcript_pipeline.py validate --run-id <RUN_ID> --json` after summaries and durable updates are written.",
           "Run `python3 system/scripts/transcript_pipeline.py recent --limit 5 --md` for the final compact meeting output."
         ]

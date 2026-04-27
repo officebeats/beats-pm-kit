@@ -29,6 +29,23 @@ If using the universal gateway, prefer:
 python3 system/scripts/beats.py transcript -- --json
 ```
 
+## 1A. Optional Slack Task Intake (Read-Only)
+
+Only include Slack when the user explicitly asks `/transcript` to process Slack or provides a Slack scope such as a channel, DM, thread, search term, or time window.
+
+Slack is an intake-only source for task compilation:
+- Use only read-only Slack connector operations: channel search, channel history read, thread read, user lookup, canvas read, and read-only message search when available.
+- Never send, schedule, draft, reply, react, edit, delete, pin, bookmark, create canvases/files, or otherwise mutate Slack content or workspace state.
+- Preserve unread state. Do not call any tool or endpoint that marks messages read/unread, sets a read cursor, acknowledges notifications, or clears unread indicators. If a Slack tool implies state mutation, stop and ask the user.
+- Do not use Slack UI/browser navigation to inspect unread content. Use read-only connector reads so unread Slack items remain under the user's manual control.
+
+For scoped Slack sources, extract candidate tasks with:
+- Source channel/DM/thread, timestamp or link when available, requester, owner, due date, and a short evidence snippet.
+- Priority Gate outcome from `task-manager`.
+- Routing decision: accepted task, existing-task update, or candidate requiring user confirmation.
+
+Accepted Slack-derived tasks may update local repo trackers only. They must not trigger Slack follow-up messages; uncertain items should be listed in the final response for the user to handle manually.
+
 ## 2. Process Only Packets
 
 Use only packet files listed in the prepare output. Do **not** broad-scan `3. Meetings/transcripts/` to decide what to process.
@@ -65,6 +82,8 @@ Apply the packet routing checklist:
 - Partner/customer updates -> relevant `2. Products/partners/` or client/product files when applicable.
 
 Every summary must include a `Routed Updates` section that lists the exact files updated or says `No durable update required`.
+
+Slack-derived updates must be labeled as Slack evidence in `Routed Updates`, include only short snippets rather than full message dumps, and preserve the original Slack read/unread state.
 
 ## 5. Validate
 

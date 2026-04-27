@@ -20,6 +20,9 @@ Promoted Codex skill adapters can be synced locally with `python3 system/scripts
 | :--- | :--- | :--- | :--- | :--- |
 | `/accuracy` | `.agent/workflows/accuracy.md` | Dispatch only | — | Implement with high accuracy and self-review (optimized for per-prompt pricing) |
 | `/archive` | `.agent/workflows/archive.md` | Dispatch only | — | See workflow file |
+| `/beats-comms` | `.agent/workflows/beats-comms.md` | Native skill `beats-comms` | — | Run scoped Slack and Teams communication intake into local task updates and searchable chat transcripts without sending or mutating source systems. |
+| `/beats-slack` | `.agent/workflows/beats-slack.md` | Native skill `beats-slack` | — | Process scoped Slack messages into local Beats PM tasks without sending or mutating Slack. |
+| `/beats-teams` | `.agent/workflows/beats-teams.md` | Native skill `beats-teams` | — | Process scoped Microsoft Teams chats or channels into local Beats PM tasks and searchable chat transcripts without sending or mutating Teams. |
 | `/boss` | `.agent/workflows/boss.md` | Native skill `beats-boss` | — | Prepare for your 1:1 with your boss. Tracks all Boss Asks, pulls recent transcripts, and generates a prep doc. |
 | `/build` | `.agent/workflows/build.md` | Dispatch only | — | Hand off a PRD or specification to the Engineering team agents for actual implementation. |
 | `/challenge` | `.agent/workflows/challenge.md` | Dispatch only | — | Internal adversarial review workflow (self mode only) |

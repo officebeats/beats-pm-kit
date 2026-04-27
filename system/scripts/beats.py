@@ -17,6 +17,8 @@ SCRIPT_COMMANDS = {
     "guard": ["python3", "system/scripts/adapter_guard.py", "--mode", "fix"],
     "hooks": ["python3", "system/scripts/install_git_hooks.py"],
     "health": ["python3", "system/scripts/context_health.py"],
+    "chat-intake": ["python3", "system/scripts/chat_intake_state.py"],
+    "atlassian-context": ["python3", "system/scripts/atlassian_context_state.py"],
     "transcript": ["python3", "system/scripts/transcript_pipeline.py"],
     "outlook": ["python3", "system/scripts/outlook_bridge.py"],
     "teams": ["python3", "system/scripts/teams_bridge.py"],

@@ -33,6 +33,18 @@ author: Beats PM Brain
 
 ---
 
+## 2A. Slack Task Evidence Guardrail
+
+When `/transcript` provides Slack messages as scoped context, treat Slack content as read-only evidence for local task extraction only.
+
+- Extract candidate action items, decisions, blockers, owners, due dates, and source references.
+- Never send, schedule, draft, reply, react, edit, delete, pin, bookmark, create canvases/files, or mutate Slack state.
+- Preserve unread state. Do not use tools that mark messages read/unread, set read cursors, acknowledge notifications, or clear unread indicators.
+- Do not quote full Slack conversations into summaries. Use short evidence snippets and source channel/thread/timestamp references.
+- Route accepted tasks only to local repo files such as `5. Trackers/TASK_MASTER.md` and task detail files; list uncertain Slack items for manual user handling.
+
+---
+
 ## 3. Cognitive Protocol (Double-Click Integration)
 
 1. **Ingest**: Prefer a pipeline packet. Read the transcript path referenced by the packet and preserve packet metadata (`run_id`, `content_sha256`, `expected_summary_path`).
