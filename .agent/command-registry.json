@@ -80,6 +80,28 @@
         ]
       }
     },
+    "deck": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-deck",
+        "supporting_files": [
+          ".agent/workflows/deck.md",
+          ".agent/skills/deck-builder/SKILL.md",
+          ".agent/templates/decks/deck-brief.md"
+        ],
+        "optional_files": [
+          "0. Incoming",
+          "3. Meetings/presentations"
+        ],
+        "execution_contract": [
+          "Keep the public /deck workflow brand-agnostic and do not bake private company assets, names, or local template paths into tracked kit files.",
+          "Default final outputs to an ignored folder under `0. Incoming/<deck-slug>/` unless the user provides a path.",
+          "Use source-provided schemas, metrics, and logos only; use checklists or tables for uncertain payloads or contracts.",
+          "Produce PPTX, PDF, and static responsive website by default unless the user narrows the requested formats.",
+          "Before completion, validate PPTX integrity, PDF page count, responsive fold checks, and text scans for user-specified forbidden terms."
+        ]
+      }
+    },
     "plan": {
       "codex": {
         "promotion": "skill",

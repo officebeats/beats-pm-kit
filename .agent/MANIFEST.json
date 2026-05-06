@@ -9,17 +9,17 @@
     "active": ["Staff PM", "CPO", "Designer", "Tech Lead", "Strategist"]
   },
   "skills": {
-    "count": 56,
+    "count": 57,
     "directory": ".agent/skills/",
-    "priority": ["task-manager", "prd-author", "meeting-synth", "roadmap-suite"]
+    "priority": ["task-manager", "prd-author", "meeting-synth", "roadmap-suite", "deck-builder"]
   },
   "workflows": {
-    "count": 34,
+    "count": 35,
     "directory": ".agent/workflows/",
     "protected": true,
     "protectionNote": "CORE PM WORKFLOWS — never remove, archive, or rename these files in any update, vacuum, or migration.",
     "commands": [
-      "/boss", "/day", "/track", "/meet", "/create", "/plan",
+      "/boss", "/day", "/track", "/meet", "/create", "/deck", "/plan",
       "/retro", "/vacuum", "/fan-out", "/sprint", "/discover",
       "/review", "/teams", "/start", "/quill", "/transcript", "/week"
     ]

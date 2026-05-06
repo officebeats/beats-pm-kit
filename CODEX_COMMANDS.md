@@ -26,6 +26,7 @@ Promoted Codex skill adapters can be synced locally with `python3 system/scripts
 | `/chat` | `.agent/workflows/chat.md` | Dispatch only | — | Consultative planning mode (Switchboard Operator) |
 | `/create` | `.agent/workflows/create.md` | Native skill `beats-create` | — | Draft PRDs, Specs, and One-Pagers from context (Transcripts/Tasks). |
 | `/day` | `.agent/workflows/day.md` | Native skill `beats-day` | `/status`, `/morning`, `/brief`, `/now` | Daily briefing and planning. |
+| `/deck` | `.agent/workflows/deck.md` | Native skill `beats-deck` | — | Build brand-agnostic MBB-style presentation decks from a brief, sources, and optional templates. |
 | `/discover` | `.agent/workflows/discover.md` | Dispatch only | — | Run a product discovery cycle with OST, assumption mapping, and experiment design. |
 | `/fan-out` | `.agent/workflows/fan-out.md` | Dispatch only | — | Fan-out a complex PM task to multiple specialized agents in parallel, then synthesize results. |
 | `/handoff` | `.agent/workflows/handoff.md` | Dispatch only | — | Unified delegation and execution workflow (Default, Chat, Lead, Relay) |
