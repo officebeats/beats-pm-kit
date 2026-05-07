@@ -856,7 +856,7 @@ def urgency(card: dict[str, Any], lane: str) -> dict[str, Any]:
             drivers.append("due this week")
 
     label_boosts = {
-        "paru": 15,
+        "manager": 15,
         "p0": 35,
         "urgent": 30,
         "p1": 16,
