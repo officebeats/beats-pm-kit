@@ -9,7 +9,7 @@ version: 1.0.0
 author: Beats PM Brain
 ---
 
-> **Compatibility Directive**: This component is optimized for read-only Microsoft Teams connector operations. It must degrade safely to manual copy/export when connector reads are not surfaced.
+> **Compatibility Directive**: This component is optimized for read-only MS365 MCP/connector Teams operations in Antigravity, Codex, Claude Code, and compatible runtimes. It must degrade safely to manual copy/export when connector reads are not surfaced.
 
 # Teams Task Intake Skill
 
@@ -18,7 +18,7 @@ author: Beats PM Brain
 ## 1. Native Interface
 
 - **Inputs**: `/beats-teams` with a chat, channel, team/channel pair, person, thread, search query, time window, or configured Teams intake scope.
-- **Allowed Teams operations**: Read-only profile resolution, chat listing, unread chat listing, chat message reads, recent thread listing, team/channel resolution, and channel message reads when available.
+- **Allowed Teams operations**: Read-only MS365 MCP/connector profile resolution, chat listing, unread chat listing, chat message reads, recent thread listing, team/channel resolution, channel message reads, and meeting transcript reads when available.
 - **Local files**: `SETTINGS.md`, `1. Company/ways-of-working.md`, `5. Trackers/TASK_MASTER.md`, `5. Trackers/tasks/`, optional `4. People/`, optional `2. Products/partners/`, and `3. Meetings/chat-transcripts/teams/`.
 
 ---
@@ -28,10 +28,10 @@ author: Beats PM Brain
 Teams is intake-only.
 
 - Never send, draft, reply, create chats, create channels, post channel messages, react, edit, delete, upload, create Planner tasks, or otherwise mutate Teams/Microsoft state.
-- Preserve unread state. Use connector reads only when they do not mark items read or move read cursors.
+- Preserve unread state. Use MCP/connector reads only when they do not mark items read or move read cursors.
 - Unread state is chat-specific. Do not claim channel unread coverage; label channel reads as recent snapshots.
 - Do not use Teams UI/browser navigation for unread review.
-- Use the repo-local `teams_bridge.py` UI/clipboard fallback only for user-provided copied text or when the user explicitly accepts that it is not unread-preserving.
+- Use the repo-local `teams_bridge.py` UI/clipboard fallback only as a less-portable fallback for user-provided copied text or when the user explicitly accepts that it is not unread-preserving.
 - If a Teams tool implies state mutation or unread cursor movement, stop and ask the user for a safer scope or exported text.
 
 ---

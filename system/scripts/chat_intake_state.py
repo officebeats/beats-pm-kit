@@ -1,8 +1,9 @@
 """
-State helper for read-only Slack/Teams communication intake workflows.
+State helper for read-only communication intake workflows.
 
-This script does not read Slack or Teams. It only computes safe intake windows
-from local defaults and a local manifest, then records successful local runs.
+This script does not read Slack, Teams, Outlook, or Calendar. It only computes
+safe intake windows from local defaults and a local manifest, then records
+successful local runs.
 """
 
 from __future__ import annotations
@@ -23,8 +24,12 @@ DEFAULT_ROOT = SYSTEM_ROOT.parent
 DEFAULT_MANIFEST = "3. Meetings/chat-transcripts/_manifest.json"
 DEFAULT_SETTINGS = "SETTINGS.md"
 DEFAULT_BUSINESS_DAYS = 5
+DEFAULT_CALENDAR_DAYS = 14
+DEFAULT_SLACK_CHUNK_HOURS = 24
 DEFAULT_TIMEZONE = "America/Chicago"
-VALID_PLATFORMS = {"slack", "teams"}
+BACKWARD_WINDOW_PLATFORMS = {"slack", "teams", "outlook"}
+FORWARD_WINDOW_PLATFORMS = {"calendar"}
+VALID_PLATFORMS = BACKWARD_WINDOW_PLATFORMS | FORWARD_WINDOW_PLATFORMS
 
 
 def business_days_ago(n: int, today: dt.date | None = None) -> dt.date:
@@ -96,6 +101,33 @@ def parse_datetime(value: str | None) -> dt.datetime | None:
     return parsed
 
 
+def parse_boundary_datetime(value: str | None, timezone_name: str = DEFAULT_TIMEZONE) -> dt.datetime | None:
+    if not value:
+        return None
+    text = value.strip()
+    if not text:
+        return None
+    try:
+        timezone = ZoneInfo(timezone_name)
+    except ZoneInfoNotFoundError:
+        timezone = dt.timezone.utc
+    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", text):
+        try:
+            parsed_date = dt.date.fromisoformat(text)
+        except ValueError:
+            return None
+        return dt.datetime.combine(parsed_date, dt.time.min, tzinfo=timezone).astimezone(dt.timezone.utc)
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        parsed = dt.datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone)
+    return parsed.astimezone(dt.timezone.utc)
+
+
 def isoformat_utc(value: dt.datetime) -> str:
     return value.astimezone(dt.timezone.utc).isoformat().replace("+00:00", "Z")
 
@@ -155,13 +187,31 @@ def default_cutoff_at(
     return local_cutoff.astimezone(dt.timezone.utc)
 
 
-def command_window(args: argparse.Namespace) -> int:
-    root = Path(args.repo).expanduser().resolve()
-    platform = args.platform.lower()
-    scope = (args.scope or "").strip()
-    settings = read_settings_defaults(root)
-    business_days = args.business_days or int(settings["default_business_days"])
-    manifest_path = Path(args.manifest).expanduser() if args.manifest else root / DEFAULT_MANIFEST
+def default_forward_window(
+    days: int,
+    timezone_name: str = DEFAULT_TIMEZONE,
+    now: dt.datetime | None = None,
+) -> tuple[dt.datetime, dt.datetime]:
+    if days < 0:
+        raise ValueError("days must be non-negative")
+    try:
+        timezone = ZoneInfo(timezone_name)
+    except ZoneInfoNotFoundError:
+        timezone = dt.timezone.utc
+    start = (now or dt.datetime.now(dt.timezone.utc)).astimezone(timezone)
+    end = start + dt.timedelta(days=days)
+    return start.astimezone(dt.timezone.utc), end.astimezone(dt.timezone.utc)
+
+
+def compute_window_result(
+    root: Path,
+    manifest_path: Path,
+    platform: str,
+    scope: str,
+    business_days: int,
+    calendar_days: int,
+    settings: dict[str, Any],
+) -> dict[str, Any]:
     issues: list[str] = []
 
     if platform not in VALID_PLATFORMS:
@@ -174,18 +224,33 @@ def command_window(args: argparse.Namespace) -> int:
     slug = slugify_scope(scope) if scope else ""
     key = scope_key(platform, scope) if scope else ""
     entry = manifest.get("scopes", {}).get(key, {})
-    cutoff = default_cutoff_at(business_days, timezone_name=str(settings["timezone"]))
     last_success = parse_datetime(entry.get("last_successful_processed_at"))
 
-    effective_start = cutoff
-    window_source = f"default_{business_days}_business_days"
-    if last_success and last_success > cutoff:
-        effective_start = last_success
-        window_source = "manifest_last_successful_processed_at"
-    elif last_success:
-        window_source = f"default_{business_days}_business_days_last_success_older"
+    now = dt.datetime.now(dt.timezone.utc)
+    effective_end: dt.datetime | None = now
+    if platform in FORWARD_WINDOW_PLATFORMS:
+        cutoff, effective_end = default_forward_window(
+            calendar_days,
+            timezone_name=str(settings["timezone"]),
+            now=now,
+        )
+        effective_start = cutoff
+        window_source = f"default_{calendar_days}_calendar_days_forward"
+    else:
+        cutoff = default_cutoff_at(
+            business_days,
+            timezone_name=str(settings["timezone"]),
+            now=now,
+        )
+        effective_start = cutoff
+        window_source = f"default_{business_days}_business_days"
+        if last_success and last_success > cutoff:
+            effective_start = last_success
+            window_source = "manifest_last_successful_processed_at"
+        elif last_success:
+            window_source = f"default_{business_days}_business_days_last_success_older"
 
-    result = {
+    return {
         "ok": not issues,
         "platform": platform,
         "scope": scope,
@@ -193,6 +258,8 @@ def command_window(args: argparse.Namespace) -> int:
         "scope_slug": slug,
         "scope_key": key,
         "default_business_days": business_days,
+        "default_calendar_days": DEFAULT_CALENDAR_DAYS,
+        "calendar_days": calendar_days if platform in FORWARD_WINDOW_PLATFORMS else None,
         "default_scope_policy": settings["default_scope_policy"],
         "route_tasks_by_default": settings["route_tasks_by_default"],
         "source_system_mutation": settings["source_system_mutation"],
@@ -201,8 +268,123 @@ def command_window(args: argparse.Namespace) -> int:
         "default_cutoff_at": isoformat_utc(cutoff),
         "last_successful_processed_at": isoformat_utc(last_success) if last_success else None,
         "effective_start_at": isoformat_utc(effective_start),
+        "effective_end_at": isoformat_utc(effective_end) if effective_end else None,
         "window_source": window_source,
+        "window_direction": "forward" if platform in FORWARD_WINDOW_PLATFORMS else "backward",
         "issues": issues,
+    }
+
+
+def command_window(args: argparse.Namespace) -> int:
+    root = Path(args.repo).expanduser().resolve()
+    platform = args.platform.lower()
+    scope = (args.scope or "").strip()
+    settings = read_settings_defaults(root)
+    business_days = args.business_days or int(settings["default_business_days"])
+    calendar_days = args.days if args.days is not None else DEFAULT_CALENDAR_DAYS
+    manifest_path = Path(args.manifest).expanduser() if args.manifest else root / DEFAULT_MANIFEST
+    result = compute_window_result(root, manifest_path, platform, scope, business_days, calendar_days, settings)
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0 if result["ok"] else 2
+
+
+def build_time_chunks(
+    start: dt.datetime,
+    end: dt.datetime,
+    chunk_hours: int,
+    timezone_name: str,
+) -> list[dict[str, Any]]:
+    if chunk_hours <= 0:
+        raise ValueError("chunk hours must be positive")
+    if end <= start:
+        return []
+    try:
+        timezone = ZoneInfo(timezone_name)
+    except ZoneInfoNotFoundError:
+        timezone = dt.timezone.utc
+
+    chunks: list[dict[str, Any]] = []
+    local_current = start.astimezone(timezone)
+    local_end = end.astimezone(timezone)
+    while local_current < local_end:
+        local_next = min(local_current + dt.timedelta(hours=chunk_hours), local_end)
+        chunk_start = local_current.astimezone(dt.timezone.utc)
+        chunk_end = local_next.astimezone(dt.timezone.utc)
+        starts_at_midnight = local_current.timetz().replace(tzinfo=None) == dt.time.min
+        ends_at_midnight = local_next.timetz().replace(tzinfo=None) == dt.time.min
+        before_date = local_next.date()
+        if not ends_at_midnight:
+            before_date = before_date + dt.timedelta(days=1)
+        chunks.append(
+            {
+                "index": len(chunks) + 1,
+                "start_at": isoformat_utc(chunk_start),
+                "end_at": isoformat_utc(chunk_end),
+                "start_epoch": int(chunk_start.timestamp()),
+                "end_epoch": int(chunk_end.timestamp()),
+                "local_start_at": local_current.isoformat(),
+                "local_end_at": local_next.isoformat(),
+                "slack_query_date_hint": (
+                    f"after:{local_current.date().isoformat()} before:{before_date.isoformat()}"
+                ),
+                "requires_exact_time_filter": not (starts_at_midnight and ends_at_midnight),
+            }
+        )
+        local_current = local_next
+    return chunks
+
+
+def command_chunks(args: argparse.Namespace) -> int:
+    root = Path(args.repo).expanduser().resolve()
+    platform = args.platform.lower()
+    scope = (args.scope or "").strip()
+    settings = read_settings_defaults(root)
+    business_days = args.business_days or int(settings["default_business_days"])
+    calendar_days = args.days if args.days is not None else DEFAULT_CALENDAR_DAYS
+    chunk_hours = args.chunk_hours if args.chunk_hours is not None else DEFAULT_SLACK_CHUNK_HOURS
+    manifest_path = Path(args.manifest).expanduser() if args.manifest else root / DEFAULT_MANIFEST
+    issues: list[str] = []
+
+    if platform not in VALID_PLATFORMS:
+        issues.append("invalid_platform")
+    if not scope:
+        issues.append("missing_scope")
+    if chunk_hours <= 0:
+        issues.append("invalid_chunk_hours")
+
+    window_result = compute_window_result(root, manifest_path, platform, scope, business_days, calendar_days, settings)
+    start = parse_boundary_datetime(args.start, str(settings["timezone"])) if args.start else parse_datetime(window_result.get("effective_start_at"))
+    end = parse_boundary_datetime(args.end, str(settings["timezone"])) if args.end else parse_datetime(window_result.get("effective_end_at"))
+    if start is None:
+        issues.append("invalid_start")
+    if end is None:
+        issues.append("invalid_end")
+    if start and end and end <= start:
+        issues.append("end_not_after_start")
+
+    chunks: list[dict[str, Any]] = []
+    if not issues and start and end:
+        chunks = build_time_chunks(start, end, chunk_hours, str(settings["timezone"]))
+
+    result = {
+        "ok": not issues,
+        "platform": platform,
+        "scope": scope,
+        "normalized_scope": normalize_scope(scope) if scope else "",
+        "scope_slug": slugify_scope(scope) if scope else "",
+        "timezone": settings["timezone"],
+        "manifest_path": str(manifest_path),
+        "window_source": window_result.get("window_source"),
+        "window_direction": window_result.get("window_direction"),
+        "start_at": isoformat_utc(start) if start else None,
+        "end_at": isoformat_utc(end) if end else None,
+        "chunk_hours": chunk_hours,
+        "chunk_count": len(chunks),
+        "strategy": "time_chunked_read",
+        "read_order": "oldest_to_newest",
+        "boundary_note": "Prefer exact start_epoch/end_epoch filters when the runtime exposes them; Slack date hints are day-granular.",
+        "chunks": chunks,
+        "issues": sorted(set(issues + window_result.get("issues", []))),
     }
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result["ok"] else 2
@@ -263,7 +445,18 @@ def build_parser() -> argparse.ArgumentParser:
     window.add_argument("--platform", required=True, choices=sorted(VALID_PLATFORMS))
     window.add_argument("--scope", default="")
     window.add_argument("--business-days", type=int, default=None)
+    window.add_argument("--days", type=int, default=None, help="Forward lookahead days for calendar windows")
     window.set_defaults(func=command_window)
+
+    chunks = subparsers.add_parser("chunks", help="Compute page-cap-safe source read chunks")
+    chunks.add_argument("--platform", required=True, choices=sorted(VALID_PLATFORMS))
+    chunks.add_argument("--scope", default="")
+    chunks.add_argument("--start", default=None, help="Inclusive start boundary; date-only values use the configured timezone")
+    chunks.add_argument("--end", default=None, help="Exclusive end boundary; date-only values use the configured timezone")
+    chunks.add_argument("--business-days", type=int, default=None)
+    chunks.add_argument("--days", type=int, default=None, help="Forward lookahead days for calendar windows")
+    chunks.add_argument("--chunk-hours", type=int, default=None, help="Chunk size; defaults to 24 hours")
+    chunks.set_defaults(func=command_chunks)
 
     record = subparsers.add_parser("record", help="Record a successful local intake run")
     record.add_argument("--platform", required=True, choices=sorted(VALID_PLATFORMS))

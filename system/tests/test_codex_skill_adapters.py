@@ -83,6 +83,19 @@ class TestCodexSkillAdapters(unittest.TestCase):
             self.assertIn("prepare --business-days 10 --json", content)
             self.assertIn("validate --run-id <RUN_ID> --json", content)
 
+    def test_generated_comms_skill_mentions_cross_runtime_mcp_contract(self):
+        """The /beats-comms adapter should carry the Slack/Teams/Outlook/Calendar MCP contract."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sync_codex_skill_adapters.sync_promoted_skills(output_dir=tmpdir, root=ROOT_DIR)
+            skill_md = Path(tmpdir) / "beats-comms" / "SKILL.md"
+            content = skill_md.read_text(encoding="utf-8")
+
+            self.assertIn(".agent/rules/MCP_COMMUNICATION_INTAKE.md", content)
+            self.assertIn("Slack, Teams, Outlook, and Calendar", content)
+            self.assertIn("calendar windows are forward-looking", content)
+            self.assertIn("chat_intake_state.py chunks", content)
+            self.assertIn("Never create, send, forward, or reply to email", content)
+
 
 if __name__ == "__main__":
     unittest.main()

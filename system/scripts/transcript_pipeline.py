@@ -334,6 +334,7 @@ def collect_sources(root: Path, skip_import: bool = False) -> dict[str, Any]:
         "status": "ok" if teams["returncode"] == 0 else "unavailable",
         "result": teams,
         "remediation": (
+            "Prefer bounded /beats-comms teams: scope with read-only MS365 MCP/connector access. "
             "If unavailable, open Teams, select/copy the target chat/channel, then rerun prepare."
         ),
     }

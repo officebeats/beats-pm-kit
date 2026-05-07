@@ -1,6 +1,6 @@
 ---
 name: atlassian-context-archive
-description: Capture Jira and Confluence references found during Slack or Teams intake by using read-only Atlassian connector fetches and saving local markdown context artifacts with full source URLs.
+description: Capture Jira and Confluence references found during Slack, Teams, Outlook, or Calendar intake by using read-only Atlassian connector fetches and saving local markdown context artifacts with full source URLs.
 priority: P0
 maxTokens: 3000
 triggers:
@@ -13,7 +13,7 @@ author: Beats PM Brain
 
 # Atlassian Context Archive Skill
 
-> **Role**: Enrich communication intake with referenced Jira and Confluence context while keeping Slack, Teams, Jira, and Confluence strictly read-only.
+> **Role**: Enrich communication intake with referenced Jira and Confluence context while keeping Slack, Teams, Outlook, Calendar, Jira, and Confluence strictly read-only.
 
 ## 1. Archive Contract
 
@@ -53,16 +53,16 @@ Prohibited Atlassian operations:
 
 - Create, edit, comment, transition, assign, delete, update pages, add worklogs, or mutate Jira/Confluence in any way.
 
-Source chat systems remain read-only:
+Source communication systems remain read-only:
 
-- Do not send, draft, reply, react, edit, delete, upload, or mutate Slack/Teams.
-- Do not mark Slack/Teams messages read or unread.
+- Do not send, draft, reply, forward, react, edit, delete, upload, create calendar events, create meeting invites, or mutate Slack/Teams/Outlook/Calendar.
+- Do not mark Slack/Teams/Outlook messages read or unread.
 
 ---
 
 ## 3. Reference Extraction
 
-After the chat transcript is saved, scan only that transcript:
+After the communication transcript is saved, scan only that transcript:
 
 ```bash
 python3 system/scripts/atlassian_context_state.py scan --transcript-path "<TRANSCRIPT_PATH>"
@@ -104,7 +104,7 @@ python3 system/scripts/atlassian_context_state.py record \
   --reference-id "<JIRA_KEY_OR_PAGE_ID>" \
   --source-url "<FULL_SOURCE_URL>" \
   --run-id "<RUN_ID>" \
-  --platform slack|teams|comms \
+  --platform slack|teams|outlook|calendar|comms \
   --title "<SOURCE_TITLE>" \
   --status "<STATUS_WHEN_AVAILABLE>" \
   --owner "<OWNER_WHEN_AVAILABLE>" \
@@ -131,7 +131,7 @@ Artifacts should include:
 
 ## 6. Run Report Requirements
 
-Each Slack, Teams, or combined comms run report must include:
+Each Slack, Teams, Outlook, Calendar, or combined comms run report must include:
 
 - Atlassian references found.
 - Artifacts written with paths.

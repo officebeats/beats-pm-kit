@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from system.utils.command_registry import build_command_catalog, resolve_command_name
+from system.utils.command_registry import build_command_catalog, normalize_command_name, resolve_command_name
 
 SCRIPT_COMMANDS = {
     "runtime": ["python3", "system/scripts/detect_runtime.py", "--human"],
@@ -50,6 +50,12 @@ def collect_extra_args(args):
     passthrough = list(getattr(args, "passthrough", []) or [])
     if passthrough and passthrough[0] == "--":
         passthrough = passthrough[1:]
+    if passthrough and passthrough[0] == "--args":
+        if len(passthrough) > 1:
+            extra_args.extend(shlex.split(passthrough[1]))
+            passthrough = passthrough[2:]
+        else:
+            passthrough = []
     extra_args.extend(passthrough)
     return extra_args
 
@@ -58,6 +64,10 @@ def resolve_workflow(command_text):
     """Resolve a slash command or bare workflow name to a workflow file."""
     command = resolve_command_name(command_text, ROOT)
     if command is None:
+        normalized = normalize_command_name(command_text)
+        direct_path = ROOT / ".agent" / "workflows" / f"{normalized}.md"
+        if normalized and direct_path.exists():
+            return direct_path
         return None
     workflow_path = ROOT / ".agent" / "workflows" / f"{command}.md"
     if workflow_path.exists():
@@ -92,9 +102,10 @@ def main():
     args = parser.parse_args()
 
     if args.command == "resolve":
-        workflow_path = resolve_workflow(args.args)
+        workflow_text = " ".join(collect_extra_args(args)).strip()
+        workflow_path = resolve_workflow(workflow_text)
         if workflow_path is None:
-            print(f"Unknown workflow: {args.args or '(missing)'}")
+            print(f"Unknown workflow: {workflow_text or '(missing)'}")
             return 1
         print(workflow_path.relative_to(ROOT))
         return 0

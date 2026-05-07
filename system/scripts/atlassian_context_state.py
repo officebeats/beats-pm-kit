@@ -1,9 +1,10 @@
 """
-Local state helper for Atlassian context captured during chat intake.
+Local state helper for Atlassian context captured during communication intake.
 
-This script never calls Jira, Confluence, Slack, or Teams. It only scans local
-chat transcript markdown for Atlassian references, writes local artifact files
-from already-fetched connector content, and maintains a local manifest.
+This script never calls Jira, Confluence, Slack, Teams, Outlook, or Calendar.
+It only scans local communication transcript markdown for Atlassian references,
+writes local artifact files from already-fetched connector content, and
+maintains a local manifest.
 """
 
 from __future__ import annotations
@@ -28,7 +29,7 @@ DEFAULT_SETTINGS = "SETTINGS.md"
 DEFAULT_MAX_REFS = 10
 DEFAULT_TIMEZONE = "America/Chicago"
 VALID_REFERENCE_TYPES = {"jira", "confluence"}
-VALID_PLATFORMS = {"slack", "teams", "comms"}
+VALID_PLATFORMS = {"slack", "teams", "outlook", "calendar", "comms"}
 
 URL_RE = re.compile(r"https?://[^\s<>\]\"')]+", re.IGNORECASE)
 JIRA_KEY_RE = re.compile(r"(?<![A-Z0-9])([A-Z][A-Z0-9]{1,9}-\d+)(?![A-Z0-9])")
@@ -525,7 +526,7 @@ def build_parser() -> argparse.ArgumentParser:
     init = subparsers.add_parser("init", help="Create Atlassian artifact folders and manifest")
     init.set_defaults(func=command_init)
 
-    scan = subparsers.add_parser("scan", help="Scan a local chat transcript for Atlassian references")
+    scan = subparsers.add_parser("scan", help="Scan a local communication transcript for Atlassian references")
     scan.add_argument("--transcript-path", required=True)
     scan.add_argument("--max-refs", type=int, default=DEFAULT_MAX_REFS)
     scan.set_defaults(func=command_scan)

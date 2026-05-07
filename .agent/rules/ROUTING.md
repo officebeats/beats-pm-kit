@@ -36,6 +36,8 @@ Disregard and ignore ALL scientific, medical, or other unrelated global skills (
 | `/retro`    | `program-manager` | `retrospective` | P1   |
 | `/vacuum`   | `cpo`      | `vacuum-protocol`  | P1   |
 | `/review`   | `qa-engineer` | `test-scenarios`   | P1   |
+| `/beats-comms` | `staff-pm` | `chat-transcript-archive` | P1 |
+| `/sop`      | `sop-librarian` | `sop-manager` | P1   |
 | `/vibe`     | `orchestrator` | `system-validation` | P1   |
 
 ---

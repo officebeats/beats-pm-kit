@@ -2,7 +2,7 @@
 description: Process scoped Slack messages into local Beats PM tasks without sending or mutating Slack.
 ---
 
-> **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same read-only Slack intake and durable output contract.
+> **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same read-only Slack intake and durable output contract. Prefer the runtime Slack MCP/connector read capability described in `.agent/rules/MCP_COMMUNICATION_INTAKE.md`.
 
 # Workflow: `/beats-slack`
 
@@ -28,14 +28,34 @@ python3 system/scripts/chat_intake_state.py window --platform slack --scope "<SC
 
 Use `effective_start_at` from the helper output. It defaults to 5 business days back, unless `3. Meetings/chat-transcripts/_manifest.json` has a newer `last_successful_processed_at` for the same normalized Slack scope.
 
+## 1A. Plan Page-Cap-Safe Reads
+
+Before the first Slack read, build a chunk plan for any Slack search/query/window that could return many matches, including `to:me`, mention/DM intake, channel history over multiple days, and any explicit window longer than 5 calendar days.
+
+```bash
+python3 system/scripts/chat_intake_state.py chunks --platform slack --scope "<SCOPE>" --start "<EFFECTIVE_START_AT>" --end "<EFFECTIVE_END_AT>"
+```
+
+Default Slack chunks are 24 hours and must be executed oldest-to-newest. Do not issue one full-window Slack query first for broad scopes; run the chunked searches from the helper and merge/deduplicate results afterward.
+
+For each chunk, prefer exact runtime/API timestamp filters using `start_epoch` and `end_epoch` when available. If the runtime exposes only Slack search syntax, add the chunk's `slack_query_date_hint` to the original query. Chunks marked `requires_exact_time_filter` need timestamp-capable tooling; if the runtime cannot filter that tightly, stop that subrange and ask the user for a narrower channel/thread/person scope. Record the chunk plan in the transcript and run report.
+
+If a chunk still hits a connector `page_limit_exceeded` or equivalent cap, split only that chunk with a smaller chunk size before continuing:
+
+```bash
+python3 system/scripts/chat_intake_state.py chunks --platform slack --scope "<SCOPE>" --start "<CHUNK_START_AT>" --end "<CHUNK_END_AT>" --chunk-hours 12
+```
+
+Repeat with narrower chunks as needed. If a 6-hour chunk still caps, stop that subrange, record the partial-read issue, and ask the user for a narrower channel/thread/person scope instead of silently treating the run as complete.
+
 ## 2. Bind Safety Rules
 
 Before reading Slack, apply the user safety boundary from `SETTINGS.md`:
 - Slack is intake-only.
-- Use only read-only Slack connector operations: channel search, channel history read, thread read, user lookup, canvas read, and read-only message search when available.
+- Use only read-only Slack MCP/connector operations: channel search, channel history read, thread read, user lookup, canvas read, and read-only message search when available.
 - Never send, schedule, draft, reply, react, edit, delete, pin, bookmark, upload, create canvases/files, or otherwise mutate Slack content or workspace state.
 - Preserve unread state. Do not call any tool or endpoint that marks messages read/unread, sets a read cursor, acknowledges notifications, or clears unread indicators.
-- Do not use Slack UI/browser navigation to inspect unread content. Use read-only connector reads only.
+- Do not use Slack UI/browser navigation to inspect unread content. Use read-only MCP/connector reads only.
 - If a Slack tool implies state mutation, stop and ask the user for a safer scope or exported text.
 
 ## 3. Read Minimum Local Context
@@ -45,6 +65,7 @@ Read:
 - `.agent/skills/chat-transcript-archive/SKILL.md`
 - `.agent/skills/atlassian-context-archive/SKILL.md`
 - `.agent/skills/task-manager/SKILL.md`
+- `.agent/rules/MCP_COMMUNICATION_INTAKE.md`
 - `system/scripts/chat_intake_state.py`
 - `system/scripts/atlassian_context_state.py`
 - `SETTINGS.md`
@@ -64,6 +85,8 @@ Read optional files only when needed and when they exist:
 ## 4. Collect Slack Evidence
 
 Use only the scoped Slack source from Step 1.
+
+Execute Slack reads by the chunk plan from Step 1A when the scope qualifies. Merge chunk results by source URL/timestamp/message ID where available, then route the deduplicated evidence set. This prevents broad mention/DM searches from losing recent results behind connector page limits.
 
 For each read-only Slack result, capture:
 - Source channel/DM/thread/canvas.
@@ -133,6 +156,7 @@ Write a run report to:
 The report must include:
 - Slack scope processed.
 - Effective read window and whether it came from the 5-business-day default or the manifest.
+- Chunk plan used, chunk count, any capped chunk retries, and any subrange that required user narrowing.
 - Read-only Slack operations used.
 - Chat transcript files written.
 - Atlassian references found, artifacts written, unchanged artifacts skipped, and unresolved references.

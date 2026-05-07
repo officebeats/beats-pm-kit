@@ -2,7 +2,7 @@
 description: Process scoped Microsoft Teams chats or channels into local Beats PM tasks and searchable chat transcripts without sending or mutating Teams.
 ---
 
-> **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same read-only Teams intake and durable output contract.
+> **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same read-only Teams intake and durable output contract. Prefer the runtime MS365 MCP/connector read capability described in `.agent/rules/MCP_COMMUNICATION_INTAKE.md`.
 
 # Workflow: `/beats-teams`
 
@@ -32,12 +32,12 @@ Use `effective_start_at` from the helper output. It defaults to 5 business days 
 
 Before reading Teams, apply the user safety boundary from `SETTINGS.md`:
 - Teams is intake-only.
-- Use only read-only Teams connector operations when available: profile resolution, chat listing, unread chat listing, chat message reads, recent thread listing, team/channel resolution, and channel message reads.
+- Use only read-only MS365 MCP/connector Teams operations when available: profile resolution, chat listing, unread chat listing, chat message reads, recent thread listing, team/channel resolution, channel message reads, and meeting transcript reads.
 - Never send, draft, reply, create chats, create channels, post channel messages, react, edit, delete, upload, create Planner tasks, or otherwise mutate Teams/Microsoft state.
 - Preserve unread state. Do not call any tool or endpoint that marks messages read/unread, sets a read cursor, acknowledges notifications, or clears unread indicators.
 - Unread state is chat-specific. Do not claim channel unread coverage; label channel reads as recent snapshots.
 - Do not use Teams UI/browser navigation to inspect unread content.
-- Use `system/scripts/teams_bridge.py` only for user-provided copied text or when the user explicitly accepts that UI/clipboard capture is not unread-preserving.
+- Use `system/scripts/teams_bridge.py` only as a less-portable fallback for user-provided copied text or when the user explicitly accepts that UI/clipboard capture is not unread-preserving.
 - If a Teams tool implies state mutation, stop and ask the user for a safer scope or exported text.
 
 ## 3. Read Minimum Local Context
@@ -47,6 +47,7 @@ Read:
 - `.agent/skills/chat-transcript-archive/SKILL.md`
 - `.agent/skills/atlassian-context-archive/SKILL.md`
 - `.agent/skills/task-manager/SKILL.md`
+- `.agent/rules/MCP_COMMUNICATION_INTAKE.md`
 - `system/scripts/chat_intake_state.py`
 - `system/scripts/atlassian_context_state.py`
 - `SETTINGS.md`

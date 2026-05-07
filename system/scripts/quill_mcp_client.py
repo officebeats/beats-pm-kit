@@ -116,7 +116,7 @@ async def main():
             print(f"Error parsing date {date_str}: {e}")
             continue
 
-    print(f"Found {len(meetings)} meetings via MCP within the last {DAYS_TO_FETCH} days.")
+    print(f"Found {len(meetings)} meetings via MCP within the last {BUSINESS_DAYS_TO_FETCH} business days.")
     
     new_meetings_count = 0
     for meeting_id, dt, title in meetings:

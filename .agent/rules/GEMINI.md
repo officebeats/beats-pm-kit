@@ -30,6 +30,8 @@ Silently run `system/scripts/context_health.py`.
 6. **Priority Gate:** Before creating any new task sourced from outside the authorized stakeholders listed in `1. Company/ways-of-working.md`, flag with "⚠️ Needs manager approval" status. See task-manager skill § 2.
 7. **Manager Meeting Enrichment:** When processing any transcript involving the user's direct manager, ALWAYS update `1. Company/ways-of-working.md` with new operating agreements, scope changes, stakeholder dynamics, and standing instructions. See meeting-synth skill § 3A.
 8. **No Emojis in External Comms:** When drafting DMs, emails, or external-facing text, do NOT use emojis unless explicitly requested.
+9. **No Outbound Email On User's Behalf:** Never send emails as the user. Do not create, send, forward, or reply to email unless the user explicitly asks for that specific message in the current turn. Default to local notes or draft text in the response instead of using mail tools.
+10. **MCP Communication Intake:** `/beats-comms` is the read-only bounded intake path for Slack, Teams, Outlook, and Calendar across Antigravity, Codex, and Claude Code. Follow `.agent/rules/MCP_COMMUNICATION_INTAKE.md`; keep private MCP config, tokens, tenant/client IDs, allowlists, transcripts, and run reports out of tracked files.
 
 ---
 
@@ -38,6 +40,7 @@ Silently run `system/scripts/context_health.py`.
 1. **Universal Gateway**: `python3 system/scripts/beats.py {command}`.
 2. **Antigravity**: Eagerly use parallel tool calls and `mcp-pencil`.
 3. **Shared Context**: Read `5. Trackers/STATUS.md` before starting.
+4. **Runtime-Neutral Communication Capabilities**: Prefer runtime-provided read-only MCP/connector capabilities for Slack, Teams, Outlook, and Calendar. Use bridge scripts only as documented fallbacks.
 
 ---
 

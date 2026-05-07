@@ -17,8 +17,8 @@ python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json
 This step must:
 - Import recent Quill transcripts when available.
 - Normalize date-stamped files from `0. Incoming/` into `3. Meetings/transcripts/`.
-- Collect Outlook inbox/calendar context.
-- Attempt Teams context capture without failing the run when Teams access is unavailable.
+- Collect Outlook inbox/calendar context through read-only MS365 MCP/connector access when the user has provided bounded `/beats-comms outlook:` or `calendar:` scope; otherwise use the pipeline's AppleScript bridge fallback and label that limitation in the run report.
+- Attempt Teams context capture through read-only MS365 MCP/connector access when a bounded Teams scope is provided; otherwise fall back safely without failing the run when Teams access is unavailable.
 - Update `3. Meetings/transcripts/_manifest.json`.
 - Create synthesis packets in `3. Meetings/reports/packets/`.
 - Write a run report in `3. Meetings/reports/transcript-runs/`.
@@ -29,22 +29,22 @@ If using the universal gateway, prefer:
 python3 system/scripts/beats.py transcript -- --json
 ```
 
-## 1A. Optional Slack Task Intake (Read-Only)
+## 1A. Optional Communication Intake (Read-Only)
 
-Only include Slack when the user explicitly asks `/transcript` to process Slack or provides a Slack scope such as a channel, DM, thread, search term, or time window.
+Only include live communication context when the user explicitly asks `/transcript` to process it and provides bounded scopes such as `slack:`, `teams:`, `outlook:`, or `calendar:`.
 
-Slack is an intake-only source for task compilation:
-- Use only read-only Slack connector operations: channel search, channel history read, thread read, user lookup, canvas read, and read-only message search when available.
-- Never send, schedule, draft, reply, react, edit, delete, pin, bookmark, create canvases/files, or otherwise mutate Slack content or workspace state.
-- Preserve unread state. Do not call any tool or endpoint that marks messages read/unread, sets a read cursor, acknowledges notifications, or clears unread indicators. If a Slack tool implies state mutation, stop and ask the user.
-- Do not use Slack UI/browser navigation to inspect unread content. Use read-only connector reads so unread Slack items remain under the user's manual control.
+Communication systems are intake-only sources for task compilation:
+- Use only read-only MCP/connector operations permitted by `.agent/rules/MCP_COMMUNICATION_INTAKE.md`.
+- Never send, schedule, draft, reply, forward, react, edit, delete, pin, bookmark, create canvases/files, create chats/channels, create calendar events, create meeting invites, or otherwise mutate source-system state.
+- Preserve unread state. Do not call any tool or endpoint that marks messages read/unread, sets a read cursor, acknowledges notifications, or clears unread indicators. If a tool implies state mutation, stop and ask the user.
+- Do not use Slack/Teams/Outlook UI/browser navigation to inspect unread content. Use read-only MCP/connector reads so unread items remain under the user's manual control.
 
-For scoped Slack sources, extract candidate tasks with:
-- Source channel/DM/thread, timestamp or link when available, requester, owner, due date, and a short evidence snippet.
+For scoped communication sources, extract candidate tasks with:
+- Source channel/DM/thread/mail/calendar reference, timestamp or link when available, requester, owner, due date, and a short evidence snippet.
 - Priority Gate outcome from `task-manager`.
 - Routing decision: accepted task, existing-task update, or candidate requiring user confirmation.
 
-Accepted Slack-derived tasks may update local repo trackers only. They must not trigger Slack follow-up messages; uncertain items should be listed in the final response for the user to handle manually.
+Accepted communication-derived tasks may update local repo trackers only. They must not trigger source-system follow-up messages; uncertain items should be listed in the final response for the user to handle manually.
 
 ## 2. Process Only Packets
 
@@ -83,7 +83,7 @@ Apply the packet routing checklist:
 
 Every summary must include a `Routed Updates` section that lists the exact files updated or says `No durable update required`.
 
-Slack-derived updates must be labeled as Slack evidence in `Routed Updates`, include only short snippets rather than full message dumps, and preserve the original Slack read/unread state.
+Communication-derived updates must be labeled by source platform in `Routed Updates`, include only short snippets rather than full message/mail/calendar dumps, and preserve the original read/unread state.
 
 ## 5. Validate
 
