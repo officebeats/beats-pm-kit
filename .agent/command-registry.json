@@ -67,7 +67,19 @@
         "promotion": "skill",
         "skill_name": "beats-paste",
         "supporting_files": [
-          ".agent/skills/inbox-processor/SKILL.md"
+          ".agent/skills/inbox-processor/SKILL.md",
+          ".agent/skills/task-manager/SKILL.md",
+          "5. Trackers/TASK_MASTER.md"
+        ],
+        "optional_files": [
+          "5. Trackers/tasks",
+          "0. Incoming"
+        ],
+        "execution_contract": [
+          "Treat screenshots/images and transcript-like clipboard text as task-master management input unless the user explicitly says otherwise.",
+          "Extract visible task/status signals, source references, owners, due dates, blockers, and referenced ticket/link IDs before asking for follow-up.",
+          "Route accepted screenshot, transcript, or clipboard work through the task-manager Priority Gate into `5. Trackers/TASK_MASTER.md` and task detail files.",
+          "When evidence is ambiguous, return exact candidate tracker updates for confirmation instead of defaulting to profile lookup, reply drafting, or generic summarization."
         ]
       }
     },
@@ -311,6 +323,8 @@
         "execution_contract": [
           "Run `python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json` before synthesis.",
           "Process only packet files listed in the prepare output; do not broad-scan transcripts for work selection.",
+          "Treat transcript content as task-master management input unless the user explicitly asks for another output.",
+          "Extract new tasks, existing-task updates, blockers, owner/date changes, and candidate tracker updates before generic summary work.",
           "Use hybrid appendix summaries: source path, transcript SHA256, run id, key evidence, and Routed Updates; do not append full raw transcript by default.",
           "When including live communication context, require bounded slack/teams/outlook/calendar scopes and use only read-only MCP/connector operations; never send, schedule, draft, reply, forward, create events, create meeting invites, or mutate source-system state/read cursors.",
           "Run `python3 system/scripts/transcript_pipeline.py validate --run-id <RUN_ID> --json` after summaries and durable updates are written.",

@@ -1,6 +1,6 @@
 ---
 name: inbox-processor
-description: The "Black Hole" for chaos. Aggressively extracts tasks from raw input and routes them to the ledger.
+description: The "Black Hole" for chaos. Aggressively extracts tasks from raw input, screenshots, and transcripts, then routes them to the ledger.
 ---
 
 > **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
@@ -13,7 +13,7 @@ description: The "Black Hole" for chaos. Aggressively extracts tasks from raw in
 
 ## 1. Native Interface
 
-- **Inputs**: /paste, /inbox. Text, images (via visual-processor).
+- **Inputs**: /paste, /inbox. Text, screenshots/images, transcript-like notes, and files.
 - **Tools**: run_command (cat), view_file.
 
 ---
@@ -34,6 +34,8 @@ Strip noise and normalize metadata.
 ---
 
 ## 3. Extraction Rules
+- Screenshots/images -> Treat visible work signal as task-master evidence by default; extract tasks, status changes, blockers, owners, dates, links, and ticket IDs before asking for intent.
+- Transcript-like text -> Treat as task-master evidence by default; extract new tasks and existing-task updates before generic summary work.
 - Explicit directives -> Task (P1).
 - Implicit needs -> Investigate (P2).
 - Progress updates -> Update Detail File.

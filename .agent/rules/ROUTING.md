@@ -10,6 +10,15 @@
 **CRITICAL RULE:** Only use skills related to **Software Development**, **Product Management**, or **Task Management**. 
 Disregard and ignore ALL scientific, medical, or other unrelated global skills (e.g., bioRxiv, PubChem, clinical-reports, etc.).
 
+## 📥 IMPLICIT INPUT DEFAULTS
+
+Screenshots/images and transcripts are task-master management evidence unless the user explicitly states a different goal.
+
+- Screenshot/image input routes through `/paste` → `inbox-processor` → `task-manager`.
+- Transcript input routes through `/transcript` or `/meet` → `meeting-synth` → `task-manager`.
+- Default durable target is `5. Trackers/TASK_MASTER.md` plus `5. Trackers/tasks/` for detail updates.
+- Ask for confirmation only when the extracted tracker update is ambiguous, not just because the user supplied a screenshot or transcript.
+
 ---
 
 ## 🏗️ P0 — Core PM Commands (Eager Load)
@@ -22,7 +31,7 @@ Disregard and ignore ALL scientific, medical, or other unrelated global skills (
 | `/meet`     | `staff-pm` | `meeting-synth`    | P0   |
 | `/create`   | `staff-pm` | `prd-author`       | P0   |
 | `/plan`     | `staff-pm` | `roadmapping-suite` | P0   |
-| `/paste`    | `staff-pm` | `inbox-processor`  | P0   |
+| `/paste`    | `staff-pm` | `inbox-processor` → `task-manager` | P0   |
 | `/help`     | `orchestrator` | `core-utility` | P0   |
 
 ---
@@ -46,7 +55,7 @@ Disregard and ignore ALL scientific, medical, or other unrelated global skills (
 
 | Command       | Agent      | Primary Skill      | Tier |
 |:--------------|:-----------|:-------------------|:-----|
-| `/transcript` | `ux-researcher` | `summarize-interview` | P2   |
+| `/transcript` | `staff-pm` | `meeting-synth` → `task-manager` | P2   |
 | `/metrics`    | `data-scientist` | `metrics-finance-suite` | P2   |
 | `/growth`     | `gtm-lead` | `growth-engine`    | P2   |
 | `/coach`      | `career-coach` | `leadership-career-coach` | P2   |

@@ -51,6 +51,18 @@ class TestCodexSkillAdapters(unittest.TestCase):
             self.assertIn("<repo>/STATUS.md", content)
             self.assertIn("<repo>/5. Trackers/bugs/bugs-master.md", content)
 
+    def test_generated_paste_skill_defaults_screenshots_to_task_master(self):
+        """The /paste adapter should route screenshots to task management by default."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sync_codex_skill_adapters.sync_promoted_skills(output_dir=tmpdir, root=ROOT_DIR)
+            skill_md = Path(tmpdir) / "beats-paste" / "SKILL.md"
+            content = skill_md.read_text(encoding="utf-8")
+
+            self.assertIn(".agent/skills/task-manager/SKILL.md", content)
+            self.assertIn("5. Trackers/TASK_MASTER.md", content)
+            self.assertIn("Treat screenshots/images and transcript-like clipboard text as task-master management input", content)
+            self.assertIn("defaulting to profile lookup, reply drafting, or generic summarization", content)
+
     def test_dispatch_only_commands_do_not_generate_skills(self):
         """Commands not promoted in the registry should not be emitted as Codex skills."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -81,6 +93,8 @@ class TestCodexSkillAdapters(unittest.TestCase):
             self.assertIn("3. Meetings/reports", content)
             self.assertIn("## Execution Contract", content)
             self.assertIn("prepare --business-days 10 --json", content)
+            self.assertIn("Treat transcript content as task-master management input", content)
+            self.assertIn("existing-task updates", content)
             self.assertIn("validate --run-id <RUN_ID> --json", content)
 
     def test_generated_comms_skill_mentions_cross_runtime_mcp_contract(self):

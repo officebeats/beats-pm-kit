@@ -9,6 +9,10 @@ triggers:
   - "/triage"
   - "/plan"
   - "/organize"
+  - "/paste"
+  - "/transcript"
+  - "screenshot"
+  - "transcript"
 version: 4.0.0 (Priority Gate)
 author: Beats PM Brain
 ---
@@ -23,8 +27,19 @@ author: Beats PM Brain
 
 ## 1. Native Interface
 
-- **Inputs**: /task, /triage. BRAIN_DUMP.md (Inbox). TASK_MASTER.md (Ledger).
+- **Inputs**: /task, /triage, /paste screenshots, /transcript packets, BRAIN_DUMP.md (Inbox), TASK_MASTER.md (Ledger).
 - **Tools**: run_command (cat), view_file.
+
+---
+
+## 1A. Default Evidence Inputs
+
+Screenshots/images and transcripts are task-master management inputs by default.
+
+- First extract task/status signal: new work, existing-task progress, blockers, owner/date changes, due dates, source links, and referenced ticket IDs.
+- Then apply the Priority Gate before accepting any new active work.
+- If the source is ambiguous, return exact candidate `TASK_MASTER.md` rows or detail-file updates for the user to confirm.
+- Do not treat screenshots or transcripts as generic profile lookup, reply drafting, or summary requests unless the user explicitly asks for that in the same turn.
 
 ---
 

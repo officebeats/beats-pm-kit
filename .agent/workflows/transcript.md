@@ -1,10 +1,20 @@
 ---
-description: Process all Quill meetings from the last 10 business days.
+description: Process recent or provided transcripts as task-master evidence and route durable updates.
 ---
 
 > **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same repo-local pipeline and durable output contract.
 
 # Workflow: `/transcript`
+
+## Default Intent Contract
+
+Transcripts are task-master management inputs unless the user explicitly asks for a different output.
+
+- Default output is not a generic summary; it is a task/status delta against `5. Trackers/TASK_MASTER.md`.
+- Extract action items, existing-task updates, blockers, decisions that change work, owners, due dates, source references, and follow-up candidates.
+- Run accepted new work through `task-manager` Priority Gate before adding it to active trackers.
+- Put uncertain work in the final response as concrete candidate tracker updates for the user to confirm.
+- Preserve the meeting summary and transcript archive, but lead with task-master routing in `Routed Updates`.
 
 ## 1. Prepare Deterministic Intake
 
@@ -80,6 +90,8 @@ Apply the packet routing checklist:
 - Stakeholder enrichment -> `4. People/{firstname-lastname}.md`.
 - Manager-mode updates -> `1. Company/ways-of-working.md`, manager profile, stakeholder dynamics, and scope changes.
 - Partner/customer updates -> relevant `2. Products/partners/` or client/product files when applicable.
+
+Task-master routing is the default path. Every accepted action item or progress signal must either update `5. Trackers/TASK_MASTER.md` / `5. Trackers/tasks/` or be listed as a candidate requiring confirmation with the source evidence and reason it was not applied.
 
 Every summary must include a `Routed Updates` section that lists the exact files updated or says `No durable update required`.
 

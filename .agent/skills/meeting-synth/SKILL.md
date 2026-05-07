@@ -1,6 +1,6 @@
 ---
 name: meeting-synth
-description: "Synthesize a single meeting transcript into structured action items, decisions, follow-ups, and stakeholder profiles. Use when processing a meeting recording, cleaning up transcript notes, or extracting commitments from a conversation."
+description: "Synthesize a single meeting transcript into TASK_MASTER updates, structured action items, decisions, follow-ups, and stakeholder profiles. Use when processing a meeting recording, cleaning up transcript notes, or extracting commitments from a conversation."
 priority: P0
 maxTokens: 3000
 triggers:
@@ -45,6 +45,17 @@ When `/transcript` provides Slack messages as scoped context, treat Slack conten
 
 ---
 
+## 2B. Transcript Task-Master Default
+
+Any transcript, Quill paste, meeting notes dump, or selected meeting file is task-master management evidence unless the user explicitly asks for another output.
+
+- Extract new tasks, existing-task progress, blockers, owner changes, due-date changes, decisions that alter work, and follow-up candidates.
+- Run accepted new tasks through `task-manager` Priority Gate before adding active tracker rows.
+- Update `5. Trackers/TASK_MASTER.md` and matching `5. Trackers/tasks/{ID}.md` before treating the job as a generic summary.
+- If evidence is not strong enough to mutate the tracker, list exact candidate tracker updates and the source evidence under `Routed Updates`.
+
+---
+
 ## 3. Cognitive Protocol (Double-Click Integration)
 
 1. **Ingest**: Prefer a pipeline packet. Read the transcript path referenced by the packet and preserve packet metadata (`run_id`, `content_sha256`, `expected_summary_path`).
@@ -56,9 +67,10 @@ When `/transcript` provides Slack messages as scoped context, treat Slack conten
 3. **Extract** (single-pass):
    - **Decisions**: Formalized agreements.
    - **Action Items**: Task + ID (if existing) + Owner + Due.
+   - **Task-Master Deltas**: Existing-task status changes, blockers, owner/date changes, and candidate rows for `TASK_MASTER.md`.
    - **Key Quotes**: Verbatim statements with attribution.
 4. **Route & Update** (Parallel Cloud-Safe Writes):
-   - **New Action items** → 5. Trackers/TASK_MASTER.md + Create 5. Trackers/tasks/{ID}.md.
+   - **New Action items** → Run `task-manager` Priority Gate, then update 5. Trackers/TASK_MASTER.md + Create 5. Trackers/tasks/{ID}.md.
    - **Existing Task Updates**: If a TASK_ID (e.g. P1-001) is mentioned, update its detail file's "Progress Log" and "Stakeholder Quotes".
    - **Stakeholder Enrichment**: Update 4. People/{firstname-lastname}.md "Interaction Stream" with quotes and the "Active Tasks" or "Awaiting" sections.
 5. **Summary**: Write to the packet's `expected_summary_path` when provided, otherwise use `3. Meetings/summaries/` and assets/meeting_template.md.

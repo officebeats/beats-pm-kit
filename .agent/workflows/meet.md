@@ -1,5 +1,5 @@
 ---
-description: Synthesize meeting transcripts into action items, decisions, and summaries.
+description: Synthesize meeting transcripts into task-master updates, action items, decisions, and summaries.
 ---
 
 > **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
@@ -9,6 +9,8 @@ description: Synthesize meeting transcripts into action items, decisions, and su
 For bulk Quill import or `/transcript`, use `.agent/workflows/transcript.md` and `system/scripts/transcript_pipeline.py`. This `/meet` workflow is for a specific pasted transcript or explicitly selected meeting file.
 
 **Agent**: Staff PM → `meeting-synth` skill
+
+**Default intent**: A pasted or selected transcript is task-master management input unless the user explicitly asks for another output. Extract `TASK_MASTER.md` deltas before generic summary work.
 
 ---
 
@@ -65,6 +67,7 @@ When user pastes Quill meeting notes directly:
 In a **single parallel turn**:
 - Write summary → `3. Meetings/summaries/[filename]-summary.md`
 - Append action items → `5. Trackers/TASK_MASTER.md`
+- Update existing task details → `5. Trackers/tasks/[ID].md` when the transcript contains progress, blockers, owner changes, or due-date changes
 - Flag boss asks → `5. Trackers/critical/boss-requests.md` (if any)
 
 **Manager Meeting Mode additions (if triggered):**

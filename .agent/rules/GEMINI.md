@@ -32,6 +32,7 @@ Silently run `system/scripts/context_health.py`.
 8. **No Emojis in External Comms:** When drafting DMs, emails, or external-facing text, do NOT use emojis unless explicitly requested.
 9. **No Outbound Email On User's Behalf:** Never send emails as the user. Do not create, send, forward, or reply to email unless the user explicitly asks for that specific message in the current turn. Default to local notes or draft text in the response instead of using mail tools.
 10. **MCP Communication Intake:** `/beats-comms` is the read-only bounded intake path for Slack, Teams, Outlook, and Calendar across Antigravity, Codex, and Claude Code. Follow `.agent/rules/MCP_COMMUNICATION_INTAKE.md`; keep private MCP config, tokens, tenant/client IDs, allowlists, transcripts, and run reports out of tracked files.
+11. **Screenshot & Transcript Default Intent:** When the user shares a screenshot, image, or transcript without an explicit alternate instruction, assume the intent is task-master management. Extract tasks, status changes, blockers, owners, due dates, source references, and referenced tickets/links; route through the task-manager Priority Gate into `5. Trackers/TASK_MASTER.md` or return exact local tracker updates to confirm. Do not default to profile lookup, reply drafting, or generic summarization.
 
 ---
 
