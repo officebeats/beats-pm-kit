@@ -31,6 +31,20 @@ If a platform scope omits a time window, compute the effective window with `syst
 
 For Slack scopes that may return many results, including mention/DM intake such as `to:me`, channel history over multiple days, and any explicit window longer than 5 calendar days, pre-plan page-cap-safe reads with `system/scripts/chat_intake_state.py chunks` before calling Slack. Do not try one full-window Slack query first; follow `.agent/workflows/beats-slack.md` and execute the chunk plan oldest-to-newest.
 
+### Manual Evidence Shortcut
+
+If the user provides the communication evidence directly in the current turn as a screenshot, pasted email/chat text, or short exported snippet, do not require a platform scope and do not run connector window/chunk planning. Treat the user-provided artifact as the bounded source.
+
+The shortcut still must:
+- Preserve source-system safety rules.
+- Save a compact transcript under `3. Meetings/chat-transcripts/{platform}/`.
+- Save the platform and combined run reports.
+- Record the successful run in `3. Meetings/chat-transcripts/_manifest.json`.
+- Route local task/profile updates through `task-manager`.
+- Run targeted task health refresh with `python3 system/scripts/task_master_triage.py --apply --touched-task <TASK_ID>` for each touched task.
+
+Escalate back to the normal scoped connector flow only when the screenshot/snippet is insufficient and fresh source-system reading is needed.
+
 ## 2. Bind Safety Rules
 
 This workflow is read-only for source systems:

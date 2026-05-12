@@ -25,6 +25,31 @@ Screenshots/images and transcript-like clipboard text are task-master management
 
 ---
 
+## Fast Path: Evidence Already In Chat
+
+When the screenshot/image/text is already attached to the current chat turn, skip clipboard ingest and drop-zone scanning. Treat the attachment as the captured input and proceed directly to extraction and local routing.
+
+Use this fast path when:
+- The input is a single screenshot, email/chat snippet, or short transcript excerpt.
+- It clearly maps to an existing task or a small number of candidate tasks.
+- No fresh Slack, Teams, Outlook, Calendar, Jira, or Confluence read is required.
+
+Fast-path steps:
+1. Extract status, owner, due date, dependency, source platform, participants, and exact follow-up date.
+2. Search local trackers for a matching existing item before creating anything new.
+3. Read only `TASK_MASTER.md`, the matched task detail file(s), and relevant people profiles.
+4. Save the compact local evidence transcript/report when the screenshot represents communication evidence.
+5. Apply local tracker/profile updates.
+6. Refresh task health with targeted triage:
+
+```bash
+python3 system/scripts/task_master_triage.py --apply --touched-task <TASK_ID>
+```
+
+Run the full `/paste` dual-path capture only when the user invokes `/paste`, asks to ingest the clipboard/drop zone, or the attached evidence is ambiguous enough that local capture/scanning is needed.
+
+---
+
 ## ⚡ Step 1: Dual-Path Capture (Parallel)
 
 In a **single turn**, perform BOTH of the following:

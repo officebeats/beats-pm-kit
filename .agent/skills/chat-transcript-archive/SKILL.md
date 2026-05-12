@@ -75,6 +75,8 @@ Every saved communication transcript must include:
 - Issues and recommendations for MCP/connector gaps, read-state uncertainty, fallback bridge usage, duplicates skipped, or task routing conflicts.
 - Atlassian artifact paths written or skipped when referenced context capture runs.
 
+For user-provided screenshots, pasted email/chat snippets, or short exports, mark the read source as `user-provided evidence` and keep the same transcript sections. It is acceptable for `Source References` to contain screenshot-visible metadata instead of connector URLs. Do not run source-system window calculation or connector reads just to satisfy this contract.
+
 Use this Markdown shape:
 
 ```md

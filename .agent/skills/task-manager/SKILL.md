@@ -102,6 +102,32 @@ The authoritative source for scope and operating rules is: `1. Company/ways-of-w
   - **Complete**: Move to "Completed Tasks" and update the task detail header and Progress Log to ✅ Done.
 - **Sort**: STRICT SORT by Priority (P0>P1>P2), then by Due Date (Closest first).
 
+### B1. Task Health Review (MANDATORY)
+
+Before finishing `/task`, `/triage`, or any daily planning pass:
+
+1. Run `python3 system/scripts/task_master_triage.py --apply`
+2. Refresh the managed triage summary block in `5. Trackers/TASK_MASTER.md`
+3. Surface overdue, stale, at-risk, and possibly-complete items as explicit questions to the owner
+4. For each flagged item, include:
+   - What it is
+   - Last activity
+   - Communication signal
+   - Relevant links
+   - Clarify
+5. Never ask the owner to interpret a bare task ID without title/context
+6. Never silently mark an open task done just because the latest note sounds positive
+
+For a single user-provided screenshot, email/chat snippet, or transcript excerpt that updates known task IDs, use the targeted fast path instead of rewriting every flagged task file:
+
+```bash
+python3 system/scripts/task_master_triage.py --apply --touched-task TASK-123
+```
+
+- Repeat `--touched-task` for every task detail file changed in the intake.
+- This still refreshes the `TASK_MASTER.md` managed triage summary and writes the day triage report.
+- It only adds/removes managed triage blocks inside the touched task files; a full `/task`, `/triage`, `/day`, or `/week` run should still use the broad `--apply` mode.
+
 ### C. FAANG/BCG Rigor
 
 - **Outcome**: Every task includes expected outcome/metric.

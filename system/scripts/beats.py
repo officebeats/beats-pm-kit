@@ -20,6 +20,7 @@ SCRIPT_COMMANDS = {
     "chat-intake": ["python3", "system/scripts/chat_intake_state.py"],
     "atlassian-context": ["python3", "system/scripts/atlassian_context_state.py"],
     "transcript": ["python3", "system/scripts/transcript_pipeline.py"],
+    "task-triage": ["python3", "system/scripts/task_master_triage.py"],
     "outlook": ["python3", "system/scripts/outlook_bridge.py"],
     "teams": ["python3", "system/scripts/teams_bridge.py"],
     "vibe": ["python3", "system/scripts/vibe_check.py"],
