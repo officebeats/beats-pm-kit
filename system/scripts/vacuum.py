@@ -112,15 +112,17 @@ from system.scripts import librarian
 # Known valid root files (anything else is flagged)
 VALID_ROOT_FILES = {
     ".antigravityignore", ".gitattributes", ".gitignore",
-    "GEMINI.md", "README.md", "SETTINGS.md", "STATUS.md",
+    "AGENTS.md", "CLAUDE.md", "CODEX_COMMANDS.md", "GEMINI.md",
+    "README.md", "SETTINGS.md", "STATUS.md", "install.sh",
     "requirements.txt"
 }
 
 # Known valid root directories
 VALID_ROOT_DIRS = {
-    ".agent", ".git", ".kilocode", ".pytest_cache", ".vscode",
+    ".agent", ".git", ".pytest_cache",
     "0. Incoming", "1. Company", "2. Products", "3. Meetings",
-    "4. People", "5. Trackers", "archive", "system"
+    "4. People", "5. Trackers", "6. SOPs", "7. Partners", "8. Clients",
+    "archive", "system", "test_logs"
 }
 
 def clean_skeleton():
@@ -539,5 +541,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 

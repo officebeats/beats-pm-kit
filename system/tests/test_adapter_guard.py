@@ -36,6 +36,28 @@ class TestAdapterGuardConfig(unittest.TestCase):
         hook = (ROOT_DIR / ".githooks" / "pre-commit").read_text(encoding="utf-8")
         self.assertIn('git ls-files --error-unmatch "$generated"', hook)
         self.assertNotIn("git add -f AGENTS.md CODEX_COMMANDS.md .codex/rules.md .claude/CLAUDE.md", hook)
+        self.assertIn("python3 system/scripts/privacy_guard.py --tree", hook)
+
+    def test_generated_runtime_dirs_are_guarded_from_tracking(self):
+        """Generated adapter directories should remain local-only artifacts."""
+        from scripts import adapter_guard
+
+        guarded = set(adapter_guard.FORBIDDEN_TRACKED_PREFIXES)
+        for prefix in [".codex/", ".gemini/", ".claude/", ".kilocode/", ".context/"]:
+            self.assertIn(prefix, guarded)
+
+    def test_privacy_guard_enforces_private_workspace_skeletons(self):
+        """Only .gitkeep files should be tracked in private workspace folders."""
+        from scripts import privacy_guard
+
+        finding_paths = {
+            finding.rule
+            for finding in privacy_guard.path_findings("3. Meetings/example-notes.md")
+        }
+        self.assertIn("private-workspace-content", finding_paths)
+
+        clean_findings = privacy_guard.path_findings("3. Meetings/transcripts/.gitkeep")
+        self.assertEqual(clean_findings, [])
 
 
 if __name__ == "__main__":

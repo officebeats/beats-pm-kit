@@ -158,13 +158,13 @@ if command -v codex &>/dev/null || [ -d ".codex" ]; then
 fi
 
 # KiloCode
-if [ -d ".kilocode" ]; then
-    print_ok "KiloCode: Ready (.kilocode/ detected)"
+if command -v kilo &>/dev/null || [ -d ".kilocode" ]; then
+    print_ok "KiloCode: Ready"
     RUNTIMES_FOUND=$((RUNTIMES_FOUND + 1))
 fi
 
 if [ "$RUNTIMES_FOUND" -eq 0 ]; then
-    print_warn "No AI runtimes detected. Install one of: Antigravity, Gemini CLI, Claude Code, Codex CLI"
+    print_warn "No AI runtimes detected. Install one of: Antigravity, Gemini CLI, Claude Code, Codex CLI, KiloCode"
 fi
 
 # ── Step 6: Generate CLI Adapters ─────────────────────────

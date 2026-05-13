@@ -73,7 +73,7 @@
 
 - Log in to your account at acme.com/migrate to start the migration wizard
 - Schedule 1-on-1 migration support at acme.com/support
-- Contact our support team with questions: [redacted-email] or 1-800-ACME-HELP
+- Contact our support team with questions: support@acme.com or 1-800-ACME-HELP
 ```
 
 **Why this works:**
