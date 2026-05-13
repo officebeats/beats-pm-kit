@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 from pathlib import Path
 
 
@@ -41,6 +42,21 @@ def normalize_command_name(text: str) -> str:
     return token.lstrip("/").strip()
 
 
+def is_git_ignored(path: Path, root: Path) -> bool:
+    """Return True when a path is explicitly ignored in this local checkout."""
+    try:
+        result = subprocess.run(
+            ["git", "check-ignore", "--quiet", str(path.relative_to(root))],
+            cwd=root,
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    except (OSError, ValueError):
+        return False
+    return result.returncode == 0
+
+
 def get_workflow_descriptions(root: Path | str | None = None):
     """Return workflow names with descriptions parsed from frontmatter."""
     workflows_dir = get_root(root) / ".agent" / "workflows"
@@ -50,6 +66,8 @@ def get_workflow_descriptions(root: Path | str | None = None):
         return workflow_meta
 
     for path in sorted(workflows_dir.glob("*.md")):
+        if is_git_ignored(path, get_root(root)):
+            continue
         description = ""
         text = path.read_text(encoding="utf-8")
         match = DESCRIPTION_RE.search(text)
@@ -132,6 +150,7 @@ def build_command_catalog(root: Path | str | None = None):
                 "codex_skill_name": skill_name,
                 "codex_supporting_files": codex.get("supporting_files", []),
                 "codex_optional_files": codex.get("optional_files", []),
+                "codex_execution_contract": codex.get("execution_contract", []),
             }
         )
 

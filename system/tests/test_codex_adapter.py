@@ -10,6 +10,7 @@ Protects the Codex-specific adapter layer:
 import sys
 import unittest
 from pathlib import Path
+from argparse import Namespace
 
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
@@ -116,6 +117,16 @@ class TestCodexAdapter(unittest.TestCase):
     def test_beats_resolve_workflow_unknown_command(self):
         """Unknown slash commands should not resolve to an arbitrary workflow."""
         self.assertIsNone(beats.resolve_workflow("/does-not-exist"))
+
+    def test_beats_collect_extra_args_supports_passthrough(self):
+        """beats.py should support modern -- passthrough syntax for script args."""
+        args = Namespace(args="", passthrough=["--", "--json"])
+        self.assertEqual(beats.collect_extra_args(args), ["--json"])
+
+    def test_beats_collect_extra_args_preserves_legacy_args(self):
+        """beats.py should preserve legacy --args behavior."""
+        args = Namespace(args="--json --count 3", passthrough=[])
+        self.assertEqual(beats.collect_extra_args(args), ["--json", "--count", "3"])
 
 
 if __name__ == "__main__":

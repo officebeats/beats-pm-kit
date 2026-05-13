@@ -2,10 +2,49 @@
   "api_key": "YOUR_TRELLO_API_KEY",
   "token": "YOUR_TRELLO_TOKEN",
   "board_id": "YOUR_BOARD_ID",
+  "sync_completed": false,
+  "pull_status_from_trello": false,
+  "trello_authoritative_for_lane": true,
+  "bootstrap": {
+    "auto_match_threshold": 0.74,
+    "auto_match_gap": 0.08
+  },
+  "card_docs": {
+    "description_mode": "working_brief",
+    "attach_snapshots": true,
+    "snapshot_policy": "latest_only"
+  },
+  "comments": {
+    "enabled": true,
+    "policy": "meaningful_changes"
+  },
+  "workday_sync": {
+    "enabled": true,
+    "start": "07:00",
+    "end": "18:30",
+    "weekdays": [0, 1, 2, 3, 4]
+  },
+  "operational_labels": {
+    "P0 / Urgent": "red",
+    "P1 / This Week": "orange",
+    "Waiting": "yellow",
+    "Needs Decision": "purple",
+    "Blocked": "black",
+    "External Follow-up": "sky"
+  },
+  "lane_mapping": {
+    "triage": "LIST_ID_FOR_TRIAGE_OR_INBOX",
+    "today": "LIST_ID_FOR_TODAY",
+    "next": "LIST_ID_FOR_NEXT",
+    "later": "LIST_ID_FOR_LATER",
+    "follow_up": "LIST_ID_FOR_FOLLOW_UP",
+    "important_links": "LIST_ID_FOR_IMPORTANT_LINKS",
+    "meeting_notes": "LIST_ID_FOR_MEETING_NOTES",
+    "people": "LIST_ID_FOR_PEOPLE"
+  },
   "list_mapping": {
     "🔴": "LIST_ID_FOR_TODO",
     "🟡": "LIST_ID_FOR_IN_PROGRESS",
-    "✅": "LIST_ID_FOR_DONE",
     "⬜": "LIST_ID_FOR_BLOCKED",
     "⏸️": "LIST_ID_FOR_ON_HOLD"
   }
