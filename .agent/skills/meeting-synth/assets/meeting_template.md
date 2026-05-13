@@ -6,6 +6,12 @@
 
 **Topic**: [Short title—what was the meeting about?]
 
+**Source Transcript**: [3. Meetings/transcripts/YYYY-MM-DD_Title.txt]
+
+**Transcript SHA256**: [content hash]
+
+**Pipeline Run ID**: [run id]
+
 **Summary**
 
 - **Point 1**: [Key discussion point or decision]
@@ -30,8 +36,18 @@
 - [Unresolved question 1]
 - [Unresolved question 2]
 
+**Routed Updates**
+
+- [Exact file path updated] — [what changed]
+- Or: No durable update required
+
+**Key Evidence**
+
+- [Short source snippet or paraphrased evidence supporting the synthesis]
+- [Short source snippet or paraphrased evidence supporting the synthesis]
+
 ---
 
-## 📝 Full Transcript
+## Hybrid Appendix
 
-[The full meeting transcript goes here]
+Full raw transcript is retained in `3. Meetings/transcripts/`. Do not append it here unless explicitly requested.

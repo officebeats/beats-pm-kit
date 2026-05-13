@@ -1,6 +1,6 @@
 ---
 name: meeting-synth
-description: "Synthesize a single meeting transcript into structured action items, decisions, follow-ups, and stakeholder profiles. Use when processing a meeting recording, cleaning up transcript notes, or extracting commitments from a conversation."
+description: "Synthesize a single meeting transcript into TASK_MASTER updates, structured action items, decisions, follow-ups, and stakeholder profiles. Use when processing a meeting recording, cleaning up transcript notes, or extracting commitments from a conversation."
 priority: P0
 maxTokens: 3000
 triggers:
@@ -20,34 +20,61 @@ author: Beats PM Brain
 
 ## 1. Native Interface
 
-- **Inputs**: /meet, /transcript. Raw transcript text, Quill paste, or file path.
+- **Inputs**: /meet, /transcript. Synthesis packet JSON, raw transcript text, Quill paste, or file path.
 - **Tools**: run_command (cat), view_file.
 
 ---
 
 ## 2. Bounded Search Protocol
 
-1. **User provides transcript directly** (paste or Quill format) → Process immediately.
-2. **User says "process latest"** → Search ONLY 3. Meetings/transcripts/ MaxDepth: 1, limit to 1-3 files.
+1. **Pipeline packet provided** (`3. Meetings/reports/packets/*.json`) → Process that packet and its referenced transcript.
+2. **User provides transcript directly** (paste or Quill format) → Process immediately.
+3. **User says "process latest"** → Run `/transcript` preparation first; use generated packets instead of broad transcript scans.
+
+---
+
+## 2A. Slack Task Evidence Guardrail
+
+When `/transcript` provides Slack messages as scoped context, treat Slack content as read-only evidence for local task extraction only.
+
+- Extract candidate action items, decisions, blockers, owners, due dates, and source references.
+- Never send, schedule, draft, reply, react, edit, delete, pin, bookmark, create canvases/files, or mutate Slack state.
+- Preserve unread state. Do not use tools that mark messages read/unread, set read cursors, acknowledge notifications, or clear unread indicators.
+- Do not quote full Slack conversations into summaries. Use short evidence snippets and source channel/thread/timestamp references.
+- Route accepted tasks only to local repo files such as `5. Trackers/TASK_MASTER.md` and task detail files; list uncertain Slack items for manual user handling.
+
+---
+
+## 2B. Transcript Task-Master Default
+
+Any transcript, Quill paste, meeting notes dump, or selected meeting file is task-master management evidence unless the user explicitly asks for another output.
+
+- Extract new tasks, existing-task progress, blockers, owner changes, due-date changes, decisions that alter work, and follow-up candidates.
+- Run accepted new tasks through `task-manager` Priority Gate before adding active tracker rows.
+- Update `5. Trackers/TASK_MASTER.md` and matching `5. Trackers/tasks/{ID}.md` before treating the job as a generic summary.
+- If evidence is not strong enough to mutate the tracker, list exact candidate tracker updates and the source evidence under `Routed Updates`.
 
 ---
 
 ## 3. Cognitive Protocol (Double-Click Integration)
 
-1. **Ingest**: Read the transcript.
+1. **Ingest**: Prefer a pipeline packet. Read the transcript path referenced by the packet and preserve packet metadata (`run_id`, `content_sha256`, `expected_summary_path`).
 2. **Classify Meeting Type**:
    - **Manager 1:1**: Attendees include direct manager (the user's direct manager) → Activate **§ 3A Manager Meeting Mode**.
    - **Peer/Stakeholder**: Standard processing.
    - **Customer/Partner**: Standard processing + competitive intel extraction.
+   - **Packet Override**: If the packet marks `manager_mode_required` or `partner_customer_mode_required`, treat that as required unless the transcript clearly proves otherwise.
 3. **Extract** (single-pass):
    - **Decisions**: Formalized agreements.
    - **Action Items**: Task + ID (if existing) + Owner + Due.
+   - **Task-Master Deltas**: Existing-task status changes, blockers, owner/date changes, and candidate rows for `TASK_MASTER.md`.
    - **Key Quotes**: Verbatim statements with attribution.
 4. **Route & Update** (Parallel Cloud-Safe Writes):
-   - **New Action items** → 5. Trackers/TASK_MASTER.md + Create 5. Trackers/tasks/{ID}.md.
+   - **New Action items** → Run `task-manager` Priority Gate, then update 5. Trackers/TASK_MASTER.md + Create 5. Trackers/tasks/{ID}.md.
    - **Existing Task Updates**: If a TASK_ID (e.g. P1-001) is mentioned, update its detail file's "Progress Log" and "Stakeholder Quotes".
    - **Stakeholder Enrichment**: Update 4. People/{firstname-lastname}.md "Interaction Stream" with quotes and the "Active Tasks" or "Awaiting" sections.
-5. **Summary**: Write to 3. Meetings/summaries/ using assets/meeting_template.md. **MANDATORY**: Append the full raw transcript at the end of the file under a `# 📝 Full Transcript` section.
+5. **Summary**: Write to the packet's `expected_summary_path` when provided, otherwise use `3. Meetings/summaries/` and assets/meeting_template.md.
+6. **Hybrid Appendix (MANDATORY for `/transcript`)**: Include `Source Transcript`, `Transcript SHA256`, `Pipeline Run ID`, `Key Evidence`, and `Routed Updates`. Do **not** append the full raw transcript by default. The full raw transcript remains in `3. Meetings/transcripts/`.
 
 ---
 
@@ -98,8 +125,10 @@ In ADDITION to standard extraction (§ 3), extract and route the following:
 
 Confirm all updates:
 - Summary File created.
+- Source Transcript / hash / run ID included when a packet was used.
 - Task Details updated (list IDs).
 - Stakeholder Profiles updated (list Names).
+- Routed Updates section lists exact files changed or says `No durable update required`.
 - **Manager Mode** (if triggered):
   - Ways of Working sections updated (list which sections).
   - Scope changes applied (list additions/removals).

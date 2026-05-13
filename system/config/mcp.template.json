@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "description": "Generic template for local MCP communication intake. Copy to an ignored mcp.local*.json file or user-scope client config before adding private values.",
+  "privacy": {
+    "tracked_file_policy": "placeholders_only",
+    "private_values": [
+      "tenant_id",
+      "client_id",
+      "enabled_tools_allowlist",
+      "oauth_tokens",
+      "organization_urls",
+      "workspace_ids",
+      "user_identifiers"
+    ]
+  },
+  "runtimes": {
+    "antigravity": {
+      "config_scope": "user_or_runtime_scope",
+      "notes": "Prefer runtime-provided read-only MCP/connector capabilities. Do not store private tenant, client, or allowlist values in tracked repo files."
+    },
+    "codex": {
+      "config_scope": "connector_or_user_scope",
+      "notes": "Prefer available app connectors or MCP tools surfaced by the runtime. Keep durable output in ignored repo folders."
+    },
+    "claude_code": {
+      "config_scope": "user",
+      "example_commands": [
+        "claude mcp add-json -s user ms365 '<server-json-with-private-values>'",
+        "claude mcp add -s user --transport http --client-id '<slack-client-id>' --callback-port '<port>' slack '<slack-mcp-url>'"
+      ],
+      "notes": "Use placeholders here only. Actual command arguments come from approved internal setup docs and must remain local."
+    }
+  },
+  "servers": {
+    "ms365": {
+      "purpose": "Read-only Outlook mail, Calendar, Teams, meeting transcripts, Planner, Todo, contacts, and people capabilities when explicitly scoped.",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "<pinned-ms365-mcp-package>",
+        "--org-mode",
+        "--enabled-tools",
+        "<private-enabled-tools-regex>"
+      ],
+      "env": {
+        "MS365_MCP_CLIENT_ID": "<private-client-id>",
+        "MS365_MCP_TENANT_ID": "<private-tenant-id>"
+      }
+    },
+    "slack": {
+      "purpose": "Read-only Slack channel, message, thread, user, and canvas context when explicitly scoped.",
+      "transport": "http",
+      "url": "<approved-slack-mcp-url>",
+      "client_id": "<private-slack-client-id>",
+      "callback_port": "<private-callback-port>"
+    }
+  }
+}
