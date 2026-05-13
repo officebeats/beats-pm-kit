@@ -40,14 +40,19 @@ python3 system/scripts/sync_codex_skill_adapters.py
 
 This installs thin local Codex skill adapters for the promoted commands:
 
+- `/beats-comms`
+- `/beats-slack`
+- `/beats-teams`
 - `/boss`
-- `/day`
-- `/track`
-- `/paste`
-- `/meet`
-- `/transcript`
 - `/create`
+- `/day`
+- `/deck`
+- `/meet`
+- `/paste`
 - `/plan`
+- `/sop`
+- `/track`
+- `/transcript`
 - `/update` (guarded)
 - `/vacuum` (guarded)
 - `/week`
