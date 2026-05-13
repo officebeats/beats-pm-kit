@@ -59,14 +59,15 @@ def is_git_ignored(path: Path, root: Path) -> bool:
 
 def get_workflow_descriptions(root: Path | str | None = None):
     """Return workflow names with descriptions parsed from frontmatter."""
-    workflows_dir = get_root(root) / ".agent" / "workflows"
+    repo_root = get_root(root)
+    workflows_dir = repo_root / ".agent" / "workflows"
     workflow_meta = []
 
     if not workflows_dir.is_dir():
         return workflow_meta
 
     for path in sorted(workflows_dir.glob("*.md")):
-        if is_git_ignored(path, get_root(root)):
+        if is_git_ignored(path, repo_root):
             continue
         description = ""
         text = path.read_text(encoding="utf-8")
