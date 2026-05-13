@@ -11,6 +11,7 @@ Usage:
 import unittest
 import os
 import re
+import importlib.util
 from pathlib import Path
 
 # ============================================================================
@@ -23,6 +24,7 @@ SKILLS_DIRS = [ROOT_DIR / ".agent" / "skills"]
 WORKFLOWS_DIRS = [ROOT_DIR / ".agent" / "workflows"]
 SYSTEM_DIR = ROOT_DIR / "system"
 SCRIPTS_DIR = SYSTEM_DIR / "scripts"
+FEATURE_INVENTORY_PATH = SCRIPTS_DIR / "feature_inventory.py"
 
 
 def _discover(dirs, pattern="*", is_dir=False):
@@ -52,6 +54,14 @@ def _discover_skills():
 
 def _discover_workflows():
     return _discover(WORKFLOWS_DIRS, "*.md")
+
+
+def _feature_inventory():
+    spec = importlib.util.spec_from_file_location("feature_inventory", FEATURE_INVENTORY_PATH)
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(module)
+    return module.collect_inventory(ROOT_DIR)
 
 
 # ============================================================================
@@ -283,7 +293,64 @@ class TestSystemScripts(unittest.TestCase):
 
 
 # ============================================================================
-# 7. PRIVACY — Gitignored folders must not leak into the repo
+# 7. README TRUTH — Public claims must match the canonical inventory
+# ============================================================================
+
+class TestReadmeTruth(unittest.TestCase):
+    """Real-world check: README promises must stay aligned with .agent/."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.readme = (ROOT_DIR / "README.md").read_text(encoding='utf-8', errors='replace')
+        cls.inventory = _feature_inventory()
+
+    def test_readme_preserves_requested_story_sections(self):
+        sections = [
+            "The Problem",
+            "Architecture at a Glance",
+            "Why This Approach",
+            "Tradeoffs I Made",
+            "What I'd Improve Next",
+            "Why Product Managers Need This",
+        ]
+        for section in sections:
+            self.assertIn(section, self.readme, f"README missing required section: {section}")
+
+    def test_readme_counts_match_feature_inventory(self):
+        agents = self.inventory["agents"]["count"]
+        skills = self.inventory["skills"]["count"]
+        workflows = self.inventory["workflows"]["count"]
+        self.assertIn(f"{agents} specialized personas", self.readme)
+        self.assertIn(f"{skills} PM skills", self.readme)
+        self.assertIn(f"{workflows} workflow playbooks", self.readme)
+
+    def test_readme_runtime_claims_match_registry(self):
+        for runtime in ["Antigravity", "Codex", "Gemini CLI", "Claude Code", "KiloCode"]:
+            self.assertIn(runtime, self.readme)
+
+    def test_readme_highlight_commands_stay_visible(self):
+        for command in ["/paste", "/meet", "/boss"]:
+            self.assertIn(command, self.readme)
+
+    def test_readme_privacy_claims_are_scoped(self):
+        forbidden = [
+            "No API calls with your trade secrets",
+            "Enterprise-safe from day one",
+            "MAANG",
+            "10x Product Manager",
+        ]
+        for phrase in forbidden:
+            self.assertNotIn(phrase, self.readme)
+        self.assertIn("AI runtime/model provider", self.readme)
+        self.assertIn("Folders 1-5 are `.gitignored`", self.readme)
+
+    def test_readme_footer_uses_officebeats_builder_note(self):
+        self.assertIn("OfficeBeats", self.readme)
+        self.assertNotIn("[Your Name]", self.readme)
+
+
+# ============================================================================
+# 8. PRIVACY — Gitignored folders must not leak into the repo
 # ============================================================================
 
 class TestPrivacyCompliance(unittest.TestCase):
@@ -306,7 +373,7 @@ class TestPrivacyCompliance(unittest.TestCase):
 
 
 # ============================================================================
-# 8. REAL-WORLD SCENARIO TESTS — Simulate actual PM workflows
+# 9. REAL-WORLD SCENARIO TESTS — Simulate actual PM workflows
 # ============================================================================
 
 class TestRealWorldScenarios(unittest.TestCase):
@@ -392,7 +459,7 @@ class TestRealWorldScenarios(unittest.TestCase):
 
 
 # ============================================================================
-# 9. PERFORMANCE — Kit should not be bloated
+# 10. PERFORMANCE — Kit should not be bloated
 # ============================================================================
 
 class TestPerformance(unittest.TestCase):
