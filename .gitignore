@@ -38,41 +38,57 @@ requirements.txt
 /0. Incoming/**
 !/0. Incoming/
 !/0. Incoming/.gitkeep
+!/0. Incoming/**/
+!/0. Incoming/**/.gitkeep
 
 # 1. Company (profiles, strategy)
 /1. Company/**
 !/1. Company/
 !/1. Company/.gitkeep
+!/1. Company/**/
+!/1. Company/**/.gitkeep
 
 # 2. Products (PRDs, initiatives, bugs)
 /2. Products/**
 !/2. Products/
 !/2. Products/.gitkeep
+!/2. Products/**/
+!/2. Products/**/.gitkeep
 
 # 3. Meetings (notes, briefs, transcripts)
 /3. Meetings/**
 !/3. Meetings/
 !/3. Meetings/.gitkeep
+!/3. Meetings/**/
+!/3. Meetings/**/.gitkeep
 
 # 4. People (stakeholder directory)
 /4. People/**
 !/4. People/
 !/4. People/.gitkeep
+!/4. People/**/
+!/4. People/**/.gitkeep
 
 # 5. Trackers (bugs, boss-requests, projects)
 /5. Trackers/**
 !/5. Trackers/
 !/5. Trackers/.gitkeep
+!/5. Trackers/**/
+!/5. Trackers/**/.gitkeep
 
 # 7. Partners (technology & channel partners — contracts, contacts, runbooks)
 /7. Partners/**
 !/7. Partners/
 !/7. Partners/.gitkeep
+!/7. Partners/**/
+!/7. Partners/**/.gitkeep
 
 # 8. Clients (health plans, health systems — accounts, contacts, expansions)
 /8. Clients/**
 !/8. Clients/
 !/8. Clients/.gitkeep
+!/8. Clients/**/
+!/8. Clients/**/.gitkeep
 
 # ----------------------------------------
 # 3. USER CONFIGURATION (SENSITIVE)
