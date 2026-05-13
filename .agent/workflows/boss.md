@@ -19,7 +19,7 @@ In a **single turn**, read:
 2. `1. Company/ways-of-working.md` → Review standing agreements and operating rules.
 3. The boss's people profile (e.g., `4. People/{boss-name}.md`) → Check committed tasks ("Awaiting") and interaction patterns.
 4. **Last 2 boss meeting summaries**: Search `3. Meetings/summaries/` for files containing the boss's name. Select the 2 most recent.
-5. **Calendar**: Run `python3 system/scripts/outlook_bridge.py --calendar 7` to pull upcoming meetings.
+5. **Calendar**: Prefer `/beats-comms calendar: next 7 days` with read-only MS365 MCP/connector access to pull upcoming meetings. Use `python3 system/scripts/outlook_bridge.py --calendar 7` only as a less-portable macOS AppleScript fallback and label that limitation in the prep notes.
 
 ## 2. Progress Analysis
 

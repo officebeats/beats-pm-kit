@@ -20,12 +20,16 @@ Promoted Codex skill adapters can be synced locally with `python3 system/scripts
 | :--- | :--- | :--- | :--- | :--- |
 | `/accuracy` | `.agent/workflows/accuracy.md` | Dispatch only | — | Implement with high accuracy and self-review (optimized for per-prompt pricing) |
 | `/archive` | `.agent/workflows/archive.md` | Dispatch only | — | See workflow file |
+| `/beats-comms` | `.agent/workflows/beats-comms.md` | Native skill `beats-comms` | — | Run scoped Slack, Teams, Outlook, and Calendar communication intake into local task updates and searchable transcripts without sending or mutating source systems. |
+| `/beats-slack` | `.agent/workflows/beats-slack.md` | Native skill `beats-slack` | — | Process scoped Slack messages into local Beats PM tasks without sending or mutating Slack. |
+| `/beats-teams` | `.agent/workflows/beats-teams.md` | Native skill `beats-teams` | — | Process scoped Microsoft Teams chats or channels into local Beats PM tasks and searchable chat transcripts without sending or mutating Teams. |
 | `/boss` | `.agent/workflows/boss.md` | Native skill `beats-boss` | — | Prepare for your 1:1 with your boss. Tracks all Boss Asks, pulls recent transcripts, and generates a prep doc. |
 | `/build` | `.agent/workflows/build.md` | Dispatch only | — | Hand off a PRD or specification to the Engineering team agents for actual implementation. |
 | `/challenge` | `.agent/workflows/challenge.md` | Dispatch only | — | Internal adversarial review workflow (self mode only) |
 | `/chat` | `.agent/workflows/chat.md` | Dispatch only | — | Consultative planning mode (Switchboard Operator) |
 | `/create` | `.agent/workflows/create.md` | Native skill `beats-create` | — | Draft PRDs, Specs, and One-Pagers from context (Transcripts/Tasks). |
 | `/day` | `.agent/workflows/day.md` | Native skill `beats-day` | `/status`, `/morning`, `/brief`, `/now` | Daily briefing and planning. |
+| `/deck` | `.agent/workflows/deck.md` | Native skill `beats-deck` | — | Build brand-agnostic MBB-style presentation decks from a brief, sources, and optional templates. |
 | `/discover` | `.agent/workflows/discover.md` | Dispatch only | — | Run a product discovery cycle with OST, assumption mapping, and experiment design. |
 | `/fan-out` | `.agent/workflows/fan-out.md` | Dispatch only | — | Fan-out a complex PM task to multiple specialized agents in parallel, then synthesize results. |
 | `/handoff` | `.agent/workflows/handoff.md` | Dispatch only | — | Unified delegation and execution workflow (Default, Chat, Lead, Relay) |
@@ -33,21 +37,22 @@ Promoted Codex skill adapters can be synced locally with `python3 system/scripts
 | `/improve-plan` | `.agent/workflows/improve-plan.md` | Dispatch only | — | Deep planning, dependency checks, and adversarial review |
 | `/intel` | `.agent/workflows/intel.md` | Dispatch only | — | Capture product knowledge, competitive intelligence, and strategic context from slides, emails, or verbal notes. |
 | `/interview` | `.agent/workflows/interview.md` | Dispatch only | — | Run a Socratic deep interview to clarify ambiguous requirements before planning. |
-| `/meet` | `.agent/workflows/meet.md` | Native skill `beats-meet` | — | Synthesize meeting transcripts into action items, decisions, and summaries. |
+| `/meet` | `.agent/workflows/meet.md` | Native skill `beats-meet` | — | Synthesize meeting transcripts into task-master updates, action items, decisions, and summaries. |
 | `/office-cli` | `.agent/workflows/office-cli.md` | Dispatch only | — | Check if OfficeCLI is installed and install it if not. Creates, reads, and edits Word, Excel, and PowerPoint files. |
-| `/paste` | `.agent/workflows/paste.md` | Native skill `beats-paste` | — | Capture clipboard content (text, images, files) and save for processing. |
+| `/paste` | `.agent/workflows/paste.md` | Native skill `beats-paste` | — | Capture clipboard content (text, screenshots/images, files) and route task signals to TASK_MASTER by default. |
 | `/plan` | `.agent/workflows/plan.md` | Native skill `beats-plan` | — | Create or update strategic plans, roadmaps, and OKRs. |
 | `/prep` | `.agent/workflows/prep.md` | Dispatch only | — | Prepare for an interview with research and roleplay. |
 | `/prioritize` | `.agent/workflows/prioritize.md` | Dispatch only | — | Score and rank a backlog using RICE, ICE, MoSCoW, Kano, or weighted scoring. |
 | `/regression` | `.agent/workflows/regression.md` | Dispatch only | — | See workflow file |
 | `/retro` | `.agent/workflows/retro.md` | Dispatch only | — | Run a sprint or PI retrospective with structured format and action tracking. |
 | `/review` | `.agent/workflows/review.md` | Dispatch only | — | Code review, Doc review, Release prep. |
+| `/sop` | `.agent/workflows/sop.md` | Native skill `beats-sop` | — | Capture, normalize, and maintain privacy-safe SOPs and runbooks for product management and consulting workflows. |
 | `/sprint` | `.agent/workflows/sprint.md` | Dispatch only | — | Generate a prioritized sprint backlog for dev team planning. |
 | `/start` | `.agent/workflows/start.md` | Dispatch only | — | First-time guided setup wizard. Run on first session or manually with /start. |
 | `/team` | `.agent/workflows/team.md` | Dispatch only | — | N coordinated engineering/execution agents on a shared task list. |
 | `/track` | `.agent/workflows/track.md` | Native skill `beats-track` | — | Manage the battlefield. Tasks, Bugs, and Boss Asks. |
-| `/transcript` | `.agent/workflows/transcript.md` | Native skill `beats-transcript` | — | Process all Quill meetings from the last 10 business days. |
-| `/trello` | `.agent/workflows/trello.md` | Dispatch only | — | Synchronize Beats PM Tracker IDs with a Trello Board, or attach files. |
+| `/transcript` | `.agent/workflows/transcript.md` | Native skill `beats-transcript` | — | Process recent or provided transcripts as task-master evidence and route durable updates. |
+| `/trello` | `.agent/workflows/trello.md` | Dispatch only | — | Bootstrap, synchronize, inspect, and attach files for the Beats PM Trello board. |
 | `/update` | `.agent/workflows/update.md` | Guarded skill `beats-update` | — | Pull the latest kit version from GitHub, run migrations, verify structure, and restore local changes. |
 | `/vacuum` | `.agent/workflows/vacuum.md` | Guarded skill `beats-vacuum` | `/archive`, `/cleanup` | Execute the full Centrifuge Protocol to keep the brain lean, private, and organized. Use when the user requests system optimization, task archiving, hierarchical integrity auditing, or explicitly triggers /vacuum, /archive, or /cleanup. |
 | `/vibe` | `.agent/workflows/vibe.md` | Dispatch only | — | System health and diagnostics. |
