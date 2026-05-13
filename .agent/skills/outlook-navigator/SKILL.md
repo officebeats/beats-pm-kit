@@ -1,85 +1,91 @@
 ---
 name: outlook-navigator
-description: Read-only Outlook email scraper for context, task extraction, and stakeholder enrichment.
+description: Read-only Outlook mail and Calendar intake for context, task extraction, schedule awareness, and stakeholder enrichment.
 ---
 
-> **Compatibility Directive**: Optimized for Google Antigravity/macOS desktop clients.
+> **Compatibility Directive**: Prefer read-only MS365 MCP/connector capabilities in Antigravity, Codex, Claude Code, and compatible runtimes. Use macOS AppleScript bridge scripts only as less-portable fallbacks when MCP/connector reads are unavailable.
 
 # Outlook Navigator Skill
 
 ## Goal
-The outlook-navigator is the 'Eye' of the brain into the user's primary communication channel. It fetches recent emails for context but NEVER performs write operations (no replying, no deleting).
+The outlook-navigator is the read-only mail and calendar intake path. It fetches bounded Outlook and Calendar context for local synthesis but does not mutate Microsoft 365 state.
 
 ## Inputs
 - `/outlook` (Fetch last 5)
 - `/outlook --count 10`
 - `/outlook --calendar 7` (Fetch calendar events for next N days)
+- `/beats-comms outlook: <bounded mail query/window>`
+- `/beats-comms calendar: <bounded lookahead/window>`
 - `/inbox`
 
 ## Protocol
 
-### Step 1: Fetch Inbox (Snippets)
-Run the bridge script to get subject/sender/date/snippet for recent messages:
+### Step 1: Resolve Scope And Window
+
+Require an explicit bounded mail or calendar scope before reading source systems.
+
+Valid mail scopes include sender, subject keyword, folder, conversation, or time window. Valid calendar scopes include lookahead days, date range, meeting title, or participant.
+
+If the scope omits a time window, compute it with:
+
+```bash
+python3 system/scripts/chat_intake_state.py window --platform outlook --scope "<SCOPE>"
+python3 system/scripts/chat_intake_state.py window --platform calendar --scope "<SCOPE>"
+```
+
+Outlook defaults to 5 business days back. Calendar defaults to 14 days forward.
+
+### Step 2: Prefer MS365 MCP/Connector Reads
+
+Use read-only MS365 MCP/connector capabilities first when surfaced by the runtime:
+
+- Outlook mail: list/search/get mail messages, folders, attachments metadata, people/contacts as needed for a scoped read.
+- Calendar: list/get calendar events, schedule view, meeting metadata, meeting transcript metadata/content when explicitly scoped and available.
+
+Do not use write-capable tools for sends, replies, forwards, draft creation, event creation, meeting updates, reminders, Todo, Planner, or mailbox/calendar modifications during intake.
+
+### Step 3: Fallback To macOS Bridge Scripts
+
+Use `outlook_bridge.py` only when MCP/connector reads are unavailable or the runtime cannot surface the needed read operation. Label this as a less-portable AppleScript fallback in the run report.
+
+Fetch recent bounded inbox snippets:
+
 ```bash
 python3 system/scripts/outlook_bridge.py --count {n}
 ```
 
-### Step 2: Deep-Read Specific Emails
-When full email body is needed (e.g., extracting tasks from a boss email), use the `--search` flag:
+Deep-read specific matching emails only when needed for extraction:
+
 ```bash
 python3 system/scripts/outlook_bridge.py --search "subject keyword"
 ```
-This uses `osascript` to query the local Microsoft Outlook app via AppleScript and returns the full plain-text body of matching emails.
 
-**Fallback**: If the bridge script fails (e.g., sender metadata errors on meeting invites), use inline `osascript` directly:
-```bash
-osascript -e '
-tell application "Microsoft Outlook"
-    set msgs to messages of inbox
-    set output to ""
-    set counter to 0
-    repeat with msg in msgs
-        if counter < 20 then
-            set subj to subject of msg
-            if subj contains "KEYWORD" then
-                set output to output & "===== SUBJECT: " & subj & " =====" & return
-                set output to output & "DATE: " & (time received of msg as string) & return
-                set output to output & "BODY:" & return
-                try
-                    set output to output & (plain text content of msg) & return
-                on error
-                    try
-                        set output to output & (content of msg) & return
-                    end try
-                end try
-                set output to output & "===== END =====" & return & return
-            end if
-            set counter to counter + 1
-        end if
-    end repeat
-    return output
-end tell'
-```
+Fetch calendar lookahead:
 
-### Step 3: Persist
-Write results to `0. Incoming/outlook_context.md` for downstream skills:
-- // turbo
-- `python3 system/scripts/outlook_bridge.py --count 10 > "0. Incoming/outlook_context.md"`
-
-
-### Step 3b: Read Calendar
-When calendar lookahead is required (e.g. for /transcript or /day tracking):
 ```bash
 python3 system/scripts/outlook_bridge.py --calendar {days}
 ```
+
+### Step 4: Persist Local Evidence
+
+Save bounded evidence through `.agent/skills/chat-transcript-archive/SKILL.md`:
+
+- Outlook transcript -> `3. Meetings/chat-transcripts/outlook/{YYYY-MM-DD}_{scope-slug}_{RUN_ID}.md`
+- Calendar transcript -> `3. Meetings/chat-transcripts/calendar/{YYYY-MM-DD}_{scope-slug}_{RUN_ID}.md`
+- Outlook report -> `3. Meetings/reports/outlook-runs/{RUN_ID}.md`
+- Calendar report -> `3. Meetings/reports/calendar-runs/{RUN_ID}.md`
+
+Use short snippets and metadata, not full unbounded mailbox or calendar dumps. The `3. Meetings/` output paths are ignored and local-only.
+
 If an upcoming calendar event maps to an active task in `TASK_MASTER.md` to "Schedule a meeting with X", update the task status to `🗓️ Scheduled for [Date]` instead of completing it.
 
-### Step 4: Analyze
+### Step 5: Analyze
 - Identify **Deadlines** (dates, "by Friday", "asap").
 - Identify **Decisions** (approvals, rejects).
 - Identify **Company Strategy** changes.
+- Identify **Scheduled Events** that satisfy existing scheduling tasks.
 
-### Step 5: Stakeholder Enrichment
+### Step 6: Stakeholder Enrichment
 For each person found in emails (senders, CC'd, mentioned, or in signatures):
 - **Check** if `4. People/{firstname-lastname}.md` exists.
 - **If exists** → Update with new context: recent topics, decisions, asks, role changes.
@@ -87,7 +93,7 @@ For each person found in emails (senders, CC'd, mentioned, or in signatures):
 - **Signature extraction**: Parse email signatures for role, title, department, organization. This is the richest source of role/title data.
 - **Privacy**: Store only professional context (name, role, org, relationship). PII (phone, email, address) may be stored in profiles since `4. People/` is gitignored. Extract everything useful from signatures — work email, cell, office address, pronouns, direct reports.
 
-### Step 6: Triage
+### Step 7: Triage
 - If a task is found → Suggest `/track` item.
 - If a boss ask is found → Route to `5. Trackers/critical/boss-requests.md`.
 - If a new stakeholder is mentioned → Create/update profile in `4. People/`.
@@ -95,20 +101,20 @@ For each person found in emails (senders, CC'd, mentioned, or in signatures):
 
 ## Implementation Notes
 
-### Why AppleScript (osascript)?
+### Why AppleScript Is Fallback Only
 - The bridge uses `osascript` to query the locally-installed Microsoft Outlook app on macOS.
-- This avoids browser authentication flows and works offline with cached mail.
+- This is less portable than MS365 MCP/connector access and should be labeled as fallback output.
 - **Known issue**: Some message types (meeting invites, `«class mtME»`) don't expose `name of sender`. The bridge handles this with try/catch fallback to `address of sender`.
 
 ### HARD SAFETY RULES (Non-Negotiable)
-- **NEVER create calendar events or meeting invites** — not via AppleScript, MCP, or any other method. Calendar writes risk sending invites to attendees with wrong times, duplicates, or broken details that the user must manually undo. This applies even if the user asks to "schedule" something — always create **drafts only**.
-- **NEVER send emails directly**. Only create **outgoing message drafts** in Outlook that the user can review and send manually.
+- **NEVER create calendar events or meeting invites** — not via AppleScript, MCP, Graph API, or any other method. Calendar writes risk sending invites to attendees with wrong times, duplicates, or broken details that the user must manually undo.
+- **NEVER create, send, forward, or reply to email** unless the user explicitly asks for that specific message in the current turn. By default, return draft text in chat or save a local artifact instead of using mail tools.
 - **NEVER delete, move, or modify existing emails or calendar events.**
-- Permitted write operations: creating email **drafts** only (via `make new outgoing message`).
 
 ### Privacy
-- This skill is **read-only** for inbox/calendar. Draft creation is the only permitted write.
+- This skill is **read-only** for inbox/calendar by default.
 - Email content persisted to `0. Incoming/` is gitignored and local-only.
+- Communication transcripts and reports under `3. Meetings/` are gitignored and local-only.
 - Stakeholder profiles in `4. People/` are gitignored and local-only.
 
 ## Output Format

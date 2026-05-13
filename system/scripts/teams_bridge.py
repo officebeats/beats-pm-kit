@@ -16,7 +16,9 @@ def get_clipboard_text():
 
 def get_teams_messages_ui(count=15):
     """
-    Attempt to scrape Teams via UI Scripting (requires Accessibility/Admin).
+    Less-portable fallback: attempt to scrape Teams via UI Scripting
+    (requires Accessibility/Admin). Prefer read-only MS365 MCP/connector
+    access when available.
     """
     script = f'''
     tell application "System Events"
@@ -51,7 +53,7 @@ def get_teams_messages_ui(count=15):
     return None
 
 def main():
-    parser = argparse.ArgumentParser(description="Beats PM Teams Bridge")
+    parser = argparse.ArgumentParser(description="Beats PM Teams Bridge fallback; prefer read-only MS365 MCP/connector access")
     parser.add_argument("--count", type=int, default=15)
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()

@@ -19,6 +19,7 @@ SYSTEM_ROOT = CURRENT_FILE.parent.parent    # system/
 BRAIN_DIR = SYSTEM_ROOT.parent              # beats-pm-antigravity-brain/
 TRANSCRIPT_ARCHIVE_DIR = BRAIN_DIR / "3. Meetings" / "transcripts"
 REPORT_DIR = BRAIN_DIR / "3. Meetings" / "reports"
+SUMMARY_DIR = BRAIN_DIR / "3. Meetings" / "summaries"
 
 # Quill MCP bridge — falls back to user-configured env var for portability
 _DEFAULT_QUILL_BRIDGE = (
@@ -26,10 +27,24 @@ _DEFAULT_QUILL_BRIDGE = (
 )
 MCP_BRIDGE_PATH = str(os.environ.get("QUILL_MCP_BRIDGE", str(_DEFAULT_QUILL_BRIDGE)))
 
-DAYS_TO_FETCH = 10
+BUSINESS_DAYS_TO_FETCH = 10
 
 def sanitize_filename(name):
     return "".join(c for c in name if c.isalnum() or c in (' ', '-', '_')).strip()
+
+
+def business_days_ago(n, today=None):
+    current = today or datetime.datetime.now(datetime.timezone.utc).date()
+    count = 0
+    while count < n:
+        current -= datetime.timedelta(days=1)
+        if current.weekday() < 5:
+            count += 1
+    return current
+
+
+def summary_filename(date_prefix, safe_title):
+    return f"{date_prefix}_{safe_title.replace(' ', '-')}.md"
 
 async def main():
     if not os.path.exists(MCP_BRIDGE_PATH):
@@ -68,8 +83,9 @@ async def main():
     read_response()
     await send_request("notifications/initialized", id=2)
     
-    cutoff_date = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=DAYS_TO_FETCH)
-    print(f"Fetching transcripts from the last {DAYS_TO_FETCH} days...")
+    cutoff_day = business_days_ago(BUSINESS_DAYS_TO_FETCH)
+    cutoff_date = datetime.datetime.combine(cutoff_day, datetime.time.min, tzinfo=datetime.timezone.utc)
+    print(f"Fetching transcripts from the last {BUSINESS_DAYS_TO_FETCH} business days...")
 
     req_id = 3
     await send_request("tools/call", {
@@ -100,7 +116,7 @@ async def main():
             print(f"Error parsing date {date_str}: {e}")
             continue
 
-    print(f"Found {len(meetings)} meetings via MCP within the last {DAYS_TO_FETCH} days.")
+    print(f"Found {len(meetings)} meetings via MCP within the last {BUSINESS_DAYS_TO_FETCH} business days.")
     
     new_meetings_count = 0
     for meeting_id, dt, title in meetings:
@@ -111,9 +127,10 @@ async def main():
         base_filename = f"{date_prefix}_{safe_title}.txt"
         archive_path = TRANSCRIPT_ARCHIVE_DIR / base_filename
         report_path = REPORT_DIR / f"{date_prefix}_{safe_title}.md"
+        summary_path = SUMMARY_DIR / summary_filename(date_prefix, safe_title)
         
         # Check if we already processed or have this
-        if archive_path.exists() or report_path.exists():
+        if archive_path.exists() or report_path.exists() or summary_path.exists():
             continue
             
         print(f"Fetching: {title} ({date_prefix})")

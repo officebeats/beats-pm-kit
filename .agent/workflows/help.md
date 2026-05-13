@@ -21,6 +21,7 @@ _Run your life with just these._
 | **`/track`**  | **Task Ledger**        | The Battlefield View. Manage Tasks and Bugs with prioritized SLAs.                               |
 | **`/meet`**   | **Meeting Copilot**    | Ingests transcripts -> Auto-generates Decisions & Action Items.                                  |
 | **`/create`** | **Deep Work**          | Generates FAANG-quality docs (`amazon-6-pager`, `meta-prd`) from context.                        |
+| **`/deck`**   | **Presentation Builder** | Creates MBB-style PPTX/PDF/web decks from a brief, sources, and optional templates.             |
 | **`/plan`**   | **Strategy**           | The War Room. Roadmaps, OKRs, and 7 Powers analysis.                                             |
 
 ## Specialist PM Commands
@@ -30,6 +31,7 @@ _For deeper execution cycles._
 | Command         | Purpose                                             |
 | :-------------- | :-------------------------------------------------- |
 | **`/transcript`** | **Quill Integration**. Pulls meetings from last 10 days. |
+| **`/beats-comms`** | Read-only scoped Slack, Teams, Outlook, and Calendar intake through MCP/connectors. |
 | **`/discover`**  | Product discovery with OST and Assumption Mapping.   |
 | **`/prioritize`** | Score and rank backlogs with RICE/ICE.               |
 | **`/fan-out`**   | Parallel multi-agent task orchestration.            |

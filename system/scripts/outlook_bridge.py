@@ -3,9 +3,10 @@ import json
 import argparse
 
 def get_outlook_messages(count=5):
-    """Fetch recent messages from Outlook using AppleScript.
+    """Fallback: fetch recent messages from Outlook using AppleScript.
     
-    Uses osascript to query the local Microsoft Outlook app.
+    Prefer read-only MS365 MCP/connector access when available. This fallback
+    uses osascript to query the local Microsoft Outlook app on macOS.
     Handles mixed message types (standard + meeting invites) gracefully.
     """
     script = f'''
@@ -72,9 +73,10 @@ def get_outlook_messages(count=5):
 
 
 def get_full_email_body(subject_filter):
-    """Fetch the full plain-text body of emails matching a subject filter.
+    """Fallback: fetch the full plain-text body of emails matching a subject filter.
     
-    Uses osascript to query the local Microsoft Outlook app.
+    Prefer read-only MS365 MCP/connector access when available. This fallback
+    uses osascript to query the local Microsoft Outlook app.
     Returns full email content for targeted extraction (not just snippets).
     
     Args:
@@ -147,9 +149,10 @@ def get_full_email_body(subject_filter):
 
 
 def get_calendar_events(days=14):
-    """Fetch upcoming calendar events using AppleScript with de-duplication.
+    """Fallback: fetch upcoming calendar events using AppleScript with de-duplication.
     
-    Queries the local Microsoft Outlook app for calendar events within N days.
+    Prefer read-only MS365 MCP/connector access when available. This fallback
+    queries the local Microsoft Outlook app for calendar events within N days.
     Only returns events from the user's personal 'Calendar' — excludes shared
     and subscribed calendars (e.g., manager's calendar) to prevent ghost meetings.
     Returns plain text listing of unique events.
