@@ -57,6 +57,18 @@ MAX_WORKING_BRIEF_CHARS = 8500
 
 WORKFLOW_LANES = {"triage", "today", "next", "later", "follow_up"}
 RESOURCE_LANES = {"important_links", "meeting_notes", "people"}
+EXTERNAL_FOLLOWUP_TERMS = (
+    "follow up",
+    "reply",
+    "respond",
+    "partner",
+    "client",
+    "customer",
+    "vendor",
+    "stakeholder",
+    "external",
+    "account",
+)
 LANE_STATUS = {
     "triage": "🔴 Triage",
     "today": "🟡 Today",
@@ -589,11 +601,7 @@ def task_match_score(card: dict[str, Any], task: dict[str, Any]) -> float:
         score += 0.18
     if "developer portal" in haystack and "developer portal" in task_title:
         score += 0.18
-    if "autonomize" in haystack and "autonomize" in task_title:
-        score += 0.14
     if "scorecard" in haystack and "scorecard" in task_title:
-        score += 0.16
-    if "solventum" in haystack and "solventum" in task_title:
         score += 0.16
 
     return min(score, 1.0)
@@ -880,23 +888,7 @@ def urgency(card: dict[str, Any], lane: str) -> dict[str, Any]:
     if any(term in combined for term in ["decision", "decide", "approval", "approve"]):
         score += 12
         drivers.append("decision text")
-    if any(
-        term in combined
-        for term in [
-            "follow up",
-            "reply",
-            "respond",
-            "partner",
-            "client",
-            "vendor",
-            "autonomize",
-            "solventum",
-            "knowtion",
-            "rsource",
-            "highmark",
-            "digitalapi",
-        ]
-    ):
+    if any(term in combined for term in EXTERNAL_FOLLOWUP_TERMS):
         score += 8
         drivers.append("external follow-up")
 
@@ -934,23 +926,7 @@ def desired_label_names(card: dict[str, Any], lane: str) -> set[str]:
         desired.add("Blocked")
     if any(term in combined for term in ["decision", "decide", "approval", "approve"]):
         desired.add("Needs Decision")
-    if any(
-        term in combined
-        for term in [
-            "follow up",
-            "reply",
-            "respond",
-            "partner",
-            "client",
-            "vendor",
-            "autonomize",
-            "solventum",
-            "knowtion",
-            "rsource",
-            "highmark",
-            "digitalapi",
-        ]
-    ):
+    if any(term in combined for term in EXTERNAL_FOLLOWUP_TERMS):
         desired.add("External Follow-up")
     return desired
 

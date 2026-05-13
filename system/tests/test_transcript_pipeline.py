@@ -15,6 +15,9 @@ from scripts import transcript_pipeline
 
 
 class TestTranscriptPipeline(unittest.TestCase):
+    def meeting_date(self, offset_days: int = 0) -> str:
+        return (dt.date.today() - dt.timedelta(days=offset_days)).isoformat()
+
     def make_repo(self, tmpdir):
         root = Path(tmpdir)
         for folder in (
@@ -51,7 +54,7 @@ class TestTranscriptPipeline(unittest.TestCase):
     def test_prepare_creates_manifest_and_packet_once(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = self.make_repo(tmpdir)
-            transcript = root / "3. Meetings/transcripts/2026-04-24_Manager Partner Sync.txt"
+            transcript = root / f"3. Meetings/transcripts/{self.meeting_date()}_Manager Partner Sync.txt"
             transcript.write_text(
                 "Direct manager and user discussed DEMO-034 and partner access request.",
                 encoding="utf-8",
@@ -73,9 +76,9 @@ class TestTranscriptPipeline(unittest.TestCase):
     def test_existing_summary_prevents_packet_creation(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = self.make_repo(tmpdir)
-            transcript = root / "3. Meetings/transcripts/2026-04-24_Existing Summary.txt"
+            transcript = root / f"3. Meetings/transcripts/{self.meeting_date()}_Existing Summary.txt"
             transcript.write_text("Already handled.", encoding="utf-8")
-            (root / "3. Meetings/summaries/2026-04-24_Existing-Summary.md").write_text("# Summary\n", encoding="utf-8")
+            (root / f"3. Meetings/summaries/{self.meeting_date()}_Existing-Summary.md").write_text("# Summary\n", encoding="utf-8")
 
             result = transcript_pipeline.prepare(root, 10, json_output=False, skip_import=True)
 
@@ -99,7 +102,7 @@ class TestTranscriptPipeline(unittest.TestCase):
     def test_validate_rejects_missing_required_summary_markers(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = self.make_repo(tmpdir)
-            transcript = root / "3. Meetings/transcripts/2026-04-24_Manager Partner Sync.txt"
+            transcript = root / f"3. Meetings/transcripts/{self.meeting_date()}_Manager Partner Sync.txt"
             transcript.write_text(
                 "Direct manager discussed partner access request and commercial risk.",
                 encoding="utf-8",
@@ -120,7 +123,7 @@ class TestTranscriptPipeline(unittest.TestCase):
     def test_validate_accepts_hybrid_summary_contract(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = self.make_repo(tmpdir)
-            transcript = root / "3. Meetings/transcripts/2026-04-24_Standalone Sync.txt"
+            transcript = root / f"3. Meetings/transcripts/{self.meeting_date()}_Standalone Sync.txt"
             transcript.write_text("General peer sync with no external access terms.", encoding="utf-8")
             prepared = transcript_pipeline.prepare(root, 10, json_output=False, skip_import=True)
             run_id = prepared["run_id"]
@@ -154,7 +157,7 @@ class TestTranscriptPipeline(unittest.TestCase):
     def test_recent_uses_only_validated_manifest_summaries(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = self.make_repo(tmpdir)
-            transcript = root / "3. Meetings/transcripts/2026-04-24_Validated Sync.txt"
+            transcript = root / f"3. Meetings/transcripts/{self.meeting_date()}_Validated Sync.txt"
             transcript.write_text("General peer sync.", encoding="utf-8")
             prepared = transcript_pipeline.prepare(root, 10, json_output=False, skip_import=True)
             run_id = prepared["run_id"]
@@ -165,7 +168,7 @@ class TestTranscriptPipeline(unittest.TestCase):
                 "\n".join(
                     [
                         "# Meeting Summary",
-                        "**Date**: 2026-04-24",
+                        f"**Date**: {self.meeting_date()}",
                         "**Participants**: Sample User",
                         "**Source Transcript**: x",
                         f"**Transcript SHA256**: {source_hash}",
@@ -175,7 +178,7 @@ class TestTranscriptPipeline(unittest.TestCase):
                         "## Action Items",
                         "| Owner | Action | Due Date |",
                         "| --- | --- | --- |",
-                        "| Sample User | Follow up | 2026-04-27 |",
+                        f"| Sample User | Follow up | {(dt.date.today() + dt.timedelta(days=3)).isoformat()} |",
                         "## Routed Updates",
                         "- No durable update required",
                         "## Key Evidence",
@@ -184,7 +187,7 @@ class TestTranscriptPipeline(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
-            (root / "3. Meetings/summaries/2026-04-25_Draft-Sync.md").write_text(
+            (root / f"3. Meetings/summaries/{self.meeting_date()}_Draft-Sync.md").write_text(
                 "# Draft Sync\n\n## Summary\n- Should not appear\n",
                 encoding="utf-8",
             )
