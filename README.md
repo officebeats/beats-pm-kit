@@ -25,13 +25,13 @@
 <!-- VALUE PROP PILLS -->
 
 <p>
-  <img src="https://img.shields.io/badge/🚀_Execution-56_PM_Skills-00A651?style=flat-square" alt="56 PM Skills"/>
+  <img src="https://img.shields.io/badge/🚀_Execution-62_PM_Skills-00A651?style=flat-square" alt="62 PM Skills"/>
    • 
   <img src="https://img.shields.io/badge/🔒_100%25_Local-Zero_Cloud_Storage-00A651?style=flat-square" alt="Privacy First"/>
    • 
   <img src="https://img.shields.io/badge/💼_Exec_Layer-The_Boss_Protocol-00A651?style=flat-square" alt="The Boss Protocol"/>
    • 
-  <img src="https://img.shields.io/badge/🤖_Agents-21_Personas-00A651?style=flat-square" alt="21 Agents"/>
+  <img src="https://img.shields.io/badge/🤖_Agents-22_Personas-00A651?style=flat-square" alt="22 Agents"/>
 </p>
 
 <br/>
@@ -50,15 +50,15 @@ Product managers drown in context — meeting notes, Slack threads, stakeholder 
 
 ## 🏗️ Architecture at a Glance
 
-A **multi-agent AI system** with 21 specialized personas orchestrating 56 PM skills across 8+ runtimes. One source of truth (`.agent/`) powers all of them with a Context Guard that auto-optimizes every request.
+A **multi-agent AI system** with 22 specialized personas orchestrating 62 PM skills across the core supported runtimes: Antigravity, Codex, Gemini CLI, Claude Code, and KiloCode. One source of truth (`.agent/`) powers all of them with a Context Guard that auto-optimizes every request.
 
 ```
 User Input → Context Guard → Agent Router → Skill Loader (JIT) → Structured Output
                                   ↓
-                        21 Persona Agents
+                        22 Persona Agents
                      (Strategy · Execution · GTM · Research · Engineering)
                                   ↓
-                          56 PM Skills (P0/P1/P2 tiered)
+                          62 PM Skills (P0/P1/P2 tiered)
                      (PRDs · Roadmaps · Meeting Synth · Task Tracking)
 ```
 
@@ -67,8 +67,8 @@ User Input → Context Guard → Agent Router → Skill Loader (JIT) → Structu
 | Decision | Rationale |
 |:---|:---|
 | **Agents over prompts** | Personas create consistent, role-scoped behavior that individual prompts can't. A "Staff PM" agent thinks differently than a "GTM Lead." |
-| **Skills as functions** | 56 modular skills (P0/P1/P2 tiered) allow JIT loading — only load what you need to manage token budgets. |
-| **Runtime-agnostic** | Same `.agent/` source of truth runs on Antigravity, Gemini CLI, Claude Code, Codex, KiloCode, Trae, Windsurf, and Zed. No vendor lock-in. |
+| **Skills as functions** | 62 modular skills (P0/P1/P2 tiered) allow JIT loading — only load what you need to manage token budgets. |
+| **Runtime-agnostic** | Same `.agent/` source of truth runs on Antigravity, Codex, Gemini CLI, Claude Code, and KiloCode. Generated adapter folders stay local and ignored. |
 | **Local-first privacy** | All company data stays on your machine. Zero cloud sync. Enterprise-safe from day one. |
 
 ## ⚖️ Tradeoffs I Made
@@ -118,7 +118,7 @@ Open the `beats-pm-kit` folder in any of these AI coding tools. **All are CLIs u
 | **[OpenAI Codex](https://github.com/openai/codex)** (CLI) | `codex` | File access, code execution |
 | **[KiloCode](https://kilocode.ai/)** (CLI) | `kilo` | File access, tool use |
 
-> **Which should I use?** If you have Antigravity, use it — the kit was designed for its parallel execution. Otherwise, any CLI above works. The kit auto-adapts via adapter folders (`.gemini/`, `.claude/`, etc.).
+> **Which should I use?** If you have Antigravity, use it — the kit was designed for its parallel execution. Otherwise, any CLI above works. The kit auto-adapts via local generated adapter folders (`.gemini/`, `.claude/`, `.codex/`, `.kilocode/`) that remain ignored by Git.
 > **Codex note:** Codex uses `AGENTS.md` as the primary adapter, `CODEX_COMMANDS.md` for explicit slash-command routing, generated `.codex/` scaffolding for runtime notes, optional promoted local skills for the highest-frequency Beats commands, and repo git hooks plus CI to keep adapters synchronized. See [system/docs/codex.md](system/docs/codex.md).
 
 ---
@@ -164,13 +164,13 @@ This kit is an **Agentic Operating System** built specifically for Product Manag
 | Task trackers       | `5. Trackers/` on YOUR machine | ❌ Never     |
 
 **No cloud sync. No telemetry. No API calls with your trade secrets.**
-Folders 1-5 are `.gitignored` by default. Your private data stays on your machine.
+Folders 0-8 are `.gitignored` by default except `.gitkeep` skeleton files. CI runs `system/scripts/privacy_guard.py --tree` so private workspace content, local runtime state, personal paths, emails, private URLs, and token-like strings cannot be reintroduced in future PRs.
 
 ---
 
 ## 🧬 Inside the Engine: Three-Tier Architecture
 
-### 🤖 1. The Virtual PM Team (21 Persona Agents)
+### 🤖 1. The Virtual PM Team (22 Persona Agents)
 
 The _Identity_ layer. Who is doing the work?
 
@@ -247,7 +247,7 @@ The _Routing_ layer. Lean slash commands that trigger complex operations. All 34
 | `/vibe`        | System health and diagnostics            |
 | `/week`        | Weekly briefing & recap                  |
 
-### 🚀 3. The Capability Engine (56 PM Skills)
+### 🚀 3. The Capability Engine (62 PM Skills)
 
 The _Execution_ layer. Skills are loaded Just-In-Time to keep the context window fast.
 
@@ -279,21 +279,26 @@ beats-pm-kit/
 ├── 5. Trackers/           # Task Master Ledgers
 │
 ├── .agent/                # ⭐ SOURCE OF TRUTH (The AI Engine)
-│   ├── agents/            # 21 Virtual PM Team Personas
+│   ├── agents/            # 22 Virtual PM Team Personas
 │   ├── rules/             # GEMINI.md (System Constitution)
-│   ├── skills/            # 56 PM Skills (P0/P1/P2 tiers)
+│   ├── skills/            # 62 PM Skills (P0/P1/P2 tiers)
 │   ├── templates/         # Document & Report Templates
-│   ├── workflows/         # 34 Protected Playbooks
+│   ├── workflows/         # 39 Protected Playbooks
 │   ├── archive/           # Archived agents & skills (recoverable)
 │   └── MANIFEST.json      # Machine-readable index with token budgets
 │
 ├── system/                # Python Core Logic
-│   ├── scripts/           # Agent dispatcher, setup, vacuum, health check
+│   ├── scripts/           # Dispatcher, setup, privacy guard, adapter sync
 │   └── tests/             # Test suites
 │
-├── GEMINI.md              # System config (v10.6.0)
+├── AGENTS.md              # Thin Codex adapter
+├── CODEX_COMMANDS.md      # Generated slash-command routing table
+├── CLAUDE.md              # Thin Claude Code adapter
+├── GEMINI.md              # Thin Antigravity/Gemini adapter
 └── README.md              # ← You are here
 ```
+
+Generated adapter directories such as `.codex/`, `.gemini/`, `.claude/`, and `.kilocode/` are intentionally not tracked. Regenerate them with `python system/scripts/sync_cli_adapters.py`.
 
 ---
 
@@ -304,9 +309,9 @@ Built on a **single source of truth** (`.agent/`) with adapters for each runtime
 | Capability | Antigravity (Desktop IDE) | Gemini (CLI) | Claude Code (CLI) | Codex (CLI) | KiloCode (CLI) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Parallel Fan-Out** | ✅ Native | ❌ Sequential | ❌ Sequential | ❌ Sequential | ❌ Sequential |
-| **Agent Personas (21)** | ✅ Full mesh | ✅ | ✅ | ✅ | ✅ |
-| **Skills (56)** | ✅ JIT load | ✅ | ✅ | ✅ | ✅ |
-| **Slash Commands (18)** | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` | ✅ `/command` |
+| **Agent Personas (22)** | ✅ Full mesh | ✅ | ✅ | ✅ | ✅ |
+| **Skills (62)** | ✅ JIT load | ✅ | ✅ | ✅ | ✅ |
+| **Slash Commands (39)** | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` | ✅ `/command` |
 | **Clipboard Ingest** | ✅ Native | ⚠️ Script | ⚠️ Script | ⚠️ Script | ⚠️ Script |
 | **Context Guard** | ✅ Auto | ✅ | ✅ | ✅ | ✅ |
 | **Speed** | ⚡ Fastest | 🟡 Good | 🟡 Good | 🟡 Good | 🟡 Good |

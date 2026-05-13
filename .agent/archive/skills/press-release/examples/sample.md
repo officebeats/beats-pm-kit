@@ -30,8 +30,8 @@ For more information about SmartInvoice, visit acmeworkflows.com/smartinvoice or
 **Media Contact:**
 Sarah Johnson
 Title: Director of Communications
-Phone: [redacted-phone]
-Email: [redacted-email]
+Phone: (555) 123-4567
+Email: press@acmeworkflows.com
 ```
 
 **Why this works:**

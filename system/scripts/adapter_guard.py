@@ -1,5 +1,4 @@
-"""
-Adapter guard for Antigravity-first cross-runtime synchronization.
+"""Adapter and privacy guard for cross-runtime synchronization.
 
 Modes:
 - check: CI-safe verification without mutating local Codex home
@@ -18,9 +17,30 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 GENERATED_REPO_FILES = [
     "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
     "CODEX_COMMANDS.md",
-    ".codex/rules.md",
-    ".claude/CLAUDE.md",
+]
+FORBIDDEN_TRACKED_PREFIXES = [
+    ".claude/",
+    ".cline/",
+    ".codex/",
+    ".context/",
+    ".continue/",
+    ".cursor/",
+    ".gemini/",
+    ".github/agents/",
+    ".github/skills/",
+    ".kilocode/",
+    ".trae/",
+    ".windsurf/",
+    ".zed/",
+    ".copilot/",
+    ".kiro/",
+    ".switchboard/",
+    ".vscode/",
+    "_agent",
+    "_agents",
 ]
 PY_COMPILE_FILES = [
     "system/utils/command_registry.py",
@@ -28,6 +48,7 @@ PY_COMPILE_FILES = [
     "system/scripts/sync_cli_adapters.py",
     "system/scripts/sync_codex_skill_adapters.py",
     "system/scripts/adapter_guard.py",
+    "system/scripts/privacy_guard.py",
     "system/scripts/install_git_hooks.py",
     "system/tests/test_adapter_guard.py",
     "system/tests/test_codex_adapter.py",
@@ -59,8 +80,19 @@ def run(cmd: list[str], *, quiet: bool = False):
     return subprocess.run(cmd, cwd=ROOT, check=True, text=True)
 
 
+def run_capture(cmd: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        cmd,
+        cwd=ROOT,
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+
 def sync_repo_adapters():
-    """Regenerate tracked adapter artifacts."""
+    """Regenerate tracked adapter stubs and ignored local adapter directories."""
     run([sys.executable, "system/scripts/sync_cli_adapters.py"])
 
 
@@ -82,9 +114,34 @@ def run_tests():
     run([sys.executable, "-m", "unittest", *TEST_MODULES, "-v"])
 
 
+def run_privacy_guard():
+    """Fail on PII, secrets, local runtime state, or private workspace content."""
+    run([sys.executable, "system/scripts/privacy_guard.py", "--tree"])
+
+
 def assert_repo_generated_files_clean():
-    """Fail if regenerating adapters changed tracked files."""
+    """Fail if regenerating adapters changed tracked stubs."""
     run(["git", "diff", "--exit-code", "--", *GENERATED_REPO_FILES])
+
+
+def assert_generated_adapter_dirs_untracked():
+    """Fail if generated runtime adapter directories are tracked."""
+    result = run_capture(["git", "ls-files", "--", *FORBIDDEN_TRACKED_PREFIXES])
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(
+            result.returncode,
+            result.args,
+            output=result.stdout,
+            stderr=result.stderr,
+        )
+    tracked = [line for line in result.stdout.splitlines() if line.strip()]
+    if tracked:
+        print("Generated or local runtime files are tracked:", file=sys.stderr)
+        for path in tracked[:80]:
+            print(f"  - {path}", file=sys.stderr)
+        if len(tracked) > 80:
+            print(f"  ... and {len(tracked) - 80} more", file=sys.stderr)
+        raise SystemExit(1)
 
 
 def main():
@@ -100,15 +157,16 @@ def main():
         default=None,
         help="Override Codex skill output directory",
     )
-    parser.add_argument(
-        "--skip-tests",
-        action="store_true",
-        help="Skip unit tests",
-    )
+    parser.add_argument("--skip-tests", action="store_true", help="Skip unit tests")
     parser.add_argument(
         "--skip-clean-check",
         action="store_true",
         help="Skip git diff verification for generated repo files",
+    )
+    parser.add_argument(
+        "--skip-privacy",
+        action="store_true",
+        help="Skip privacy guard. Intended only for local diagnosis.",
     )
     args = parser.parse_args()
 
@@ -121,14 +179,17 @@ def main():
     if args.mode == "check" and codex_output_dir is None:
         temp_dir = tempfile.TemporaryDirectory()
         codex_output_dir = temp_dir.name
-    elif args.mode == "fix":
-        quiet_codex_sync = False
 
     sync_codex_skill_adapters(codex_output_dir, quiet=quiet_codex_sync)
     compile_sources()
 
     if not args.skip_tests:
         run_tests()
+
+    assert_generated_adapter_dirs_untracked()
+
+    if not args.skip_privacy:
+        run_privacy_guard()
 
     if not args.skip_clean_check:
         assert_repo_generated_files_clean()

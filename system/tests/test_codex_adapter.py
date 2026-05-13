@@ -27,8 +27,9 @@ class TestCodexAdapter(unittest.TestCase):
     def setUpClass(cls):
         generated_files = [
             ROOT_DIR / "AGENTS.md",
+            ROOT_DIR / "CLAUDE.md",
+            ROOT_DIR / "GEMINI.md",
             ROOT_DIR / "CODEX_COMMANDS.md",
-            ROOT_DIR / "CODEX_PROMPT.md",
             ROOT_DIR / ".codex" / "rules.md",
         ]
         if any(not path.exists() for path in generated_files):
@@ -40,7 +41,6 @@ class TestCodexAdapter(unittest.TestCase):
         cls.command_index = (ROOT_DIR / "CODEX_COMMANDS.md").read_text(encoding="utf-8")
         cls.agents_md = (ROOT_DIR / "AGENTS.md").read_text(encoding="utf-8")
         cls.codex_rules = (ROOT_DIR / ".codex" / "rules.md").read_text(encoding="utf-8")
-        cls.codex_prompt = (ROOT_DIR / "CODEX_PROMPT.md").read_text(encoding="utf-8")
 
     def test_codex_command_index_exists(self):
         """Codex must have an explicit slash-command routing table."""
@@ -96,11 +96,6 @@ class TestCodexAdapter(unittest.TestCase):
         self.assertIn("follow the explicit dispatch rule in `CODEX_COMMANDS.md`", self.codex_rules)
         self.assertIn("If the user's first non-whitespace token is `/command`:", self.codex_rules)
         self.assertIn("If no workflow exists, report an unknown command and suggest `/help`", self.codex_rules)
-
-    def test_codex_prompt_mentions_explicit_dispatch(self):
-        """The manual bootstrap prompt should reinforce explicit command resolution."""
-        self.assertIn("If my message starts with /command", self.codex_prompt)
-        self.assertIn("Resolve it using CODEX_COMMANDS.md", self.codex_prompt)
 
     def test_beats_resolve_workflow_known_command(self):
         """beats.resolve_workflow should map /day to the workflow file."""
