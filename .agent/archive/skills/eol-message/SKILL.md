@@ -259,7 +259,7 @@ Use positioning statement format (reference `skills/positioning-statement/SKILL.
 ### Call to Action
 
 - [Clear next steps for customers, e.g., "Log in to your account to start the migration wizard"]
-- [Contact information for questions or assistance, e.g., "Contact our support team at [redacted-email] or call 1-800-ACME-HELP"]
+- [Contact information for questions or assistance, e.g., "Contact our support team at support@acme.com or call 1-800-ACME-HELP"]
 ```
 
 ---

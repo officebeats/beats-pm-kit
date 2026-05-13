@@ -21,3 +21,6 @@ jobs:
 
       - name: Verify runtime adapters
         run: python3 system/scripts/adapter_guard.py --mode check
+
+      - name: Verify privacy boundaries
+        run: python3 system/scripts/privacy_guard.py --tree

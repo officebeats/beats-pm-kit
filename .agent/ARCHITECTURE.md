@@ -8,9 +8,9 @@
 
 Antigravity Kit is a modular system consisting of:
 
-- **24 Specialist Agents** - Role-based AI personas
-- **50 Skills** - Domain-specific knowledge modules
-- **16 Workflows** - Slash command procedures
+- **22 Specialist Agents** - Role-based AI personas
+- **62 Skills** - Domain-specific knowledge modules
+- **39 Workflows** - Slash command procedures
 
 > **Routing:** See [ROUTING.md](rules/ROUTING.md) for the unified command → agent → skill mapping.
 > **Manifest:** See [MANIFEST.json](MANIFEST.json) for the machine-readable index with token budgets.
@@ -23,9 +23,9 @@ Antigravity Kit is a modular system consisting of:
 .agent/
 ├── ARCHITECTURE.md          # This file
 ├── MANIFEST.json            # Machine-readable skill/agent index
-├── agents/                  # 24 Specialist Agents
-├── skills/                  # 50 Skills (P0/P1/P2 tiered)
-├── workflows/               # 16 Slash Commands
+├── agents/                  # 22 Specialist Agents
+├── skills/                  # 62 Skills (P0/P1/P2 tiered)
+├── workflows/               # 39 Slash Commands
 ├── rules/                   # Global Rules + ROUTING.md
 │   ├── GEMINI.md            # Canonical system config
 │   └── ROUTING.md           # Unified routing table (SSOT)
@@ -33,11 +33,11 @@ Antigravity Kit is a modular system consisting of:
 └── scripts/                 # Validation scripts
 ```
 
-> **Note:** `.agents/` is a symlink to `.agent/` for backward compatibility.
+> **Note:** Runtime-specific adapter directories are generated locally from `.agent/` and intentionally ignored by Git.
 
 ---
 
-## 🤖 Agents (24)
+## 🤖 Agents (22)
 
 ### PM Core (P0 — loaded eagerly)
 
