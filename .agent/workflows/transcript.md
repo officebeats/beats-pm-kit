@@ -1,81 +1,118 @@
 ---
-description: Process all Quill meetings from the last 10 business days.
+description: Process recent or provided transcripts as task-master evidence and route durable updates.
 ---
 
-> **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same repo-local pipeline and durable output contract.
 
+# Workflow: `/transcript`
 
+## Default Intent Contract
 
-1. **Antigravity Native Intake (Primary)**:
-   - Use Antigravity capture for transcripts directly into `0. Incoming/`.
+Transcripts are task-master management inputs unless the user explicitly asks for a different output.
 
-1b. **Outlook Context Sync (New)**:
-   - Run the `outlook-navigator` skill to fetch recent inbox context (subjects, snippet).
-   - // turbo
-   - `python3 system/scripts/outlook_bridge.py --count 10`
+- Default output is not a generic summary; it is a task/status delta against `5. Trackers/TASK_MASTER.md`.
+- Extract action items, existing-task updates, blockers, decisions that change work, owners, due dates, source references, and follow-up candidates.
+- Run accepted new work through `task-manager` Priority Gate before adding it to active trackers.
+- Put uncertain work in the final response as concrete candidate tracker updates for the user to confirm.
+- Preserve the meeting summary and transcript archive, but lead with task-master routing in `Routed Updates`.
 
+## 1. Prepare Deterministic Intake
 
-1c. **Outlook Calendar Sync**:
-   - Run the updated bridge to fetch upcoming calendar meetings.
-   - // turbo
-   - `python3 system/scripts/outlook_bridge.py --calendar 14`
-   - **Action**: Check `5. Trackers/TASK_MASTER.md` for any tasks requiring a meeting to be scheduled. If that meeting exists in the calendar output, update the task status to `🗓️ Scheduled for [Date]` instead of completing it.
+Run the canonical pipeline before any model synthesis:
 
-1d. **Teams Context Sync (New)**:
-   - Run the Teams bridge to fetch recent chat context.
-   - // turbo
-   - `python3 system/scripts/beats.py teams --args "--json"`
-   - **Action**: Analyze for task updates (especially **BOSS-001**) and new tasks.
+```bash
+python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json
+```
 
-2. **CLI Fallback (Secondary)**:
-   - Run the targeted transcript fetcher.
-   - // turbo
-   - `python3 system/scripts/quill_mcp_client.py || python3 system/scripts/transcript_fetcher.py`
-   - **Normalization step (MANDATORY)**: After import, run `python3 system/scripts/transcript_intake.py` to move any date-stamped raw meeting files from `0. Incoming/` into `3. Meetings/transcripts/`.
+This step must:
+- Import recent Quill transcripts when available.
+- Normalize date-stamped files from `0. Incoming/` into `3. Meetings/transcripts/`.
+- Collect Outlook inbox/calendar context through read-only MS365 MCP/connector access when the user has provided bounded `/beats-comms outlook:` or `calendar:` scope; otherwise use the pipeline's AppleScript bridge fallback and label that limitation in the run report.
+- Attempt Teams context capture through read-only MS365 MCP/connector access when a bounded Teams scope is provided; otherwise fall back safely without failing the run when Teams access is unavailable.
+- Update `3. Meetings/transcripts/_manifest.json`.
+- Create synthesis packets in `3. Meetings/reports/packets/`.
+- Write a run report in `3. Meetings/reports/transcript-runs/`.
 
-3. **Parallel Identification**:
-   - Scan `3. Meetings/transcripts/` for new transcript files.
-   - Group them for batch processing.
+If using the universal gateway, prefer:
 
-4. **Parallel Synthesis (Fan-Out)**:
-   - **Action**: For ALL new transcripts, execute the `meeting-synth` skill in a SINGLE parallel turn.
-   - **Output**: Generate summary reports in `3. Meetings/summaries/`.
+```bash
+python3 system/scripts/beats.py transcript -- --json
+```
 
-5. **Stakeholder Enrichment (Post-Synthesis)**:
-   - For each person mentioned in transcripts or emails:
-     - Check if a profile exists in `4. People/{firstname-lastname}.md`.
-     - If **exists** → Append new context (role updates, quotes, decisions, preferences).
-     - If **new** → Create a profile using the standard template (see meeting-synth skill for format).
-   - Extract role/title from email signatures, meeting intros, or context clues.
-   - PII may be stored locally since `4. People/` is gitignored. Extract full contact info from email signatures (work email, cell, office, pronouns).
+## 1A. Optional Communication Intake (Read-Only)
 
-6. **Manager Meeting Auto-Enrichment**:
-   - **Trigger**: If ANY transcript involves **the user's direct manager** (direct manager).
-   - **Action**: Activate meeting-synth **Manager Meeting Mode (§ 3A)**:
-     - Update `1. Company/ways-of-working.md` with new operating agreements, scope changes, process updates, and communication preferences.
-     - Update `4. People/the manager's profile` with new quotes, commitments, and interaction patterns.
-     - Extract stakeholder dynamics the manager shared about others → update relevant `4. People/` profiles.
-     - Extract any scope changes → update `5. Trackers/TASK_MASTER.md` (add new tasks, deprioritize removed ones).
+Only include live communication context when the user explicitly asks `/transcript` to process it and provides bounded scopes such as `slack:`, `teams:`, `outlook:`, or `calendar:`.
 
-7. **Post-Meeting TASK_MASTER Sync**:
-   - After ALL meetings are synthesized, reconcile `5. Trackers/TASK_MASTER.md`:
-     - **New action items** from meetings → Add to active sprint with appropriate priority.
-     - **Completed/resolved items** mentioned in meetings → Mark as ✅.
-     - **Scope changes** → Move tasks to ON HOLD or OUT OF SCOPE as directed.
-     - **Calendar reconciliation**: Cross-check upcoming meetings against tasks with "🗓️ Scheduled" status.
-   - Run the **Priority Gate** (task-manager § 2) on any new tasks from non-manager sources.
+Communication systems are intake-only sources for task compilation:
+- Use only read-only MCP/connector operations permitted by `.agent/rules/MCP_COMMUNICATION_INTAKE.md`.
+- Never send, schedule, draft, reply, forward, react, edit, delete, pin, bookmark, create canvases/files, create chats/channels, create calendar events, create meeting invites, or otherwise mutate source-system state.
+- Preserve unread state. Do not call any tool or endpoint that marks messages read/unread, sets a read cursor, acknowledges notifications, or clears unread indicators. If a tool implies state mutation, stop and ask the user.
+- Do not use Slack/Teams/Outlook UI/browser navigation to inspect unread content. Use read-only MCP/connector reads so unread items remain under the user's manual control.
 
-8. **Recent Meetings Summary (Quill Output)**:
-   - Extract the last 5 processed meetings.
-   - For each meeting, generate a 3-point bullet summary and a list of Action Items (Owner + Task).
-   - Present the meetings in a compact bullet list format:
-     - 🟦 **[Title]**
-       - **Date**: [Formatted Date]
-       - **Participants**: [Participants]
-       - **Summary**:
-         - [Point 1]
-         - [Point 2]
-         - [Point 3]
-       - **Action Items**:
-         - [Action 1]
-         - [Action 2]
+For scoped communication sources, extract candidate tasks with:
+- Source channel/DM/thread/mail/calendar reference, timestamp or link when available, requester, owner, due date, and a short evidence snippet.
+- Priority Gate outcome from `task-manager`.
+- Routing decision: accepted task, existing-task update, or candidate requiring user confirmation.
+
+Accepted communication-derived tasks may update local repo trackers only. They must not trigger source-system follow-up messages; uncertain items should be listed in the final response for the user to handle manually.
+
+## 2. Process Only Packets
+
+Use only packet files listed in the prepare output. Do **not** broad-scan `3. Meetings/transcripts/` to decide what to process.
+
+Each packet includes:
+- Transcript source path, hash, title, date, and expected summary path.
+- Candidate task IDs and people profiles.
+- Manager / partner / customer classification hints.
+- Required routing checklist.
+- Summary contract for hybrid appendix output.
+
+## 3. Synthesize With `meeting-synth`
+
+For every packet:
+1. Read the packet JSON.
+2. Read the referenced transcript only when needed for synthesis evidence.
+3. Execute `.agent/skills/meeting-synth/SKILL.md`.
+4. Write the summary to the packet's `expected_summary_path`.
+5. Use the hybrid appendix contract:
+   - Include `Source Transcript`.
+   - Include `Transcript SHA256`.
+   - Include `Pipeline Run ID`.
+   - Include `Key Evidence` snippets.
+   - Include `Routed Updates`.
+   - Do **not** append the full raw transcript by default.
+
+## 4. Route Durable Updates
+
+Apply the packet routing checklist:
+- New action items -> `5. Trackers/TASK_MASTER.md` and detail files in `5. Trackers/tasks/` when needed.
+- Existing task updates -> task detail `Progress Log` / `Stakeholder Quotes`.
+- Stakeholder enrichment -> `4. People/{firstname-lastname}.md`.
+- Manager-mode updates -> `1. Company/ways-of-working.md`, manager profile, stakeholder dynamics, and scope changes.
+- Partner/customer updates -> relevant `2. Products/partners/` or client/product files when applicable.
+
+Task-master routing is the default path. Every accepted action item or progress signal must either update `5. Trackers/TASK_MASTER.md` / `5. Trackers/tasks/` or be listed as a candidate requiring confirmation with the source evidence and reason it was not applied.
+
+Every summary must include a `Routed Updates` section that lists the exact files updated or says `No durable update required`.
+
+Communication-derived updates must be labeled by source platform in `Routed Updates`, include only short snippets rather than full message/mail/calendar dumps, and preserve the original read/unread state.
+
+## 5. Validate
+
+After all summaries and durable updates are written, run:
+
+```bash
+python3 system/scripts/transcript_pipeline.py validate --run-id <RUN_ID> --json
+```
+
+Validation must mark each manifest item as `validated` or `validation_failed` and record missing summary contract fields.
+
+## 6. Recent Meetings Output
+
+Generate the final compact response from validated summaries:
+
+```bash
+python3 system/scripts/transcript_pipeline.py recent --limit 5 --md
+```
+
+If validation fails, report the errors and the run report path before summarizing partial results.

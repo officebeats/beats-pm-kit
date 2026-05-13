@@ -73,6 +73,16 @@ def render_skill_md(command, repo_root: Path) -> str:
         )
 
     workflow_block = "\n".join(workflow_steps)
+    contract_lines = "\n".join(
+        f"{index}. {line}" for index, line in enumerate(command.get("codex_execution_contract", []), start=1)
+    )
+    contract_block = ""
+    if contract_lines:
+        contract_block = f"""
+## Execution Contract
+
+{contract_lines}
+"""
     safety_block = ""
     if command["dangerous"]:
         note = command["note"] or "This command is state-changing. Inspect the current repo state before running it."
@@ -106,6 +116,7 @@ Use this skill only for a Beats PM kit repo.
 2. Otherwise fall back to `{repo_root}`.
 3. If neither location matches, say this skill requires a Beats PM kit repo and stop.
 {safety_block}
+{contract_block}
 
 ## Workflow
 
