@@ -23,12 +23,12 @@ Use this skill to design API resources, payloads, and failure modes with consist
 
 GET    /api/v1/users          # List users (paginated)
 POST   /api/v1/users          # Create user
-GET    /api/v1/Users/[redacted-user]      # Get user by ID
-PUT    /api/v1/Users/[redacted-user]      # Update user
-DELETE /api/v1/Users/[redacted-user]      # Delete user
+GET    /api/v1/users/:id      # Get user by ID
+PUT    /api/v1/users/:id      # Update user
+DELETE /api/v1/users/:id      # Delete user
 
 # Nested resources
-GET    /api/v1/Users/[redacted-user]/posts    # Get user's posts
+GET    /api/v1/users/:id/posts    # Get user's posts
 
 # Response format
 {

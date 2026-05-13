@@ -28,8 +28,6 @@ Only load the minimum required SKILL.md files.
 Write durable output back into the repo.
 ```
 
-If you want a reusable copy-paste version in the repo root, use [CODEX_PROMPT.md](../../CODEX_PROMPT.md).
-
 Codex slash-command routing is documented explicitly in [CODEX_COMMANDS.md](../../CODEX_COMMANDS.md).
 
 ### Step 2b: Sync Promoted Codex Skill Adapters
@@ -77,6 +75,7 @@ Those hooks will:
 - resync adapters after branch checkout
 - resync adapters after rebase/rewrite
 - verify adapter integrity before commit
+- verify privacy boundaries before commit
 
 For CI and local verification, run:
 
@@ -135,6 +134,7 @@ python3 system/scripts/sync_cli_adapters.py
 python3 system/scripts/sync_codex_skill_adapters.py
 python3 system/scripts/install_git_hooks.py
 python3 system/scripts/adapter_guard.py --mode check
+python3 system/scripts/privacy_guard.py --tree
 python3 system/scripts/beats.py help
 python3 system/scripts/beats.py codex-skills
 python3 system/scripts/beats.py hooks

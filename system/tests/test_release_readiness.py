@@ -18,9 +18,9 @@ from pathlib import Path
 # ============================================================================
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-AGENTS_DIRS = [ROOT_DIR / ".agents" / "agents", ROOT_DIR / ".agent" / "agents"]
-SKILLS_DIRS = [ROOT_DIR / ".agents" / "skills", ROOT_DIR / ".agent" / "skills"]
-WORKFLOWS_DIRS = [ROOT_DIR / ".agents" / "workflows", ROOT_DIR / ".agent" / "workflows"]
+AGENTS_DIRS = [ROOT_DIR / ".agent" / "agents"]
+SKILLS_DIRS = [ROOT_DIR / ".agent" / "skills"]
+WORKFLOWS_DIRS = [ROOT_DIR / ".agent" / "workflows"]
 SYSTEM_DIR = ROOT_DIR / "system"
 SCRIPTS_DIR = SYSTEM_DIR / "scripts"
 
@@ -71,8 +71,7 @@ class TestStructuralIntegrity(unittest.TestCase):
 
     def test_gemini_md_exists(self):
         """System config must exist for the orchestrator to function."""
-        paths = [ROOT_DIR / ".agent" / "rules" / "GEMINI.md",
-                 ROOT_DIR / ".agents" / "rules" / "GEMINI.md"]
+        paths = [ROOT_DIR / ".agent" / "rules" / "GEMINI.md"]
         self.assertTrue(any(p.exists() for p in paths),
                         "GEMINI.md missing — orchestrator has no system config")
 
@@ -230,8 +229,7 @@ class TestCrossReferenceIntegrity(unittest.TestCase):
 
     def test_gemini_md_agent_references_valid(self):
         """GEMINI.md references agents → they must exist."""
-        gemini_paths = [ROOT_DIR / ".agent" / "rules" / "GEMINI.md",
-                        ROOT_DIR / ".agents" / "rules" / "GEMINI.md"]
+        gemini_paths = [ROOT_DIR / ".agent" / "rules" / "GEMINI.md"]
         agents = set(_discover_agents().keys())
         
         for gp in gemini_paths:
@@ -244,7 +242,7 @@ class TestCrossReferenceIntegrity(unittest.TestCase):
                 self.assertTrue('cpo' in agents, "GEMINI.md references CPO but agent missing")
 
     def test_no_broken_skill_symlinks(self):
-        """If skills are symlinked between .agents/ and .agent/, both must resolve."""
+        """If active skills contain symlinks, every symlink must resolve."""
         for skills_dir in SKILLS_DIRS:
             if not skills_dir.exists():
                 continue
