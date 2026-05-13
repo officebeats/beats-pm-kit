@@ -4,24 +4,24 @@
   "generated": "2026-04-26T00:00:00Z",
   "description": "Machine-readable index of all agents, skills, and workflows. Enables cache-based loading.",
   "agents": {
-    "count": 21,
+    "count": 22,
     "directory": ".agent/agents/",
-    "active": ["Staff PM", "CPO", "Designer", "Tech Lead", "Strategist"]
+    "active": ["Staff PM", "CPO", "Designer", "Tech Lead", "Strategist", "SOP Librarian"]
   },
   "skills": {
-    "count": 57,
+    "count": 62,
     "directory": ".agent/skills/",
-    "priority": ["task-manager", "prd-author", "meeting-synth", "roadmap-suite", "deck-builder"]
+    "priority": ["task-manager", "prd-author", "meeting-synth", "roadmap-suite", "sop-manager", "deck-builder"]
   },
   "workflows": {
-    "count": 35,
+    "count": 39,
     "directory": ".agent/workflows/",
     "protected": true,
     "protectionNote": "CORE PM WORKFLOWS — never remove, archive, or rename these files in any update, vacuum, or migration.",
     "commands": [
       "/boss", "/day", "/track", "/meet", "/create", "/deck", "/plan",
       "/retro", "/vacuum", "/fan-out", "/sprint", "/discover",
-      "/review", "/teams", "/start", "/quill", "/transcript", "/week"
+      "/review", "/sop", "/teams", "/start", "/quill", "/transcript", "/week"
     ]
   }
 }

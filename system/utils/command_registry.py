@@ -151,6 +151,7 @@ def build_command_catalog(root: Path | str | None = None):
                 "codex_skill_name": skill_name,
                 "codex_supporting_files": codex.get("supporting_files", []),
                 "codex_optional_files": codex.get("optional_files", []),
+                "codex_execution_contract": codex.get("execution_contract", []),
             }
         )
 

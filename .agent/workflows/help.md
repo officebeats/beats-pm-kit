@@ -31,6 +31,7 @@ _For deeper execution cycles._
 | Command         | Purpose                                             |
 | :-------------- | :-------------------------------------------------- |
 | **`/transcript`** | **Quill Integration**. Pulls meetings from last 10 days. |
+| **`/beats-comms`** | Read-only scoped Slack, Teams, Outlook, and Calendar intake through MCP/connectors. |
 | **`/discover`**  | Product discovery with OST and Assumption Mapping.   |
 | **`/prioritize`** | Score and rank backlogs with RICE/ICE.               |
 | **`/fan-out`**   | Parallel multi-agent task orchestration.            |

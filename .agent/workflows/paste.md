@@ -1,5 +1,5 @@
 ---
-description: Capture clipboard content (text, images, files) and save for processing.
+description: Capture clipboard content (text, screenshots/images, files) and route task signals to TASK_MASTER by default.
 ---
 
 > **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
@@ -11,6 +11,42 @@ description: Capture clipboard content (text, images, files) and save for proces
 **Trigger**: User types `/paste` to capture whatever is on their clipboard, or `/paste --teams` (or `/ingest-teams`) to trigger Microsoft Teams ingest.
 
 > **Value Prop**: One command to capture **both** the active clipboard (Slack, images, files) **and** any items manually dropped into the `0. Incoming/` folder (The Drop Zone).
+
+---
+
+## Default Intent Contract
+
+Screenshots/images and transcript-like clipboard text are task-master management inputs unless the user explicitly says otherwise.
+
+- Do not ask "what should I do with this?" for a screenshot or transcript that contains visible work signal.
+- Extract tasks, status changes, blockers, owners, due dates, source references, and referenced tickets/links first.
+- Route accepted work through `task-manager` Priority Gate into `5. Trackers/TASK_MASTER.md` and `5. Trackers/tasks/`.
+- If the evidence is ambiguous, return concrete candidate tracker updates for user confirmation instead of switching to profile lookup, reply drafting, or generic summarization.
+
+---
+
+## Fast Path: Evidence Already In Chat
+
+When the screenshot/image/text is already attached to the current chat turn, skip clipboard ingest and drop-zone scanning. Treat the attachment as the captured input and proceed directly to extraction and local routing.
+
+Use this fast path when:
+- The input is a single screenshot, email/chat snippet, or short transcript excerpt.
+- It clearly maps to an existing task or a small number of candidate tasks.
+- No fresh Slack, Teams, Outlook, Calendar, Jira, or Confluence read is required.
+
+Fast-path steps:
+1. Extract status, owner, due date, dependency, source platform, participants, and exact follow-up date.
+2. Search local trackers for a matching existing item before creating anything new.
+3. Read only `TASK_MASTER.md`, the matched task detail file(s), and relevant people profiles.
+4. Save the compact local evidence transcript/report when the screenshot represents communication evidence.
+5. Apply local tracker/profile updates.
+6. Refresh task health with targeted triage:
+
+```bash
+python3 system/scripts/task_master_triage.py --apply --touched-task <TASK_ID>
+```
+
+Run the full `/paste` dual-path capture only when the user invokes `/paste`, asks to ingest the clipboard/drop zone, or the attached evidence is ambiguous enough that local capture/scanning is needed.
 
 ---
 
@@ -31,11 +67,11 @@ Get-ChildItem -Path "0. Incoming/" -Recurse | Where-Object { $_.PSIsContainer -e
 
 ## ⚡ Step 2: Intake & Classification
     - **Option A (Text)**: Append to `0. Incoming/raw/YYYY-MM-DD_clipboard.md`.
-    - **Option B (Image)**: Save to `0. Incoming/staging/` and invoke `visual-processor`.
+    - **Option B (Image/Screenshot)**: Save to `0. Incoming/staging/`, extract visible text/context, then treat as task-master evidence by default.
     - **Option C (File)**: Move to `0. Incoming/staging/`.
     - **Option D (Teams Context - if `--teams` flag used)**: Run `python3 system/scripts/beats.py teams --args "--json"` to ingest Teams chat.
     - Use Antigravity clipboard ingest for text/images/files.
-    - Proceed directly to classification via `inbox-processor`.
+    - Proceed directly to task classification via `inbox-processor` plus `task-manager`.
 
 5.  **CLI Fallback (Secondary)**:
     - Run: `python system/scripts/clipboard_bridge.py`
@@ -44,22 +80,25 @@ Get-ChildItem -Path "0. Incoming/" -Recurse | Where-Object { $_.PSIsContainer -e
 6.  **Execute File Organizer (The Concierge)**:
     - Run: `python system/scripts/file_organizer.py`
     - Scans `0. Incoming/` for new files.
-    - Prompts user for intent: "Task Source? Reference? Spec?"
+    - Do not prompt for intent when the item is a screenshot/image or transcript with task/status signal; assume task-master management.
+    - Prompt only when the item has no task signal and the durable destination is unclear.
     - Moves processed files to `0. Incoming/processed/`.
 
 7.  **Content Detection Priority**:
     - **Files** (copied from file manager) → Saved to `0. Incoming/staging/`
-    - **Image** (screenshot to clipboard) → Saved to `0. Incoming/staging/`
-    - **Text** (copied text) → Saved to `0. Incoming/raw/`
+    - **Image** (screenshot to clipboard) → Saved to `0. Incoming/staging/`, then extracted for `TASK_MASTER.md` updates by default
+    - **Text** (copied text) → Saved to `0. Incoming/raw/`; transcript-like text is routed as task-master evidence by default
     - **Teams** (if `--teams` used) → Fetch via Teams API/Bridge and route to `inbox-processor`.
 
-8.  **Classification** (via `inbox-processor` skill):
+8.  **Classification** (via `inbox-processor` and `task-manager` skills):
     - **Bug** (error, crash, broken) → Route to `5. Trackers/bugs/bugs-master.md`
     - **Boss Ask** (VIP speaker, urgent, ASAP) → Route to `5. Trackers/critical/boss-requests.md`
     - **Task** (TODO, action item, deadline) → Route to `5. Trackers/TASK_MASTER.md`
+    - **Existing Task Update** (status/progress/blocker on known work) → Update `TASK_MASTER.md` and the matching detail file
     - **Decision** (decided, agreed, go/no-go) → Route to `5. Trackers/DECISION_LOG.md`
     - **FYI** (heads up, no action) → Keep in `0. Incoming/fyi/`
-    - **Unclear** → Route to `BRAIN_DUMP.md` (Parking Lot)
+    - **Unclear screenshot/transcript** → Return candidate `TASK_MASTER.md` updates for confirmation
+    - **Unclear non-task input** → Route to `BRAIN_DUMP.md` (Parking Lot)
 
 9.  **Entity Tagging**:
     - Tag with `[Company A]`, `[Company B]`, or ask if unclear.
@@ -93,5 +132,5 @@ Agent: --- 📋 Clipboard Bridge (/paste) ---
 
 - **Cross-Platform**: Works on Windows and Mac.
 - **File Manager Support**: Copy files in Explorer/Finder → `/paste` → They're imported.
-- **Screenshot Support**: Win+Shift+S or Cmd+Shift+4 → `/paste` → Image saved.
+- **Screenshot Support**: Win+Shift+S or Cmd+Shift+4 → `/paste` → Image saved and interpreted as task-master evidence by default.
 - **Zero-Loss**: Every input is logged somewhere. If uncertain, defaults to `BRAIN_DUMP.md`.
