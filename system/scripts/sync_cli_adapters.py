@@ -37,6 +37,9 @@ from system.utils.command_registry import (
     get_promoted_codex_commands,
     get_runtime_priority,
 )
+from system.utils.stdio import force_utf8_stdio
+
+force_utf8_stdio()
 
 # Folder aliases that should all point to .agent/
 FOLDER_ALIASES = ['.agents', '_agent', '_agents']
@@ -45,7 +48,7 @@ FOLDER_ALIASES = ['.agents', '_agent', '_agents']
 CLI_DIRS = {
     '.kilocode': ['agents', 'skills', 'templates', 'workflows', 'rules'],
     '.gemini':   ['agents', 'skills', 'templates', 'workflows'],
-    '.codex':    ['agents', 'skills', 'templates', 'workflows'],
+    '.codex':    ['skills', 'templates', 'workflows'],
 }
 
 # Subdirectories to symlink inside CLI dirs (relative targets)
@@ -116,6 +119,33 @@ def is_valid_symlink(path, expected_target_name=None):
         return False  # Broken symlink
     return True
 
+def runtime_display_name(runtime):
+    """Return the human-facing runtime name used in generated docs."""
+    labels = {
+        "antigravity": "Antigravity",
+        "codex": "Codex",
+        "claude": "Claude Code",
+        "gemini": "Gemini CLI",
+        "kilocode": "KiloCode",
+        "other-clis": "other CLIs",
+    }
+    return labels.get(runtime, runtime.title())
+
+def count_public_skills(skills_dir):
+    """Count public skill packages, excluding generated source-command mirrors."""
+    if not os.path.isdir(skills_dir):
+        return 0
+    count = 0
+    for name in os.listdir(skills_dir):
+        path = os.path.join(skills_dir, name)
+        if (
+            os.path.isdir(path)
+            and not name.startswith('source-command-')
+            and os.path.exists(os.path.join(path, 'SKILL.md'))
+        ):
+            count += 1
+    return count
+
 # ─── Phase 1: Folder Aliases ────────────────────────────────────────────────
 
 def sync_folder_aliases():
@@ -146,11 +176,31 @@ def sync_cli_directories():
 
             if is_valid_symlink(link_path):
                 log_ok(f'{cli_dir}/{subdir} -> .agent/{subdir} (valid)')
+            elif os.path.isdir(link_path):
+                log_ok(f'{cli_dir}/{subdir} existing local directory (kept)')
             else:
                 if create_symlink(link_path, target, is_dir=True):
                     log_fix(f'{cli_dir}/{subdir} -> .agent/{subdir} (repaired)')
                 else:
                     log_err(f'{cli_dir}/{subdir} -> .agent/{subdir} (FAILED)')
+
+def ensure_codex_agents_dir():
+    """Keep `.codex/agents` as a real directory for project custom agents."""
+    codex_dir = os.path.join(BASE_DIR, '.codex')
+    agents_dir = os.path.join(codex_dir, 'agents')
+    os.makedirs(codex_dir, exist_ok=True)
+
+    if os.path.islink(agents_dir):
+        os.unlink(agents_dir)
+        os.makedirs(agents_dir, exist_ok=True)
+        log_fix('.codex/agents symlink replaced with project custom-agent directory')
+    elif os.path.isdir(agents_dir):
+        log_ok('.codex/agents project custom-agent directory (valid)')
+    elif os.path.exists(agents_dir):
+        log_err('.codex/agents exists but is not a directory')
+    else:
+        os.makedirs(agents_dir, exist_ok=True)
+        log_fix('.codex/agents project custom-agent directory created')
 
 # ─── Phase 3: CLAUDE.md Generation ──────────────────────────────────────────
 
@@ -219,11 +269,11 @@ def generate_agents_md():
 
     # List current skills
     skills_dir = os.path.join(CANONICAL, 'skills')
-    skill_count = 0
-    if os.path.isdir(skills_dir):
-        skill_count = len([d for d in os.listdir(skills_dir) if os.path.isdir(os.path.join(skills_dir, d))])
+    skill_count = count_public_skills(skills_dir)
+    primary = runtime_display_name(runtime_priority['primary'])
+    secondary = runtime_display_name(runtime_priority['secondary'])
 
-    content = f"""# AGENTS.md — Beats PM Antigravity Brain (Codex Adapter)
+    content = f"""# AGENTS.md — Beats PM Kit (Codex-First Adapter)
 
 > **Auto-generated** by `sync_cli_adapters.py`. DO NOT EDIT DIRECTLY.
 > Source of truth: `.agent/` directory.
@@ -238,15 +288,17 @@ This project uses a **Three-Tier Agent Architecture**:
 
 ## Runtime Priority
 
-1. **{runtime_priority['primary'].title()} first** — canonical command behavior and orchestration semantics.
-2. **{runtime_priority['secondary'].title()} second** — native-feeling adapters only for the most-used commands: {promoted_text}
+1. **{primary} first** — optimized default runtime, slash-command dispatch, native skill adapters, and project-scoped custom agents.
+2. **{secondary} second** — compatibility runtime that reuses the same `.agent/` source of truth without owning the canonical Codex path.
 3. **Compatibility CLIs next** — `{', '.join(runtime_priority['compatibility'])}` use generated adapters without redefining workflow logic.
+
+Promoted Codex skills: {promoted_text}
 
 ## Codex Startup
 
 On a new Codex session:
 
-1. Read `SETTINGS.md` and `STATUS.md` first.
+1. Read `SETTINGS.md` and `STATUS.md` when they exist; if `STATUS.md` is absent, use the relevant tracker files under `5. Trackers/`.
 2. Treat `.agent/` as the source of truth.
 3. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
 4. Load only the minimum `SKILL.md` files needed for the current task.
@@ -286,7 +338,7 @@ All of these directories resolve to `.agent/`:
 
 ## Key Files
 
-- `GEMINI.md` — Primary system config (Gemini CLI / Antigravity)
+- `GEMINI.md` — Runtime-neutral source system config
 - `.claude/CLAUDE.md` — Claude Code adapter (auto-generated)
 - `CODEX_COMMANDS.md` — Codex slash-command index (auto-generated)
 - `.codex/rules.md` — Codex runtime notes (auto-generated)
@@ -374,12 +426,12 @@ def generate_codex_rules():
 ## Codex Runtime Notes
 
 - Use `AGENTS.md` as the primary inventory of agents, workflows, and skills.
-- On session start, read `SETTINGS.md` and `STATUS.md` before doing deeper work.
+- On session start, read `SETTINGS.md` and `STATUS.md` when they exist; if `STATUS.md` is absent, use the relevant tracker files under `5. Trackers/`.
 - When the user invokes `/command`, follow the explicit dispatch rule in `CODEX_COMMANDS.md`.
 - Prefer promoted Codex skill adapters for the highest-frequency Beats commands when they are installed locally.
 - Load only the `SKILL.md` files required for the current task.
 - Translate Antigravity-only primitives into Codex equivalents instead of failing.
-- Keep all durable output in the repo so Antigravity and Codex share the same state.
+- Keep all durable output in the repo so Codex and compatibility runtimes share the same state.
 - For manual re-bootstrap, use `CODEX_PROMPT.md`.
 
 ## Promoted Codex Skills
@@ -403,10 +455,38 @@ If the user's first non-whitespace token is `/command`:
         f.write(final)
     log_ok(f'.codex/rules.md generated ({len(final)} bytes)')
 
-# ─── Phase 7: .claude/ Symlinks ─────────────────────────────────────────────
+def generate_codex_prompt():
+    print('\nPhase 7: CODEX_PROMPT.md Generation')
+    prompt_path = os.path.join(BASE_DIR, 'CODEX_PROMPT.md')
+    command_catalog = get_command_catalog()
+    workflow_count = len(command_catalog)
+
+    content = f"""# CODEX_PROMPT.md -- Manual Codex Bootstrap Prompt
+
+Use this prompt when a Codex session needs to be manually re-anchored to the Beats PM Kit.
+
+You are working in the Beats PM Kit repository.
+
+1. Read `AGENTS.md` first.
+2. Read `SETTINGS.md` and `STATUS.md` when they exist; if `STATUS.md` is absent, use the relevant tracker files under `5. Trackers/`.
+3. Treat `.agent/` as the source of truth for agents, workflows, skills, templates, and rules.
+4. If my message starts with /command, treat it as an explicit workflow invocation.
+5. Resolve it using CODEX_COMMANDS.md, then read the mapped `.agent/workflows/<command>.md` file before doing deeper work.
+6. Load only the minimum `SKILL.md` files needed for the current task.
+7. Translate Antigravity-only primitives into Codex-native actions instead of failing.
+8. Keep durable outputs in the repo's standard folders so Codex and compatibility runtimes share state.
+
+This checkout currently exposes {workflow_count} slash workflows through `CODEX_COMMANDS.md`.
+"""
+
+    with open(prompt_path, 'w', encoding='utf-8') as f:
+        f.write(content)
+    log_ok(f'CODEX_PROMPT.md generated ({workflow_count} workflows)')
+
+# ─── Phase 8: .claude/ Symlinks ─────────────────────────────────────────────
 
 def sync_claude_dir():
-    print('\nPhase 7: .claude/ Directory Sync')
+    print('\nPhase 8: .claude/ Directory Sync')
     claude_dir = os.path.join(BASE_DIR, '.claude')
     os.makedirs(claude_dir, exist_ok=True)
 
@@ -438,10 +518,12 @@ def main():
 
     sync_folder_aliases()
     sync_cli_directories()
+    ensure_codex_agents_dir()
     generate_claude_md()
     generate_agents_md()
     generate_codex_commands()
     generate_codex_rules()
+    generate_codex_prompt()
     sync_claude_dir()
 
     # Summary

@@ -27,6 +27,9 @@ __pycache__/
 system/config/trello_config.json
 5. Trackers/.trello_ledger.json
 
+# Local Obsidian vault paths, MCP keys, and sync preferences
+system/config/obsidian.local*.json
+
 # Local MCP runtime configuration, OAuth state, and diagnostics
 system/config/mcp.local*.json
 system/config/mcp.*.local.json
@@ -166,8 +169,14 @@ manager_notes_clean.txt
 /_agent
 /_agents
 /.kilocode/
-/.codex/
+/.codex/*
+!/.codex/
+!/.codex/agents/
+!/.codex/agents/*.toml
 /AGENTS.md
+
+# Codex Action output artifacts
+/codex-output.md
 
 # ----------------------------------------
 # 6. LEGACY FOLDERS (SHOULD BE DELETED)

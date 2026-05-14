@@ -84,7 +84,8 @@ class TestCodexAdapter(unittest.TestCase):
     def test_agents_md_enforces_slash_command_dispatch(self):
         """AGENTS.md should tell Codex to treat leading /commands as workflow dispatch."""
         self.assertIn("## Runtime Priority", self.agents_md)
-        self.assertIn("**Antigravity first**", self.agents_md)
+        self.assertIn("**Codex first**", self.agents_md)
+        self.assertIn("**Antigravity second**", self.agents_md)
         self.assertIn("## Slash Command Dispatch", self.agents_md)
         self.assertIn("If the user's message starts with `/command`:", self.agents_md)
         self.assertIn("Resolve it using `CODEX_COMMANDS.md`", self.agents_md)
