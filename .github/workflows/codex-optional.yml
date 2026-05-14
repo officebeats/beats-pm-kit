@@ -1,0 +1,47 @@
+name: Optional Codex Checks
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: "Prompt file to run"
+        required: true
+        default: ".github/codex/prompts/release-readiness.md"
+
+jobs:
+  codex:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    env:
+      OPENAI_API_KEY_PRESENT: ${{ secrets.OPENAI_API_KEY != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Run deterministic adapter guard first
+        if: ${{ env.OPENAI_API_KEY_PRESENT == 'true' }}
+        run: python3 system/scripts/adapter_guard.py --mode check
+
+      - name: Skip when OPENAI_API_KEY is absent
+        if: ${{ env.OPENAI_API_KEY_PRESENT != 'true' }}
+        run: echo "OPENAI_API_KEY is not configured; skipping optional Codex check."
+
+      - name: Run Codex
+        if: ${{ env.OPENAI_API_KEY_PRESENT == 'true' }}
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: ${{ inputs.prompt }}
+          output-file: codex-output.md
+          safety-strategy: drop-sudo
+          sandbox: read-only
+
+      - name: Upload Codex output
+        if: ${{ env.OPENAI_API_KEY_PRESENT == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-output
+          path: codex-output.md
+          if-no-files-found: ignore

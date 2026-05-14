@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "runtime_priority": {
-    "primary": "antigravity",
-    "secondary": "codex",
+    "primary": "codex",
+    "secondary": "antigravity",
     "compatibility": [
       "claude",
       "gemini",
@@ -80,6 +80,107 @@
           "Extract visible task/status signals, source references, owners, due dates, blockers, and referenced ticket/link IDs before asking for follow-up.",
           "Route accepted screenshot, transcript, or clipboard work through the task-manager Priority Gate into `5. Trackers/TASK_MASTER.md` and task detail files.",
           "When evidence is ambiguous, return exact candidate tracker updates for confirmation instead of defaulting to profile lookup, reply drafting, or generic summarization."
+        ]
+      }
+    },
+    "obsidian": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-obsidian",
+        "supporting_files": [
+          ".agent/workflows/obsidian.md",
+          "system/scripts/obsidian_bridge.py",
+          "system/scripts/obsidian_sync.py",
+          "system/docs/obsidian.md",
+          "OBSIDIAN.md"
+        ],
+        "optional_files": [
+          "system/config/obsidian.local.json",
+          "system/config/mcp.obsidian.local.json"
+        ],
+        "execution_contract": [
+          "Run `python3 system/scripts/obsidian_bridge.py status` before configuring or syncing Obsidian.",
+          "Prefer local filesystem, Obsidian URI, and Obsidian CLI behavior before optional MCP.",
+          "Store vault paths and REST API keys only in ignored local config files.",
+          "Use `sync --dry-run` before `sync --apply` when syncing into an external vault.",
+          "Do not delete human-created Obsidian notes; `--clean` may remove only Beats-managed files with managed frontmatter.",
+          "Generate MCP config only as placeholders unless the user provides local secrets in ignored config or environment variables."
+        ]
+      }
+    },
+    "discover": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-discover",
+        "supporting_files": [
+          ".agent/workflows/discover.md",
+          ".agent/skills/discovery-engine/SKILL.md",
+          ".agent/skills/assumption-mapper/SKILL.md"
+        ],
+        "optional_files": [
+          "2. Products",
+          "5. Trackers/TASK_MASTER.md"
+        ],
+        "execution_contract": [
+          "Use `discovery-engine` and `assumption-mapper`; do not follow stale references to missing `discovery-coach` assets.",
+          "Start from the user's outcome or existing product context before proposing solutions.",
+          "Persist only accepted discovery artifacts under the appropriate ignored product folder."
+        ]
+      }
+    },
+    "prioritize": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-prioritize",
+        "supporting_files": [
+          ".agent/workflows/prioritize.md",
+          ".agent/skills/roadmapping-suite/SKILL.md",
+          ".agent/skills/task-manager/SKILL.md"
+        ],
+        "optional_files": [
+          "5. Trackers/TASK_MASTER.md",
+          "2. Products"
+        ],
+        "execution_contract": [
+          "Use `roadmapping-suite` for RICE, ICE, MoSCoW, Kano, and weighted scoring; do not follow stale references to missing `prioritization-engine` assets.",
+          "Default to RICE for mixed backlogs unless the user names another framework.",
+          "Return the ranked scorecard inline unless the user asks to write it into a product folder."
+        ]
+      }
+    },
+    "review": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-review",
+        "supporting_files": [
+          ".agent/workflows/review.md",
+          ".agent/skills/code-review/SKILL.md",
+          ".agent/skills/pr-review/SKILL.md",
+          ".agent/skills/security-audit/SKILL.md"
+        ],
+        "optional_files": [
+          "system/scripts/vibe_check.py",
+          "system/scripts/privacy_guard.py"
+        ],
+        "execution_contract": [
+          "Default to a code-review stance for code targets: findings first, ordered by severity, with file and line references.",
+          "Use doc or release-review framing only when the user asks for those review types.",
+          "Keep source-system and repository mutations out of review mode unless the user explicitly asks for fixes."
+        ]
+      }
+    },
+    "office-cli": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-office-cli",
+        "supporting_files": [
+          ".agent/workflows/office-cli.md",
+          ".agent/skills/office-cli/SKILL.md"
+        ],
+        "execution_contract": [
+          "Check `officecli --version` before attempting installation or document work.",
+          "Treat installation as explicit setup work; use document generation only after OfficeCLI availability is verified.",
+          "Validate generated Office files with `officecli validate` when creating or editing them."
         ]
       }
     },
@@ -373,6 +474,24 @@
         ],
         "optional_files": [
           "5. Trackers/WEEKLY_PLAN.md"
+        ]
+      }
+    },
+    "vibe": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-vibe",
+        "supporting_files": [
+          ".agent/workflows/vibe.md",
+          ".agent/skills/core-utility/SKILL.md",
+          "system/scripts/context_health.py",
+          "system/scripts/adapter_guard.py",
+          "system/scripts/codex_doctor.py"
+        ],
+        "execution_contract": [
+          "Run read-only diagnostics by default; use `context_health.py --check` and `beats.py codex-doctor` before suggesting repair actions.",
+          "Do not run Dotcontext repair, adapter fix, or cleanup flows unless the user explicitly asks for setup or repair.",
+          "Report warnings separately from hard failures."
         ]
       }
     }

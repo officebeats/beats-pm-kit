@@ -1,7 +1,7 @@
 """
 Codex skill adapter generation tests
 ====================================
-Protects the Antigravity-first / Codex-second command promotion model.
+Protects the Codex-first command promotion model.
 """
 
 import sys
@@ -63,12 +63,20 @@ class TestCodexSkillAdapters(unittest.TestCase):
             self.assertIn("Treat screenshots/images and transcript-like clipboard text as task-master management input", content)
             self.assertIn("defaulting to profile lookup, reply drafting, or generic summarization", content)
 
-    def test_dispatch_only_commands_do_not_generate_skills(self):
-        """Commands not promoted in the registry should not be emitted as Codex skills."""
+    def test_new_codex_first_workflows_generate_skills(self):
+        """Codex-first promoted workflows should emit native skill adapters."""
         with tempfile.TemporaryDirectory() as tmpdir:
             sync_codex_skill_adapters.sync_promoted_skills(output_dir=tmpdir, root=ROOT_DIR)
-            self.assertFalse((Path(tmpdir) / "beats-discover").exists())
-            self.assertFalse((Path(tmpdir) / "beats-prioritize").exists())
+            for skill_name in [
+                "beats-discover",
+                "beats-prioritize",
+                "beats-review",
+                "beats-office-cli",
+                "beats-obsidian",
+                "beats-vibe",
+            ]:
+                with self.subTest(skill_name=skill_name):
+                    self.assertTrue((Path(tmpdir) / skill_name / "SKILL.md").exists())
 
     def test_guarded_update_skill_mentions_safety_block(self):
         """Guarded native skills should include an explicit Codex safety section."""
@@ -109,6 +117,36 @@ class TestCodexSkillAdapters(unittest.TestCase):
             self.assertIn("calendar windows are forward-looking", content)
             self.assertIn("chat_intake_state.py chunks", content)
             self.assertIn("Never create, send, forward, or reply to email", content)
+
+    def test_promoted_supporting_files_exist_when_required(self):
+        """New Codex-first promoted workflows should resolve to repo-owned contracts."""
+        codex_first_commands = {
+            "discover",
+            "prioritize",
+            "review",
+            "office-cli",
+            "obsidian",
+            "vibe",
+        }
+        for command in get_promoted_codex_commands(ROOT_DIR):
+            if command["name"] not in codex_first_commands:
+                continue
+            with self.subTest(command=command["name"]):
+                for relative in command["codex_supporting_files"]:
+                    self.assertTrue((ROOT_DIR / relative).exists(), relative)
+
+    def test_generated_descriptions_stay_concise(self):
+        """Codex skill descriptions should stay compact for skill discovery."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sync_codex_skill_adapters.sync_promoted_skills(output_dir=tmpdir, root=ROOT_DIR)
+            for skill_md in Path(tmpdir).glob("*/SKILL.md"):
+                content = skill_md.read_text(encoding="utf-8")
+                description = next(
+                    line.removeprefix("description: ").strip()
+                    for line in content.splitlines()
+                    if line.startswith("description: ")
+                )
+                self.assertLessEqual(len(description), 300, skill_md.name)
 
 
 if __name__ == "__main__":

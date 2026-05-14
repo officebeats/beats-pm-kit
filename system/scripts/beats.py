@@ -14,15 +14,20 @@ SCRIPT_COMMANDS = {
     "runtime": ["python3", "system/scripts/detect_runtime.py", "--human"],
     "sync": ["python3", "system/scripts/sync_cli_adapters.py"],
     "codex-skills": ["python3", "system/scripts/sync_codex_skill_adapters.py"],
+    "codex-doctor": ["python3", "system/scripts/codex_doctor.py"],
+    "codex-setup": ["python3", "system/scripts/codex_setup.py"],
     "guard": ["python3", "system/scripts/adapter_guard.py", "--mode", "fix"],
     "hooks": ["python3", "system/scripts/install_git_hooks.py"],
-    "health": ["python3", "system/scripts/context_health.py"],
+    "health": ["python3", "system/scripts/context_health.py", "--check"],
+    "health-repair": ["python3", "system/scripts/context_health.py", "--repair"],
+    "inventory": ["python3", "system/scripts/feature_inventory.py"],
     "chat-intake": ["python3", "system/scripts/chat_intake_state.py"],
     "atlassian-context": ["python3", "system/scripts/atlassian_context_state.py"],
     "transcript": ["python3", "system/scripts/transcript_pipeline.py"],
     "task-triage": ["python3", "system/scripts/task_master_triage.py"],
     "outlook": ["python3", "system/scripts/outlook_bridge.py"],
     "teams": ["python3", "system/scripts/teams_bridge.py"],
+    "obsidian": ["python3", "system/scripts/obsidian_bridge.py"],
     "vibe": ["python3", "system/scripts/vibe_check.py"],
     "vacuum": ["python3", "system/scripts/vacuum.py"],
 }
@@ -34,6 +39,9 @@ WORKFLOW_HINTS = {
 
 def run_cmd(cmd):
     """Run a concrete script command."""
+    cmd = list(cmd)
+    if cmd and cmd[0] in {"python", "python3"}:
+        cmd[0] = sys.executable
     script_path = ROOT / cmd[1]
     if not script_path.exists():
         print(f"Missing script: {cmd[1]}")
@@ -119,6 +127,11 @@ def main():
         if extra_args and extra_args[0] in {"prepare", "validate", "recent"}:
             return run_cmd(command_config + extra_args)
         return run_cmd(command_config + ["prepare"] + extra_args)
+
+    if args.command == "obsidian":
+        command_config = SCRIPT_COMMANDS[args.command]
+        extra_args = collect_extra_args(args)
+        return run_cmd(command_config + (extra_args or ["status"]))
 
     if args.command in WORKFLOW_HINTS:
         print_workflow_hint(args.command)

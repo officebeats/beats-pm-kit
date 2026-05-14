@@ -2,36 +2,36 @@
 
 <!-- HERO BANNER -->
 
-<img src="system/docs/assets/hero-banner.png" alt="Beats PM Antigravity Kit - The Ultimate AI Operating System for Product Managers" width="100%"/>
+<img src="system/docs/assets/hero-banner.png" alt="Beats PM Kit - Codex-first AI operating system for product managers" width="100%"/>
 
 <br/>
 
-# 🧠 Beats PM Antigravity Kit
+# 🧠 Beats PM Kit
 
-### **The AI Operating System That Thinks Like a 10x Product Manager**
+### **A Codex-first AI operating system for product managers**
 
-<p><strong>Stop drowning in noise. Paste anything. Get structured PRDs, roadmaps, and tasks. Zero manual tracking. 100% Local Privacy.</strong></p>
+<p><strong>Stop drowning in noise. Paste anything. Get structured PRDs, roadmaps, and tasks. Local-first repo storage, runtime-neutral state.</strong></p>
 
 <!-- BADGES -->
 
 <p>
-  <img src="https://img.shields.io/badge/Powered%20by-Antigravity-00A651?style=for-the-badge&logo=google&logoColor=white&labelColor=1a1a2e" alt="Antigravity Framework"/>
+  <img src="https://img.shields.io/badge/Optimized%20for-Codex-00A651?style=for-the-badge&logo=openai&logoColor=white&labelColor=1a1a2e" alt="Optimized for Codex"/>
   &nbsp;
   <a href="https://github.com/officebeats/beats-pm-kit/stargazers"><img src="https://img.shields.io/github/stars/officebeats/beats-pm-kit?style=for-the-badge&logo=github&labelColor=1a1a2e&color=E6B422" alt="GitHub Stars"/></a>
   &nbsp;
-  <img src="https://img.shields.io/badge/Architected_for-MAANG_Leaders-4285F4?style=for-the-badge&labelColor=1a1a2e" alt="FAANG Ready"/>
+  <img src="https://img.shields.io/badge/Runtime-State_Neutral-4285F4?style=for-the-badge&labelColor=1a1a2e" alt="Runtime-neutral state"/>
 </p>
 
 <!-- VALUE PROP PILLS -->
 
 <p>
-  <img src="https://img.shields.io/badge/🚀_Execution-56_PM_Skills-00A651?style=flat-square" alt="56 PM Skills"/>
+  <img src="https://img.shields.io/badge/Execution-62_PM_Skills-00A651?style=flat-square" alt="62 PM Skills"/>
    • 
-  <img src="https://img.shields.io/badge/🔒_100%25_Local-Zero_Cloud_Storage-00A651?style=flat-square" alt="Privacy First"/>
+  <img src="https://img.shields.io/badge/Privacy-Local_First_Storage-00A651?style=flat-square" alt="Local-first storage"/>
    • 
-  <img src="https://img.shields.io/badge/💼_Exec_Layer-The_Boss_Protocol-00A651?style=flat-square" alt="The Boss Protocol"/>
+  <img src="https://img.shields.io/badge/Exec_Layer-The_Boss_Protocol-00A651?style=flat-square" alt="The Boss Protocol"/>
    • 
-  <img src="https://img.shields.io/badge/🤖_Agents-21_Personas-00A651?style=flat-square" alt="21 Agents"/>
+  <img src="https://img.shields.io/badge/Agents-22_Personas-00A651?style=flat-square" alt="22 Agents"/>
 </p>
 
 <br/>
@@ -50,15 +50,15 @@ Product managers drown in context — meeting notes, Slack threads, stakeholder 
 
 ## 🏗️ Architecture at a Glance
 
-A **multi-agent AI system** with 21 specialized personas orchestrating 56 PM skills across 8+ runtimes. One source of truth (`.agent/`) powers all of them with a Context Guard that auto-optimizes every request.
+A **multi-agent AI system** with 22 specialized personas orchestrating 62 public PM skills across 5 supported runtimes. Codex is the optimized default, while one source of truth (`.agent/`) keeps the state and playbooks portable.
 
 ```
 User Input → Context Guard → Agent Router → Skill Loader (JIT) → Structured Output
                                   ↓
-                        21 Persona Agents
+                        22 Persona Agents
                      (Strategy · Execution · GTM · Research · Engineering)
                                   ↓
-                          56 PM Skills (P0/P1/P2 tiered)
+                          62 PM Skills (P0/P1/P2 tiered)
                      (PRDs · Roadmaps · Meeting Synth · Task Tracking)
 ```
 
@@ -67,9 +67,9 @@ User Input → Context Guard → Agent Router → Skill Loader (JIT) → Structu
 | Decision | Rationale |
 |:---|:---|
 | **Agents over prompts** | Personas create consistent, role-scoped behavior that individual prompts can't. A "Staff PM" agent thinks differently than a "GTM Lead." |
-| **Skills as functions** | 56 modular skills (P0/P1/P2 tiered) allow JIT loading — only load what you need to manage token budgets. |
-| **Runtime-agnostic** | Same `.agent/` source of truth runs on Antigravity, Gemini CLI, Claude Code, Codex, KiloCode, Trae, Windsurf, and Zed. No vendor lock-in. |
-| **Local-first privacy** | All company data stays on your machine. Zero cloud sync. Enterprise-safe from day one. |
+| **Skills as functions** | 62 modular public skills (P0/P1/P2 tiered) allow JIT loading — only load what you need to manage token budgets. |
+| **Codex-first, runtime-neutral** | Codex gets the optimized adapter path, while Antigravity, Gemini CLI, Claude Code, and KiloCode reuse the same `.agent/` source of truth. |
+| **Local-first privacy** | Repo storage stays local by default. Your selected AI runtime or model provider may still process prompts, tool outputs, and attachments. |
 
 ## ⚖️ Tradeoffs I Made
 
@@ -77,7 +77,7 @@ User Input → Context Guard → Agent Router → Skill Loader (JIT) → Structu
 |:---|:---|
 | Single `.agent/` source of truth | Simpler sync across runtimes, but every adapter must respect the same contract |
 | 3-skill ceiling per request | Controls cost/latency, but limits complex multi-step operations in a single turn |
-| Parallel fan-out (Antigravity only) | 3-5x faster execution, but creates runtime preference for power users |
+| Codex-first orchestration | Best current path for file edits, local verification, skills, subagents, and CI; Antigravity remains a compatibility path |
 | Slash commands as playbook triggers | Deterministic workflows, but adds a learning curve vs. pure natural language |
 
 ## 🔄 What I'd Improve Next
@@ -112,14 +112,14 @@ Open the `beats-pm-kit` folder in any of these AI coding tools. **All are CLIs u
 
 | Runtime | Launch Command | Capabilities |
 |:--------|:---------------|:-------------|
-| **[Google Antigravity](https://antigravity.google/)** (Desktop IDE) | Open folder in Antigravity | ⭐ Primary — parallel fan-out, MCP tools, browser agent |
+| **[OpenAI Codex](https://github.com/openai/codex)** (CLI/Desktop) | `codex` | ⭐ Primary — file edits, verification, project skills, subagents, Codex Action |
+| **[Google Antigravity](https://antigravity.google/)** (Desktop IDE) | Open folder in Antigravity | Compatibility — parallel fan-out, MCP tools, browser agent |
 | **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** (CLI) | `gemini` | File access, web search, tool use |
 | **[Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)** (CLI) | `claude` | File access, subagents, tool use |
-| **[OpenAI Codex](https://github.com/openai/codex)** (CLI) | `codex` | File access, code execution |
 | **[KiloCode](https://kilocode.ai/)** (CLI) | `kilo` | File access, tool use |
 
-> **Which should I use?** If you have Antigravity, use it — the kit was designed for its parallel execution. Otherwise, any CLI above works. The kit auto-adapts via adapter folders (`.gemini/`, `.claude/`, etc.).
-> **Codex note:** Codex uses `AGENTS.md` as the primary adapter, `CODEX_COMMANDS.md` for explicit slash-command routing, generated `.codex/` scaffolding for runtime notes, optional promoted local skills for the highest-frequency Beats commands, and repo git hooks plus CI to keep adapters synchronized. See [system/docs/codex.md](system/docs/codex.md).
+> **Which should I use?** Use Codex by default. Antigravity remains supported when you want its IDE surface, but the kit no longer depends on Antigravity as the canonical runtime.
+> **Codex note:** Codex uses `AGENTS.md` as the primary adapter, `CODEX_COMMANDS.md` for explicit slash-command routing, project-scoped `.codex/agents/*.toml`, promoted local skills for high-frequency Beats commands, and repo git hooks plus CI to keep adapters synchronized. See [system/docs/codex.md](system/docs/codex.md).
 
 ---
 
@@ -148,29 +148,28 @@ Then it shows you the **6 core commands** and you're ready to go.
 **Product Management is broken.**
 Your day is fragmented across Slack threads, Zoom transcripts, Jira tickets, and stakeholder emails. Context is constantly lost.
 
-This kit is an **Agentic Operating System** built specifically for Product Managers. It leverages **Google Antigravity's** parallel agent execution to parse chaos into strategy.
+This kit is an **Agentic Operating System** built specifically for Product Managers. It now uses **OpenAI Codex** as the optimized default for local repo work, verification, project-scoped skills, and optional CI automation.
 
 - **The Black Hole Inbox:** Copy anything to your clipboard. Type `/paste`. Watch the AI extract tasks/bugs and route them to the proper tracker.
 - **The Meeting Synthesizer:** Type `/meet`. The AI reads your transcripts, extracts action items, and generates structured notes.
 - **The "Boss Protocol":** Type `/boss`. The system cross-references your active tasks with your boss's recent requests, flags stale workstreams, and drafts your 1:1 talking points.
 
-### 🔒 100% Local. Enterprise-Grade Privacy.
+### 🔒 Local-first storage and privacy boundaries
 
-| Your Data           | Where It Lives                   | Cloud Access |
+| Your Data           | Where It Lives                   | Repo Storage |
 | :------------------ | :------------------------------- | :----------- |
-| Company strategy    | `1. Company/` on YOUR machine  | ❌ Never     |
-| PRDs & specs        | `2. Products/` on YOUR machine | ❌ Never     |
-| Meeting transcripts | `3. Meetings/` on YOUR machine | ❌ Never     |
-| Task trackers       | `5. Trackers/` on YOUR machine | ❌ Never     |
+| Company strategy    | `1. Company/` on your machine  | Ignored by git |
+| PRDs & specs        | `2. Products/` on your machine | Ignored by git |
+| Meeting transcripts | `3. Meetings/` on your machine | Ignored by git |
+| Task trackers       | `5. Trackers/` on your machine | Ignored by git |
 
-**No cloud sync. No telemetry. No API calls with your trade secrets.**
-Folders 1-5 are `.gitignored` by default. Your private data stays on your machine.
+Folders 1-5 are `.gitignored` by default. The repo is local-first for storage, while your chosen AI runtime or connector may still process the prompts, files, or tool outputs you ask it to handle.
 
 ---
 
 ## 🧬 Inside the Engine: Three-Tier Architecture
 
-### 🤖 1. The Virtual PM Team (21 Persona Agents)
+### 🤖 1. The Virtual PM Team (22 Persona Agents)
 
 The _Identity_ layer. Who is doing the work?
 
@@ -198,9 +197,9 @@ The _Identity_ layer. Who is doing the work?
 | **Security Reviewer**     | Vulnerability Audit   | `risk-guardian`                                             |
 | **Switchboard**           | Cross-IDE Comm        | Workflow routing and agent-to-agent messaging               |
 
-### 🎯 2. The Core Playbooks (34 Protected Workflows)
+### 🎯 2. The Core Playbooks (40 Slash Workflows)
 
-The _Routing_ layer. Lean slash commands that trigger complex operations. All 34 are **protected core**.
+The _Routing_ layer. Lean slash commands that trigger complex operations through `CODEX_COMMANDS.md` and `.agent/workflows/`.
 
 > **💡 Natural Conversation vs Commands:** You are **not required** to use slash commands. If you just talk to the AI naturally (e.g., "Summarize this meeting" or "Help me plan my day"), the system will organically load the correct Agents and Skills. The `/commands` are simply explicit playbook shortcuts to guarantee a highly specific logic sequence (like the exact 7 steps of `/meet`). Both methods seamlessly pull from the same `.agent/` architecture.
 
@@ -247,7 +246,7 @@ The _Routing_ layer. Lean slash commands that trigger complex operations. All 34
 | `/vibe`        | System health and diagnostics            |
 | `/week`        | Weekly briefing & recap                  |
 
-### 🚀 3. The Capability Engine (56 PM Skills)
+### 🚀 3. The Capability Engine (62 Public PM Skills)
 
 The _Execution_ layer. Skills are loaded Just-In-Time to keep the context window fast.
 
@@ -279,11 +278,11 @@ beats-pm-kit/
 ├── 5. Trackers/           # Task Master Ledgers
 │
 ├── .agent/                # ⭐ SOURCE OF TRUTH (The AI Engine)
-│   ├── agents/            # 21 Virtual PM Team Personas
+│   ├── agents/            # 22 Virtual PM Team Personas
 │   ├── rules/             # GEMINI.md (System Constitution)
-│   ├── skills/            # 56 PM Skills (P0/P1/P2 tiers)
+│   ├── skills/            # 62 public PM Skills (P0/P1/P2 tiers)
 │   ├── templates/         # Document & Report Templates
-│   ├── workflows/         # 34 Protected Playbooks
+│   ├── workflows/         # 40 Slash Workflows
 │   ├── archive/           # Archived agents & skills (recoverable)
 │   └── MANIFEST.json      # Machine-readable index with token budgets
 │
@@ -291,7 +290,9 @@ beats-pm-kit/
 │   ├── scripts/           # Agent dispatcher, setup, vacuum, health check
 │   └── tests/             # Test suites
 │
-├── GEMINI.md              # System config (v10.6.0)
+├── AGENTS.md              # Codex adapter (generated locally)
+├── CODEX_COMMANDS.md      # Codex slash-command index
+├── GEMINI.md              # Runtime-neutral source config
 └── README.md              # ← You are here
 ```
 
@@ -299,20 +300,19 @@ beats-pm-kit/
 
 ## 🖥️ Runtime Compatibility
 
-Built on a **single source of truth** (`.agent/`) with adapters for each runtime. **Antigravity is the gold standard.**
+Built on a **single source of truth** (`.agent/`) with Codex as the optimized runtime and compatibility adapters for other tools.
 
-| Capability | Antigravity (Desktop IDE) | Gemini (CLI) | Claude Code (CLI) | Codex (CLI) | KiloCode (CLI) |
+| Capability | Codex (CLI/Desktop) | Antigravity (Desktop IDE) | Gemini (CLI) | Claude Code (CLI) | KiloCode (CLI) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Parallel Fan-Out** | ✅ Native | ❌ Sequential | ❌ Sequential | ❌ Sequential | ❌ Sequential |
-| **Agent Personas (21)** | ✅ Full mesh | ✅ | ✅ | ✅ | ✅ |
-| **Skills (56)** | ✅ JIT load | ✅ | ✅ | ✅ | ✅ |
-| **Slash Commands (18)** | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` | ✅ `/command` |
-| **Clipboard Ingest** | ✅ Native | ⚠️ Script | ⚠️ Script | ⚠️ Script | ⚠️ Script |
-| **Context Guard** | ✅ Auto | ✅ | ✅ | ✅ | ✅ |
-| **Speed** | ⚡ Fastest | 🟡 Good | 🟡 Good | 🟡 Good | 🟡 Good |
+| **Project custom agents** | ✅ `.codex/agents/*.toml` | ❌ | ❌ | ⚠️ Runtime-specific | ❌ |
+| **Agent Personas (22)** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Public Skills (62)** | ✅ JIT load | ✅ | ✅ | ✅ | ✅ |
+| **Slash Workflows (40)** | ✅ `/command` | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` |
+| **Promoted Codex skills (22)** | ✅ Native | ❌ | ❌ | ❌ | ❌ |
+| **Parallel Fan-Out** | ✅ Subagents when explicitly requested | ✅ Native | ❌ Sequential | ⚠️ Runtime-specific | ❌ Sequential |
+| **Context Guard** | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-> **Parallel Fan-Out:** When you run `/fan-out`, Antigravity dispatches multiple specialist agents simultaneously. Other runtimes process agents sequentially, making complex workflows 3-5x slower.
-> **Codex Operating Model:** Use `AGENTS.md` for the inventory, then load `.agent/workflows/<command>.md` and only the required `SKILL.md` files for the task.
+> **Codex Operating Model:** Use `AGENTS.md` for the inventory, `CODEX_COMMANDS.md` for slash routing, `.codex/agents/*.toml` for project-scoped subagent roles, and `.agent/workflows/<command>.md` plus the minimum required `SKILL.md` files for each task.
 
 ### 🔌 Power User Tools
 
@@ -325,9 +325,9 @@ For advanced users who want to supercharge their workflow:
 
 ---
 
-## 🚀 Antigravity Enhancements
+## 🚀 Compatibility Enhancements
 
-Community extensions that supercharge your Antigravity IDE experience. Install from the Extensions panel or via the [Open VSX Registry](https://open-vsx.org/).
+These optional tools remain useful for Antigravity users. They are compatibility add-ons, not required for the Codex-first path.
 
 | Extension | Description | Install |
 |:---|:---|:---:|
@@ -368,7 +368,7 @@ Built directly into `GEMINI.md`, these rules reduce token waste without any manu
 
 <div align="center">
 
-**[Your Name]**
+**OfficeBeats**
 
 _Product Lead_
 
