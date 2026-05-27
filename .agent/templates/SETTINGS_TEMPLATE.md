@@ -114,12 +114,18 @@
 - **Enabled**: no
 - **Vault path**: [Your vault path]
 - **Sync folder**: `system/inbox/obsidian/`
+- **Strategy**: direct_vault
+- **MCP mode**: read_search_open_only
+- **MCP health check**: `python3 system/scripts/obsidian_mcp_health.py --pretty`
 
 ### Trello
 
 - **Enabled**: no
 - **Sync path**: `system/inbox/trello/`
 - **Boards**: [Board names]
+- **Reverse sync**: structured_fields_only
+- **New card mode**: inbox_first
+- **Preflight commands**: `/day`, `/week`, `/boss`, `/track`
 
 ### Other
 

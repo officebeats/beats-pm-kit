@@ -10,7 +10,7 @@
 | Agent | Status | Skills Loaded | Duration |
 |-------|--------|---------------|----------|
 | staff-pm | ✅ success | task-manager, prd-author | 42ms |
-| ux-researcher | ✅ success | ux-researcher, discovery-coach | 38ms |
+| ux-researcher | ✅ success | ux-researcher, discovery-engine | 38ms |
 | tech-lead | ✅ success | engineering-collab | 31ms |
 
 ## Skills Activated (N)

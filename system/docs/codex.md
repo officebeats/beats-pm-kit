@@ -144,6 +144,8 @@ python3 system/scripts/beats.py help
 python3 system/scripts/beats.py codex-skills
 python3 system/scripts/beats.py hooks
 python3 system/scripts/beats.py guard
+python3 system/scripts/beats.py route -- --text "Need to follow up on this scope question"
+python3 system/scripts/beats.py obsidian-mcp -- --pretty
 python3 system/scripts/beats.py day
 python3 system/scripts/beats.py resolve --args /day
 ```

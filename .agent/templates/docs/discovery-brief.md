@@ -5,6 +5,8 @@
 **Status**: Active / Paused / Complete
 **Started**: [Date]
 **Pivot/Persevere Gate**: [Date]
+**Evidence Strength**: None / Weak / Moderate / Strong
+**Next Decision Gate**: [Date or event]
 
 ---
 
@@ -23,6 +25,17 @@
 | :--- | :--- |
 | **Business Metric** | [What moves for us — e.g., reduce churn by 10%] |
 | **User Outcome** | [What improves for them — e.g., complete pre-reg in <3 min] |
+
+---
+
+## Scope Boundary
+
+| Dimension | Detail |
+| :--- | :--- |
+| **In Scope** | [What this discovery effort can decide] |
+| **Out of Scope** | [What should not be pulled into this effort] |
+| **Decision Owner** | [Who can approve pivot/persevere/stop] |
+| **Key Dependency** | [Team, data, customer, system, or vendor dependency] |
 
 ---
 
