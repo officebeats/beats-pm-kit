@@ -12,7 +12,7 @@ from pathlib import Path
 # Default configuration values
 DEFAULT_CONFIG = {
     'system': {
-        'version': '4.10.0',
+        'version': '10.10.0',
         'name': 'Beats PM System'
     },
     'paths': {
@@ -38,6 +38,10 @@ DEFAULT_CONFIG = {
     },
     'directories': {
         'required': [
+            '.beats/cache',
+            '.beats/diagnostics',
+            '.beats/reports',
+            '.beats/test-logs',
             '0. Incoming/staging',
             '0. Incoming/archive',
             '1. Company',
@@ -46,7 +50,11 @@ DEFAULT_CONFIG = {
             '3. Meetings/daily-briefs',
             '3. Meetings/weekly-digests',
             '4. People',
-            '5. Trackers/archive'
+            '5. Trackers/archive',
+            '6. Resources',
+            '6. SOPs',
+            '7. Partners',
+            '8. Clients'
         ]
     },
     'templates': {
