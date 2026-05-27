@@ -58,6 +58,8 @@ class TestCodexSkillAdapters(unittest.TestCase):
             skill_md = Path(tmpdir) / "beats-paste" / "SKILL.md"
             content = skill_md.read_text(encoding="utf-8")
 
+            self.assertIn(".agent/skills/pm-decision-router/SKILL.md", content)
+            self.assertIn("system/scripts/pm_decision_router.py", content)
             self.assertIn(".agent/skills/task-manager/SKILL.md", content)
             self.assertIn("5. Trackers/TASK_MASTER.md", content)
             self.assertIn("Treat screenshots/images and transcript-like clipboard text as task-master management input", content)
@@ -88,6 +90,8 @@ class TestCodexSkillAdapters(unittest.TestCase):
             skill_md = Path(tmpdir) / "beats-transcript" / "SKILL.md"
             content = skill_md.read_text(encoding="utf-8")
 
+            self.assertIn(".agent/skills/pm-decision-router/SKILL.md", content)
+            self.assertIn("system/scripts/pm_decision_router.py", content)
             self.assertIn("system/scripts/transcript_pipeline.py", content)
             self.assertIn("3. Meetings/summaries", content)
             self.assertIn("3. Meetings/reports", content)
@@ -104,11 +108,25 @@ class TestCodexSkillAdapters(unittest.TestCase):
             skill_md = Path(tmpdir) / "beats-comms" / "SKILL.md"
             content = skill_md.read_text(encoding="utf-8")
 
+            self.assertIn(".agent/skills/pm-decision-router/SKILL.md", content)
             self.assertIn(".agent/rules/MCP_COMMUNICATION_INTAKE.md", content)
             self.assertIn("Slack, Teams, Outlook, and Calendar", content)
             self.assertIn("calendar windows are forward-looking", content)
             self.assertIn("chat_intake_state.py chunks", content)
             self.assertIn("Never create, send, forward, or reply to email", content)
+            self.assertIn("PM decision router", content)
+
+    def test_generated_plan_skill_uses_current_strategy_skills(self):
+        """The /plan adapter should not reference removed strategy skill aliases."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sync_codex_skill_adapters.sync_promoted_skills(output_dir=tmpdir, root=ROOT_DIR)
+            skill_md = Path(tmpdir) / "beats-plan" / "SKILL.md"
+            content = skill_md.read_text(encoding="utf-8")
+
+            self.assertIn(".agent/skills/pm-decision-router/SKILL.md", content)
+            self.assertIn(".agent/skills/roadmapping-suite/SKILL.md", content)
+            self.assertIn(".agent/skills/product-strategy-suite/SKILL.md", content)
+            self.assertNotIn("chief-strategy-officer", content)
 
 
 if __name__ == "__main__":

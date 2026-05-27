@@ -16,6 +16,16 @@ Transcripts are task-master management inputs unless the user explicitly asks fo
 - Put uncertain work in the final response as concrete candidate tracker updates for the user to confirm.
 - Preserve the meeting summary and transcript archive, but lead with task-master routing in `Routed Updates`.
 
+## 0. PM Decision Router Preflight
+
+Load `.agent/skills/pm-decision-router/SKILL.md`. For user-provided transcript excerpts, packet abstracts, or communication snippets, classify the visible text before synthesis:
+
+```bash
+python3 system/scripts/pm_decision_router.py --text "<transcript excerpt or packet summary>"
+```
+
+Use the router result to decide whether the packet is primarily a task/status update, new task, discovery input, scope challenge, decision log, archive-only note, or blocking question. Do not use the router to skip deterministic packet preparation for `/transcript`; use it to shape routing and prevent ambiguous transcript text from becoming active task state without confirmation.
+
 ## 1. Prepare Deterministic Intake
 
 Run the canonical pipeline before any model synthesis:

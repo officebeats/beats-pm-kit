@@ -60,9 +60,12 @@ def read_text(path: Path) -> str:
 
 def write_if_changed(path: Path, content: str) -> bool:
     path.parent.mkdir(parents=True, exist_ok=True)
+    if path.is_symlink():
+        remove_path(path)
     if path.exists() and not path.is_symlink() and read_text(path) == content:
         return False
-    path.write_text(content, encoding="utf-8", newline="\n")
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(content)
     return True
 
 
@@ -258,8 +261,18 @@ def copy_file_if_changed(source: Path, destination: Path) -> bool:
     destination.parent.mkdir(parents=True, exist_ok=True)
     if safe_is_dir(destination):
         remove_path(destination)
+    if destination.is_symlink():
+        remove_path(destination)
     if safe_exists(destination):
         try:
+            source_stat = source.stat()
+            destination_stat = destination.stat()
+            if (
+                not destination.is_symlink()
+                and source_stat.st_size == destination_stat.st_size
+                and source_stat.st_mtime_ns == destination_stat.st_mtime_ns
+            ):
+                return False
             if not destination.is_symlink() and destination.read_bytes() == source.read_bytes():
                 return False
         except OSError:
@@ -297,6 +310,44 @@ def copy_tree_changed(source: Path, destination: Path) -> int:
     return changed
 
 
+def normalize_kilocode_agent_frontmatter(content: str) -> str:
+    lines = content.splitlines()
+    if not lines or lines[0] != "---":
+        return content
+
+    normalized: list[str] = []
+    in_frontmatter = True
+    changed = False
+    for index, line in enumerate(lines):
+        if index > 0 and line == "---":
+            in_frontmatter = False
+            normalized.append(line)
+            continue
+        if in_frontmatter and line.startswith("tools:") and "," in line:
+            tools = [tool.strip() for tool in line.split(":", 1)[1].split(",") if tool.strip()]
+            normalized.append("tools:")
+            normalized.extend(f"  {tool}: true" for tool in tools)
+            changed = True
+            continue
+        normalized.append(line)
+
+    if not changed:
+        return content
+    suffix = "\n" if content.endswith("\n") else ""
+    return "\n".join(normalized) + suffix
+
+
+def normalize_kilocode_agents(path: Path) -> int:
+    if not safe_is_dir(path):
+        return 0
+    changed = 0
+    for agent_file in sorted(path.glob("*.md")):
+        normalized = normalize_kilocode_agent_frontmatter(read_text(agent_file))
+        if write_if_changed(agent_file, normalized):
+            changed += 1
+    return changed
+
+
 def ensure_local_copy(path: Path, target: Path) -> str:
     path.parent.mkdir(parents=True, exist_ok=True)
     if target.is_dir():
@@ -311,9 +362,15 @@ def sync_runtime_links() -> list[str]:
     for adapter, entries in CORE_ADAPTER_DIRS.items():
         for name, target in entries.items():
             status = ensure_local_copy(ROOT / adapter / name, target)
+            if adapter == ".kilocode" and name == "agents":
+                normalized = normalize_kilocode_agents(ROOT / adapter / name)
+                if normalized:
+                    status = f"{status}; normalized {normalized}"
             messages.append(f"{adapter}/{name}: {status}")
 
     commands_dir = ROOT / ".claude" / "commands"
+    if safe_exists(commands_dir) and not safe_is_dir(commands_dir):
+        remove_path(commands_dir)
     commands_dir.mkdir(parents=True, exist_ok=True)
     for workflow in workflow_files():
         changed = write_if_changed(commands_dir / f"{workflow.stem}.md", render_claude_command(workflow))
