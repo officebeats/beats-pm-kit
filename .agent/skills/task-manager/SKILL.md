@@ -30,6 +30,14 @@ author: Beats PM Brain
 - **Inputs**: /task, /triage, /paste screenshots, /transcript packets, BRAIN_DUMP.md (Inbox), TASK_MASTER.md (Ledger).
 - **Tools**: run_command (cat), view_file.
 
+If Trello is enabled in local settings/config and the entrypoint is `/track`, run:
+
+```bash
+python3 system/scripts/trello_bridge.py intake --apply
+```
+
+Then review `system/inbox/trello/reports/latest-intake.md` plus packet files in `system/inbox/trello/incoming/` before accepting any new Trello-originated work into the ledger.
+
 ---
 
 ## 1A. Default Evidence Inputs
@@ -93,14 +101,25 @@ The authoritative source for scope and operating rules is: `1. Company/ways-of-w
 
 ### B. Ledger Management (/task)
 
-- **Structure**: | Priority | Reason | Due | ID | Task | Description | Status | Owner |
+- **Task writing standard**:
+  - Task titles must be useful and succinct: 5 words or fewer for the task/card title itself.
+  - Trello card titles must omit Task Master IDs. Keep the ID in the card body, managed comment, attachment, or local-path reference instead.
+  - Put the longer explanation in the body, not the title: one summary sentence of 15 words or fewer.
+  - Support the summary with at most 3 short bullets when more context is needed.
+  - Include outcome metric, scope boundary, evidence strength, dependency, and next decision gate in the detail file for every accepted active task when known.
+  - If any of owner, due date, outcome metric, scope boundary, evidence strength, dependency, or next decision gate is missing for committed work, list the missing field as a concrete question instead of silently accepting a vague task.
+  - Maintain a concrete checkbox list for pending work. `## ✅ Subtasks` is the canonical source for task-level open items and should map cleanly to the Trello checklist.
+  - Completed checkbox items can stay in the local doc for history, but Trello should only mirror what is still open.
+  - Keep the open-item checklist to 3 items or fewer when possible; exceed that only when the work genuinely needs it.
+  - Do not use `P0`/`P1`/`P2` prefixes in status labels or Trello labels. Prefer lane-based placement such as `Today`, `Next`, `Later`, or `Follow Up`.
+- **Structure**: | ID | Task | Owner | Due | Status |
 - **Linking**: The ID column MUST link to tasks/ID.md. The Owner MUST link to 4. People/{owner}.md.
 - **Operations**:
   - **Add**: Run Priority Gate (§ 2) first, then append new row, create detail file, and update Owner profile.
   - **Schedule**: Use 🗓️ Scheduled for [Date] for tasks representing meetings/events booked but not yet occurred.
   - **Manual Override**: If user says "X is scheduled" without calendar verification, trust and update status.
   - **Complete**: Move to "Completed Tasks" and update the task detail header and Progress Log to ✅ Done.
-- **Sort**: STRICT SORT by Priority (P0>P1>P2), then by Due Date (Closest first).
+- **Sort**: Keep active work grouped by lane (`Today`, `Next`, `Later`, `Follow Up`, `Triage`) and then by Due Date (closest first).
 
 ### B1. Task Health Review (MANDATORY)
 
@@ -131,6 +150,9 @@ python3 system/scripts/task_master_triage.py --apply --touched-task TASK-123
 ### C. FAANG/BCG Rigor
 
 - **Outcome**: Every task includes expected outcome/metric.
+- **Scope Boundary**: Every accepted task states what is in scope, what is out of scope, and who owns the next decision.
+- **Evidence Strength**: Mark the source as None, Weak, Moderate, or Strong so the user can tell whether work came from a hard signal or a loose ask.
+- **Decision Gate**: Every non-trivial task includes the next date or event where the task should be continued, killed, delegated, or reframed.
 - **Progress Log**: Every task detail file MUST track a chronological log of updates.
 
 ---
@@ -139,7 +161,7 @@ python3 system/scripts/task_master_triage.py --apply --touched-task TASK-123
 
 - **Table**: Show exactly what moved Inbox -> Ledger.
 - **Gate Results**: Flag any tasks that were rejected or flagged "Needs manager approval."
-- **Next Action**: Suggest top P0 item from 5. Trackers/TASK_MASTER.md.
+- **Next Action**: Suggest the top `Today` item from `5. Trackers/TASK_MASTER.md`.
 
 ---
 
