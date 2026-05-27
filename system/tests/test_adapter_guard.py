@@ -26,7 +26,7 @@ class TestAdapterGuardConfig(unittest.TestCase):
         self.assertIn("vacuum", promoted)
 
     def test_discover_and_prioritize_remain_dispatch_only_for_now(self):
-        """Hold back lower-confidence workflows until their skill wiring is normalized."""
+        """Keep lower-frequency workflows dispatch-only while sharing normalized router wiring."""
         promoted = {entry["name"] for entry in get_promoted_codex_commands(ROOT_DIR)}
         self.assertNotIn("discover", promoted)
         self.assertNotIn("prioritize", promoted)
@@ -45,6 +45,16 @@ class TestAdapterGuardConfig(unittest.TestCase):
         guarded = set(adapter_guard.FORBIDDEN_TRACKED_PREFIXES)
         for prefix in [".codex/", ".gemini/", ".claude/", ".kilocode/", ".context/"]:
             self.assertIn(prefix, guarded)
+
+    def test_kilocode_agent_tools_are_normalized_to_record_form(self):
+        """KiloCode rejects comma-delimited tools strings in generated agent frontmatter."""
+        from scripts import sync_cli_adapters
+
+        content = "---\nname: reviewer\ntools: Read, Grep, Bash\n---\nBody\n"
+        normalized = sync_cli_adapters.normalize_kilocode_agent_frontmatter(content)
+
+        self.assertIn("tools:\n  Read: true\n  Grep: true\n  Bash: true", normalized)
+        self.assertNotIn("tools: Read, Grep, Bash", normalized)
 
     def test_privacy_guard_enforces_private_workspace_skeletons(self):
         """Only .gitkeep files should be tracked in private workspace folders."""

@@ -20,6 +20,8 @@ SCRIPT_COMMANDS = {
     "chat-intake": ["python3", "system/scripts/chat_intake_state.py"],
     "atlassian-context": ["python3", "system/scripts/atlassian_context_state.py"],
     "transcript": ["python3", "system/scripts/transcript_pipeline.py"],
+    "route": ["python3", "system/scripts/pm_decision_router.py"],
+    "obsidian-mcp": ["python3", "system/scripts/obsidian_mcp_health.py"],
     "task-triage": ["python3", "system/scripts/task_master_triage.py"],
     "outlook": ["python3", "system/scripts/outlook_bridge.py"],
     "teams": ["python3", "system/scripts/teams_bridge.py"],

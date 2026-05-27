@@ -168,9 +168,9 @@ beats-pm-antigravity-brain/
 
 | Agent                     | Focus                 | Key Skills                                                                                                         |
 | :------------------------ | :-------------------- | :----------------------------------------------------------------------------------------------------------------- |
-| **Chief Product Officer** | Strategy & Org        | `chief-strategy-officer`, `boss-tracker`, `vacuum-protocol`                                                        |
+| **Chief Product Officer** | Strategy & Org        | `product-strategy-suite`, `boss-tracker`, `vacuum-protocol`                                                        |
 | **Staff PM**              | Execution & Delivery  | `task-manager`, `prd-author`, `meeting-synth`                                                                      |
-| **Product Strategist**    | Market & Vision       | `chief-strategy-officer`, `okr-manager`, `positioning-strategist`                                                  |
+| **Product Strategist**    | Market & Vision       | `pm-decision-router`, `product-strategy-suite`, `roadmapping-suite`, `discovery-engine`                            |
 | **Program Manager**       | Governance & Releases | `dependency-tracker`, `retrospective`, `risk-guardian`                                                             |
 | **Tech Lead**             | Feasibility & Eng     | `engineering-planner`, `vacuum-protocol`                                                                           |
 | **Data Scientist**        | Quant Insights        | `data-analytics`, `metrics-finance-suite`                                                                          |

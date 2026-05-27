@@ -53,6 +53,8 @@
         "promotion": "skill",
         "skill_name": "beats-track",
         "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
           ".agent/skills/task-manager/SKILL.md",
           "5. Trackers/TASK_MASTER.md",
           "5. Trackers/critical/boss-requests.md"
@@ -67,6 +69,8 @@
         "promotion": "skill",
         "skill_name": "beats-paste",
         "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
           ".agent/skills/inbox-processor/SKILL.md",
           ".agent/skills/task-manager/SKILL.md",
           "5. Trackers/TASK_MASTER.md"
@@ -88,7 +92,29 @@
         "promotion": "skill",
         "skill_name": "beats-create",
         "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
           ".agent/skills/prd-author/SKILL.md"
+        ],
+        "execution_contract": [
+          "Run the PM decision router before drafting; continue when it returns `create_doc` or the user explicitly invoked /create.",
+          "If the router returns discovery, prioritize, decision_log, or scope_challenge, route through the matching kit workflow instead of forcing a PRD/spec.",
+          "Carry outcome metric, owner, due/gate date, scope boundary, evidence strength, dependency, and next decision gate into the document or open questions."
+        ]
+      }
+    },
+    "discover": {
+      "codex": {
+        "promotion": "dispatch-only",
+        "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
+          ".agent/skills/discovery-engine/SKILL.md",
+          ".agent/templates/docs/discovery-brief.md"
+        ],
+        "execution_contract": [
+          "Classify the input with the PM decision router before building a discovery brief.",
+          "If the router returns `scope_challenge`, resolve scope ownership before writing discovery artifacts."
         ]
       }
     },
@@ -119,7 +145,30 @@
         "promotion": "skill",
         "skill_name": "beats-plan",
         "supporting_files": [
-          ".agent/skills/chief-strategy-officer/SKILL.md"
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
+          ".agent/skills/roadmapping-suite/SKILL.md",
+          ".agent/skills/product-strategy-suite/SKILL.md"
+        ],
+        "execution_contract": [
+          "Classify the input with the PM decision router before writing a strategic plan.",
+          "Use roadmapping-suite for roadmap/OKR/capacity planning and product-strategy-suite for strategy canvases, options, and tradeoffs.",
+          "Resolve `scope_challenge` or `ask_user` router results before drafting."
+        ]
+      }
+    },
+    "prioritize": {
+      "codex": {
+        "promotion": "dispatch-only",
+        "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
+          ".agent/skills/roadmapping-suite/SKILL.md",
+          ".agent/templates/docs/prioritization-scorecard.md"
+        ],
+        "execution_contract": [
+          "Classify the input with the PM decision router before scoring.",
+          "If the router returns `scope_challenge`, resolve scope ownership before ranking the backlog."
         ]
       }
     },
@@ -251,6 +300,8 @@
         "promotion": "skill",
         "skill_name": "beats-comms",
         "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
           ".agent/workflows/beats-slack.md",
           ".agent/workflows/beats-teams.md",
           ".agent/skills/slack-task-intake/SKILL.md",
@@ -294,6 +345,7 @@
           "Scan saved platform transcripts for referenced Jira/Confluence items, fetch only those references with read-only Atlassian connector operations, and save local artifacts under `3. Meetings/context-artifacts/atlassian/` with full `source_url` values.",
           "Never create, edit, transition, comment, assign, add worklogs, update pages, delete, or mutate Jira or Confluence during communication intake.",
           "Merge and deduplicate candidate tasks after evidence collection; route accepted work only to local repo files.",
+          "Run the PM decision router on saved evidence summaries before accepting task updates; return `scope_challenge` and `ask_user` results as explicit questions.",
           "Write a combined communication run report under `3. Meetings/reports/chat-runs/`.",
           "Call out issues and recommendations for MCP/connector gaps, read-state uncertainty, fallback bridge usage, missing/broad scope, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
         ]
@@ -304,6 +356,8 @@
         "promotion": "skill",
         "skill_name": "beats-transcript",
         "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
           "system/scripts/transcript_pipeline.py",
           "system/scripts/beats.py",
           ".agent/skills/meeting-synth/SKILL.md",
@@ -324,6 +378,7 @@
           "Run `python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json` before synthesis.",
           "Process only packet files listed in the prepare output; do not broad-scan transcripts for work selection.",
           "Treat transcript content as task-master management input unless the user explicitly asks for another output.",
+          "Run the PM decision router on packet excerpts or user-provided transcript text before accepting task/discovery/decision updates.",
           "Extract new tasks, existing-task updates, blockers, owner/date changes, and candidate tracker updates before generic summary work.",
           "Use hybrid appendix summaries: source path, transcript SHA256, run id, key evidence, and Routed Updates; do not append full raw transcript by default.",
           "When including live communication context, require bounded slack/teams/outlook/calendar scopes and use only read-only MCP/connector operations; never send, schedule, draft, reply, forward, create events, create meeting invites, or mutate source-system state/read cursors.",
