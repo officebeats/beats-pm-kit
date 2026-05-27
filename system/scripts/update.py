@@ -14,7 +14,6 @@ Orchestrates the system update process with a "Zero Data Loss" policy:
 import sys
 import subprocess
 import os
-import shutil
 from pathlib import Path
 
 # Path setup
@@ -27,6 +26,7 @@ SCRIPTS_DIR = SYSTEM_ROOT / "scripts"
 sys.path.insert(0, str(BRAIN_ROOT))
 
 from system.utils.ui import print_cyan, print_success, print_error, print_warning
+from system.scripts.root_cleaner import clean_root
 
 def run_step(description, command, cwd=None, ignore_error=False):
     """Run a shell command as a step."""
@@ -82,64 +82,23 @@ def git_update():
 
 def migration_scan():
     """
-    Scans for deprecated files or misplaced user data from older versions.
-    Moves unknown root files to '0. Incoming/' instead of deleting them.
+    Scans for deprecated root clutter without deleting user work.
+    Unknown root content moves to ignored '0. Incoming/root-cleanup/'.
     """
     print_cyan("\n🔍 Migration Scan (Zero Data Loss)...")
-    
-    # 1. Deprecated Files to Remove (Safe to delete)
-    deprecated = [
-        "KERNEL.md",           # Now in .agent/rules/GEMINI.md
-        "AGENTS.md",           # Legacy
-        "SESSION_MEMORY.md",   # Unused
-        ".gitkeep",            # Root clutter
-        "temp_copy.py",
-        "debug_vacuum.py"
-    ]
-    
-    for item in deprecated:
-        path = BRAIN_ROOT / item
-        if path.exists():
-            try:
-                if path.is_file():
-                    path.unlink()
-                print_success(f"Cleaned deprecated file: {item}")
-            except Exception as e:
-                print_warning(f"Could not remove {item}: {e}")
-
-    # 2. Key Directories to move to Archive
-    legacy_dirs = ["Beats-PM-System", "root", "dst"]
-    archive_dir = BRAIN_ROOT / "5. Trackers" / "archive"
-    archive_dir.mkdir(parents=True, exist_ok=True)
-    
-    for d in legacy_dirs:
-        path = BRAIN_ROOT / d
-        if path.exists() and path.is_dir():
-            try:
-                shutil.move(str(path), str(archive_dir / d))
-                print_success(f"Archived legacy directory: {d} -> archive/{d}")
-            except Exception as e:
-                print_warning(f"Could not archive {d}: {e}")
-
-    # 3. Adopt Unknown Root Files (User Data Safety)
-    # If the user saved "MyNotes.txt" in root, move it to Incoming.
-    valid_root_files = {
-        ".antigravityignore", ".gitattributes", ".gitignore",
-        "GEMINI.md", "README.md", "SETTINGS.md", "STATUS.md",
-        "requirements.txt", "task.md", "walkthrough.md", "implementation_plan.md"
-    }
-    
-    incoming_dir = BRAIN_ROOT / "0. Incoming"
-    incoming_dir.mkdir(parents=True, exist_ok=True)
-
-    for item in BRAIN_ROOT.iterdir():
-        if item.is_file() and not item.name.startswith("."):
-            if item.name not in valid_root_files:
-                try:
-                    shutil.move(str(item), str(incoming_dir / item.name))
-                    print_success(f"Recovered unknown root file: {item.name} -> 0. Incoming/")
-                except Exception as e:
-                    print_warning(f"Could not move {item.name}: {e}")
+    try:
+        actions = clean_root(BRAIN_ROOT, apply=True)
+    except Exception as exc:
+        print_warning(f"Root cleaner failed: {exc}")
+        return
+    if not actions:
+        print_success("Root already clean.")
+        return
+    for action in actions:
+        if action.destination:
+            print_success(f"{action.action}: {action.path} -> {action.destination}")
+        else:
+            print_success(f"{action.action}: {action.path}")
 
 def verify_structure():
     """Run core_setup.py to enforce directory structure and templates."""
