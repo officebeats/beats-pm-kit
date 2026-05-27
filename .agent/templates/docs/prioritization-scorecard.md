@@ -24,13 +24,13 @@
 
 ## Scored Backlog
 
-| Rank | Initiative | Reach | Impact | Confidence | Effort | Score | Cut? |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | [Name] | [#] | [0.25-3] | [50-100%] | [PM] | [Score] | ✅ In |
-| 2 | [Name] | [#] | [0.25-3] | [50-100%] | [PM] | [Score] | ✅ In |
-| 3 | [Name] | [#] | [0.25-3] | [50-100%] | [PM] | [Score] | ✅ In |
-| --- | --- CUT LINE --- | --- | --- | --- | --- | --- | --- |
-| 4 | [Name] | [#] | [0.25-3] | [50-100%] | [PM] | [Score] | ❌ Out |
+| Rank | Initiative | Reach | Impact | Confidence | Effort | Score | Evidence Strength | Owner | Dependency | Next Gate | Cut? |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | [Name] | [#] | [0.25-3] | [50-100%] | [PM] | [Score] | [Weak/Moderate/Strong] | [Owner] | [Dependency] | [Date/Event] | ✅ In |
+| 2 | [Name] | [#] | [0.25-3] | [50-100%] | [PM] | [Score] | [Weak/Moderate/Strong] | [Owner] | [Dependency] | [Date/Event] | ✅ In |
+| 3 | [Name] | [#] | [0.25-3] | [50-100%] | [PM] | [Score] | [Weak/Moderate/Strong] | [Owner] | [Dependency] | [Date/Event] | ✅ In |
+| --- | --- CUT LINE --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 4 | [Name] | [#] | [0.25-3] | [50-100%] | [PM] | [Score] | [Weak/Moderate/Strong] | [Owner] | [Dependency] | [Date/Event] | ❌ Out |
 
 ---
 

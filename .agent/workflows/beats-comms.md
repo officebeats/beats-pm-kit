@@ -10,6 +10,16 @@ Use this workflow as the canonical communication context refresh path. Other wor
 
 Read `.agent/rules/MCP_COMMUNICATION_INTAKE.md` before platform reads. It defines the shared runtime capability table for Antigravity, Codex, Claude Code, and fallback bridge behavior.
 
+## 0. PM Decision Router Preflight
+
+Load `.agent/skills/pm-decision-router/SKILL.md` before task routing. For manual evidence snippets, saved transcript abstracts, or connector result summaries, classify the text with:
+
+```bash
+python3 system/scripts/pm_decision_router.py --text "<communication evidence>"
+```
+
+Use the router result only after bounded source evidence has been collected. `scope_challenge` and `ask_user` results must be returned as explicit questions; do not create active Task Master work from ambiguous communication evidence. Source-system safety rules remain stronger than router output.
+
 ## 1. Resolve Communication Scope
 
 Use the remainder of the user's `/beats-comms` command to determine platform scopes.

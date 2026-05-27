@@ -27,11 +27,11 @@ Screenshots/images and transcripts are task-master management evidence unless th
 |:------------|:-----------|:-------------------|:-----|
 | `/boss`     | `cpo`      | `boss-tracker`     | P0   |
 | `/day`      | `staff-pm` | `daily-synth`      | P0   |
-| `/track`    | `staff-pm` | `task-manager`     | P0   |
+| `/track`    | `staff-pm` | `pm-decision-router` -> `task-manager` | P0   |
 | `/meet`     | `staff-pm` | `meeting-synth`    | P0   |
-| `/create`   | `staff-pm` | `prd-author`       | P0   |
-| `/plan`     | `staff-pm` | `roadmapping-suite` | P0   |
-| `/paste`    | `staff-pm` | `inbox-processor` → `task-manager` | P0   |
+| `/create`   | `staff-pm` | `pm-decision-router` -> `prd-author` | P0   |
+| `/plan`     | `staff-pm` | `pm-decision-router` -> `roadmapping-suite` / `product-strategy-suite` | P0   |
+| `/paste`    | `staff-pm` | `pm-decision-router` -> `inbox-processor` -> `task-manager` | P0   |
 | `/help`     | `orchestrator` | `core-utility` | P0   |
 
 ---
@@ -40,12 +40,12 @@ Screenshots/images and transcripts are task-master management evidence unless th
 
 | Command     | Agent      | Primary Skill      | Tier |
 |:------------|:-----------|:-------------------|:-----|
-| `/discover` | `strategist` | `discovery-engine` | P1   |
-| `/prioritize` | `strategist` | `business-strategy-suite` | P1   |
+| `/discover` | `strategist` | `pm-decision-router` -> `discovery-engine` | P1   |
+| `/prioritize` | `strategist` | `pm-decision-router` -> `roadmapping-suite` | P1   |
 | `/retro`    | `program-manager` | `retrospective` | P1   |
 | `/vacuum`   | `cpo`      | `vacuum-protocol`  | P1   |
 | `/review`   | `qa-engineer` | `test-scenarios`   | P1   |
-| `/beats-comms` | `staff-pm` | `chat-transcript-archive` | P1 |
+| `/beats-comms` | `staff-pm` | `pm-decision-router` -> `chat-transcript-archive` | P1 |
 | `/sop`      | `sop-librarian` | `sop-manager` | P1   |
 | `/vibe`     | `orchestrator` | `system-validation` | P1   |
 
@@ -55,7 +55,7 @@ Screenshots/images and transcripts are task-master management evidence unless th
 
 | Command       | Agent      | Primary Skill      | Tier |
 |:--------------|:-----------|:-------------------|:-----|
-| `/transcript` | `staff-pm` | `meeting-synth` → `task-manager` | P2   |
+| `/transcript` | `staff-pm` | `pm-decision-router` -> `meeting-synth` -> `task-manager` | P2   |
 | `/metrics`    | `data-scientist` | `metrics-finance-suite` | P2   |
 | `/growth`     | `gtm-lead` | `growth-engine`    | P2   |
 | `/coach`      | `career-coach` | `leadership-career-coach` | P2   |
