@@ -25,7 +25,7 @@
 <!-- VALUE PROP PILLS -->
 
 <p>
-  <img src="https://img.shields.io/badge/Execution-62_PM_Skills-00A651?style=flat-square" alt="62 PM Skills"/>
+  <img src="https://img.shields.io/badge/Execution-63_PM_Skills-00A651?style=flat-square" alt="63 PM Skills"/>
    • 
   <img src="https://img.shields.io/badge/Workflows-39_Playbooks-00A651?style=flat-square" alt="39 workflow playbooks"/>
    • 
@@ -52,7 +52,7 @@ Beats PM Kit is an **AI product management toolkit** for PMs, product leaders, f
 
 ## 🏗️ Architecture at a Glance
 
-A **multi-agent AI system** with 22 specialized personas orchestrating 39 workflow playbooks and 62 PM skills across the core supported runtimes: Antigravity, Codex, Gemini CLI, Claude Code, and KiloCode. One source of truth (`.agent/`) powers all of them with a Context Guard that keeps every request focused.
+A **multi-agent AI system** with 22 specialized personas orchestrating 39 workflow playbooks and 63 PM skills across the core supported runtimes: Antigravity, Codex, Gemini CLI, Claude Code, and KiloCode. One source of truth (`.agent/`) powers all of them with a Context Guard that keeps every request focused.
 
 ```
 User Input → Context Guard → Agent Router → Skill Loader (JIT) → Structured Output
@@ -60,7 +60,7 @@ User Input → Context Guard → Agent Router → Skill Loader (JIT) → Structu
                         22 Persona Agents
                      (Strategy · Execution · GTM · Research · Engineering)
                                   ↓
-                    39 Workflow Playbooks + 62 PM Skills
+                    39 Workflow Playbooks + 63 PM Skills
                      (PRDs · Roadmaps · Meeting Synth · Task Tracking)
 ```
 
@@ -71,7 +71,7 @@ The design goal is simple: **cross-runtime AI agents** that feel useful in real 
 | Decision | Rationale |
 |:---|:---|
 | **Agents over prompts** | Personas create consistent, role-scoped behavior that individual prompts can't. A "Staff PM" agent thinks differently than a "GTM Lead." |
-| **Skills as functions** | 62 modular skills (P0/P1/P2 tiered) allow JIT loading — only load what you need to manage token budgets. |
+| **Skills as functions** | 63 modular skills (P0/P1/P2 tiered) allow JIT loading — only load what you need to manage token budgets. |
 | **Runtime-agnostic** | Same `.agent/` source of truth runs on Antigravity, Codex, Gemini CLI, Claude Code, and KiloCode. Generated adapter folders stay local and ignored. |
 | **Local-first privacy** | Private workspace folders stay local and gitignored by default. CI blocks PII, secrets, local runtime state, and generated adapter bloat from the public repo. |
 
@@ -178,9 +178,9 @@ The _Identity_ layer. Who is doing the work?
 
 | Agent | Focus | Key Skills |
 | :--- | :--- | :--- |
-| **Chief Product Officer** | Strategy & org | `chief-strategy-officer`, `boss-tracker`, `vacuum-protocol` |
-| **Staff PM** | Execution & delivery | `task-manager`, `prd-author`, `meeting-synth` |
-| **Product Strategist** | Market & vision | `business-strategy-suite`, `positioning-strategist` |
+| **Chief Product Officer** | Strategy & org | `product-strategy-suite`, `boss-tracker`, `vacuum-protocol` |
+| **Staff PM** | Execution & delivery | `pm-decision-router`, `task-manager`, `prd-author`, `meeting-synth` |
+| **Product Strategist** | Market & vision | `pm-decision-router`, `product-strategy-suite`, `roadmapping-suite` |
 | **Program Manager** | Governance & releases | `dependency-tracker`, `retrospective`, `risk-guardian` |
 | **Tech Lead** | Feasibility & engineering | Engineering interface for PM decisions |
 | **Data Scientist** | Quant insights | `data-analytics`, `metrics-finance-suite` |
@@ -249,13 +249,13 @@ The _Routing_ layer. Lean slash commands that trigger repeatable product operati
 | `/vibe` | System health and diagnostics |
 | `/week` | Weekly briefing and recap |
 
-### 🚀 3. The Capability Engine (62 PM skills)
+### 🚀 3. The Capability Engine (63 PM skills)
 
 The _Execution_ layer. Skills are loaded Just-In-Time to keep the context window fast.
 
 | Category | Skills |
 | :--- | :--- |
-| **Strategy** | `chief-strategy-officer`, `business-strategy-suite`, `positioning-strategist`, `company-profiler` |
+| **Strategy** | `pm-decision-router`, `product-strategy-suite`, `roadmapping-suite`, `company-profiler` |
 | **Discovery** | `discovery-engine`, `assumption-mapper`, `brainstorming-engine`, `epic-hypothesis`, `customer-interview-suite` |
 | **Execution** | `task-manager`, `prd-author`, `agile-story-crafter`, `epic-breakdown-advisor`, `requirements-translator`, `wwas`, `autopilot`, `team-orchestrator`, `engineering-planner` |
 | **Roadmapping** | `roadmapping-suite`, `risk-guardian`, `dependency-tracker`, `ab-test-analysis` |
@@ -283,7 +283,7 @@ beats-pm-kit/
 ├── .agent/                # SOURCE OF TRUTH
 │   ├── agents/            # 22 persona agents
 │   ├── rules/             # System rules and runtime contracts
-│   ├── skills/            # 62 PM skills
+│   ├── skills/            # 63 PM skills
 │   ├── templates/         # Document, deck, and SOP templates
 │   ├── workflows/         # 39 workflow playbooks
 │   └── MANIFEST.json      # Machine-readable index
@@ -321,7 +321,7 @@ Built on a **single source of truth** (`.agent/`) with adapters for each runtime
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Parallel Fan-Out** | ✅ Native | ❌ Sequential | ❌ Sequential | ❌ Sequential | ❌ Sequential |
 | **Agent Personas (22)** | ✅ Full mesh | ✅ | ✅ | ✅ | ✅ |
-| **Skills (62)** | ✅ JIT load | ✅ | ✅ | ✅ | ✅ |
+| **Skills (63)** | ✅ JIT load | ✅ | ✅ | ✅ | ✅ |
 | **Slash Commands (39)** | ✅ `/command` | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` |
 | **Clipboard Ingest** | ✅ Native | ⚠️ Script | ⚠️ Script | ⚠️ Script | ⚠️ Script |
 | **Context Guard** | ✅ Auto | ✅ | ✅ | ✅ | ✅ |
