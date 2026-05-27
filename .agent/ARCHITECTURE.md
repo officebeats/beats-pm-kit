@@ -9,7 +9,7 @@
 Antigravity Kit is a modular system consisting of:
 
 - **22 Specialist Agents** - Role-based AI personas
-- **62 Skills** - Domain-specific knowledge modules
+- **63 Skills** - Domain-specific knowledge modules
 - **39 Workflows** - Slash command procedures
 
 > **Routing:** See [ROUTING.md](rules/ROUTING.md) for the unified command → agent → skill mapping.
@@ -24,7 +24,7 @@ Antigravity Kit is a modular system consisting of:
 ├── ARCHITECTURE.md          # This file
 ├── MANIFEST.json            # Machine-readable skill/agent index
 ├── agents/                  # 22 Specialist Agents
-├── skills/                  # 62 Skills (P0/P1/P2 tiered)
+├── skills/                  # 63 Skills (P0/P1/P2 tiered)
 ├── workflows/               # 39 Slash Commands
 ├── rules/                   # Global Rules + ROUTING.md
 │   ├── GEMINI.md            # Canonical system config
@@ -44,14 +44,14 @@ Antigravity Kit is a modular system consisting of:
 | Agent | Focus | Key Skills |
 |:--|:--|:--|
 | `orchestrator` | Multi-agent coordination | parallel-agents, behavioral-modes |
-| `cpo` | Strategy & Org | chief-strategy-officer, boss-tracker, vacuum-protocol |
-| `staff-pm` | Execution & Delivery | task-manager, prd-author, meeting-synth |
+| `cpo` | Strategy & Org | product-strategy-suite, boss-tracker, vacuum-protocol |
+| `staff-pm` | Execution & Delivery | pm-decision-router, task-manager, prd-author, meeting-synth |
 
 ### PM Extended (P1 — loaded on demand)
 
 | Agent | Focus | Key Skills |
 |:--|:--|:--|
-| `strategist` | Market & Vision | chief-strategy-officer, okr-manager |
+| `strategist` | Market & Vision | pm-decision-router, product-strategy-suite, roadmapping-suite |
 | `program-manager` | Governance & Releases | dependency-tracker, retrospective |
 | `tech-lead` | Feasibility & Eng | engineering-collab, code-simplifier |
 | `data-scientist` | Quant Insights | data-analytics |
@@ -80,13 +80,13 @@ Antigravity Kit is a modular system consisting of:
 
 ---
 
-## 🧩 Skills (50) — Priority Tiered
+## 🧩 Skills (63) — Priority Tiered
 
 Skills are loaded **Just-In-Time** based on priority tier:
 
-- **P0 (Core):** 9 skills — loaded eagerly for daily PM workflows
-- **P1 (Extended):** 19 skills — loaded on command invocation
-- **P2 (Specialist):** 22 skills — loaded only when explicitly triggered
+- **P0 (Core):** loaded eagerly for daily PM workflows
+- **P1 (Extended):** loaded on command invocation
+- **P2 (Specialist):** loaded only when explicitly triggered
 
 > See [MANIFEST.json](MANIFEST.json) for complete skill registry with byte sizes and token budgets.
 
@@ -94,6 +94,7 @@ Skills are loaded **Just-In-Time** based on priority tier:
 
 | Skill | Size | Tier | When Used |
 |:--|:--|:--|:--|
+| `pm-decision-router` | 4.0KB | P0 | `/paste`, `/track`, `/transcript`, `/beats-comms`, `/discover`, `/create`, `/plan`, `/prioritize` |
 | `task-manager` | 2.3KB | P0 | `/track`, `/task` |
 | `daily-synth` | 1.7KB | P0 | `/day` |
 | `boss-tracker` | 2.6KB | P0 | `/boss` |
@@ -136,9 +137,9 @@ skill-name/
 
 | Metric | Value |
 |:--|:--|
-| **Total Agents** | 24 |
-| **Total Skills** | 50 |
-| **Total Workflows** | 16 |
+| **Total Agents** | 22 |
+| **Total Skills** | 63 |
+| **Total Workflows** | 39 |
 | **Total Skill Surface** | ~391KB |
 | **P0 Core Surface** | ~33KB |
 | **Architecture Version** | 10.0.1 |

@@ -6,7 +6,7 @@ skills:
   - core-utility
   - daily-synth
   - boss-tracker
-  - chief-strategy-officer
+  - product-strategy-suite
 ---
 
 > **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
@@ -32,4 +32,3 @@ skills:
 3. **Escalation**:
    - Portfolio/roadmap shifts → `Strategist`
    - Feasibility/architecture risk → `Tech Lead`
-

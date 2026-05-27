@@ -1,158 +1,79 @@
-# Using Beats PM Brain with Obsidian
+# Using Beats PM Kit Directly With Obsidian
 
-> Step-by-step guide for Obsidian users
+This setup uses the existing `beats-pm-kit` folder as the Obsidian vault. It does not copy or mirror working files into a separate vault.
 
----
+## Direct Vault Setup
 
-## Why Obsidian + PM Brain?
+1. Open Obsidian.
+2. Choose **Open folder as vault**.
+3. Select:
 
-Obsidian is perfect for this system because:
-
-- ✅ It's built for markdown files (which is what this brain uses)
-- ✅ You get beautiful rendering of your notes
-- ✅ Graph view shows connections between items
-- ✅ Plugins extend functionality
-- ✅ Everything stays local on your machine
-
----
-
-## Quick Setup
-
-### Step 1: Download the PM Brain
-
-Download this repository to your computer
-
-### Step 2: Open as Obsidian Vault
-
-1. Open **Obsidian**
-2. Click **"Open folder as vault"**
-3. Select your `beats-pm-antigravity-brain` folder
-4. Trust the folder when prompted
-
-### Step 3: Configure Your Settings
-
-Open `SETTINGS.md` and edit it directly in Obsidian with your personal details
-
----
-
-## Recommended Plugins
-
-Install these community plugins for the best experience:
-
-| Plugin        | Why                                  |
-| ------------- | ------------------------------------ |
-| **Dataview**  | Query tasks and items across files   |
-| **Templater** | Use the TEMPLATES folder effectively |
-| **Calendar**  | See briefs and meetings by date      |
-| **Tasks**     | Better task management               |
-| **Copilot**   | AI assistant inside Obsidian         |
-
----
-
-## Using with AI (Obsidian Copilot)
-
-If you install the **Obsidian Copilot** plugin:
-
-1. Configure it with your API key (OpenAI, Anthropic, etc.)
-2. Open any skill file from `.agent/skills/`
-3. Use the AI chat to interact with your PM brain
-
-Example prompts:
-
-```
-Based on the daily-synth skill, generate my morning brief
-
-Look at 5. Trackers/critical/boss-requests.md and tell me what's overdue
-
-Process this transcript and extract action items:
-[paste transcript]
+```text
+<path-to-your-beats-pm-kit-folder>
 ```
 
----
+4. Run the local setup helper from the kit root:
 
-## Folder Structure in Obsidian
-
-Your vault will look like this:
-
-```
-📁 beats-pm-antigravity-brain (vault)
-├── 📁 _AGENTS          ← AI prompts (read these to understand the system)
-├── 📁 _INBOX           ← Quick capture zone
-├── 📁 _QUEUE           ← Needs your input
-├── 📁 CRITICAL         ← Boss requests, escalations
-├── 📁 BUGS             ← Bug tracking
-├── 📁 FEEDBACK         ← Feature requests
-├── 📁 PEOPLE           ← Stakeholders & team
-├── 📁 PROJECTS         ← Active projects
-├── 📁 STRATEGY         ← Opportunities & decisions
-├── 📁 MEETINGS         ← Briefs & notes
-└── 📁 TEMPLATES        ← Reusable templates
+```bash
+python3 system/scripts/obsidian_vault_setup.py --apply
 ```
 
----
+The helper creates local `.obsidian/` settings and `6. Resources/obsidian/Obsidian Graph Index.md`. These files are for local navigation and graphing over the raw kit files.
 
-## Command Reference
+## What This Does
 
-When using with an AI plugin, use these `/` commands:
+- Enables Obsidian core plugins for graph view, backlinks, outgoing links, tags, canvas, properties, bases, templates, and daily notes.
+- Adds graph color groups for Trackers, Meetings, People, Products, Partners, Clients, SOPs, and Resources.
+- Excludes noisy implementation/runtime folders from Obsidian search and graph, including `.git`, generated runtime adapters, caches, tests, scratch files, and outputs.
+- Creates a graph index note that links to Task Master, weekly planning, decision logs, people, meetings, clients, partners, SOPs, and evidence lanes.
 
-| Command       | Action                   |
-| ------------- | ------------------------ |
-| `/boss`       | Boss request (Critical)  |
-| `/bug`        | Bug entry                |
-| `/task`       | Task                     |
-| `/feature`    | Feature request          |
-| `/ux`         | UX task                  |
-| `/eng`        | Engineering item         |
-| `/note`       | Quick note               |
-| `/transcript` | Paste meeting transcript |
-| `/morning`    | Morning brief            |
-| `/lunch`      | Midday brief             |
-| `/eod`        | End of day brief         |
-| `/weekly`     | Weekly summary           |
-| `/monthly`    | Monthly summary          |
+## What This Does Not Do
 
----
+- It does not duplicate files into a separate mirror vault.
+- It does not mutate Slack, Teams, Outlook, Jira, Confluence, Trello, or any external source system.
+- It does not commit local Obsidian workspace state or plugin state.
+- It does not make Obsidian a writable task ledger for agents; the kit files remain canonical.
 
-## Daily Workflow in Obsidian
+## Optional MCP Read/Search
 
-### Morning
+For Codex, Antigravity, or other MCP-capable runtimes, Obsidian can expose the direct vault as a read/search/open-file context surface. Follow [Obsidian MCP Profile For Beats PM Kit](obsidian-mcp.md).
 
-1. Open Obsidian
-2. Ask AI: `/morning` (or manually review CRITICAL folder)
-3. Check `_QUEUE` for items needing your input
+Health check:
 
-### Throughout the Day
+```bash
+python3 system/scripts/obsidian_mcp_health.py --pretty
+```
 
-1. Quick capture to `_INBOX` with Daily Note
-2. Use templates for structured entries
-3. Tag items with priorities: `🔥` `⚡` `📌` `📋` `💭`
+If the MCP endpoint or API key is unavailable, agents must fall back to repo-local `rg` searches.
 
-### End of Day
+## Useful Commands
 
-1. Ask AI: `/eod`
-2. Review what was accomplished
-3. Prep tomorrow's priorities
+Preview changes:
 
----
+```bash
+python3 system/scripts/obsidian_vault_setup.py --dry-run
+```
 
-## Pro Tips
+Apply local vault settings:
 
-1. **Use Daily Notes** for quick capture, then process to proper folders
-2. **Create hotkeys** for quick navigation to CRITICAL and \_INBOX
-3. **Use Graph View** to see connections between stakeholders, projects, and bugs
-4. **Star your SETTINGS.md** for quick access
-5. **Template your briefs** for consistent formatting
+```bash
+python3 system/scripts/obsidian_vault_setup.py --apply
+```
 
----
+Apply settings and open the graph index in Obsidian:
 
-## Syncing with Antigravity/Claude
+```bash
+python3 system/scripts/obsidian_vault_setup.py --apply --open
+```
 
-You can use Obsidian for viewing/editing AND Antigravity/Claude for AI processing:
+## Graph Tips
 
-1. Keep Obsidian open for beautiful markdown editing
-2. Open the same folder in Antigravity for AI commands
-3. Changes sync instantly (same folder)
+- Start at `6. Resources/obsidian/Obsidian Graph Index.md`.
+- Use graph search `path:"5. Trackers"` for active task state.
+- Use graph search `path:"4. People"` for stakeholder context.
+- Use graph search `path:"3. Meetings"` for meeting notes, transcripts, and evidence.
+- Use graph search `path:"7. Partners" OR path:"8. Clients"` for external relationship context.
 
----
+## Mirror Mode
 
-_Need help? Open an issue at [github.com/officebeats/beats-pm-antigravity-brain](https://github.com/officebeats/beats-pm-antigravity-brain)_
+`system/scripts/obsidian_sync.py` still exists for a separate mirrored-vault workflow. Do not use it when the goal is to graph the raw kit folder in place.

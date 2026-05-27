@@ -14,6 +14,18 @@ description: Capture clipboard content (text, screenshots/images, files) and rou
 
 ---
 
+## PM Decision Router Preflight
+
+Load `.agent/skills/pm-decision-router/SKILL.md` before extraction. When text is available from chat, clipboard, OCR, or file preview, classify it with:
+
+```bash
+python3 system/scripts/pm_decision_router.py --text "<captured text>"
+```
+
+Use the router result to decide whether the capture should become an existing-task update, new task, discovery brief, scope challenge, prioritization pass, document request, decision log, archive-only note, or explicit user question. If the router returns `scope_challenge` or `ask_user`, do not silently create an active task; return the candidate update and blocking question.
+
+---
+
 ## Default Intent Contract
 
 Screenshots/images and transcript-like clipboard text are task-master management inputs unless the user explicitly says otherwise.
