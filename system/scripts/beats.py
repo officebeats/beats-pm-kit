@@ -11,9 +11,12 @@ sys.path.insert(0, str(ROOT))
 from system.utils.command_registry import build_command_catalog, normalize_command_name, resolve_command_name
 
 SCRIPT_COMMANDS = {
+    "bootstrap": ["python3", "system/scripts/bootstrap.py"],
     "runtime": ["python3", "system/scripts/detect_runtime.py", "--human"],
     "sync": ["python3", "system/scripts/sync_cli_adapters.py"],
     "codex-skills": ["python3", "system/scripts/sync_codex_skill_adapters.py"],
+    "command-integrity": ["python3", "system/scripts/command_integrity.py"],
+    "context-router": ["python3", "system/scripts/context_router.py"],
     "guard": ["python3", "system/scripts/adapter_guard.py", "--mode", "fix"],
     "hooks": ["python3", "system/scripts/install_git_hooks.py"],
     "health": ["python3", "system/scripts/context_health.py"],
@@ -22,6 +25,8 @@ SCRIPT_COMMANDS = {
     "transcript": ["python3", "system/scripts/transcript_pipeline.py"],
     "route": ["python3", "system/scripts/pm_decision_router.py"],
     "obsidian-mcp": ["python3", "system/scripts/obsidian_mcp_health.py"],
+    "root-cleaner": ["python3", "system/scripts/root_cleaner.py"],
+    "real-use-tests": ["python3", "system/scripts/run_real_usecase_tests.py"],
     "task-triage": ["python3", "system/scripts/task_master_triage.py"],
     "outlook": ["python3", "system/scripts/outlook_bridge.py"],
     "teams": ["python3", "system/scripts/teams_bridge.py"],
