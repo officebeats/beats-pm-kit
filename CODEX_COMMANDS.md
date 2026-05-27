@@ -17,6 +17,7 @@ matching workflow file from `.agent/workflows/`.
 | `/build` | `.agent/workflows/build.md` | Dispatch only |
 | `/challenge` | `.agent/workflows/challenge.md` | Dispatch only |
 | `/chat` | `.agent/workflows/chat.md` | Dispatch only |
+| `/context` | `.agent/workflows/context.md` | Dispatch only |
 | `/create` | `.agent/workflows/create.md` | Native skill `beats-create` |
 | `/day` | `.agent/workflows/day.md` | Native skill `beats-day` |
 | `/deck` | `.agent/workflows/deck.md` | Native skill `beats-deck` |
@@ -27,6 +28,7 @@ matching workflow file from `.agent/workflows/`.
 | `/improve-plan` | `.agent/workflows/improve-plan.md` | Dispatch only |
 | `/intel` | `.agent/workflows/intel.md` | Dispatch only |
 | `/interview` | `.agent/workflows/interview.md` | Dispatch only |
+| `/maintain` | `.agent/workflows/maintain.md` | Dispatch only |
 | `/meet` | `.agent/workflows/meet.md` | Native skill `beats-meet` |
 | `/office-cli` | `.agent/workflows/office-cli.md` | Dispatch only |
 | `/paste` | `.agent/workflows/paste.md` | Native skill `beats-paste` |

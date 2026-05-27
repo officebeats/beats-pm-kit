@@ -47,6 +47,8 @@ PY_COMPILE_FILES = [
     "system/scripts/beats.py",
     "system/scripts/sync_cli_adapters.py",
     "system/scripts/sync_codex_skill_adapters.py",
+    "system/scripts/command_integrity.py",
+    "system/scripts/context_router.py",
     "system/scripts/adapter_guard.py",
     "system/scripts/privacy_guard.py",
     "system/scripts/install_git_hooks.py",
@@ -107,6 +109,18 @@ def sync_codex_skill_adapters(output_dir: str | None = None, *, quiet: bool = Fa
 def compile_sources():
     """Compile adapter-related Python files."""
     run([sys.executable, "-m", "py_compile", *PY_COMPILE_FILES])
+
+
+def run_command_integrity(codex_output_dir: str | None = None):
+    """Fail on duplicate commands, alias collisions, or generated adapter drift."""
+    cmd = [
+        sys.executable,
+        "system/scripts/command_integrity.py",
+        "--require-generated",
+    ]
+    if codex_output_dir:
+        cmd.extend(["--codex-skills-dir", codex_output_dir])
+    run(cmd)
 
 
 def run_tests():
@@ -181,6 +195,7 @@ def main():
         codex_output_dir = temp_dir.name
 
     sync_codex_skill_adapters(codex_output_dir, quiet=quiet_codex_sync)
+    run_command_integrity(codex_output_dir)
     compile_sources()
 
     if not args.skip_tests:

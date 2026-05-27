@@ -14,6 +14,8 @@ SCRIPT_COMMANDS = {
     "runtime": ["python3", "system/scripts/detect_runtime.py", "--human"],
     "sync": ["python3", "system/scripts/sync_cli_adapters.py"],
     "codex-skills": ["python3", "system/scripts/sync_codex_skill_adapters.py"],
+    "command-integrity": ["python3", "system/scripts/command_integrity.py"],
+    "context-router": ["python3", "system/scripts/context_router.py"],
     "guard": ["python3", "system/scripts/adapter_guard.py", "--mode", "fix"],
     "hooks": ["python3", "system/scripts/install_git_hooks.py"],
     "health": ["python3", "system/scripts/context_health.py"],

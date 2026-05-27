@@ -7,6 +7,7 @@ from __future__ import annotations
 import json
 import re
 import subprocess
+from collections import Counter
 from pathlib import Path
 
 
@@ -101,7 +102,28 @@ def build_command_catalog(root: Path | str | None = None):
     """Merge workflow files with cross-runtime adapter metadata."""
     repo_root = get_root(root)
     workflow_meta = get_workflow_descriptions(repo_root)
-    workflow_names = {name for name, _ in workflow_meta}
+    workflow_name_list = [name for name, _ in workflow_meta]
+    duplicate_workflows = sorted(
+        name for name, count in Counter(workflow_name_list).items() if count > 1
+    )
+    if duplicate_workflows:
+        raise ValueError(
+            "Duplicate canonical workflow names found: "
+            + ", ".join(f"/{name}" for name in duplicate_workflows)
+        )
+
+    normalized_workflow_owners: dict[str, str] = {}
+    for name in workflow_name_list:
+        normalized_name = normalize_command_name(name)
+        owner = normalized_workflow_owners.get(normalized_name)
+        if owner is not None and owner != name:
+            raise ValueError(
+                f"Workflow name '/{name}' normalizes to '/{normalized_name}', "
+                f"which already belongs to /{owner}"
+            )
+        normalized_workflow_owners[normalized_name] = name
+
+    workflow_names = set(workflow_name_list)
     registry = load_command_registry(repo_root)
     command_meta = registry.get("commands", {})
 
@@ -113,6 +135,7 @@ def build_command_catalog(root: Path | str | None = None):
         )
 
     alias_owners = {}
+    codex_skill_owners = {}
     catalog = []
 
     for name, description in workflow_meta:
@@ -127,6 +150,12 @@ def build_command_catalog(root: Path | str | None = None):
             normalized = normalize_command_name(alias)
             if not normalized or normalized == name or normalized in aliases:
                 continue
+            canonical_owner = normalized_workflow_owners.get(normalized)
+            if canonical_owner is not None and canonical_owner != name:
+                raise ValueError(
+                    f"Alias '/{normalized}' for /{name} collides with canonical "
+                    f"workflow /{canonical_owner}"
+                )
             owner = alias_owners.get(normalized)
             if owner is not None and owner != name:
                 raise ValueError(
@@ -138,6 +167,13 @@ def build_command_catalog(root: Path | str | None = None):
         skill_name = codex.get("skill_name")
         if promotion == "skill" and not skill_name:
             raise ValueError(f"Promoted Codex command /{name} is missing skill_name")
+        if skill_name:
+            owner = codex_skill_owners.get(skill_name)
+            if owner is not None and owner != name:
+                raise ValueError(
+                    f"Codex skill '{skill_name}' is assigned to both /{owner} and /{name}"
+                )
+            codex_skill_owners[skill_name] = name
 
         catalog.append(
             {
@@ -156,6 +192,11 @@ def build_command_catalog(root: Path | str | None = None):
         )
 
     return catalog
+
+
+def validate_command_catalog(root: Path | str | None = None):
+    """Validate command metadata and return the canonical catalog."""
+    return build_command_catalog(root)
 
 
 def get_promoted_codex_commands(root: Path | str | None = None):
