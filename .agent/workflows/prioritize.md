@@ -9,10 +9,13 @@ description: Score and rank a backlog using RICE, ICE, MoSCoW, Kano, or weighted
 # /prioritize — Backlog Prioritization Workflow
 
 ## Prerequisites
-- Load `prioritization-engine` skill from `.agent/skills/prioritization-engine/SKILL.md`
+- Load `pm-decision-router` skill from `.agent/skills/pm-decision-router/SKILL.md`
+- Load `roadmapping-suite` skill from `.agent/skills/roadmapping-suite/SKILL.md`
 - Activate **Staff PM** agent
 
 ## Steps
+
+0. **PM Decision Router Preflight**: Classify the user's input with `python3 system/scripts/pm_decision_router.py --text "<input>"`. Continue when the router returns `prioritize` or the user explicitly invoked `/prioritize`. If it returns `scope_challenge`, resolve scope ownership before scoring.
 
 1. **Identify Backlog**: Ask user for the backlog source:
    - `5. Trackers/TASK_MASTER.md` (full backlog)
@@ -42,6 +45,7 @@ description: Score and rank a backlog using RICE, ICE, MoSCoW, Kano, or weighted
    - Decision notes explaining key ranking choices
 
 6. **Capacity Check**: Validate that committed items fit within available resources.
+   - Include owner, dependency, evidence strength, and next decision gate for each item above the cut line.
 
 7. **Save**: Write to `2. Products/[Product]/backlog-score.md` or present inline.
 
