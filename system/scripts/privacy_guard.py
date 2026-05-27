@@ -12,53 +12,18 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-MAX_FINDINGS = 200
-MAX_TEXT_BYTES = 2_000_000
+sys.path.insert(0, str(ROOT))
 
-PRIVATE_WORKSPACE_ROOTS = {
-    "0. Incoming",
-    "1. Company",
-    "2. Products",
-    "3. Meetings",
-    "4. People",
-    "5. Trackers",
-    "6. SOPs",
-    "7. Partners",
-    "8. Clients",
-}
-
-FORBIDDEN_PATH_PREFIXES = (
-    ".claude/",
-    ".cline/",
-    ".codex/",
-    ".context/",
-    ".continue/",
-    ".cursor/",
-    ".gemini/",
-    ".github/agents/",
-    ".github/skills/",
-    ".kilocode/",
-    ".trae/",
-    ".windsurf/",
-    ".zed/",
-    "cockpit/",
-    ".copilot/",
-    ".kiro/",
-    ".switchboard/",
-    ".vscode/",
-    "node_modules/",
-    "_agent",
-    "_agents",
+from system.utils.root_policy import (
+    LOCAL_RUNTIME_EXACT_PATHS,
+    PRIVATE_WORKSPACE_ROOTS,
+    generated_or_local_prefixes,
 )
 
-FORBIDDEN_EXACT_PATHS = {
-    ".mcp.json",
-    ".cursorrules",
-    ".cursorrules 2",
-    "CODEX_PROMPT.md",
-    "CONVENTIONS.md",
-    "system/config.json",
-}
+MAX_FINDINGS = 200
+MAX_TEXT_BYTES = 2_000_000
+FORBIDDEN_PATH_PREFIXES = generated_or_local_prefixes()
+FORBIDDEN_EXACT_PATHS = LOCAL_RUNTIME_EXACT_PATHS
 
 ALLOW_EMAIL_DOMAINS = {
     "example.com",
@@ -319,11 +284,15 @@ def read_worktree_file(path: str) -> bytes:
 def scan_tree() -> list[Finding]:
     findings: list[Finding] = []
     for path in iter_tree_paths():
+        if not (ROOT / path).exists():
+            continue
         findings.extend(path_findings(path))
         if len(findings) >= MAX_FINDINGS:
             return findings
         try:
             text = safe_text(read_worktree_file(path))
+        except FileNotFoundError:
+            continue
         except OSError as exc:
             findings.append(Finding(path, "unreadable-file", str(exc)))
             continue
