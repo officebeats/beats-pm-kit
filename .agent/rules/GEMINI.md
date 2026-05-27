@@ -1,6 +1,6 @@
 # GEMINI.md - Maestro Configuration
 
-**Version 10.6.0** - BeatsPM Product OS
+**Version 10.10.0** - BeatsPM Product OS
 
 This file defines the Operating System for the Product Management Brain.
 
@@ -11,9 +11,15 @@ This file defines the Operating System for the Product Management Brain.
 **On the FIRST user message of every new session**, execute this sequence:
 
 ### A. First-Run Detection
-Check if `.initialized` exists in the project root:
-- **If `.initialized` is MISSING** → This is a fresh install. Trigger the `/start` workflow.
-- **If `.initialized` EXISTS** → Proceed to Step B.
+If the user provides only the Beats PM Kit GitHub URL, clone/open the repo and run:
+
+```bash
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>
+```
+
+Check if `.beats/initialized` exists in the project root:
+- **If `.beats/initialized` is MISSING** → Run `python3 system/scripts/bootstrap.py --agent --non-interactive`, then trigger `/start` only if optional profile setup is needed.
+- **If `.beats/initialized` EXISTS** → Proceed to Step B.
 
 ### B. Health Check
 Silently run `system/scripts/context_health.py`.
@@ -35,6 +41,7 @@ Silently run `system/scripts/context_health.py`.
 11. **Screenshot & Transcript Default Intent:** When the user shares a screenshot, image, or transcript without an explicit alternate instruction, assume the intent is task-master management. Extract tasks, status changes, blockers, owners, due dates, source references, and referenced tickets/links; route through the task-manager Priority Gate into `5. Trackers/TASK_MASTER.md` or return exact local tracker updates to confirm. Do not default to profile lookup, reply drafting, or generic summarization.
 12. **PM Decision Router:** For `/paste`, `/track`, `/transcript`, `/beats-comms`, `/discover`, `/create`, `/plan`, and `/prioritize`, classify ambiguous input with `.agent/skills/pm-decision-router/SKILL.md` before accepting durable work. `scope_challenge` and `ask_user` results become explicit questions, not silent active tasks.
 13. **Obsidian MCP Read-Only:** Obsidian may be used only as optional read/search/open-file context for the direct-vault kit folder. Check `system/scripts/obsidian_mcp_health.py`; if unavailable, fall back to repo-local `rg`. Never write, patch, delete, move, or command-execute through Obsidian MCP in v1.
+14. **Root Cleanliness:** Keep public root clutter minimal. Use `system/scripts/root_cleaner.py --dry-run` to inspect local clutter and `--apply` only when cleanup is explicitly intended; unknown user files move to ignored `0. Incoming/root-cleanup/` instead of being deleted.
 
 ---
 
@@ -47,4 +54,4 @@ Silently run `system/scripts/context_health.py`.
 
 ---
 
-_End of System Config — v10.6.0_
+_End of System Config — v10.10.0_
