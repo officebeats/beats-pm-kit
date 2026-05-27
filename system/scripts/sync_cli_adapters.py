@@ -74,7 +74,10 @@ def relative(path: Path) -> str:
 
 
 def workflow_files() -> list[Path]:
-    return sorted((AGENT_DIR / "workflows").glob("*.md"))
+    return [
+        AGENT_DIR / "workflows" / f"{name}.md"
+        for name, _description in get_workflow_descriptions()
+    ]
 
 
 def skill_files() -> list[Path]:
@@ -110,6 +113,11 @@ def render_codex_commands() -> str:
         "Codex should resolve slash commands through this table, then load the",
         "matching workflow file from `.agent/workflows/`.",
         "",
+        "If the user only provides the GitHub repo URL, clone/open the repo, run",
+        "`python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>`,",
+        "then route any remaining request through the PM decision router or the",
+        "matching slash-command workflow.",
+        "",
         "| Command | Workflow | Promoted Codex Skill |",
         "| --- | --- | --- |",
     ]
@@ -135,12 +143,25 @@ def render_agents_md() -> str:
 
 On a new Codex session:
 
-1. Read `SETTINGS.md` and `STATUS.md` first when they are relevant to the task.
-2. Treat `.agent/` as the source of truth.
-3. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
-4. Load only the minimum `.agent/workflows/` and `.agent/skills/` files needed for the current task.
-5. Translate Antigravity-only primitives into Codex equivalents instead of failing.
-6. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
+1. If the user provides only the GitHub repo URL, clone/open the repo and run `python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>` from the repo root.
+2. Read `SETTINGS.md` and `STATUS.md` first when they are relevant to the task.
+3. Treat `.agent/` as the source of truth.
+4. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
+5. Load only the minimum `.agent/workflows/` and `.agent/skills/` files needed for the current task.
+6. Translate Antigravity-only primitives into Codex equivalents instead of failing.
+7. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
+
+## Agent Bootstrap
+
+When starting from a GitHub URL:
+
+```bash
+git clone <url>
+cd beats-pm-kit
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>
+```
+
+After bootstrap, route the user's first real PM input through `system/scripts/pm_decision_router.py` or the matching slash-command workflow.
 
 ## Slash Command Dispatch
 
@@ -159,7 +180,7 @@ Generated runtime folders such as `.codex/`, `.gemini/`, `.claude/`, and `.kiloc
 
 ```bash
 python system/scripts/sync_cli_adapters.py
-python system/scripts/sync_codex_skill_adapters.py --output <codex-skills-dir>
+python system/scripts/sync_codex_skill_adapters.py --output-dir <codex-skills-dir>
 ```
 """
 
@@ -172,6 +193,14 @@ This file is a thin compatibility entrypoint for Gemini CLI and Antigravity.
 The canonical agent contract, workflows, skills, and rules live in `.agent/`.
 Load `.agent/rules/GEMINI.md` first, then resolve workflows from `.agent/workflows/`.
 Generated local adapter directories are intentionally ignored by Git.
+
+If the user provides only the GitHub repo URL, clone/open the repo and run:
+
+```bash
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>
+```
+
+Then route the first real PM input through the PM decision router or the matching workflow.
 """
 
 
@@ -183,6 +212,14 @@ This file is a thin compatibility entrypoint for Claude Code.
 The canonical agent contract, workflows, skills, and rules live in `.agent/`.
 Run `python system/scripts/sync_cli_adapters.py` to regenerate local Claude command adapters under `.claude/`.
 Generated local adapter directories are intentionally ignored by Git.
+
+If the user provides only the GitHub repo URL, clone/open the repo and run:
+
+```bash
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>
+```
+
+Then route the first real PM input through the PM decision router or the matching workflow.
 """
 
 
@@ -310,6 +347,27 @@ def copy_tree_changed(source: Path, destination: Path) -> int:
     return changed
 
 
+def sync_workflow_adapter_dir(destination: Path) -> int:
+    """Sync only canonical, non-ignored workflow files into a runtime adapter."""
+    changed = 0
+    if safe_exists(destination) and not safe_is_dir(destination):
+        remove_path(destination)
+        changed += 1
+    destination.mkdir(parents=True, exist_ok=True)
+
+    expected = {path.name for path in workflow_files()}
+    for source in workflow_files():
+        if copy_file_if_changed(source, destination / source.name):
+            changed += 1
+
+    for dest_item in sorted(destination.rglob("*"), key=lambda item: len(item.parts), reverse=True):
+        rel = dest_item.relative_to(destination).as_posix()
+        if rel not in expected:
+            remove_path(dest_item)
+            changed += 1
+    return changed
+
+
 def normalize_kilocode_agent_frontmatter(content: str) -> str:
     lines = content.splitlines()
     if not lines or lines[0] != "---":
@@ -361,7 +419,11 @@ def sync_runtime_links() -> list[str]:
     messages: list[str] = []
     for adapter, entries in CORE_ADAPTER_DIRS.items():
         for name, target in entries.items():
-            status = ensure_local_copy(ROOT / adapter / name, target)
+            if target == AGENT_DIR / "workflows":
+                changed = sync_workflow_adapter_dir(ROOT / adapter / name)
+                status = "unchanged" if changed == 0 else f"synced {changed}"
+            else:
+                status = ensure_local_copy(ROOT / adapter / name, target)
             if adapter == ".kilocode" and name == "agents":
                 normalized = normalize_kilocode_agents(ROOT / adapter / name)
                 if normalized:
@@ -372,9 +434,14 @@ def sync_runtime_links() -> list[str]:
     if safe_exists(commands_dir) and not safe_is_dir(commands_dir):
         remove_path(commands_dir)
     commands_dir.mkdir(parents=True, exist_ok=True)
+    expected_commands = {f"{workflow.stem}.md" for workflow in workflow_files()}
     for workflow in workflow_files():
         changed = write_if_changed(commands_dir / f"{workflow.stem}.md", render_claude_command(workflow))
         messages.append(f".claude/commands/{workflow.stem}.md: {'updated' if changed else 'unchanged'}")
+    for command_file in sorted(commands_dir.glob("*.md")):
+        if command_file.name not in expected_commands:
+            remove_path(command_file)
+            messages.append(f".claude/commands/{command_file.name}: removed")
     return messages
 
 

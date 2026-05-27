@@ -12,12 +12,25 @@
 
 On a new Codex session:
 
-1. Read `SETTINGS.md` and `STATUS.md` first when they are relevant to the task.
-2. Treat `.agent/` as the source of truth.
-3. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
-4. Load only the minimum `.agent/workflows/` and `.agent/skills/` files needed for the current task.
-5. Translate Antigravity-only primitives into Codex equivalents instead of failing.
-6. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
+1. If the user provides only the GitHub repo URL, clone/open the repo and run `python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>` from the repo root.
+2. Read `SETTINGS.md` and `STATUS.md` first when they are relevant to the task.
+3. Treat `.agent/` as the source of truth.
+4. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
+5. Load only the minimum `.agent/workflows/` and `.agent/skills/` files needed for the current task.
+6. Translate Antigravity-only primitives into Codex equivalents instead of failing.
+7. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
+
+## Agent Bootstrap
+
+When starting from a GitHub URL:
+
+```bash
+git clone <url>
+cd beats-pm-kit
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>
+```
+
+After bootstrap, route the user's first real PM input through `system/scripts/pm_decision_router.py` or the matching slash-command workflow.
 
 ## Slash Command Dispatch
 
@@ -36,5 +49,5 @@ Generated runtime folders such as `.codex/`, `.gemini/`, `.claude/`, and `.kiloc
 
 ```bash
 python system/scripts/sync_cli_adapters.py
-python system/scripts/sync_codex_skill_adapters.py --output <codex-skills-dir>
+python system/scripts/sync_codex_skill_adapters.py --output-dir <codex-skills-dir>
 ```
