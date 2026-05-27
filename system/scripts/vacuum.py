@@ -20,6 +20,7 @@ sys.path.insert(0, str(BRAIN_ROOT))
 
 # Centralized Config
 from system.scripts import sys_config
+from system.scripts.root_cleaner import clean_root
 
 # Configuration
 TRACKERS_DIR = BRAIN_ROOT / "5. Trackers"
@@ -107,90 +108,22 @@ from system.scripts import file_organizer
 # Import Librarian for Warm Tier Memory
 from system.scripts import librarian
 
-# --- SKELETON CLEANUP (v5.0.2) ---
-
-# Known valid root files (anything else is flagged)
-VALID_ROOT_FILES = {
-    ".antigravityignore", ".gitattributes", ".gitignore",
-    "AGENTS.md", "CLAUDE.md", "CODEX_COMMANDS.md", "GEMINI.md",
-    "README.md", "SETTINGS.md", "STATUS.md", "install.sh",
-    "requirements.txt"
-}
-
-# Known valid root directories
-VALID_ROOT_DIRS = {
-    ".agent", ".git", ".pytest_cache",
-    "0. Incoming", "1. Company", "2. Products", "3. Meetings",
-    "4. People", "5. Trackers", "6. SOPs", "7. Partners", "8. Clients",
-    "archive", "system", "test_logs"
-}
-
 def clean_skeleton():
     """
-    Senior Engineer Cleanup: Analyze and clean the repo skeleton.
-    - Cleans old reports (keeps last 5)
-    - Reports potential stale items
-    - Hierarchical Integrity Audit (Folders 1, 2, 4)
+    Analyze the repo skeleton and preview root cleanup actions.
     """
     print("\n--- 🦴 Skeleton Cleanup (Senior Engineer Audit) ---")
     
     issues_found = 0
-    
-    # 1. Clean Old Reports (keep last 5)
-    reports_dir = SYSTEM_ROOT / "reports"
-    if reports_dir.exists():
-        report_files = sorted(reports_dir.glob("*.txt"), key=lambda f: f.stat().st_mtime, reverse=True)
-        old_reports = report_files[5:]  # Everything after the first 5
-        if old_reports:
-            for f in old_reports:
-                try:
-                    f.unlink()
-                except Exception:
-                    pass
-            print(f"  🗑️  Cleaned {len(old_reports)} old vibe reports (kept last 5)")
-        else:
-            print("  ✅ Reports: Clean (≤5 files)")
-    
-    # 2. Flag Unknown Root Files
-    unknown_files = []
-    unknown_dirs = []
-    
-    for item in BRAIN_ROOT.iterdir():
-        name = item.name
-        if item.is_file():
-            if name not in VALID_ROOT_FILES and not name.startswith("."):
-                unknown_files.append(name)
-        elif item.is_dir():
-            if name not in VALID_ROOT_DIRS and not name.startswith("."):
-                unknown_dirs.append(name)
-    
-    if unknown_files:
-        print(f"  ⚠️  Unknown root files (consider cleanup): {unknown_files}")
-        issues_found += len(unknown_files)
+
+    actions = clean_root(BRAIN_ROOT, apply=False)
+    if actions:
+        print(f"  ⚠️  Root cleaner would take {len(actions)} action(s). Run `python3 system/scripts/root_cleaner.py --apply` to apply.")
+        issues_found += len(actions)
     else:
         print("  ✅ Root files: All recognized")
-        
-    if unknown_dirs:
-        print(f"  ⚠️  Unknown root directories: {unknown_dirs}")
-        issues_found += len(unknown_dirs)
-    else:
-        print("  ✅ Root directories: All recognized")
-    
-    # 3. Check for Stale Test Logs
-    test_logs_dir = SYSTEM_ROOT / "test_logs"
-    if test_logs_dir.exists():
-        log_files = list(test_logs_dir.glob("*"))
-        if len(log_files) > 3:
-            old_logs = sorted(log_files, key=lambda f: f.stat().st_mtime)[:-3]
-            for f in old_logs:
-                try:
-                    if f.is_file():
-                        f.unlink()
-                except Exception:
-                    pass
-            print(f"  🗑️  Cleaned {len(old_logs)} old test logs")
-    
-    # 4. Check for Empty Directories at Root
+
+    # Check for Empty Directories at Root
     empty_dirs = []
     for item in BRAIN_ROOT.iterdir():
         if item.is_dir() and item.name not in [".git", ".pytest_cache"]:
@@ -206,7 +139,7 @@ def clean_skeleton():
         print(f"  ⚠️  Empty directories at root: {empty_dirs}")
         issues_found += len(empty_dirs)
     
-    # 5. Hierarchical Integrity Audit (Folders 1, 2, 4)
+    # Hierarchical Integrity Audit (Folders 1, 2, 4)
     print("  🔍 Auditing Hierarchical Integrity...")
     monitored_folders = ["1. Company", "2. Products", "4. People"]
     for folder in monitored_folders:
@@ -242,96 +175,18 @@ def clean_skeleton():
 
 def clean_repo_structure():
     """
-    Remove known structural cleanup items:
-    - Empty duplicate kilocode directories
-    - Legacy archive folder
-    - Old test script
-    - Old migration/utility scripts
-    - Old debug logs
-    - Generated cache files (regenerates content_index.json)
+    Apply shared root cleanup and regenerate generated local indices.
     """
     print("\n--- 🏗️  Repo Structure Cleanup ---")
-    items_removed = 0
-    
-    # 1. Empty duplicate kilocode directories
-    kilocode_dupes = [
-        BRAIN_ROOT / ".kilocode" / "skills 2",
-        BRAIN_ROOT / ".kilocode" / "templates 2", 
-        BRAIN_ROOT / ".kilocode" / "workflows 2"
-    ]
-    for d in kilocode_dupes:
-        if d.exists() and d.is_dir():
-            try:
-                contents = list(d.iterdir())
-                if len(contents) == 0:
-                    d.rmdir()
-                    items_removed += 1
-                    print(f"  🗑️  Removed empty dir: {d.name}")
-                else:
-                    print(f"  ⚠️  Skipped non-empty dir: {d.name}")
-            except Exception as e:
-                print(f"  ⚠️  Failed to remove {d.name}: {e}")
-    
-    # 2. Legacy archive folder (with _legacy files)
-    archive_legacy = BRAIN_ROOT / "archive"
-    if archive_legacy.exists():
-        try:
-            shutil.rmtree(archive_legacy)
-            items_removed += 1
-            print(f"  🗑️  Removed legacy archive folder")
-        except Exception as e:
-            print(f"  ⚠️  Failed to remove archive: {e}")
-    
-    # 3. Old test script
-    old_test_script = BRAIN_ROOT / "tests" / "security_scan.sh"
-    if old_test_script.exists():
-        try:
-            old_test_script.unlink()
-            items_removed += 1
-            print(f"  🗑️  Removed: tests/security_scan.sh")
-        except Exception as e:
-            print(f"  ⚠️  Failed to remove security_scan.sh: {e}")
-    
-    # 4. Old migration/utility scripts
-    old_scripts = [
-        SYSTEM_ROOT / "migrate_task_schema.py",
-        SYSTEM_ROOT / "sort_task_master.py",
-        SYSTEM_ROOT / "vacuum_tasks.py"
-    ]
-    for script in old_scripts:
-        if script.exists():
-            try:
-                script.unlink()
-                items_removed += 1
-                print(f"  🗑️  Removed: {script.name}")
-            except Exception as e:
-                print(f"  ⚠️  Failed to remove {script.name}: {e}")
-    
-    # 5. Old debug logs
-    debug_logs_dir = SYSTEM_ROOT / "debug_logs"
-    if debug_logs_dir.exists():
-        try:
-            shutil.rmtree(debug_logs_dir)
-            items_removed += 1
-            print(f"  🗑️  Removed: system/debug_logs/")
-        except Exception as e:
-            print(f"  ⚠️  Failed to remove debug_logs: {e}")
-    
-    # 6. Generated cache files
-    cache_files = [
-        SYSTEM_ROOT / "content_index.json",
-        SYSTEM_ROOT / "context_cache.json"
-    ]
-    for cf in cache_files:
-        if cf.exists():
-            try:
-                cf.unlink()
-                items_removed += 1
-                print(f"  🗑️  Removed cache: {cf.name}")
-            except Exception as e:
-                print(f"  ⚠️  Failed to remove {cf.name}: {e}")
-    
-    # 7. Regenerate content_index.json for Antigravity
+
+    actions = clean_root(BRAIN_ROOT, apply=True)
+    for action in actions:
+        if action.destination:
+            print(f"  moved: {action.path} -> {action.destination}")
+        else:
+            print(f"  {action.action}: {action.path}")
+
+    # Regenerate content_index.json for Antigravity when the optional indexer exists.
     try:
         from system.scripts import gps_indexer
         gps_indexer.scan_files()
@@ -339,12 +194,12 @@ def clean_repo_structure():
     except Exception as e:
         print(f"  ⚠️  Failed to regenerate content_index.json: {e}")
     
-    if items_removed > 0:
-        print(f"  ✅ Removed {items_removed} items")
+    if actions:
+        print(f"  ✅ Applied {len(actions)} root cleanup action(s)")
     else:
         print("  ✅ Repo structure already clean")
     
-    return items_removed
+    return len(actions)
 
 def check_system_access():
     """
@@ -541,4 +396,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

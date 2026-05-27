@@ -28,6 +28,10 @@ system/config.json
 system/config/trello_config.json
 5. Trackers/.trello_ledger.json
 
+# Local Beats runtime diagnostics, caches, and test logs
+/.beats/
+/test_logs/
+
 # Local MCP runtime configuration, OAuth state, and diagnostics
 system/config/mcp.local*.json
 system/config/mcp.*.local.json
@@ -179,6 +183,7 @@ paru_notes_clean.txt
 /.kiro/
 /.switchboard/
 /.vscode/
+/.obsidian/
 /.mcp.json
 /.agents
 /_agent
@@ -208,12 +213,16 @@ paru_notes_clean.txt
 
 # Core System Runtime Ignored (Privacy)
 /system/content_index.json
+/system/cache/
 /system/context_cache.json
 /system/reports/**
 /system/queue/failed/**
 /system/queue/pending/**
 /system/test_logs/**
 /system/debug_logs/**
+
+# Local Obsidian direct-vault navigation state
+/6. Resources/obsidian/
 
 # ----------------------------------------
 # 7. LOCAL-ONLY TOOLS (PRIVACY)

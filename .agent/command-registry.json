@@ -389,7 +389,6 @@
     },
     "vacuum": {
       "aliases": [
-        "archive",
         "cleanup"
       ],
       "dangerous": true,
