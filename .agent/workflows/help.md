@@ -30,11 +30,13 @@ _For deeper execution cycles._
 
 | Command         | Purpose                                             |
 | :-------------- | :-------------------------------------------------- |
+| **`/context`** | Query local files and return the smallest useful context packet for a topic. |
 | **`/transcript`** | **Quill Integration**. Pulls meetings from last 10 days. |
 | **`/beats-comms`** | Read-only scoped Slack, Teams, Outlook, and Calendar intake through MCP/connectors. |
 | **`/discover`**  | Product discovery with OST and Assumption Mapping.   |
 | **`/prioritize`** | Score and rank backlogs with RICE/ICE.               |
 | **`/fan-out`**   | Parallel multi-agent task orchestration.            |
+| **`/maintain`**  | Refresh local indexes, validate adapters, run triage, and report health. |
 | **`/vacuum`**    | System optimization, task archiving, and cleanup.   |
 | **`/update`**    | Pull latest kit version from GitHub.                |
 
