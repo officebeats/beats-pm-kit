@@ -49,5 +49,5 @@ Generated runtime folders such as `.codex/`, `.gemini/`, `.claude/`, and `.kiloc
 
 ```bash
 python system/scripts/sync_cli_adapters.py
-python system/scripts/sync_codex_skill_adapters.py --output <codex-skills-dir>
+python system/scripts/sync_codex_skill_adapters.py --output-dir <codex-skills-dir>
 ```
