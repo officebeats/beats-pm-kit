@@ -20,6 +20,18 @@ On a new Codex session:
 6. Translate Antigravity-only primitives into Codex equivalents instead of failing.
 7. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
 
+## Codex Browser First
+
+When a task needs a browser for local apps, rendered UI checks, localhost demos, screenshots, click-through validation, or page inspection:
+
+1. Use the Codex in-app Browser first.
+2. Keep browser work contained in the Codex session whenever possible.
+3. Start local servers with terminal commands when needed, then open and validate the URL in the Codex Browser.
+4. Capture screenshots, DOM state, console warnings/errors, and interaction evidence through the Codex Browser whenever possible.
+5. Do not default to macOS `open`, Chrome, Edge, Safari, Computer Use, or standalone Playwright before trying the Codex Browser.
+
+Use an external browser only when there is a concrete reason: the user explicitly asks for it, the task needs the user's browser profile/cookies/extensions/SSO, the bug is browser-specific, the Codex Browser is unavailable or cannot reach the target after a reasonable attempt, or the workflow needs browser permissions/downloads/OS integration the Codex Browser cannot provide. State the reason briefly before using the external browser.
+
 ## Agent Bootstrap
 
 When starting from a GitHub URL:
