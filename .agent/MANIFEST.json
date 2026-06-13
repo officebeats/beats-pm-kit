@@ -1,6 +1,6 @@
 {
   "name": "beats-pm-kit",
-  "version": "10.11.0",
+  "version": "10.12.0",
   "generated": "2026-05-13T00:00:00Z",
   "description": "Machine-readable index of all agents, skills, and workflows. Enables cache-based loading.",
   "agents": {
