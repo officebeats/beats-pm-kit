@@ -133,12 +133,12 @@ def root_actions(root: Path, *, stamp: str) -> list[CleanAction]:
         if item == archive_root or archive_root in item.parents:
             continue
         if item.is_file():
-            if name in PUBLIC_ROOT_FILES:
+            if name in PUBLIC_ROOT_FILES or name in LOCAL_ONLY_ROOT_FILES:
                 continue
             if name in DEPRECATED_ROOT_FILES:
                 destination = archive_destination(root, item, stamp)
                 actions.append(CleanAction("move", name, relpath(destination, root), "deprecated-root-file"))
-            elif name in LOCAL_ONLY_ROOT_FILES or not name.startswith("."):
+            elif not name.startswith("."):
                 destination = archive_destination(root, item, stamp)
                 actions.append(CleanAction("move", name, relpath(destination, root), "local-root-file"))
             continue

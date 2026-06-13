@@ -237,14 +237,14 @@ def configure_vault(root: Path, *, dry_run: bool) -> list[str]:
     core_plugins = read_json(core_plugins_path, {})
     core_plugins.update(CORE_PLUGINS)
     if write_json(core_plugins_path, core_plugins, dry_run=dry_run):
-        changes.append(str(core_plugins_path.relative_to(root)))
+        changes.append(core_plugins_path.relative_to(root).as_posix())
 
     app_path = obsidian_dir / "app.json"
     app_config = read_json(app_path, {})
     app_config["alwaysUpdateLinks"] = True
     app_config["userIgnoreFilters"] = merge_list(app_config.get("userIgnoreFilters", []), USER_IGNORE_FILTERS)
     if write_json(app_path, app_config, dry_run=dry_run):
-        changes.append(str(app_path.relative_to(root)))
+        changes.append(app_path.relative_to(root).as_posix())
 
     graph_path = obsidian_dir / "graph.json"
     graph_config = read_json(graph_path, GRAPH_DEFAULTS)
@@ -256,25 +256,25 @@ def configure_vault(root: Path, *, dry_run: bool) -> list[str]:
     graph_config["collapse-color-groups"] = False
     graph_config["colorGroups"] = merge_graph_groups(graph_config.get("colorGroups", []))
     if write_json(graph_path, graph_config, dry_run=dry_run):
-        changes.append(str(graph_path.relative_to(root)))
+        changes.append(graph_path.relative_to(root).as_posix())
 
     daily_notes_path = obsidian_dir / "daily-notes.json"
     daily_notes = read_json(daily_notes_path, DAILY_NOTES_DEFAULTS)
     for key, value in DAILY_NOTES_DEFAULTS.items():
         daily_notes.setdefault(key, value)
     if write_json(daily_notes_path, daily_notes, dry_run=dry_run):
-        changes.append(str(daily_notes_path.relative_to(root)))
+        changes.append(daily_notes_path.relative_to(root).as_posix())
 
     templates_path = obsidian_dir / "templates.json"
     templates = read_json(templates_path, TEMPLATES_DEFAULTS)
     for key, value in TEMPLATES_DEFAULTS.items():
         templates.setdefault(key, value)
     if write_json(templates_path, templates, dry_run=dry_run):
-        changes.append(str(templates_path.relative_to(root)))
+        changes.append(templates_path.relative_to(root).as_posix())
 
     index_path = root / INDEX_RELATIVE_PATH
     if write_text(index_path, index_content(), dry_run=dry_run):
-        changes.append(str(index_path.relative_to(root)))
+        changes.append(index_path.relative_to(root).as_posix())
 
     return changes
 
