@@ -429,6 +429,23 @@
           "5. Trackers/WEEKLY_PLAN.md"
         ]
       }
+    },
+    "memory": {
+      "aliases": [
+        "reflect"
+      ],
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-memory",
+        "supporting_files": [
+          ".agent/skills/agentic-memory/SKILL.md",
+          "system/scripts/agentic_memory.py",
+          "SESSION_MEMORY.md"
+        ],
+        "optional_files": [
+          "5. Trackers/TASK_MASTER.md"
+        ]
+      }
     }
   }
 }

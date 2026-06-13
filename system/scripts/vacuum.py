@@ -382,11 +382,20 @@ def main():
     # 6. Deep Memory Consolidation
     print("\n--- 🧠 Deep Memory Consolidation ---")
     try:
-        subprocess.run([sys.executable, str(BRAIN_ROOT / ".agent" / "skills" / "memory-consolidator" / "scripts" / "consolidate.py"), "--hours", "168"], check=True)
+        subprocess.run([sys.executable, str(BRAIN_ROOT / ".agent" / "skills" / "memory-consolidator" / "scripts" / "consolidate.py"), "--hours", "168"], check=True, env=dict(os.environ, PYTHONUTF8="1"))
     except subprocess.CalledProcessError as e:
         print(f"  ⚠️ Consolidation process encountered an error: {e}")
     except Exception as e:
         print(f"  ⚠️ Could not execute memory consolidation: {e}")
+
+    # TencentDB-Agent-Memory consolidation
+    print("\n--- 💾 TencentDB-Agent-Memory Consolidation ---")
+    try:
+        subprocess.run([sys.executable, str(BRAIN_ROOT / "system" / "scripts" / "agentic_memory.py"), "consolidate", "--hours", "168"], check=True, env=dict(os.environ, PYTHONUTF8="1"))
+    except subprocess.CalledProcessError as e:
+        print(f"  ⚠️ TencentDB memory consolidation process encountered an error: {e}")
+    except Exception as e:
+        print(f"  ⚠️ Could not execute TencentDB memory consolidation: {e}")
 
     # Privacy & Access Checks
     check_system_access()
