@@ -1,13 +1,15 @@
 """
-Context Health Check (v1.0.0)
+Context Health Check (v1.1.0)
 
 Combined startup script that:
-1. Checks for kit updates (replaces update_checker.py at startup)
+1. Checks for kit updates when requested
 2. Measures active conversation size and reports health status
+3. Repairs Dotcontext only when explicitly requested
 
 Returns a single health report the agent can act on automatically.
 """
 
+import argparse
 import sys
 import os
 import json
@@ -17,6 +19,11 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 SYSTEM_ROOT = SCRIPT_DIR.parent
 BRAIN_ROOT = SYSTEM_ROOT.parent
+sys.path.insert(0, str(BRAIN_ROOT))
+
+from system.utils.stdio import force_utf8_stdio
+
+force_utf8_stdio()
 
 # Antigravity conversation storage
 ANTIGRAVITY_DIR = Path.home() / ".gemini" / "antigravity"
@@ -84,8 +91,8 @@ def check_for_updates():
         pass
 
 
-def check_dotcontext():
-    """Verify dotcontext dependency and configure headlessly if missing."""
+def check_dotcontext(repair=False):
+    """Verify dotcontext dependency and optionally configure headlessly."""
     try:
         import subprocess
         
@@ -100,22 +107,50 @@ def check_dotcontext():
         except subprocess.CalledProcessError:
             has_npx = False
 
-        if has_npx and not context_dir.exists():
+        if has_npx and not context_dir.exists() and repair:
             print("  → Dotcontext dependency missing. Installing headlessly...")
             subprocess.run("npx -y @dotcontext/mcp@latest install all --local", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             subprocess.run("npx -y @dotcontext/cli@latest reverse-sync", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             subprocess.run("npx -y @dotcontext/cli@latest sync -p all --force", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             print("  → Dotcontext installation and sync complete.")
+        elif has_npx and not context_dir.exists():
+            print("  → Dotcontext dependency missing. Run with --repair to install and sync it.")
+        elif context_dir.exists():
+            print("  → Dotcontext dependency present.")
+        else:
+            print("  → Dotcontext check skipped: npx is not available.")
     except Exception as e:
         print(f"  → Warning: Dotcontext dependency check failed: {e}")
 
 
-def main():
-    # 1. Update check (silent unless update available)
-    check_for_updates()
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Check or repair Beats PM Kit context health")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--check",
+        action="store_true",
+        help="Run read-only health checks. This is the default.",
+    )
+    mode.add_argument(
+        "--repair",
+        action="store_true",
+        help="Run checks and repair missing Dotcontext setup.",
+    )
+    parser.add_argument(
+        "--update-check",
+        action="store_true",
+        help="Also run the lightweight kit update check.",
+    )
+    args = parser.parse_args(argv)
 
-    # 2. Check Dotcontext dependency (headless install if needed)
-    check_dotcontext()
+    repair = bool(args.repair)
+
+    # 1. Update check, only when explicitly requested.
+    if args.update_check:
+        check_for_updates()
+
+    # 2. Check Dotcontext dependency. Installation is repair-only.
+    check_dotcontext(repair=repair)
 
     # 3. Conversation health (always report)
     health = check_conversation_health()
@@ -127,7 +162,7 @@ def main():
         print("  → Recommend: Flush this session and start fresh.")
         print(f"  → Active conversation size: {health.get('size_mb', '?')}MB")
 
-    return 0 if health["status"] in ("GREEN", "UNKNOWN") else 1
+    return 0 if health["status"] in ("GREEN", "YELLOW", "UNKNOWN") else 1
 
 
 if __name__ == "__main__":

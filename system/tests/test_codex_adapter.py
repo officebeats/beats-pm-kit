@@ -85,6 +85,7 @@ class TestCodexAdapter(unittest.TestCase):
         """AGENTS.md should tell Codex to treat leading /commands as workflow dispatch."""
         self.assertIn("## Runtime Priority", self.agents_md)
         self.assertIn("**Antigravity first**", self.agents_md)
+        self.assertIn("**Codex second**", self.agents_md)
         self.assertIn("## Slash Command Dispatch", self.agents_md)
         self.assertIn("If the user's message starts with `/command`:", self.agents_md)
         self.assertIn("Resolve it using `CODEX_COMMANDS.md`", self.agents_md)
@@ -128,6 +129,9 @@ class TestCodexAdapter(unittest.TestCase):
         self.assertIn("route", beats.SCRIPT_COMMANDS)
         self.assertIn("context-router", beats.SCRIPT_COMMANDS)
         self.assertIn("command-integrity", beats.SCRIPT_COMMANDS)
+        self.assertIn("codex-doctor", beats.SCRIPT_COMMANDS)
+        self.assertIn("codex-setup", beats.SCRIPT_COMMANDS)
+        self.assertIn("obsidian", beats.SCRIPT_COMMANDS)
         self.assertIn("obsidian-mcp", beats.SCRIPT_COMMANDS)
         self.assertIn("system/scripts/pm_decision_router.py", beats.SCRIPT_COMMANDS["route"])
         self.assertIn("system/scripts/context_router.py", beats.SCRIPT_COMMANDS["context-router"])
