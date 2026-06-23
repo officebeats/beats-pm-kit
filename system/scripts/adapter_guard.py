@@ -1,16 +1,13 @@
-"""
-Adapter guard for Codex-first cross-runtime synchronization.
+"""Adapter and privacy guard for cross-runtime synchronization.
 
 Modes:
-- check: CI-safe verification without mutating tracked files or local Codex home
+- check: CI-safe verification without mutating local Codex home
 - fix: local sync path for hooks and manual maintenance
 """
 
 from __future__ import annotations
 
 import argparse
-import filecmp
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -18,42 +15,57 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from system.utils.root_policy import generated_or_local_prefixes
+
 GENERATED_REPO_FILES = [
     "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
     "CODEX_COMMANDS.md",
-    "CODEX_PROMPT.md",
-    ".codex/rules.md",
-    ".claude/CLAUDE.md",
 ]
+FORBIDDEN_TRACKED_PREFIXES = list(generated_or_local_prefixes())
 PY_COMPILE_FILES = [
     "system/utils/command_registry.py",
+    "system/utils/root_policy.py",
     "system/utils/stdio.py",
     "system/scripts/beats.py",
+    "system/scripts/bootstrap.py",
     "system/scripts/codex_doctor.py",
     "system/scripts/codex_setup.py",
     "system/scripts/feature_inventory.py",
+    "system/scripts/obsidian_bridge.py",
+    "system/scripts/root_cleaner.py",
     "system/scripts/sync_cli_adapters.py",
     "system/scripts/sync_codex_skill_adapters.py",
+    "system/scripts/command_integrity.py",
+    "system/scripts/context_router.py",
+    "system/scripts/run_real_usecase_tests.py",
     "system/scripts/adapter_guard.py",
+    "system/scripts/privacy_guard.py",
     "system/scripts/install_git_hooks.py",
     "system/tests/test_adapter_guard.py",
+    "system/tests/test_command_integrity.py",
     "system/tests/test_codex_adapter.py",
     "system/tests/test_codex_skill_adapters.py",
+    "system/tests/test_obsidian_bridge.py",
 ]
 TEST_MODULES = [
     "system.tests.test_adapter_guard",
+    "system.tests.test_command_integrity",
     "system.tests.test_codex_adapter",
     "system.tests.test_codex_skill_adapters",
+    "system.tests.test_obsidian_bridge",
 ]
 
 
-def run(cmd: list[str], *, quiet: bool = False, cwd: Path | None = None):
+def run(cmd: list[str], *, quiet: bool = False):
     """Run a command from repo root."""
-    workdir = cwd or ROOT
     if quiet:
         result = subprocess.run(
             cmd,
-            cwd=workdir,
+            cwd=ROOT,
             check=False,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
@@ -64,60 +76,23 @@ def run(cmd: list[str], *, quiet: bool = False, cwd: Path | None = None):
         return result
 
     print(f"$ {' '.join(cmd)}")
-    return subprocess.run(cmd, cwd=workdir, check=True, text=True)
+    return subprocess.run(cmd, cwd=ROOT, check=True, text=True)
+
+
+def run_capture(cmd: list[str]) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        cmd,
+        cwd=ROOT,
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
 
 
 def sync_repo_adapters():
-    """Regenerate tracked adapter artifacts."""
+    """Regenerate tracked adapter stubs and ignored local adapter directories."""
     run([sys.executable, "system/scripts/sync_cli_adapters.py"])
-
-
-def _copy_for_generation(temp_root: Path):
-    """Copy only the repo surfaces needed to regenerate adapters."""
-    ignore = shutil.ignore_patterns(
-        ".git",
-        ".pytest_cache",
-        "__pycache__",
-        "tmp",
-        ".omx",
-        "0. Incoming",
-        "1. Company",
-        "2. Products",
-        "3. Meetings",
-        "4. People",
-        "5. Trackers",
-        "6. SOPs",
-        "7. Partners",
-        "8. Clients",
-        "node_modules",
-    )
-    shutil.copytree(ROOT, temp_root, symlinks=True, ignore=ignore, dirs_exist_ok=True)
-
-
-def assert_repo_generated_files_current():
-    """Fail if adapter regeneration would change generated files."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        temp_root = Path(tmpdir) / "repo"
-        _copy_for_generation(temp_root)
-        run([sys.executable, "system/scripts/sync_cli_adapters.py"], cwd=temp_root, quiet=True)
-
-        drifted = []
-        for relative in GENERATED_REPO_FILES:
-            current = ROOT / relative
-            regenerated = temp_root / relative
-            if not current.exists() or not regenerated.exists():
-                drifted.append(relative)
-                continue
-            if not filecmp.cmp(current, regenerated, shallow=False):
-                drifted.append(relative)
-
-        if drifted:
-            joined = ", ".join(drifted)
-            raise SystemExit(
-                "Generated adapter drift detected. Run "
-                "`python system/scripts/adapter_guard.py --mode fix` and commit the result. "
-                f"Drifted files: {joined}"
-            )
 
 
 def sync_codex_skill_adapters(output_dir: str | None = None, *, quiet: bool = False):
@@ -133,14 +108,70 @@ def compile_sources():
     run([sys.executable, "-m", "py_compile", *PY_COMPILE_FILES])
 
 
+def run_command_integrity(codex_output_dir: str | None = None):
+    """Fail on duplicate commands, alias collisions, or generated adapter drift."""
+    cmd = [
+        sys.executable,
+        "system/scripts/command_integrity.py",
+        "--require-generated",
+    ]
+    if codex_output_dir:
+        cmd.extend(["--codex-skills-dir", codex_output_dir])
+    run(cmd)
+
+
 def run_tests():
     """Run the adapter-focused regression suite."""
     run([sys.executable, "-m", "unittest", *TEST_MODULES, "-v"])
 
 
-def assert_repo_generated_files_clean():
-    """Fail if regenerating adapters changed tracked files."""
-    run(["git", "diff", "--exit-code", "--", *GENERATED_REPO_FILES])
+def run_privacy_guard():
+    """Fail on PII, secrets, local runtime state, or private workspace content."""
+    run([sys.executable, "system/scripts/privacy_guard.py", "--tree"])
+
+
+def generated_files_diff() -> str:
+    result = run_capture(["git", "diff", "--", *GENERATED_REPO_FILES])
+    if result.returncode not in {0, 1}:
+        raise subprocess.CalledProcessError(
+            result.returncode,
+            result.args,
+            output=result.stdout,
+            stderr=result.stderr,
+        )
+    return result.stdout
+
+
+def assert_repo_generated_files_clean(initial_diff: str):
+    """Fail if adapter sync introduced new tracked-stub drift."""
+    current_diff = generated_files_diff()
+    if current_diff != initial_diff:
+        print(current_diff, file=sys.stderr)
+        raise SystemExit(1)
+
+
+def assert_generated_adapter_dirs_untracked():
+    """Fail if generated runtime adapter directories are tracked."""
+    result = run_capture(["git", "ls-files", "--", *FORBIDDEN_TRACKED_PREFIXES])
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(
+            result.returncode,
+            result.args,
+            output=result.stdout,
+            stderr=result.stderr,
+        )
+    tracked = [
+        line
+        for line in result.stdout.splitlines()
+        if line.strip() and (ROOT / line.strip()).exists()
+    ]
+    if tracked:
+        print("Generated or local runtime files are tracked:", file=sys.stderr)
+        for path in tracked[:80]:
+            print(f"  - {path}", file=sys.stderr)
+        if len(tracked) > 80:
+            print(f"  ... and {len(tracked) - 80} more", file=sys.stderr)
+        raise SystemExit(1)
 
 
 def main():
@@ -156,22 +187,21 @@ def main():
         default=None,
         help="Override Codex skill output directory",
     )
-    parser.add_argument(
-        "--skip-tests",
-        action="store_true",
-        help="Skip unit tests",
-    )
+    parser.add_argument("--skip-tests", action="store_true", help="Skip unit tests")
     parser.add_argument(
         "--skip-clean-check",
         action="store_true",
         help="Skip git diff verification for generated repo files",
     )
+    parser.add_argument(
+        "--skip-privacy",
+        action="store_true",
+        help="Skip privacy guard. Intended only for local diagnosis.",
+    )
     args = parser.parse_args()
 
-    if args.mode == "fix":
-        sync_repo_adapters()
-    else:
-        assert_repo_generated_files_current()
+    initial_generated_diff = generated_files_diff()
+    sync_repo_adapters()
 
     temp_dir = None
     codex_output_dir = args.codex_output_dir
@@ -180,17 +210,21 @@ def main():
     if args.mode == "check" and codex_output_dir is None:
         temp_dir = tempfile.TemporaryDirectory()
         codex_output_dir = temp_dir.name
-    elif args.mode == "fix":
-        quiet_codex_sync = False
 
     sync_codex_skill_adapters(codex_output_dir, quiet=quiet_codex_sync)
+    run_command_integrity(codex_output_dir)
     compile_sources()
 
     if not args.skip_tests:
         run_tests()
 
-    if args.mode == "fix" and not args.skip_clean_check:
-        assert_repo_generated_files_clean()
+    assert_generated_adapter_dirs_untracked()
+
+    if not args.skip_privacy:
+        run_privacy_guard()
+
+    if not args.skip_clean_check:
+        assert_repo_generated_files_clean(initial_generated_diff)
 
     if temp_dir is not None:
         temp_dir.cleanup()

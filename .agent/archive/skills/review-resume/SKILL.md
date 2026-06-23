@@ -102,13 +102,13 @@ Each major achievement should follow: "Accomplished X, measured by Y, by doing Z
 Use a professional email. Avoid nicknames, numbers, or unprofessional domains.
 
 **Evaluation:**
-- Check if email is professional ([redacted-email] is ideal)
+- Check if email is professional (firstname.lastname@domain.com is ideal)
 - Flag any casual or unprofessional-looking emails
 
 **Guidance:**
 - If current email is unprofessional, create a Gmail account with your professional name
-- Use format: [redacted-email] or your custom domain
-- Avoid: [redacted-email], [redacted-email]
+- Use format: firstname.lastname@gmail.com or your custom domain
+- Avoid: randomnickname123@gmail.com, cutesurfer@yahoo.com
 
 ---
 

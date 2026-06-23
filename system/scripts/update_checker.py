@@ -12,6 +12,11 @@ import subprocess
 import sys
 from pathlib import Path
 
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except AttributeError:
+    pass
+
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 VERSION_FILE = ROOT_DIR / "VERSION"
 REPO = "officebeats/beats-pm-kit"

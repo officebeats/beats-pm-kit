@@ -28,10 +28,10 @@ Each skill is a self-contained capability module with its own SKILL.md, template
 | `business-health-diagnostic` | Diagnose SaaS business health across growth, retention, efficiency, and capital. Use when preparing a business review or prioritizing urgent fixes. |
 | `business-model` | "Generate a Business Model Canvas with all 9 building blocks. Use when creating a business model, documenting how a business creates value, or analyzing an existing business model." |
 | `chat-with-gmail` | Interactive agent for querying and chatting directly with your Gmail inbox. |
-| `chief-strategy-officer` | Synthesize strategic roadmaps and document key decisions. |
+| `product-strategy-suite` | Synthesize strategic roadmaps, product strategy canvases, and document key decisions. |
 | `code-simplifier` | Expert code simplification. Use for /simplify, /refactor, /cleanup. |
 | `cohort-analysis` | "Perform cohort analysis on user engagement data — retention curves, feature adoption trends, and segment-level insights. Use when analyzing user retention by cohort, studying feature adoption over time, investigating churn patterns, or identifying engagement trends." |
-| `communication-crafter` | Draft executive updates, stakeholder emails, escalations, and Slack summaries with tone calibration. |
+| `comms-crafter-suite` | Draft executive updates, stakeholder messages, escalations, and summaries with tone calibration. |
 | `company-profiler` | Conducts deep-dive research to create a strategic dossier on a target company. |
 | `competitive-battlecard` | "Create sales-ready competitive battlecards comparing your product against a specific competitor — positioning, feature comparison, objection handling, and win/loss patterns. Use when preparing sales teams, creating competitive materials, or responding to 'why not competitor X?'" |
 | `competitive-intel` | "Analyze competitors with strengths, weaknesses, and differentiation opportunities. Identifies direct competitors and maps the competitive landscape. Use when doing competitive research, preparing a competitive brief, or finding differentiation opportunities." |
@@ -45,7 +45,7 @@ Each skill is a self-contained capability module with its own SKILL.md, template
 | `delegation-manager` | Track delegated tasks and prevent accountability gaps. |
 | `dependency-tracker` | Map, score, and visualize cross-team dependencies for programs and releases. |
 | `director-readiness-advisor` | Guide the PM-to-Director transition across preparing, interviewing, landing, and recalibrating. Use when leadership scope is changing and you need practical coaching. |
-| `discovery-coach` | Run structured product discovery using Opportunity Solution Trees, assumption mapping, and experiment design. |
+| `discovery-engine` | Run structured product discovery using Opportunity Solution Trees, assumption mapping, and experiment design. |
 | `document-exporter` | Convert standard Markdown documents into high-fidelity PDF, HTML, or DOCX formats with embedded assets. |
 | `draft-nda` | "Draft a detailed Non-Disclosure Agreement between two parties covering information types, jurisdiction, and clauses needing legal review. Use when creating confidentiality agreements or preparing an NDA for a partnership." |
 | `dummy-dataset` | "Generate realistic dummy datasets for testing with customizable columns, constraints, and output formats (CSV, JSON, SQL, Python script). Use when creating test data, building mock datasets, or generating sample data for development and demos." |
@@ -88,7 +88,7 @@ Each skill is a self-contained capability module with its own SKILL.md, template
 | `pre-mortem` | "Run a pre-mortem risk analysis on a PRD or launch plan. Categorizes risks as Tigers (real problems), Paper Tigers (overblown concerns), and Elephants (unspoken worries), then classifies as launch-blocking, fast-follow, or track. Use when preparing for launch, stress-testing a product plan, or identifying what could go wrong." |
 | `press-release` | Write an Amazon-style press release that defines customer value before building. Use when aligning stakeholders on a new product, feature, or strategic bet. |
 | `pricing-strategy` | "Analyze and design pricing strategies including pricing models, competitive pricing analysis, willingness-to-pay estimation, and price elasticity. Use when setting prices, evaluating pricing models, preparing for a pricing change, or comparing freemium vs paid approaches." |
-| `prioritization-engine` | "Prioritize a backlog of feature ideas based on impact, effort, risk, and strategic alignment with top 5 recommendations. Use when prioritizing a feature backlog, making scope decisions, or ranking product ideas." |
+| `roadmapping-suite` | Prioritize a backlog based on impact, effort, risk, strategic alignment, capacity, and cut-line decisions. |
 | `prioritization-frameworks` | "Reference guide to 9 prioritization frameworks with formulas, when-to-use guidance, and templates — RICE, ICE, Kano, MoSCoW, Opportunity Score, and more. Use when selecting a prioritization method, comparing frameworks like RICE vs ICE, or learning how different prioritization approaches work." |
 | `prioritize-assumptions` | "Prioritize assumptions using an Impact × Risk matrix and suggest experiments for each. Use when triaging a list of assumptions, deciding what to test first, or applying the assumption prioritization canvas." |
 | `privacy-policy` | "Draft a detailed privacy policy covering data types, jurisdiction, GDPR and compliance considerations, and clauses needing legal review. Use when creating a privacy policy, updating data protection documentation, or preparing for compliance." |

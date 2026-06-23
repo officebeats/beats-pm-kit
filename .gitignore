@@ -24,11 +24,17 @@ __pycache__/
 .gemini/config.json
 
 # Local Trello API credentials and sync state
+system/config.json
 system/config/trello_config.json
 5. Trackers/.trello_ledger.json
 
 # Local Obsidian vault paths, MCP keys, and sync preferences
 system/config/obsidian.local*.json
+
+# Local Beats runtime diagnostics, caches, and test logs
+/.beats/
+/.agent/cache/
+/test_logs/
 
 # Local MCP runtime configuration, OAuth state, and diagnostics
 system/config/mcp.local*.json
@@ -130,7 +136,6 @@ requirements.txt
 paru_notes_clean.txt
 *.txt
 !/system/**/*.txt
-!/test_logs/**/*.txt
 /scratch/
 
 # ----------------------------------------
@@ -161,19 +166,36 @@ paru_notes_clean.txt
 # ----------------------------------------
 # 5. DYNAMIC CLI ADAPTERS
 # ----------------------------------------
-# All non-Antigravity CLI configurations are ignored.
-# They are auto-generated dynamically by install.sh
+# All non-Antigravity CLI configuration directories are local generated artifacts.
+# Root AGENTS.md, CLAUDE.md, GEMINI.md, and CODEX_COMMANDS.md remain tracked
+# thin stubs for runtimes that require repository-level entrypoints.
 /.gemini/
 /.claude/
+/.codex/
+/.kilocode/
+/.context/
+/.cline/
+/.continue/
+/.cursor/
+/.trae/
+/.windsurf/
+/.zed/
+/.github/agents/
+/.github/skills/
+/.github/copilot-instructions.md
+/.copilot/
+/.kiro/
+/.switchboard/
+/.vscode/
+/.obsidian/
+/.mcp.json
 /.agents
 /_agent
 /_agents
-/.kilocode/
-/.codex/*
-!/.codex/
-!/.codex/agents/
-!/.codex/agents/*.toml
-/AGENTS.md
+/.omx/
+/checks*.json
+/pr_*.json
+/tmp/
 
 # Codex Action output artifacts
 /codex-output.md
@@ -198,12 +220,16 @@ paru_notes_clean.txt
 
 # Core System Runtime Ignored (Privacy)
 /system/content_index.json
+/system/cache/
 /system/context_cache.json
 /system/reports/**
 /system/queue/failed/**
 /system/queue/pending/**
 /system/test_logs/**
 /system/debug_logs/**
+
+# Local Obsidian direct-vault navigation state
+/6. Resources/obsidian/
 
 # ----------------------------------------
 # 7. LOCAL-ONLY TOOLS (PRIVACY)
