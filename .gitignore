@@ -30,6 +30,7 @@ system/config/trello_config.json
 
 # Local Beats runtime diagnostics, caches, and test logs
 /.beats/
+/.agent/cache/
 /test_logs/
 
 # Local MCP runtime configuration, OAuth state, and diagnostics
