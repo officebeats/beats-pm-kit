@@ -9,7 +9,7 @@ from pathlib import Path
 CURRENT_FILE = Path(__file__).resolve()
 SYSTEM_DIR = CURRENT_FILE.parent.parent
 REPO_ROOT = SYSTEM_DIR.parent
-LOG_DIR = REPO_ROOT / "test_logs"
+LOG_DIR = REPO_ROOT / ".beats" / "test-logs"
 
 def setup_logging():
     """Ensure log directory exists and handle rotation (Max 2 files)."""

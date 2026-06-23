@@ -21,3 +21,9 @@ jobs:
 
       - name: Verify runtime adapters
         run: python3 system/scripts/adapter_guard.py --mode check
+
+      - name: Run real-use bootstrap scenarios
+        run: python3 -B system/scripts/run_real_usecase_tests.py --ci
+
+      - name: Verify privacy boundaries
+        run: python3 system/scripts/privacy_guard.py --tree

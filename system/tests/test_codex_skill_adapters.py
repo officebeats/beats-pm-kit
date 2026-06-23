@@ -1,7 +1,7 @@
 """
 Codex skill adapter generation tests
 ====================================
-Protects the Codex-first command promotion model.
+Protects the Antigravity-first / Codex-second command promotion model.
 """
 
 import sys
@@ -58,18 +58,25 @@ class TestCodexSkillAdapters(unittest.TestCase):
             skill_md = Path(tmpdir) / "beats-paste" / "SKILL.md"
             content = skill_md.read_text(encoding="utf-8")
 
+            self.assertIn(".agent/skills/pm-decision-router/SKILL.md", content)
+            self.assertIn("system/scripts/pm_decision_router.py", content)
             self.assertIn(".agent/skills/task-manager/SKILL.md", content)
             self.assertIn("5. Trackers/TASK_MASTER.md", content)
             self.assertIn("Treat screenshots/images and transcript-like clipboard text as task-master management input", content)
             self.assertIn("defaulting to profile lookup, reply drafting, or generic summarization", content)
 
-    def test_new_codex_first_workflows_generate_skills(self):
-        """Codex-first promoted workflows should emit native skill adapters."""
+    def test_dispatch_only_commands_do_not_generate_skills(self):
+        """Commands not promoted in the registry should not be emitted as Codex skills."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sync_codex_skill_adapters.sync_promoted_skills(output_dir=tmpdir, root=ROOT_DIR)
+            self.assertFalse((Path(tmpdir) / "beats-discover").exists())
+            self.assertFalse((Path(tmpdir) / "beats-prioritize").exists())
+
+    def test_new_promoted_workflows_generate_skills(self):
+        """New promoted workflows should emit native skill adapters."""
         with tempfile.TemporaryDirectory() as tmpdir:
             sync_codex_skill_adapters.sync_promoted_skills(output_dir=tmpdir, root=ROOT_DIR)
             for skill_name in [
-                "beats-discover",
-                "beats-prioritize",
                 "beats-review",
                 "beats-office-cli",
                 "beats-obsidian",
@@ -96,6 +103,8 @@ class TestCodexSkillAdapters(unittest.TestCase):
             skill_md = Path(tmpdir) / "beats-transcript" / "SKILL.md"
             content = skill_md.read_text(encoding="utf-8")
 
+            self.assertIn(".agent/skills/pm-decision-router/SKILL.md", content)
+            self.assertIn("system/scripts/pm_decision_router.py", content)
             self.assertIn("system/scripts/transcript_pipeline.py", content)
             self.assertIn("3. Meetings/summaries", content)
             self.assertIn("3. Meetings/reports", content)
@@ -112,24 +121,36 @@ class TestCodexSkillAdapters(unittest.TestCase):
             skill_md = Path(tmpdir) / "beats-comms" / "SKILL.md"
             content = skill_md.read_text(encoding="utf-8")
 
+            self.assertIn(".agent/skills/pm-decision-router/SKILL.md", content)
             self.assertIn(".agent/rules/MCP_COMMUNICATION_INTAKE.md", content)
             self.assertIn("Slack, Teams, Outlook, and Calendar", content)
             self.assertIn("calendar windows are forward-looking", content)
             self.assertIn("chat_intake_state.py chunks", content)
             self.assertIn("Never create, send, forward, or reply to email", content)
+            self.assertIn("PM decision router", content)
+
+    def test_generated_plan_skill_uses_current_strategy_skills(self):
+        """The /plan adapter should not reference removed strategy skill aliases."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sync_codex_skill_adapters.sync_promoted_skills(output_dir=tmpdir, root=ROOT_DIR)
+            skill_md = Path(tmpdir) / "beats-plan" / "SKILL.md"
+            content = skill_md.read_text(encoding="utf-8")
+
+            self.assertIn(".agent/skills/pm-decision-router/SKILL.md", content)
+            self.assertIn(".agent/skills/roadmapping-suite/SKILL.md", content)
+            self.assertIn(".agent/skills/product-strategy-suite/SKILL.md", content)
+            self.assertNotIn("chief-strategy-officer", content)
 
     def test_promoted_supporting_files_exist_when_required(self):
-        """New Codex-first promoted workflows should resolve to repo-owned contracts."""
-        codex_first_commands = {
-            "discover",
-            "prioritize",
+        """New promoted workflows should resolve to repo-owned contracts."""
+        newly_promoted_commands = {
             "review",
             "office-cli",
             "obsidian",
             "vibe",
         }
         for command in get_promoted_codex_commands(ROOT_DIR):
-            if command["name"] not in codex_first_commands:
+            if command["name"] not in newly_promoted_commands:
                 continue
             with self.subTest(command=command["name"]):
                 for relative in command["codex_supporting_files"]:

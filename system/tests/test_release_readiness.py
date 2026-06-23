@@ -11,6 +11,7 @@ Usage:
 import unittest
 import os
 import re
+import importlib.util
 from pathlib import Path
 
 # ============================================================================
@@ -18,11 +19,12 @@ from pathlib import Path
 # ============================================================================
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-AGENTS_DIRS = [ROOT_DIR / ".agents" / "agents", ROOT_DIR / ".agent" / "agents"]
-SKILLS_DIRS = [ROOT_DIR / ".agents" / "skills", ROOT_DIR / ".agent" / "skills"]
-WORKFLOWS_DIRS = [ROOT_DIR / ".agents" / "workflows", ROOT_DIR / ".agent" / "workflows"]
+AGENTS_DIRS = [ROOT_DIR / ".agent" / "agents"]
+SKILLS_DIRS = [ROOT_DIR / ".agent" / "skills"]
+WORKFLOWS_DIRS = [ROOT_DIR / ".agent" / "workflows"]
 SYSTEM_DIR = ROOT_DIR / "system"
 SCRIPTS_DIR = SYSTEM_DIR / "scripts"
+FEATURE_INVENTORY_PATH = SCRIPTS_DIR / "feature_inventory.py"
 
 
 def _discover(dirs, pattern="*", is_dir=False):
@@ -54,6 +56,14 @@ def _discover_workflows():
     return _discover(WORKFLOWS_DIRS, "*.md")
 
 
+def _feature_inventory():
+    spec = importlib.util.spec_from_file_location("feature_inventory", FEATURE_INVENTORY_PATH)
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(module)
+    return module.collect_inventory(ROOT_DIR)
+
+
 # ============================================================================
 # 1. STRUCTURAL INTEGRITY — Does the kit have all its bones?
 # ============================================================================
@@ -71,8 +81,7 @@ class TestStructuralIntegrity(unittest.TestCase):
 
     def test_gemini_md_exists(self):
         """System config must exist for the orchestrator to function."""
-        paths = [ROOT_DIR / ".agent" / "rules" / "GEMINI.md",
-                 ROOT_DIR / ".agents" / "rules" / "GEMINI.md"]
+        paths = [ROOT_DIR / ".agent" / "rules" / "GEMINI.md"]
         self.assertTrue(any(p.exists() for p in paths),
                         "GEMINI.md missing — orchestrator has no system config")
 
@@ -81,22 +90,22 @@ class TestStructuralIntegrity(unittest.TestCase):
         self.assertTrue((ROOT_DIR / "README.md").exists(), "README.md missing")
 
     def test_minimum_agent_count(self):
-        """Kit should have at least 8 agents (core team)."""
+        """Inventory count is a lint signal; real-use tests are the release gate."""
         agents = _discover_agents()
-        self.assertGreaterEqual(len(agents), 8,
-                                f"Only {len(agents)} agents found — core team incomplete")
+        if len(agents) < 8:
+            print(f"  ⚠ Only {len(agents)} agents found — check whether the public inventory is intentional")
 
     def test_minimum_skill_count(self):
-        """Kit should have at least 50 skills (PM + eng baseline)."""
+        """Inventory count is a lint signal; real-use tests are the release gate."""
         skills = _discover_skills()
-        self.assertGreaterEqual(len(skills), 50,
-                                f"Only {len(skills)} skills found — below minimum threshold")
+        if len(skills) < 50:
+            print(f"  ⚠ Only {len(skills)} skills found — check whether the public inventory is intentional")
 
     def test_minimum_workflow_count(self):
-        """Kit should have at least 15 workflows (core playbooks)."""
+        """Inventory count is a lint signal; real-use tests are the release gate."""
         workflows = _discover_workflows()
-        self.assertGreaterEqual(len(workflows), 15,
-                                f"Only {len(workflows)} workflows found — missing core playbooks")
+        if len(workflows) < 15:
+            print(f"  ⚠ Only {len(workflows)} workflows found — check whether the public inventory is intentional")
 
 
 # ============================================================================
@@ -230,8 +239,7 @@ class TestCrossReferenceIntegrity(unittest.TestCase):
 
     def test_gemini_md_agent_references_valid(self):
         """GEMINI.md references agents → they must exist."""
-        gemini_paths = [ROOT_DIR / ".agent" / "rules" / "GEMINI.md",
-                        ROOT_DIR / ".agents" / "rules" / "GEMINI.md"]
+        gemini_paths = [ROOT_DIR / ".agent" / "rules" / "GEMINI.md"]
         agents = set(_discover_agents().keys())
         
         for gp in gemini_paths:
@@ -244,7 +252,7 @@ class TestCrossReferenceIntegrity(unittest.TestCase):
                 self.assertTrue('cpo' in agents, "GEMINI.md references CPO but agent missing")
 
     def test_no_broken_skill_symlinks(self):
-        """If skills are symlinked between .agents/ and .agent/, both must resolve."""
+        """If active skills contain symlinks, every symlink must resolve."""
         for skills_dir in SKILLS_DIRS:
             if not skills_dir.exists():
                 continue
@@ -285,7 +293,63 @@ class TestSystemScripts(unittest.TestCase):
 
 
 # ============================================================================
-# 7. PRIVACY — Gitignored folders must not leak into the repo
+# 7. README TRUTH — Public claims must match the canonical inventory
+# ============================================================================
+
+class TestReadmeTruth(unittest.TestCase):
+    """Real-world check: README promises must stay aligned with .agent/."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.readme = (ROOT_DIR / "README.md").read_text(encoding='utf-8', errors='replace')
+        cls.inventory = _feature_inventory()
+
+    def test_readme_preserves_requested_story_sections(self):
+        sections = [
+            "AI Product Management Workflows",
+            "Built And Used Daily By An AI-Forward PM",
+            "Core Functionality",
+            "Local-First PM Task Management",
+            "Codex And Antigravity Support",
+            "Context Engineering For Product Managers",
+        ]
+        for section in sections:
+            self.assertIn(section, self.readme, f"README missing required section: {section}")
+
+    def test_readme_counts_match_feature_inventory(self):
+        self.assertGreaterEqual(self.inventory["agents"]["count"], 8)
+        self.assertGreaterEqual(self.inventory["skills"]["count"], 50)
+        self.assertGreaterEqual(self.inventory["workflows"]["count"], 15)
+        for phrase in ["agents", "skills", "workflow", "local-first"]:
+            self.assertIn(phrase, self.readme.lower())
+
+    def test_readme_runtime_claims_match_registry(self):
+        for runtime in ["Antigravity", "Codex", "Gemini CLI", "Claude Code", "KiloCode"]:
+            self.assertIn(runtime, self.readme)
+
+    def test_readme_highlight_commands_stay_visible(self):
+        for command in ["/paste", "/meet", "/boss"]:
+            self.assertIn(command, self.readme)
+
+    def test_readme_privacy_claims_are_scoped(self):
+        forbidden = [
+            "No API calls with your trade secrets",
+            "Enterprise-safe from day one",
+            "MAANG",
+            "10x Product Manager",
+        ]
+        for phrase in forbidden:
+            self.assertNotIn(phrase, self.readme)
+        self.assertIn("AI runtime/model provider", self.readme)
+        self.assertIn("Folders 1-5 are `.gitignored`", self.readme)
+
+    def test_readme_footer_uses_officebeats_builder_note(self):
+        self.assertIn("OfficeBeats", self.readme)
+        self.assertNotIn("[Your Name]", self.readme)
+
+
+# ============================================================================
+# 8. PRIVACY — Gitignored folders must not leak into the repo
 # ============================================================================
 
 class TestPrivacyCompliance(unittest.TestCase):
@@ -308,7 +372,7 @@ class TestPrivacyCompliance(unittest.TestCase):
 
 
 # ============================================================================
-# 8. REAL-WORLD SCENARIO TESTS — Simulate actual PM workflows
+# 9. REAL-WORLD SCENARIO TESTS — Simulate actual PM workflows
 # ============================================================================
 
 class TestRealWorldScenarios(unittest.TestCase):
@@ -394,7 +458,7 @@ class TestRealWorldScenarios(unittest.TestCase):
 
 
 # ============================================================================
-# 9. PERFORMANCE — Kit should not be bloated
+# 10. PERFORMANCE — Kit should not be bloated
 # ============================================================================
 
 class TestPerformance(unittest.TestCase):

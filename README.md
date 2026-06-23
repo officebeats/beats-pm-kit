@@ -1,383 +1,370 @@
 <div align="center">
 
-<!-- HERO BANNER -->
-
-<img src="system/docs/assets/hero-banner.png" alt="Beats PM Kit - Codex-first AI operating system for product managers" width="100%"/>
+<img src="system/docs/assets/hero-banner.png" alt="Beats PM Kit - AI product management operating system for local-first PM task management" width="100%"/>
 
 <br/>
 
-# 🧠 Beats PM Kit
+# Beats PM Kit: AI Product Management Operating System
 
-### **A Codex-first AI operating system for product managers**
+### Local-first product operations for AI-forward product managers
 
-<p><strong>Stop drowning in noise. Paste anything. Get structured PRDs, roadmaps, and tasks. Local-first repo storage, runtime-neutral state.</strong></p>
-
-<!-- BADGES -->
+<p><strong>Beats PM Kit is an open-source AI product management toolkit for turning meetings, Slack and Teams threads, Outlook context, product documents, screenshots, stakeholder asks, and local files into tasks, briefs, PRDs, decisions, roadmaps, and follow-ups.</strong></p>
 
 <p>
-  <img src="https://img.shields.io/badge/Optimized%20for-Codex-00A651?style=for-the-badge&logo=openai&logoColor=white&labelColor=1a1a2e" alt="Optimized for Codex"/>
+  <img src="https://img.shields.io/badge/Primary_Runtime-Antigravity-00A651?style=for-the-badge&logo=google&logoColor=white&labelColor=1a1a2e" alt="Antigravity primary runtime"/>
   &nbsp;
   <a href="https://github.com/officebeats/beats-pm-kit/stargazers"><img src="https://img.shields.io/github/stars/officebeats/beats-pm-kit?style=for-the-badge&logo=github&labelColor=1a1a2e&color=E6B422" alt="GitHub Stars"/></a>
   &nbsp;
-  <img src="https://img.shields.io/badge/Runtime-State_Neutral-4285F4?style=for-the-badge&labelColor=1a1a2e" alt="Runtime-neutral state"/>
+  <img src="https://img.shields.io/badge/Codex_Ready-AGENTS.md-4285F4?style=for-the-badge&labelColor=1a1a2e" alt="Codex ready with AGENTS.md"/>
 </p>
 
-<!-- VALUE PROP PILLS -->
-
 <p>
-  <img src="https://img.shields.io/badge/Execution-62_PM_Skills-00A651?style=flat-square" alt="62 PM Skills"/>
-   • 
-  <img src="https://img.shields.io/badge/Privacy-Local_First_Storage-00A651?style=flat-square" alt="Local-first storage"/>
-   • 
-  <img src="https://img.shields.io/badge/Exec_Layer-The_Boss_Protocol-00A651?style=flat-square" alt="The Boss Protocol"/>
-   • 
-  <img src="https://img.shields.io/badge/Agents-22_Personas-00A651?style=flat-square" alt="22 Agents"/>
+  <img src="https://img.shields.io/badge/Product_Management-AI_Workflows-00A651?style=flat-square" alt="AI product management workflows"/>
+   -
+  <img src="https://img.shields.io/badge/Storage-Local_First-00A651?style=flat-square" alt="Local-first storage"/>
+   -
+  <img src="https://img.shields.io/badge/Runtime-Codex_And_Antigravity-00A651?style=flat-square" alt="Codex and Antigravity support"/>
+   -
+  <img src="https://img.shields.io/badge/Knowledge-Markdown_And_Obsidian-00A651?style=flat-square" alt="Markdown and optional Obsidian knowledge graph"/>
 </p>
 
 <br/>
 
 <p>
-  <a href="#-quick-start"><img src="https://img.shields.io/badge/🚀_Get_Started-Install_in_60_seconds-00A651?style=for-the-badge" alt="Get Started as a Product Manager"/></a>
+  <a href="#quick-start"><img src="https://img.shields.io/badge/Get_Started-Install_in_60_seconds-00A651?style=for-the-badge" alt="Get started with Beats PM Kit"/></a>
 </p>
 
 </div>
 
 ---
 
-## 🎯 The Problem
+## AI Product Management Workflows
 
-Product managers drown in context — meeting notes, Slack threads, stakeholder requests, competing priorities. Every day you context-switch between 6+ tools and lose critical signal in the noise. There's no system that captures the chaos and surfaces what actually matters. **So I built one.**
+Product managers lose time because product context is scattered across meetings, Slack threads, Teams chats, Outlook, Jira links, Confluence pages, spreadsheets, screenshots, and half-finished docs. Beats PM Kit gives that context a local operating system.
 
-## 🏗️ Architecture at a Glance
+The kit is designed for product managers, product leaders, founders, and AI-native operators who want a fast way to manage PM work with AI while keeping source documents, task state, and workflow outputs organized on their own machine. It supports daily product operations like meeting notes to tasks, PM task management from local documents, stakeholder follow-up, product discovery, PRD writing, roadmap planning, launch preparation, bug triage, and executive-ready status updates.
 
-A **multi-agent AI system** with 22 specialized personas orchestrating 62 public PM skills across 5 supported runtimes. Codex is the optimized default, while one source of truth (`.agent/`) keeps the state and playbooks portable.
+It is not a generic prompt pack. It is a local-first product management workspace with agents, skills, slash-command workflows, task ledgers, privacy guardrails, and runtime adapters for tools such as Google Antigravity and OpenAI Codex.
 
-```
-User Input → Context Guard → Agent Router → Skill Loader (JIT) → Structured Output
-                                  ↓
-                        22 Persona Agents
-                     (Strategy · Execution · GTM · Research · Engineering)
-                                  ↓
-                          62 PM Skills (P0/P1/P2 tiered)
-                     (PRDs · Roadmaps · Meeting Synth · Task Tracking)
-```
+## Built And Used Daily By An AI-Forward PM
 
-## 💡 Why This Approach
+I built Beats PM Kit because I needed a practical AI PM operating system for my own daily product work. I use it to process real product-management context: meeting transcripts, partner follow-ups, stakeholder asks, task triage, planning artifacts, reasoning QA, developer portal work, release questions, and the operational noise that usually gets lost between tools.
+The result is both a working toolkit and a portfolio of AI-forward product management practice: context engineering, local-first AI workflows, agentic task management, privacy-aware automation, and cross-runtime PM operations. The goal is simple: make an AI assistant useful for the messy middle of product work, not only for polished strategy docs.
 
-| Decision | Rationale |
+## Core Functionality
+
+| Capability | What the kit supports |
 |:---|:---|
-| **Agents over prompts** | Personas create consistent, role-scoped behavior that individual prompts can't. A "Staff PM" agent thinks differently than a "GTM Lead." |
-| **Skills as functions** | 62 modular public skills (P0/P1/P2 tiered) allow JIT loading — only load what you need to manage token budgets. |
-| **Codex-first, runtime-neutral** | Codex gets the optimized adapter path, while Antigravity, Gemini CLI, Claude Code, and KiloCode reuse the same `.agent/` source of truth. |
-| **Local-first privacy** | Repo storage stays local by default. Your selected AI runtime or model provider may still process prompts, tool outputs, and attachments. |
+| AI PM operating system | A structured workspace for product strategy, product execution, stakeholder context, meeting notes, task ledgers, PRDs, roadmaps, and reusable product workflows. |
+| Local-first PM task management | `TASK_MASTER.md`, task detail files, boss requests, bugs, weekly plans, task triage, Trello mirroring, and durable local reports. |
+| Meeting notes to tasks | Transcript and chat-intake workflows that extract action items, blockers, owners, dates, decisions, and follow-up questions into local artifacts. |
+| Context-aware task routing | PM Decision Router, task-manager workflows, and bounded communication intake for Slack, Teams, Outlook, Calendar, Jira, and Confluence context. |
+| Codex product management workflow | `AGENTS.md`, `CODEX_COMMANDS.md`, promoted Codex skills, and thin generated adapters so Codex can load the right workflow without carrying the whole kit in context. |
+| Antigravity product management kit | Antigravity-first orchestration with parallel-friendly workflows, `.agent/` as the canonical source, and runtime-neutral fallbacks for other AI coding agents. |
+| Product documentation and PRDs | `/create`, `/plan`, `/sop`, `/deck`, `/review`, and related skills for PRDs, one-pagers, runbooks, launch materials, and decision docs. |
+| Local document reference | Folder conventions, manifests, transcript archives, context artifacts, resource docs, and markdown links help agents cite local files instead of relying on memory. |
+| Markdown and optional Obsidian graph | The kit works as plain Markdown first. Obsidian can be used as an optional direct vault for graph navigation without duplicating files. |
+| Privacy-aware automation | Private workspace folders are gitignored, generated runtime folders stay local, and privacy checks guard against publishing personal files, secrets, transcripts, or adapter bloat. |
 
-## ⚖️ Tradeoffs I Made
+## Local-First PM Task Management
 
-| Decision | Tradeoff |
-|:---|:---|
-| Single `.agent/` source of truth | Simpler sync across runtimes, but every adapter must respect the same contract |
-| 3-skill ceiling per request | Controls cost/latency, but limits complex multi-step operations in a single turn |
-| Codex-first orchestration | Best current path for file edits, local verification, skills, subagents, and CI; Antigravity remains a compatibility path |
-| Slash commands as playbook triggers | Deterministic workflows, but adds a learning curve vs. pure natural language |
+Beats PM Kit treats the local workspace as the source of truth. Tasks live in `5. Trackers/`, communication evidence is archived in `3. Meetings/`, stakeholder context lives in `4. People/`, and reusable product context can live in `6. Resources/`, `7. Partners/`, and `8. Clients/`.
 
-## 🔄 What I'd Improve Next
+The default task-management flow is intentionally conservative:
 
-- **Automated eval harness** — Measure agent output quality across runtimes with standardized scoring rubrics
-- **Cost dashboard** — Token spend tracking per skill/agent to optimize the 3-skill ceiling budget
-- **RAG over meeting history** — Cross-session memory via retrieval-augmented generation for better context recall
-- **Agent quality benchmarks** — Comparative testing across model providers (Gemini vs Claude vs GPT) per skill category
+1. Capture or reference the smallest relevant evidence.
+2. Search local trackers before creating new work.
+3. Update local task files first.
+4. Surface stale, overdue, blocked, unclear, duplicated, or possibly complete work as explicit questions.
+5. Mirror to Trello only when local state is accepted and the live board is healthy.
 
----
+This makes the kit useful for fast PM triage without letting automation silently rewrite your priorities.
 
-## ⚡ Quick Start
+## Codex And Antigravity Support
 
-### 1. Clone & Install
+The kit is optimized for both Codex and Antigravity while keeping `.agent/` as the canonical workflow layer.
+
+| Runtime | Role in the kit | How it works |
+|:---|:---|:---|
+| Google Antigravity | Primary power-user runtime | Uses the canonical `.agent/` workflows, parallel-friendly orchestration, runtime rules, and generated local adapters. |
+| OpenAI Codex | First-class local coding-agent runtime | Uses `AGENTS.md` as the startup adapter and `CODEX_COMMANDS.md` for slash-command routing into `.agent/workflows/`. |
+| Gemini CLI | Compatibility runtime | Uses generated adapters from the same `.agent/` source of truth. |
+| Claude Code | Compatibility runtime | Uses generated command pointers and the shared workflow definitions. |
+| KiloCode | Compatibility runtime | Uses generated local rules, skills, agents, and workflows. |
+
+Codex works best when it is given a clear map rather than a giant instruction file, so the root `AGENTS.md` stays thin. It points Codex to the specific workflow or skill it needs, which keeps PM task management, context reference, and README/product-doc work faster and more reliable.
+
+## Context Engineering For Product Managers
+
+The kit is built around context engineering: retrieve the right source material at the right time instead of stuffing every meeting, PRD, and chat transcript into every prompt.
+
+The practical patterns are:
+
+- `AGENTS.md` and runtime adapters act as routers.
+- `.agent/workflows/` define repeatable PM playbooks.
+- `.agent/skills/` provide focused capabilities such as task management, meeting synthesis, PRD authoring, risk review, documentation, and product strategy.
+- Local manifests track bounded communication intake windows.
+- Task triage scripts identify stale or risky work without guessing closure.
+- Optional Obsidian setup turns the existing kit folder into a direct Markdown vault without creating a mirrored copy.
+
+This keeps the kit snappy while preserving reliable references to local files and documents.
+
+## Quick Start
+
+### 1. Agent-First Bootstrap
+
+Give Codex, Antigravity, or a supported CLI agent the repo URL:
+
+```text
+https://github.com/officebeats/beats-pm-kit
+```
+
+The agent should clone or open the repo, then run the canonical bootstrap:
+
+```bash
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url https://github.com/officebeats/beats-pm-kit
+```
+
+Bootstrap creates the ignored local workspace, seeds templates, syncs runtime adapters, installs hooks when possible, runs privacy and adapter health checks, suggests Obsidian setup, and prints the next useful commands.
+
+This same URL-only flow is supported for Codex, Gemini CLI, Claude Code, and KiloCode. Start the CLI in a safe parent folder, paste the repo URL as the first request, and let the agent run the bootstrap command from the cloned repo root.
+
+Terminal fallback:
 
 ```bash
 git clone https://github.com/officebeats/beats-pm-kit
 cd beats-pm-kit
-chmod +x install.sh && ./install.sh
+./install.sh
 ```
 
-That's it. The installer creates your folder structure, detects your AI runtime, fixes symlinks, installs and syncs the Dotcontext headless dependency, and runs a health check. Takes ~10 seconds.
+Requires Python 3.8+. Optional runtime integrations may use their own CLIs or desktop apps.
 
-> **Requires:** Python 3.8+ (pre-installed on macOS/most Linux). No `pip install`, no `npm`, no Docker.
-> **Note:** The system uses **Dotcontext** as a mandatory, headless dependency. The setup process and any future repository updates will automatically ensure Dotcontext is installed, synced, and initialized to maintain a consistent AI operating environment.
+### 2. Launch Your AI Runtime
 
----
+Open the `beats-pm-kit` folder in your preferred AI coding or agent runtime.
 
-### 2. Launch Your Runtime
+| Runtime | Launch command or action | Best use |
+|:---|:---|:---|
+| [Google Antigravity](https://antigravity.google/) | Open this folder in Antigravity | Fastest power-user workflow and parallel agent fan-out. |
+| [OpenAI Codex](https://github.com/openai/codex) | `codex` | Local Codex workflow using `AGENTS.md`, shell commands, and repo files. |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli) | `gemini` | File access, web search, and tool use with generated adapters. |
+| [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview) | `claude` | Agentic file work and command dispatch through generated adapters. |
+| [KiloCode](https://kilocode.ai/) | `kilo` | Additional local agent compatibility. |
 
-Open the `beats-pm-kit` folder in any of these AI coding tools. **All are CLIs unless noted.**
+If you have Antigravity, use it for the fastest workflow. If you live in Codex, the kit is still first-class: start from the repo root, let Codex read `AGENTS.md`, and use `/day`, `/track`, `/paste`, `/transcript`, `/plan`, or `/create` as explicit workflow triggers.
 
-| Runtime | Launch Command | Capabilities |
-|:--------|:---------------|:-------------|
-| **[OpenAI Codex](https://github.com/openai/codex)** (CLI/Desktop) | `codex` | ⭐ Primary — file edits, verification, project skills, subagents, Codex Action |
-| **[Google Antigravity](https://antigravity.google/)** (Desktop IDE) | Open folder in Antigravity | Compatibility — parallel fan-out, MCP tools, browser agent |
-| **[Gemini CLI](https://github.com/google-gemini/gemini-cli)** (CLI) | `gemini` | File access, web search, tool use |
-| **[Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)** (CLI) | `claude` | File access, subagents, tool use |
-| **[KiloCode](https://kilocode.ai/)** (CLI) | `kilo` | File access, tool use |
+### 3. Run First-Time Setup
 
-> **Which should I use?** Use Codex by default. Antigravity remains supported when you want its IDE surface, but the kit no longer depends on Antigravity as the canonical runtime.
-> **Codex note:** Codex uses `AGENTS.md` as the primary adapter, `CODEX_COMMANDS.md` for explicit slash-command routing, project-scoped `.codex/agents/*.toml`, promoted local skills for high-frequency Beats commands, and repo git hooks plus CI to keep adapters synchronized. See [system/docs/codex.md](system/docs/codex.md).
-
----
-
-### 3. First-Time Setup (The `/start` Wizard)
-
-On your **first session**, the kit auto-detects it's a fresh install and walks you through a 2-minute setup:
-
-```
-You open your CLI → Kit detects no .initialized file → Runs /start automatically
+```text
+/start
 ```
 
-The wizard asks 3 questions:
-1. **Your name** — for task ownership and doc headers
-2. **Your manager** — seeds the Boss Protocol for 1:1 prep
-3. **Your product focus** — configures your strategic context
+The setup workflow calls the same bootstrap backend, then asks for optional profile details such as your name, manager, product focus, and local operating preferences.
 
-Then it shows you the **6 core commands** and you're ready to go.
+Type `/help` anytime to see the workflow catalog.
 
-> **Skip the wizard?** Type `/help` instead to jump straight to the command reference.
-> **Re-run it later?** Type `/start` anytime.
+## Common Product Management Workflows
 
----
+| Workflow | Use it when you need to |
+|:---|:---|
+| `/paste` | Turn copied text, screenshots, files, or visible work signals into local task-management evidence. |
+| `/track` | Manage tasks, bugs, boss asks, follow-ups, and local task detail files. |
+| `/day` | Generate a daily PM briefing with triage questions and top priorities. |
+| `/week` | Produce a weekly tactical plan and focus areas. |
+| `/meet` | Convert meeting notes or transcripts into structured notes and action items. |
+| `/transcript` | Process recent transcripts into durable local meeting artifacts. |
+| `/beats-comms` | Run bounded read-only intake across Slack, Teams, Outlook, and Calendar when scoped by the user. |
+| `/boss` | Prepare for manager 1:1s and leadership follow-ups. |
+| `/create` | Draft PRDs, specs, one-pagers, product docs, and structured PM artifacts. |
+| `/plan` | Build product plans, roadmaps, OKRs, and strategic workstreams. |
+| `/sop` | Create privacy-safe runbooks and standard operating procedures. |
+| `/deck` | Prepare deck briefs and presentation-ready content. |
+| `/review` | Review plans, docs, code, specs, and product artifacts for risk and quality. |
+| `/trello` | Mirror accepted local task state into Trello when configured. |
+| `/vacuum` | Clean, archive, and optimize the local kit workspace. |
 
-## 🌪️ Why Product Managers Need This
+Natural language still works. Slash commands exist when you want deterministic routing.
 
-**Product Management is broken.**
-Your day is fragmented across Slack threads, Zoom transcripts, Jira tickets, and stakeholder emails. Context is constantly lost.
+## Architecture At A Glance
 
-This kit is an **Agentic Operating System** built specifically for Product Managers. It now uses **OpenAI Codex** as the optimized default for local repo work, verification, project-scoped skills, and optional CI automation.
-
-- **The Black Hole Inbox:** Copy anything to your clipboard. Type `/paste`. Watch the AI extract tasks/bugs and route them to the proper tracker.
-- **The Meeting Synthesizer:** Type `/meet`. The AI reads your transcripts, extracts action items, and generates structured notes.
-- **The "Boss Protocol":** Type `/boss`. The system cross-references your active tasks with your boss's recent requests, flags stale workstreams, and drafts your 1:1 talking points.
-
-### 🔒 Local-first storage and privacy boundaries
-
-| Your Data           | Where It Lives                   | Repo Storage |
-| :------------------ | :------------------------------- | :----------- |
-| Company strategy    | `1. Company/` on your machine  | Ignored by git |
-| PRDs & specs        | `2. Products/` on your machine | Ignored by git |
-| Meeting transcripts | `3. Meetings/` on your machine | Ignored by git |
-| Task trackers       | `5. Trackers/` on your machine | Ignored by git |
-
-Folders 1-5 are `.gitignored` by default. The repo is local-first for storage, while your chosen AI runtime or connector may still process the prompts, files, or tool outputs you ask it to handle.
-
----
-
-## 🧬 Inside the Engine: Three-Tier Architecture
-
-### 🤖 1. The Virtual PM Team (22 Persona Agents)
-
-The _Identity_ layer. Who is doing the work?
-
-| Agent                     | Focus                 | Key Skills                                                  |
-| :------------------------ | :-------------------- | :---------------------------------------------------------- |
-| **Chief Product Officer** | Strategy & Org        | `chief-strategy-officer`, `boss-tracker`, `vacuum-protocol` |
-| **Staff PM**              | Execution & Delivery  | `task-manager`, `prd-author`, `meeting-synth`               |
-| **Product Strategist**    | Market & Vision       | `chief-strategy-officer`, `okr-manager`                     |
-| **Program Manager**       | Governance & Releases | `dependency-tracker`, `retrospective`, `risk-guardian`       |
-| **Tech Lead**             | Feasibility & Eng     | Engineering interface for PM decisions                       |
-| **Data Scientist**        | Quant Insights        | `data-analytics`, metrics & funnels                          |
-| **UX Researcher**         | Qual Insights         | `ux-research-suite`, journey maps                            |
-| **GTM Lead**              | Launch & Growth       | `product-marketer`, `growth-engine`                          |
-| **QA Engineer**           | Quality Assurance     | `test-scenarios`, `bug-chaser`                               |
-| **Career Coach**          | PM Career Growth      | `leadership-career-coach`                                    |
-| **Doc Writer**            | PRDs & Specs          | `prd-author`, `document-exporter`                            |
-| **Orchestrator**          | Multi-agent Coord     | Routes to all agents above                                   |
-| **Architect**             | System Architecture   | `engineering-planner`                                       |
-| **Code Reviewer**         | Code Quality          | `engineering-collab`                                        |
-| **Critic**                | Plan & Spec Validation| `engineering-planner`                                       |
-| **Debugger**              | Issue Resolution      | `code-simplifier`                                           |
-| **Designer**              | Multimodal Design     | `ui-ux-designer`                                            |
-| **Executor**              | Code Implementation   | `autopilot`, `team-orchestrator`                            |
-| **Planner**               | Task Graphs           | `engineering-planner`, `team-orchestrator`                  |
-| **Security Reviewer**     | Vulnerability Audit   | `risk-guardian`                                             |
-| **Switchboard**           | Cross-IDE Comm        | Workflow routing and agent-to-agent messaging               |
-
-### 🎯 2. The Core Playbooks (40 Slash Workflows)
-
-The _Routing_ layer. Lean slash commands that trigger complex operations through `CODEX_COMMANDS.md` and `.agent/workflows/`.
-
-> **💡 Natural Conversation vs Commands:** You are **not required** to use slash commands. If you just talk to the AI naturally (e.g., "Summarize this meeting" or "Help me plan my day"), the system will organically load the correct Agents and Skills. The `/commands` are simply explicit playbook shortcuts to guarantee a highly specific logic sequence (like the exact 7 steps of `/meet`). Both methods seamlessly pull from the same `.agent/` architecture.
-
-| Command        | Purpose                                  |
-| :------------- | :--------------------------------------- |
-| `/accuracy`    | High accuracy mode with self-review      |
-| `/archive`     | Query or search the plan archive         |
-| `/boss`        | The 1:1 "Managing Up" Prep               |
-| `/build`       | Handoff PRD to Engineering Agents        |
-| `/challenge`   | Internal adversarial review workflow     |
-| `/chat`        | Activate chat consultation workflow      |
-| `/create`      | Generate PRDs, Specs, and One-Pagers     |
-| `/day`         | Daily briefing & planning                |
-| `/discover`    | Build Opportunity Solution Trees         |
-| `/export`      | Export current conversation to archive   |
-| `/fan-out`     | Parallel multi-agent dispatch            |
-| `/handoff`     | Delegate tasks to external agents        |
-| `/handoff-chat`| Clipboard/chat delegation workflow       |
-| `/handoff-lead`| One-shot lead execution workflow         |
-| `/handoff-relay`| Execute-now, stage-rest relay workflow  |
-| `/help`        | User manual & system docs                |
-| `/improve-plan`| Deep planning, dependency checks, review |
-| `/intel`       | Competitive intel and context capture    |
-| `/interview`   | Socratic deep interview on requirements  |
-| `/meet`        | Transcript → structured action items     |
-| `/office-cli`  | Manage Office 365 integrations           |
-| `/paste`       | Clipboard → structured intake            |
-| `/plan`        | Strategic roadmaps & OKRs                |
-| `/prep`        | Interview prep, research & roleplay      |
-| `/prioritize`  | Backlog scoring via RICE / Kano / MoSCoW |
-| `/quill`       | 5-meeting compact rollup w/ action items |
-| `/regression`  | Full CI tests on the kit                 |
-| `/retro`       | Sprint / PI retrospective                |
-| `/review`      | Doc / Spec / Code quality control        |
-| `/sprint`      | Sprint backlog generation                |
-| `/start`       | Interactive First-Time Setup Wizard      |
-| `/team`        | Coordinated multi-agent execution        |
-| `/teams`       | Teams chat ingestion and sync            |
-| `/track`       | Battlefield View of Tasks & Bugs         |
-| `/transcript`  | Process all meetings from last 10 days   |
-| `/trello`      | Synchronize tasks with Trello board      |
-| `/update`      | Pull latest kit version from GitHub      |
-| `/vacuum`      | System optimization & cleanup            |
-| `/vibe`        | System health and diagnostics            |
-| `/week`        | Weekly briefing & recap                  |
-
-### 🚀 3. The Capability Engine (62 Public PM Skills)
-
-The _Execution_ layer. Skills are loaded Just-In-Time to keep the context window fast.
-
-| Category | Skills |
-| :--- | :--- |
-| **Strategy** | `chief-strategy-officer`, `business-strategy-suite`, `product-strategy-suite`, `positioning-strategist`, `company-profiler` |
-| **Discovery** | `discovery-engine`, `assumption-mapper`, `brainstorming-engine`, `epic-hypothesis`, `customer-interview-suite`, `deep-interview` |
-| **Execution** | `task-manager`, `prd-author`, `agile-story-crafter`, `epic-breakdown-advisor`, `requirements-translator`, `wwas`, `autopilot`, `team-orchestrator`, `engineering-planner` |
-| **Roadmapping** | `roadmapping-suite`, `risk-guardian`, `dependency-tracker`, `ab-test-analysis` |
-| **Metrics** | `data-analytics`, `metrics-finance-suite`, `growth-engine` |
-| **Research** | `ux-research-suite`, `ui-ux-designer` |
-| **GTM** | `product-marketer`, `launch-strategy`, `positioning-strategist` |
-| **Meetings** | `meeting-synth`, `daily-synth`, `weekly-synth`, `boss-tracker`, `outlook-navigator` |
-| **Communication** | `comms-crafter-suite`, `stakeholder-management-suite`, `document-exporter` |
-| **System** | `core-utility`, `vacuum-protocol`, `context-retriever`, `inbox-processor`, `memory-consolidator`, `cross-model-bridge` |
-| **Growth** | `leadership-career-coach`, `ai-shaped-readiness-advisor`, `context-engineering-advisor` |
-
----
-
-## 📁 Directory Topology
-
+```text
+User input or local file
+        |
+        v
+Context Guard and PM Decision Router
+        |
+        v
+Workflow loader in .agent/workflows/
+        |
+        v
+Focused skill loading from .agent/skills/
+        |
+        v
+Local output: tasks, notes, docs, reports, decisions
 ```
+
+The repo uses a single source of truth:
+
+```text
 beats-pm-kit/
-├── 0. Incoming/           # The Drop Zone (Raw Notes, Screenshots)
-├── 1. Company/            # Strategy & Profiles
-├── 2. Products/           # PRDs, Specs, Epics
-├── 3. Meetings/           # Transcripts & Summaries
-├── 4. People/             # Stakeholders & CRM
-├── 5. Trackers/           # Task Master Ledgers
-│
-├── .agent/                # ⭐ SOURCE OF TRUTH (The AI Engine)
-│   ├── agents/            # 22 Virtual PM Team Personas
-│   ├── rules/             # GEMINI.md (System Constitution)
-│   ├── skills/            # 62 public PM Skills (P0/P1/P2 tiers)
-│   ├── templates/         # Document & Report Templates
-│   ├── workflows/         # 40 Slash Workflows
-│   ├── archive/           # Archived agents & skills (recoverable)
-│   └── MANIFEST.json      # Machine-readable index with token budgets
-│
-├── system/                # Python Core Logic
-│   ├── scripts/           # Agent dispatcher, setup, vacuum, health check
-│   └── tests/             # Test suites
-│
-├── AGENTS.md              # Codex adapter (generated locally)
-├── CODEX_COMMANDS.md      # Codex slash-command index
-├── GEMINI.md              # Runtime-neutral source config
-└── README.md              # ← You are here
++-- 0. Incoming/           # Drop zone for raw notes, screenshots, and uploads
++-- 1. Company/            # Company context and ways of working
++-- 2. Products/           # PRDs, specs, epics, and product briefs
++-- 3. Meetings/           # Transcripts, summaries, reports, and chat archives
++-- 4. People/             # Stakeholder and relationship context
++-- 5. Trackers/           # Task ledgers, bugs, boss requests, and plans
++-- 6. Resources/          # Reference docs, planning material, optional Obsidian index
++-- 7. Partners/           # Partner context and integration materials
++-- 8. Clients/            # Client context and account materials
++-- .agent/                # Canonical agents, rules, skills, templates, workflows
++-- system/                # Scripts, tests, adapters, privacy checks
++-- .beats/                # Ignored local diagnostics, caches, reports, and test logs
++-- AGENTS.md              # Thin Codex adapter
++-- CODEX_COMMANDS.md      # Generated Codex command routing table
++-- CLAUDE.md              # Thin Claude Code adapter
++-- GEMINI.md              # Thin Antigravity/Gemini adapter
++-- README.md              # Public landing page and setup guide
 ```
 
----
+Generated adapter directories such as `.codex/`, `.gemini/`, `.claude/`, `.kilocode/`, `.context/`, and `.obsidian/` are intentionally local and ignored.
 
-## 🖥️ Runtime Compatibility
+Regenerate runtime adapters with:
 
-Built on a **single source of truth** (`.agent/`) with Codex as the optimized runtime and compatibility adapters for other tools.
+```bash
+python3 system/scripts/bootstrap.py --agent --non-interactive
+```
 
-| Capability | Codex (CLI/Desktop) | Antigravity (Desktop IDE) | Gemini (CLI) | Claude Code (CLI) | KiloCode (CLI) |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Project custom agents** | ✅ `.codex/agents/*.toml` | ❌ | ❌ | ⚠️ Runtime-specific | ❌ |
-| **Agent Personas (22)** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Public Skills (62)** | ✅ JIT load | ✅ | ✅ | ✅ | ✅ |
-| **Slash Workflows (40)** | ✅ `/command` | ✅ `/command` | ✅ `#command` | ✅ `/command` | ✅ `/command` |
-| **Promoted Codex skills (22)** | ✅ Native | ❌ | ❌ | ❌ | ❌ |
-| **Parallel Fan-Out** | ✅ Subagents when explicitly requested | ✅ Native | ❌ Sequential | ⚠️ Runtime-specific | ❌ Sequential |
-| **Context Guard** | ✅ | ✅ | ✅ | ✅ | ✅ |
+Verify the public feature inventory with:
 
-> **Codex Operating Model:** Use `AGENTS.md` for the inventory, `CODEX_COMMANDS.md` for slash routing, `.codex/agents/*.toml` for project-scoped subagent roles, and `.agent/workflows/<command>.md` plus the minimum required `SKILL.md` files for each task.
+```bash
+python system/scripts/feature_inventory.py --json
+```
 
-### 🔌 Power User Tools
+Preview local root cleanup with:
 
-For advanced users who want to supercharge their workflow:
+```bash
+python3 system/scripts/root_cleaner.py --dry-run
+```
+
+Apply cleanup with:
+
+```bash
+python3 system/scripts/root_cleaner.py --apply
+```
+
+The cleaner moves unknown local root files into ignored `0. Incoming/root-cleanup/` instead of deleting user work.
+
+## Optional Obsidian And Markdown Knowledge Graph
+
+Obsidian is optional. Beats PM Kit works as a plain Markdown repo first.
+
+If you use Obsidian, open the existing `beats-pm-kit` folder directly as the vault. Do not create a mirrored copy. The helper script can configure local-only Obsidian settings and create a graph index under `6. Resources/obsidian/`:
+
+```bash
+python3 system/scripts/obsidian_vault_setup.py --dry-run
+python3 system/scripts/obsidian_vault_setup.py --apply
+```
+
+This gives product managers a local knowledge graph over tasks, meetings, people, partners, clients, SOPs, and reference documents while preserving the same files Codex and Antigravity already read.
+
+Optional MCP read/search/open checks:
+
+```bash
+python3 system/scripts/obsidian_mcp_health.py --pretty
+```
+
+If Obsidian MCP is unavailable, agents use repo-local `rg` search. Obsidian MCP is not a write path for kit workflows.
+
+## Privacy-Aware Local Workspace
+
+The kit stores private product-management context locally by default.
+
+| Data type | Default local location | Published by the kit |
+|:---|:---|:---:|
+| Company strategy and ways of working | `1. Company/` | No |
+| Product docs and PRDs | `2. Products/` | No |
+| Meeting transcripts and chat archives | `3. Meetings/` | No |
+| Stakeholder context | `4. People/` | No |
+| Task trackers and task detail files | `5. Trackers/` | No |
+| SOPs and operational runbooks | `6. SOPs/` | No |
+
+Folders 1-5 are `.gitignored` by default, and private folders are tracked only through skeleton `.gitkeep` files. The repo also includes checks such as `system/scripts/privacy_guard.py --tree` and `system/scripts/adapter_guard.py --mode check` to prevent private content, local runtime state, personal paths, token-like strings, transcripts, and generated adapter folders from entering shared kit commits.
+
+Important caveat: this repo does not sync your private PM files to a kit cloud service, but your chosen AI runtime/model provider may process prompts, attachments, or tool outputs according to that provider's product and account settings.
+
+## Runtime Compatibility
+
+| Capability | Antigravity | Codex | Gemini CLI | Claude Code | KiloCode |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| `.agent/` workflows | Yes | Yes | Yes | Yes | Yes |
+| Slash-command routing | Yes | Yes | Yes | Yes | Yes |
+| PM skills and agents | Yes | Yes | Yes | Yes | Yes |
+| Local file reference | Yes | Yes | Yes | Yes | Yes |
+| Clipboard and drop-zone intake | Native plus scripts | Scripts | Scripts | Scripts | Scripts |
+| Parallel fan-out | Native | Runtime-dependent | Runtime-dependent | Runtime-dependent | Runtime-dependent |
+| Generated local adapters | Yes | Yes | Yes | Yes | Yes |
+| Privacy guardrails | Yes | Yes | Yes | Yes | Yes |
+
+## Power User Tools
+
+These tools are optional. The kit does not require them, but advanced users may find them useful.
 
 | Tool | Description |
 |:---|:---|
-| **[OpenCLI](https://github.com/jackwener/opencli)** | Universal CLI hub for AI agents. Transform any website, Electron app, or local binary into scriptable CLI commands. Reuses browser login session and auto-generates adapters. |
-| **[Horizon](https://github.com/peters/horizon)** | GPU-accelerated spatial terminal observatory. Manage terminals, AI agents, and dev tools on an infinite canvas with Claude Code integration and git status monitoring. |
+| [OpenCLI](https://github.com/jackwener/opencli) | Universal CLI hub for turning apps, local binaries, and websites into scriptable agent commands. |
+| [Horizon](https://github.com/peters/horizon) | Spatial terminal workspace for managing terminals, agents, and development tools. |
 
----
+## Antigravity Enhancements
 
-## 🚀 Compatibility Enhancements
-
-These optional tools remain useful for Antigravity users. They are compatibility add-ons, not required for the Codex-first path.
+Community extensions can improve Antigravity workflows. Install from the Extensions panel or the [Open VSX Registry](https://open-vsx.org/).
 
 | Extension | Description | Install |
 |:---|:---|:---:|
-| **[Antigravity Cockpit](https://open-vsx.org/vscode/item?itemName=jlcodes.antigravity-cockpit)** | Premium dashboard-style quota monitor for Antigravity AI — track usage, limits, and spending at a glance | `jlcodes.antigravity-cockpit` |
-| **[Antigravity iOS App](https://open-vsx.org/vscode/item?itemName=uladluch.antigravity-mobile-connector)** | Control Antigravity from your iPhone — send prompts, monitor generations, and manage projects on the go | `uladluch.antigravity-mobile-connector` |
-| **[AG Auto Click & Scroll](https://open-vsx.org/vscode/item?itemName=zixfel.ag-auto-click-scroll)** | Auto-click Run and Allow buttons, plus auto-scroll the chat panel with a visual settings UI | `zixfel.ag-auto-click-scroll` |
-| **[Pencil](https://open-vsx.org/vscode/item?itemName=highagency.pencildev)** | Design files directly in Antigravity — create, edit, and preview `.pen` design files with AI assistance | `highagency.pencildev` |
-| **[Antigravity Flush](https://open-vsx.org/vscode/item?itemName=pkkkkkkkkkkkkk.antigravity-flush)** | Fix Opus model crashes by clearing context to prevent token limit truncation errors | `pkkkkkkkkkkkkk.antigravity-flush` |
-| **[Antigravity Remote Control](https://open-vsx.org/vscode/item?itemName=hasugoii.antigravity-remote-control)** | Control Antigravity from your phone — 1-click tunnel, QR code, real-time chat | `hasugoii.antigravity-remote-control` |
-| **[Gemini Image Editor](https://open-vsx.org/vscode/item?itemName=Zazmic.palm-api-image-editor)** | In-editor image tools — convert to WebP, resize, and remove backgrounds with Gemini | `Zazmic.palm-api-image-editor` |
-| **[Antigravity Sync](https://open-vsx.org/vscode/item?itemName=samador.antigravity-settings-sync)** | Sync your Antigravity settings and extensions across machines using GitHub | `samador.antigravity-settings-sync` |
-| **[Better Antigravity](https://open-vsx.org/vscode/item?itemName=kanezal.better-antigravity)** | Community-driven fixes and improvements — auto-run fix, chat rename, and more | `kanezal.better-antigravity` |
-| **[Antigravity Autopilot](https://github.com/timteh/antigravity-autopilot)** | Auto-accept agent steps using OS-level accessibility (Windows UI Automation) — works when other extensions fail | `timteh.antigravity-autopilot` |
+| [Antigravity Cockpit](https://open-vsx.org/vscode/item?itemName=jlcodes.antigravity-cockpit) | Dashboard-style quota monitor for Antigravity AI usage, limits, and spending. | `jlcodes.antigravity-cockpit` |
+| [Antigravity iOS App](https://open-vsx.org/vscode/item?itemName=uladluch.antigravity-mobile-connector) | Control Antigravity from an iPhone, send prompts, monitor generations, and manage projects. | `uladluch.antigravity-mobile-connector` |
+| [AG Auto Click & Scroll](https://open-vsx.org/vscode/item?itemName=zixfel.ag-auto-click-scroll) | Auto-click Run and Allow buttons, plus auto-scroll the chat panel. | `zixfel.ag-auto-click-scroll` |
+| [Pencil](https://open-vsx.org/vscode/item?itemName=highagency.pencildev) | Create, edit, and preview `.pen` design files with AI assistance. | `highagency.pencildev` |
+| [Antigravity Flush](https://open-vsx.org/vscode/item?itemName=pkkkkkkkkkkkkk.antigravity-flush) | Clear context when model sessions hit token-limit issues. | `pkkkkkkkkkkkkk.antigravity-flush` |
+| [Antigravity Remote Control](https://open-vsx.org/vscode/item?itemName=hasugoii.antigravity-remote-control) | Control Antigravity from a phone with tunnel, QR, and real-time chat flows. | `hasugoii.antigravity-remote-control` |
+| [Gemini Image Editor](https://open-vsx.org/vscode/item?itemName=Zazmic.palm-api-image-editor) | In-editor image tools for WebP conversion, resizing, and background removal. | `Zazmic.palm-api-image-editor` |
+| [Antigravity Sync](https://open-vsx.org/vscode/item?itemName=samador.antigravity-settings-sync) | Sync Antigravity settings and extensions across machines using GitHub. | `samador.antigravity-settings-sync` |
+| [Better Antigravity](https://open-vsx.org/vscode/item?itemName=kanezal.better-antigravity) | Community-driven fixes such as auto-run improvements and chat rename support. | `kanezal.better-antigravity` |
+| [Antigravity Autopilot](https://github.com/timteh/antigravity-autopilot) | Auto-accept agent steps using OS-level accessibility on Windows. | `timteh.antigravity-autopilot` |
 
----
+## System Rules
 
-## 🔧 System Rules
+The kit operates from `.agent/` as the canonical system. Runtime-specific root files stay thin and generated where possible.
 
-The kit operates on a single rule file that governs all agent behavior:
+| File | Purpose |
+|:---|:---|
+| `.agent/rules/GEMINI.md` | System constitution, Context Guard, agent and skill loading protocol, privacy directives, and architecture overview. |
+| `AGENTS.md` | Codex startup and slash-command adapter. |
+| `CODEX_COMMANDS.md` | Codex command index generated from `.agent/workflows/`. |
+| `CLAUDE.md` | Claude Code adapter. |
+| `GEMINI.md` | Antigravity and Gemini adapter. |
 
-| Rule File | Purpose |
-| :--- | :--- |
-| **`GEMINI.md`** | The system constitution — startup sequence, Context Guard (auto-fires every request), agent/skill loading protocol, privacy directives, architecture overview |
+The Context Guard is the operating discipline behind most workflows:
 
-### Context Guard (Auto-Fires Every Request)
+1. Batch independent reads and checks.
+2. Avoid unnecessary re-reads.
+3. Load only the workflow and skills needed for the task.
+4. Prefer local source files over memory when exact context matters.
+5. Keep durable outputs in standard kit folders so runtime switching stays lossless.
 
-Built directly into `GEMINI.md`, these rules reduce token waste without any manual intervention:
+## Who This Is For
 
-1. **Parallel-first** — Batch independent tool calls
-2. **No re-reads** — Never re-read files already viewed in session
-3. **Compact responses** — Skip preamble, lead with the answer
-4. **3-skill ceiling** — Max 3 skill assets per request
-5. **Conversation decay** — Auto-manages context after 15+ exchanges to keep sessions fast
+Beats PM Kit is for:
 
----
+- Product managers who want an AI product management toolkit that handles real operating context.
+- AI-forward PMs and product leaders building repeatable agentic product workflows.
+- Founders and builders who need lightweight product operations without buying another SaaS stack.
+- Teams experimenting with Codex product management workflows, Antigravity product management workflows, local-first task management, and Markdown-based knowledge systems.
+- Operators who want meeting notes to tasks, product docs to action plans, and local files to become useful PM context.
 
-## 👨‍💻 Built by product people, for product people.
+## Built By Product People, For Product People
 
-<div align="center">
+Beats PM Kit is an OfficeBeats project built from daily product work, not hypothetical prompt examples.
 
-**OfficeBeats**
+It is a working portfolio of AI-native product operations, context engineering, local-first task management, agentic workflow architecture, and privacy-aware PM automation.
 
-_Product Lead_
-
-Building the future of AI-powered product management. Stop chasing status updates. Start driving strategy.
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/)
-&nbsp;
-[![X (Twitter)](https://img.shields.io/badge/X-Follow-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/)
-
-⭐ **Star this repo** if it saves you 10 hours this week.
-
-</div>
+Star this repo if it helps you turn messy PM context into clearer product work.

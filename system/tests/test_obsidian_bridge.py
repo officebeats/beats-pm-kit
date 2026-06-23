@@ -185,7 +185,7 @@ class TestObsidianSync(unittest.TestCase):
             text = output.read_text(encoding="utf-8")
 
             self.assertIn("<your-local-rest-api-key>", text)
-            self.assertNotIn("admin" + "-beats", text)
+            self.assertNotIn("placeholder-user", text)
             self.assertNotIn("O:\\", text)
 
 

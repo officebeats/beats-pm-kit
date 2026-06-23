@@ -1,83 +1,79 @@
-# Using Beats PM Kit with Obsidian
+# Using Beats PM Kit Directly With Obsidian
 
-Obsidian works well with this kit because the kit is already a local Markdown system. The integration is intentionally local-first: filesystem sync and Obsidian URI/CLI support are the default path, while MCP is an optional advanced layer.
+This setup uses the existing `beats-pm-kit` folder as the Obsidian vault. It does not copy or mirror working files into a separate vault.
 
-## Quick Start
+## Direct Vault Setup
 
-Run:
+1. Open Obsidian.
+2. Choose **Open folder as vault**.
+3. Select:
 
-```bash
-python3 system/scripts/obsidian_bridge.py status
-python3 system/scripts/obsidian_bridge.py configure
-python3 system/scripts/obsidian_bridge.py open dashboard
+```text
+<path-to-your-beats-pm-kit-folder>
 ```
 
-The bridge detects Obsidian, validates saved vault paths, writes local machine configuration to `system/config/obsidian.local.json`, and creates or updates the safe dashboard note `OBSIDIAN.md`.
-
-## Modes
-
-| Mode | Use When | Behavior |
-| --- | --- | --- |
-| `kit-vault` | You want this repo opened directly in Obsidian | Obsidian reads the kit folders in place. No duplicate copy is needed. |
-| `sync` | You already have a separate Obsidian vault | The bridge copies managed kit content into a target folder inside that vault. |
-
-If no valid saved vault exists, the bridge defaults to `kit-vault` mode and treats the kit root as the vault.
-
-## Commands
+4. Run the local setup helper from the kit root:
 
 ```bash
-python3 system/scripts/obsidian_bridge.py status
-python3 system/scripts/obsidian_bridge.py configure --vault "/path/to/vault"
-python3 system/scripts/obsidian_bridge.py open dashboard
-python3 system/scripts/obsidian_bridge.py open daily
-python3 system/scripts/obsidian_bridge.py open tracker
-python3 system/scripts/obsidian_bridge.py open search --query "priority: now"
-python3 system/scripts/obsidian_bridge.py sync --dry-run
-python3 system/scripts/obsidian_bridge.py sync --apply
-python3 system/scripts/obsidian_bridge.py sync --apply --clean
-python3 system/scripts/obsidian_bridge.py mcp-template
+python3 system/scripts/obsidian_vault_setup.py --apply
 ```
 
-The older command still works:
+The helper creates local `.obsidian/` settings and `6. Resources/obsidian/Obsidian Graph Index.md`. These files are for local navigation and graphing over the raw kit files.
+
+## What This Does
+
+- Enables Obsidian core plugins for graph view, backlinks, outgoing links, tags, canvas, properties, bases, templates, and daily notes.
+- Adds graph color groups for Trackers, Meetings, People, Products, Partners, Clients, SOPs, and Resources.
+- Excludes noisy implementation/runtime folders from Obsidian search and graph, including `.git`, generated runtime adapters, caches, tests, scratch files, and outputs.
+- Creates a graph index note that links to Task Master, weekly planning, decision logs, people, meetings, clients, partners, SOPs, and evidence lanes.
+
+## What This Does Not Do
+
+- It does not duplicate files into a separate mirror vault.
+- It does not mutate Slack, Teams, Outlook, Jira, Confluence, Trello, or any external source system.
+- It does not commit local Obsidian workspace state or plugin state.
+- It does not make Obsidian a writable task ledger for agents; the kit files remain canonical.
+
+## Optional MCP Read/Search
+
+For Codex, Antigravity, or other MCP-capable runtimes, Obsidian can expose the direct vault as a read/search/open-file context surface. Follow [Obsidian MCP Profile For Beats PM Kit](obsidian-mcp.md).
+
+Health check:
 
 ```bash
-python3 system/scripts/obsidian_sync.py --dry-run
+python3 system/scripts/obsidian_mcp_health.py --pretty
 ```
 
-## Sync Safety
+If the MCP endpoint or API key is unavailable, agents must fall back to repo-local `rg` searches.
 
-The sync path adds Beats-managed frontmatter only to Markdown files without user-authored frontmatter. Files with non-kit frontmatter are preserved. Re-running sync is idempotent: unchanged files are skipped instead of being rewritten with a new timestamp.
+## Useful Commands
 
-`--clean` only removes stale files that contain Beats PM Kit managed frontmatter. Human-created Obsidian notes are left alone.
+Preview changes:
 
-## Optional MCP
+```bash
+python3 system/scripts/obsidian_vault_setup.py --dry-run
+```
 
-MCP is optional. Use it only if you have Obsidian running with the Local REST API community plugin enabled.
+Apply local vault settings:
 
-1. In Obsidian, install and enable the Local REST API plugin.
-2. Run:
+```bash
+python3 system/scripts/obsidian_vault_setup.py --apply
+```
 
-   ```bash
-   python3 system/scripts/obsidian_bridge.py mcp-template
-   ```
+Apply settings and open the graph index in Obsidian:
 
-3. Put the local REST API key into the ignored `system/config/mcp.obsidian.local.json` file or an environment variable.
+```bash
+python3 system/scripts/obsidian_vault_setup.py --apply --open
+```
 
-Never commit `OBSIDIAN_API_KEY`, private vault paths, plugin tokens, or local MCP runtime state.
+## Graph Tips
 
-## Recommended Plugins
+- Start at `6. Resources/obsidian/Obsidian Graph Index.md`.
+- Use graph search `path:"5. Trackers"` for active task state.
+- Use graph search `path:"4. People"` for stakeholder context.
+- Use graph search `path:"3. Meetings"` for meeting notes, transcripts, and evidence.
+- Use graph search `path:"7. Partners" OR path:"8. Clients"` for external relationship context.
 
-These are optional, not required:
+## Mirror Mode
 
-| Plugin | Why |
-| --- | --- |
-| Dataview | Query notes and trackers across the vault |
-| Tasks | Better task rollups from Markdown checkboxes |
-| Calendar | Daily and weekly note navigation |
-| Templater | Reusable capture and meeting templates |
-
-## Troubleshooting
-
-- If `status` shows stale vaults, Obsidian's global metadata points at folders that no longer exist. Run `configure` to choose the best current mode.
-- If `open dashboard` does not open the kit as a vault, open the kit folder once through Obsidian's vault picker, then rerun the command.
-- If REST API health is `not reachable`, Obsidian is either closed or the Local REST API plugin is not enabled.
+`system/scripts/obsidian_sync.py` still exists for a separate mirrored-vault workflow. Do not use it when the goal is to graph the raw kit folder in place.

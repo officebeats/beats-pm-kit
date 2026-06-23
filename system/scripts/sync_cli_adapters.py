@@ -1,311 +1,179 @@
-"""
-Cross-CLI Adapter Sync Script
-==============================
-Ensures .agent/ is the single source of truth across all CLI tools.
+#!/usr/bin/env python3
+"""Generate local CLI adapters from the canonical .agent tree.
 
-Validates and repairs:
-- Folder aliases: .agents, _agent, _agents -> .agent/
-- CLI directories: .claude/, .kilocode/, .gemini/, .codex/ symlinks
-- Config files: CLAUDE.md, AGENTS.md, and Codex rules generation
-
-Usage:
-    python system/scripts/sync_cli_adapters.py
-
-Idempotent -- safe to run anytime. Intended for /regression and /vibe workflows.
+The kit treats .agent/ as the source of truth. Runtime-specific adapter files are
+thin pointers or local ignored directories so Codex, Gemini, Claude, and Kilo can
+run without duplicating the canonical workflow definitions in Git.
 """
 
-import os
+from __future__ import annotations
+
+import shutil
 import sys
-import platform
-import io
-import re
+from pathlib import Path
 
-# Force UTF-8 output on Windows
-if sys.stdout.encoding != 'utf-8':
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+ROOT = Path(__file__).resolve().parents[2]
+AGENT_DIR = ROOT / ".agent"
+sys.path.insert(0, str(ROOT / "system"))
 
-# --- Configuration ---
+from utils.command_registry import build_command_catalog, get_workflow_descriptions as registry_workflow_descriptions
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-CANONICAL = os.path.join(BASE_DIR, '.agent')
-IS_WINDOWS = platform.system() == 'Windows'
-sys.path.insert(0, BASE_DIR)
-
-from system.utils.command_registry import (
-    build_command_catalog,
-    get_promoted_codex_commands,
-    get_runtime_priority,
-)
-from system.utils.stdio import force_utf8_stdio
-
-force_utf8_stdio()
-
-# Folder aliases that should all point to .agent/
-FOLDER_ALIASES = ['.agents', '_agent', '_agents']
-
-# CLI directories that need internal symlinks to .agent/ subdirs
-CLI_DIRS = {
-    '.kilocode': ['agents', 'skills', 'templates', 'workflows', 'rules'],
-    '.gemini':   ['agents', 'skills', 'templates', 'workflows'],
-    '.codex':    ['skills', 'templates', 'workflows'],
+CORE_ADAPTER_DIRS = {
+    ".codex": {
+        "agents": AGENT_DIR / "agents",
+        "templates": AGENT_DIR / "templates",
+        "workflows": AGENT_DIR / "workflows",
+    },
+    ".gemini": {
+        "agents": AGENT_DIR / "agents",
+        "skills": AGENT_DIR / "skills",
+        "templates": AGENT_DIR / "templates",
+        "workflows": AGENT_DIR / "workflows",
+    },
+    ".kilocode": {
+        "agents": AGENT_DIR / "agents",
+        "rules": AGENT_DIR / "rules",
+        "skills": AGENT_DIR / "skills",
+        "templates": AGENT_DIR / "templates",
+        "workflows": AGENT_DIR / "workflows",
+    },
 }
 
-# Subdirectories to symlink inside CLI dirs (relative targets)
-SUBDIR_TARGETS = {
-    'agents':    os.path.join('..', '.agent', 'agents'),
-    'skills':    os.path.join('..', '.agent', 'skills'),
-    'templates': os.path.join('..', '.agent', 'templates'),
-    'workflows': os.path.join('..', '.agent', 'workflows'),
-    'rules':     os.path.join('..', '.agent', 'rules'),
-}
-
-results = []
-
-# --- Helpers ---
-
-def log_ok(msg):
-    results.append(('[OK]', msg))
-    print(f'  [OK] {msg}')
-
-def log_fix(msg):
-    results.append(('[FIX]', msg))
-    print(f'  [FIX] {msg}')
-
-def log_err(msg):
-    results.append(('[ERR]', msg))
-    print(f'  [ERR] {msg}')
-
-def normalize_gemini_content(content):
-    """Strip accidental generated headers before the real GEMINI heading."""
-    marker = '# GEMINI.md'
-    idx = content.find(marker)
-    if idx > 0:
-        return content[idx:]
-    return content
-
-def get_command_catalog():
-    """Return the merged workflow + cross-runtime adapter catalog."""
-    return build_command_catalog(BASE_DIR)
+PROMOTED_CODEX_COMMANDS = [
+    "boss",
+    "create",
+    "day",
+    "meet",
+    "paste",
+    "plan",
+    "track",
+    "transcript",
+    "update",
+    "vacuum",
+    "week",
+]
 
 
-def get_workflow_descriptions():
-    """Compatibility helper returning workflow descriptions from the shared catalog."""
-    return [(entry['name'], entry['description']) for entry in get_command_catalog()]
+def read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
 
-def create_symlink(link_path, target, is_dir=True):
-    """Create a symlink, handling Windows/Unix differences."""
-    try:
-        if os.path.islink(link_path) or os.path.exists(link_path):
-            # Remove broken or existing link
-            if os.path.islink(link_path):
-                os.unlink(link_path)
-            elif os.path.isfile(link_path):
-                os.unlink(link_path)
-        if IS_WINDOWS:
-            os.symlink(target, link_path, target_is_directory=is_dir)
-        else:
-            os.symlink(target, link_path)
-        return True
-    except OSError as e:
-        log_err(f'Failed to create symlink {link_path} -> {target}: {e}')
+
+def write_if_changed(path: Path, content: str) -> bool:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.is_symlink():
+        remove_path(path)
+    if path.exists() and not path.is_symlink() and read_text(path) == content:
         return False
-
-def is_valid_symlink(path, expected_target_name=None):
-    """Check if a symlink exists and resolves to a real path."""
-    if not os.path.islink(path):
-        return False
-    if not os.path.exists(path):
-        return False  # Broken symlink
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(content)
     return True
 
-def runtime_display_name(runtime):
-    """Return the human-facing runtime name used in generated docs."""
-    labels = {
-        "antigravity": "Antigravity",
-        "codex": "Codex",
-        "claude": "Claude Code",
-        "gemini": "Gemini CLI",
-        "kilocode": "KiloCode",
-        "other-clis": "other CLIs",
-    }
-    return labels.get(runtime, runtime.title())
 
-def count_public_skills(skills_dir):
-    """Count public skill packages, excluding generated source-command mirrors."""
-    if not os.path.isdir(skills_dir):
-        return 0
-    count = 0
-    for name in os.listdir(skills_dir):
-        path = os.path.join(skills_dir, name)
-        if (
-            os.path.isdir(path)
-            and not name.startswith('source-command-')
-            and os.path.exists(os.path.join(path, 'SKILL.md'))
-        ):
-            count += 1
-    return count
+def relative(path: Path) -> str:
+    return path.relative_to(ROOT).as_posix()
 
-# ─── Phase 1: Folder Aliases ────────────────────────────────────────────────
 
-def sync_folder_aliases():
-    print('\nPhase 1: Folder Aliases (.agents, _agent, _agents -> .agent/)')
-    for alias in FOLDER_ALIASES:
-        link_path = os.path.join(BASE_DIR, alias)
-        target = '.agent'
+def workflow_files() -> list[Path]:
+    return [
+        AGENT_DIR / "workflows" / f"{name}.md"
+        for name, _description in get_workflow_descriptions()
+    ]
 
-        if is_valid_symlink(link_path):
-            log_ok(f'{alias} -> .agent/ (valid)')
-        else:
-            if create_symlink(link_path, target, is_dir=True):
-                log_fix(f'{alias} -> .agent/ (repaired)')
-            else:
-                log_err(f'{alias} -> .agent/ (FAILED)')
 
-# ─── Phase 2: CLI Directory Symlinks ────────────────────────────────────────
+def skill_files() -> list[Path]:
+    return sorted((AGENT_DIR / "skills").glob("*/SKILL.md"))
 
-def sync_cli_directories():
-    print('\nPhase 2: CLI Directory Symlinks')
-    for cli_dir, subdirs in CLI_DIRS.items():
-        cli_path = os.path.join(BASE_DIR, cli_dir)
-        os.makedirs(cli_path, exist_ok=True)
 
-        for subdir in subdirs:
-            link_path = os.path.join(cli_path, subdir)
-            target = SUBDIR_TARGETS[subdir]
+def agent_files() -> list[Path]:
+    return sorted((AGENT_DIR / "agents").glob("*.md"))
 
-            if is_valid_symlink(link_path):
-                log_ok(f'{cli_dir}/{subdir} -> .agent/{subdir} (valid)')
-            elif os.path.isdir(link_path):
-                log_ok(f'{cli_dir}/{subdir} existing local directory (kept)')
-            else:
-                if create_symlink(link_path, target, is_dir=True):
-                    log_fix(f'{cli_dir}/{subdir} -> .agent/{subdir} (repaired)')
-                else:
-                    log_err(f'{cli_dir}/{subdir} -> .agent/{subdir} (FAILED)')
 
-def ensure_codex_agents_dir():
-    """Keep `.codex/agents` as a real directory for project custom agents."""
-    codex_dir = os.path.join(BASE_DIR, '.codex')
-    agents_dir = os.path.join(codex_dir, 'agents')
-    os.makedirs(codex_dir, exist_ok=True)
+def get_workflow_descriptions() -> list[tuple[str, str]]:
+    return registry_workflow_descriptions(ROOT)
 
-    if os.path.islink(agents_dir):
-        os.unlink(agents_dir)
-        os.makedirs(agents_dir, exist_ok=True)
-        log_fix('.codex/agents symlink replaced with project custom-agent directory')
-    elif os.path.isdir(agents_dir):
-        log_ok('.codex/agents project custom-agent directory (valid)')
-    elif os.path.exists(agents_dir):
-        log_err('.codex/agents exists but is not a directory')
-    else:
-        os.makedirs(agents_dir, exist_ok=True)
-        log_fix('.codex/agents project custom-agent directory created')
 
-# ─── Phase 3: CLAUDE.md Generation ──────────────────────────────────────────
+def get_command_catalog() -> list[dict[str, str | bool]]:
+    return build_command_catalog(ROOT)
 
-def generate_claude_md():
-    print('\nPhase 3: CLAUDE.md Generation')
-    claude_dir = os.path.join(BASE_DIR, '.claude')
-    os.makedirs(claude_dir, exist_ok=True)
-    claude_md = os.path.join(claude_dir, 'CLAUDE.md')
 
-    # Read the root GEMINI.md as the source
-    gemini_path = os.path.join(CANONICAL, 'rules', 'GEMINI.md')
-    if not os.path.exists(gemini_path):
-        log_err('GEMINI.md not found at project root -- cannot generate CLAUDE.md')
-        return
+def codex_adapter_label(item: dict[str, str | bool | list[str]]) -> str:
+    if item["codex_promotion"] != "skill":
+        return "Dispatch only"
+    label = "Guarded skill" if item["dangerous"] else "Native skill"
+    return f"{label} `{item['codex_skill_name']}`"
 
-    with open(gemini_path, 'r', encoding='utf-8') as f:
-        content = normalize_gemini_content(f.read())
 
-    # Adapt for Claude Code: swap #hash triggers to /slash triggers
-    content = content.replace('Instructional Memory for Gemini CLI', 'Instructional Memory for Claude Code')
-    content = content.replace('Gemini CLI Agent Skills', 'Agent Skills')
+def render_codex_commands() -> str:
+    rows = [
+        "# CODEX_COMMANDS.md",
+        "",
+        "> Auto-generated by `system/scripts/sync_cli_adapters.py`.",
+        "> Source of truth: `.agent/workflows/`.",
+        "",
+        "Codex should resolve slash commands through this table, then load the",
+        "matching workflow file from `.agent/workflows/`.",
+        "",
+        "If the user only provides the GitHub repo URL, clone/open the repo, run",
+        "`python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>`,",
+        "then route any remaining request through the PM decision router or the",
+        "matching slash-command workflow.",
+        "",
+        "| Command | Workflow | Promoted Codex Skill |",
+        "| --- | --- | --- |",
+    ]
+    for item in get_command_catalog():
+        rows.append(f"| `/{item['name']}` | `{item['workflow']}` | {codex_adapter_label(item)} |")
+    rows.append("")
+    return "\n".join(rows)
 
-    # Replace #command → /command in the command table
-    import re
-    content = re.sub(r'\| `#(\w+)`', r'| `/\1`', content)
 
-    # Add Claude-specific header
-    header = """# CLAUDE.md -- Auto-generated from GEMINI.md
-# DO NOT EDIT THIS FILE DIRECTLY.
-# Run: python system/scripts/sync_cli_adapters.py
-# Source of truth: GEMINI.md + .agent/
+def render_agents_md() -> str:
+    commands = ", ".join(f"`/{name}`" for name in PROMOTED_CODEX_COMMANDS)
+    return f"""# AGENTS.md - Beats PM Kit Codex Adapter
 
-"""
-    final = header + content
-
-    # Older repos may still have .claude/CLAUDE.md as a symlink to GEMINI.md.
-    # Write via a temp file and atomically replace the destination so the symlink itself is replaced.
-    if os.path.islink(claude_md):
-        log_fix('.claude/CLAUDE.md symlink removed so a standalone adapter file can be generated')
-
-    tmp_path = claude_md + '.tmp'
-    with open(tmp_path, 'w', encoding='utf-8') as f:
-        f.write(final)
-    os.replace(tmp_path, claude_md)
-    log_ok(f'CLAUDE.md generated ({len(final)} bytes)')
-
-# ─── Phase 4: AGENTS.md Generation (Codex) ──────────────────────────────────
-
-def generate_agents_md():
-    print('\nPhase 4: AGENTS.md Generation (Codex)')
-    agents_md = os.path.join(BASE_DIR, 'AGENTS.md')
-
-    # List current agents
-    agents_dir = os.path.join(CANONICAL, 'agents')
-    agents = []
-    if os.path.isdir(agents_dir):
-        agents = sorted([f.replace('.md', '') for f in os.listdir(agents_dir) if f.endswith('.md')])
-
-    command_catalog = get_command_catalog()
-    workflows = [entry['name'] for entry in command_catalog]
-    promoted_codex = [entry for entry in command_catalog if entry['codex_promotion'] == 'skill']
-    runtime_priority = get_runtime_priority(BASE_DIR)
-    promoted_text = ', '.join(
-        f"`/{entry['name']}` → `{entry['codex_skill_name']}`" for entry in promoted_codex
-    ) or 'No promoted Codex skills configured.'
-
-    # List current skills
-    skills_dir = os.path.join(CANONICAL, 'skills')
-    skill_count = count_public_skills(skills_dir)
-    primary = runtime_display_name(runtime_priority['primary'])
-    secondary = runtime_display_name(runtime_priority['secondary'])
-
-    content = f"""# AGENTS.md — Beats PM Kit (Codex-First Adapter)
-
-> **Auto-generated** by `sync_cli_adapters.py`. DO NOT EDIT DIRECTLY.
-> Source of truth: `.agent/` directory.
-
-## Architecture
-
-This project uses a **Three-Tier Agent Architecture**:
-
-1. **Identity Layer** (`.agent/agents/`) — Who does the work
-2. **Orchestration Layer** (`.agent/workflows/`) — What sequence is triggered
-3. **Capability Layer** (`.agent/skills/`) — How the work is done
+> Thin runtime adapter. Source of truth: `.agent/`.
 
 ## Runtime Priority
 
-1. **{primary} first** — optimized default runtime, slash-command dispatch, native skill adapters, and project-scoped custom agents.
-2. **{secondary} second** — compatibility runtime that reuses the same `.agent/` source of truth without owning the canonical Codex path.
-3. **Compatibility CLIs next** — `{', '.join(runtime_priority['compatibility'])}` use generated adapters without redefining workflow logic.
+1. **Antigravity first** - canonical command behavior and orchestration semantics live in `.agent/`.
+2. **Codex second** - use native-feeling adapters for the most-used commands: {commands}.
+3. **Compatibility CLIs next** - Gemini CLI, Claude Code, and KiloCode generate local adapters from `.agent/` without redefining workflow logic.
 
-Promoted Codex skills: {promoted_text}
-
-## Codex Startup
+## Startup
 
 On a new Codex session:
 
-1. Read `SETTINGS.md` and `STATUS.md` when they exist; if `STATUS.md` is absent, use the relevant tracker files under `5. Trackers/`.
-2. Treat `.agent/` as the source of truth.
-3. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
-4. Load only the minimum `SKILL.md` files needed for the current task.
-5. Translate Antigravity-only primitives into Codex equivalents instead of failing.
-6. Prefer the promoted Codex skill adapters when they exist for the invoked command.
+1. If the user provides only the GitHub repo URL, clone/open the repo and run `python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>` from the repo root.
+2. Read `SETTINGS.md` and `STATUS.md` first when they are relevant to the task.
+3. Treat `.agent/` as the source of truth.
+4. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
+5. Load only the minimum `.agent/workflows/` and `.agent/skills/` files needed for the current task.
+6. Translate Antigravity-only primitives into Codex equivalents instead of failing.
 7. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
-8. For a manual re-bootstrap prompt, see `CODEX_PROMPT.md`.
+
+## Codex Browser First
+
+When a task needs a browser for local apps, rendered UI checks, localhost demos, screenshots, click-through validation, or page inspection:
+
+1. Use the Codex in-app Browser first.
+2. Keep browser work contained in the Codex session whenever possible.
+3. Start local servers with terminal commands when needed, then open and validate the URL in the Codex Browser.
+4. Capture screenshots, DOM state, console warnings/errors, and interaction evidence through the Codex Browser whenever possible.
+5. Do not default to macOS `open`, Chrome, Edge, Safari, Computer Use, or standalone Playwright before trying the Codex Browser.
+
+Use an external browser only when there is a concrete reason: the user explicitly asks for it, the task needs the user's browser profile/cookies/extensions/SSO, the bug is browser-specific, the Codex Browser is unavailable or cannot reach the target after a reasonable attempt, or the workflow needs browser permissions/downloads/OS integration the Codex Browser cannot provide. State the reason briefly before using the external browser.
+
+## Agent Bootstrap
+
+When starting from a GitHub URL:
+
+```bash
+git clone <url>
+cd beats-pm-kit
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>
+```
+
+After bootstrap, route the user's first real PM input through `system/scripts/pm_decision_router.py` or the matching slash-command workflow.
 
 ## Slash Command Dispatch
 
@@ -318,230 +186,320 @@ If the user's message starts with `/command`:
 5. Follow the workflow even if a natural-language interpretation also seems possible.
 6. If the command does not exist, say it is unknown and point the user to `/help`.
 
-## Available Agents ({len(agents)})
+## Adapter Policy
 
-{chr(10).join(f'- `{a}`' for a in agents)}
+Generated runtime folders such as `.codex/`, `.gemini/`, `.claude/`, and `.kilocode/` are local build artifacts and must stay ignored. Regenerate them with:
 
-## Available Workflows ({len(workflows)})
-
-{chr(10).join(f'- `/{w}`' for w in workflows)}
-
-## Skills: {skill_count} available
-
-Skills are loaded on-demand from `.agent/skills/[skill-name]/SKILL.md`.
-
-## Cross-CLI Aliases
-
-All of these directories resolve to `.agent/`:
-- `.agents/` · `_agent/` · `_agents/`
-- `.claude/` · `.kilocode/` · `.gemini/` · `.codex/`
-
-## Key Files
-
-- `GEMINI.md` — Runtime-neutral source system config
-- `.claude/CLAUDE.md` — Claude Code adapter (auto-generated)
-- `CODEX_COMMANDS.md` — Codex slash-command index (auto-generated)
-- `.codex/rules.md` — Codex runtime notes (auto-generated)
-- `AGENTS.md` — This file (Codex adapter)
-- `SETTINGS.md` — User preferences
+```bash
+python system/scripts/sync_cli_adapters.py
+python system/scripts/sync_codex_skill_adapters.py --output-dir <codex-skills-dir>
+```
 """
 
-    with open(agents_md, 'w', encoding='utf-8') as f:
-        f.write(content)
-    log_ok(f'AGENTS.md generated ({len(agents)} agents, {len(workflows)} workflows, {skill_count} skills)')
 
-# ─── Phase 5: CODEX_COMMANDS.md Generation ──────────────────────────────────
+def render_gemini_md() -> str:
+    return """# GEMINI.md - Beats PM Kit Runtime Adapter
 
-def generate_codex_commands():
-    print('\nPhase 5: CODEX_COMMANDS.md Generation')
-    commands_md = os.path.join(BASE_DIR, 'CODEX_COMMANDS.md')
-    command_catalog = get_command_catalog()
+This file is a thin compatibility entrypoint for Gemini CLI and Antigravity.
 
-    content = """# Codex Command Index
+The canonical agent contract, workflows, skills, and rules live in `.agent/`.
+Load `.agent/rules/GEMINI.md` first, then resolve workflows from `.agent/workflows/`.
+Generated local adapter directories are intentionally ignored by Git.
 
-This file makes slash-command routing explicit for Codex.
+If the user provides only the GitHub repo URL, clone/open the repo and run:
 
-## Dispatch Rule
+```bash
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>
+```
 
-If the user's first non-whitespace token is `/command`:
-
-1. Strip the leading `/`.
-2. Look up the command in the table below.
-3. Read the matching workflow file in `.agent/workflows/`.
-4. Treat any remaining user text as workflow input.
-5. If no match exists, report an unknown command and suggest `/help`.
-
-Promoted Codex skill adapters can be synced locally with `python3 system/scripts/sync_codex_skill_adapters.py`.
-
-## Commands
-
-| Command | Workflow File | Codex Mode | Aliases | Purpose |
-| :--- | :--- | :--- | :--- | :--- |
+Then route the first real PM input through the PM decision router or the matching workflow.
 """
-    for command in command_catalog:
-        aliases = ", ".join(f"`/{alias}`" for alias in command['aliases']) or "—"
-        mode = "Dispatch only"
-        if command['codex_promotion'] == 'skill':
-            mode = f"Native skill `{command['codex_skill_name']}`"
-            if command['dangerous']:
-                mode = f"Guarded skill `{command['codex_skill_name']}`"
-        content += (
-            f"| `/{command['name']}` | `{command['workflow']}` | "
-            f"{mode} | {aliases} | {command['description']} |\n"
-        )
 
-    with open(commands_md, 'w', encoding='utf-8') as f:
-        f.write(content)
-    log_ok(f'CODEX_COMMANDS.md generated ({len(command_catalog)} commands)')
 
-# ─── Phase 6: .codex/rules.md Generation ────────────────────────────────────
+def render_claude_md() -> str:
+    return """# CLAUDE.md - Beats PM Kit Claude Adapter
 
-def generate_codex_rules():
-    print('\nPhase 6: .codex/rules.md Generation')
-    codex_dir = os.path.join(BASE_DIR, '.codex')
-    os.makedirs(codex_dir, exist_ok=True)
-    codex_rules = os.path.join(codex_dir, 'rules.md')
+This file is a thin compatibility entrypoint for Claude Code.
 
-    gemini_path = os.path.join(CANONICAL, 'rules', 'GEMINI.md')
-    if not os.path.exists(gemini_path):
-        log_err('GEMINI.md not found in .agent/rules -- cannot generate .codex/rules.md')
-        return
+The canonical agent contract, workflows, skills, and rules live in `.agent/`.
+Run `python system/scripts/sync_cli_adapters.py` to regenerate local Claude command adapters under `.claude/`.
+Generated local adapter directories are intentionally ignored by Git.
 
-    with open(gemini_path, 'r', encoding='utf-8') as f:
-        content = normalize_gemini_content(f.read())
+If the user provides only the GitHub repo URL, clone/open the repo and run:
 
-    promoted_codex = get_promoted_codex_commands(BASE_DIR)
-    promoted_lines = "\n".join(
-        f"- `/{entry['name']}` prefers the local Codex skill adapter `{entry['codex_skill_name']}`."
-        for entry in promoted_codex
-    )
-    if not promoted_lines:
-        promoted_lines = "- No promoted Codex skill adapters are configured."
+```bash
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>
+```
 
-    header = f"""# rules.md -- Auto-generated from .agent/rules/GEMINI.md
-# DO NOT EDIT THIS FILE DIRECTLY.
-# Run: python system/scripts/sync_cli_adapters.py
-# Primary Codex adapter: AGENTS.md
+Then route the first real PM input through the PM decision router or the matching workflow.
+"""
 
-## Codex Runtime Notes
 
-- Use `AGENTS.md` as the primary inventory of agents, workflows, and skills.
-- On session start, read `SETTINGS.md` and `STATUS.md` when they exist; if `STATUS.md` is absent, use the relevant tracker files under `5. Trackers/`.
-- When the user invokes `/command`, follow the explicit dispatch rule in `CODEX_COMMANDS.md`.
-- Prefer promoted Codex skill adapters for the highest-frequency Beats commands when they are installed locally.
-- Load only the `SKILL.md` files required for the current task.
-- Translate Antigravity-only primitives into Codex equivalents instead of failing.
-- Keep all durable output in the repo so Codex and compatibility runtimes share the same state.
-- For manual re-bootstrap, use `CODEX_PROMPT.md`.
+def render_codex_rules() -> str:
+    return """# Codex Runtime Notes
 
-## Promoted Codex Skills
-
-{promoted_lines}
+Generated locally by `system/scripts/sync_cli_adapters.py`.
 
 ## Slash Command Dispatch
 
-If the user's first non-whitespace token is `/command`:
+- If the user's first non-whitespace token is `/command`: follow the explicit dispatch rule in `CODEX_COMMANDS.md`.
+- Resolve the command to `.agent/workflows/<command>.md` before applying general conversation behavior.
+- If no workflow exists, report an unknown command and suggest `/help`.
 
-1. Treat it as a workflow invocation.
-2. Resolve it through `CODEX_COMMANDS.md`.
-3. Read the mapped `.agent/workflows/<command>.md` file before deeper work.
-4. Use the remainder of the user's message as workflow input.
-5. If no workflow exists, report an unknown command and suggest `/help`.
+## Runtime Notes
 
-"""
-    final = header + content
-
-    with open(codex_rules, 'w', encoding='utf-8') as f:
-        f.write(final)
-    log_ok(f'.codex/rules.md generated ({len(final)} bytes)')
-
-def generate_codex_prompt():
-    print('\nPhase 7: CODEX_PROMPT.md Generation')
-    prompt_path = os.path.join(BASE_DIR, 'CODEX_PROMPT.md')
-    command_catalog = get_command_catalog()
-    workflow_count = len(command_catalog)
-
-    content = f"""# CODEX_PROMPT.md -- Manual Codex Bootstrap Prompt
-
-Use this prompt when a Codex session needs to be manually re-anchored to the Beats PM Kit.
-
-You are working in the Beats PM Kit repository.
-
-1. Read `AGENTS.md` first.
-2. Read `SETTINGS.md` and `STATUS.md` when they exist; if `STATUS.md` is absent, use the relevant tracker files under `5. Trackers/`.
-3. Treat `.agent/` as the source of truth for agents, workflows, skills, templates, and rules.
-4. If my message starts with /command, treat it as an explicit workflow invocation.
-5. Resolve it using CODEX_COMMANDS.md, then read the mapped `.agent/workflows/<command>.md` file before doing deeper work.
-6. Load only the minimum `SKILL.md` files needed for the current task.
-7. Translate Antigravity-only primitives into Codex-native actions instead of failing.
-8. Keep durable outputs in the repo's standard folders so Codex and compatibility runtimes share state.
-
-This checkout currently exposes {workflow_count} slash workflows through `CODEX_COMMANDS.md`.
+- Treat `.agent/` as canonical.
+- Resolve slash commands through root `CODEX_COMMANDS.md`.
+- Prefer promoted Codex skills when present.
+- Use the Codex in-app Browser first for local apps, rendered UI checks, localhost demos, screenshots, click-through validation, and page inspection.
+- Use an external browser only for a concrete reason: explicit user request, required user profile/cookies/extensions/SSO, browser-specific reproduction, Codex Browser unavailable/unable to reach the target after a reasonable attempt, or permissions/downloads/OS integration the Codex Browser cannot provide.
+- When using an external browser, state the reason briefly and keep the action scoped to that need.
+- Do not commit generated runtime adapter directories.
 """
 
-    with open(prompt_path, 'w', encoding='utf-8') as f:
-        f.write(content)
-    log_ok(f'CODEX_PROMPT.md generated ({workflow_count} workflows)')
 
-# ─── Phase 8: .claude/ Symlinks ─────────────────────────────────────────────
+def render_claude_runtime() -> str:
+    return """# Claude Code Adapter
 
-def sync_claude_dir():
-    print('\nPhase 8: .claude/ Directory Sync')
-    claude_dir = os.path.join(BASE_DIR, '.claude')
-    os.makedirs(claude_dir, exist_ok=True)
+Generated locally by `system/scripts/sync_cli_adapters.py`.
 
-    # Claude Code reads from .claude/commands/ for slash commands
-    # We symlink it to workflows
-    commands_link = os.path.join(claude_dir, 'commands')
-    commands_target = os.path.join('..', '.agent', 'workflows')
+Use `.agent/` as the source of truth. Claude command files under `.claude/commands/`
+should only point back to `.agent/workflows/`.
+"""
 
-    if is_valid_symlink(commands_link):
-        log_ok('.claude/commands -> .agent/workflows (valid)')
-    else:
-        if create_symlink(commands_link, commands_target, is_dir=True):
-            log_fix('.claude/commands -> .agent/workflows (repaired)')
+
+def render_claude_command(workflow: Path) -> str:
+    name = workflow.stem
+    return f"""---
+description: Run the Beats PM Kit `{name}` workflow.
+argument-hint: "[workflow input]"
+---
+
+Load `.agent/workflows/{name}.md` and execute it using the user's remaining input:
+
+`$ARGUMENTS`
+"""
+
+
+def safe_is_dir(path: Path) -> bool:
+    try:
+        return path.is_dir() and not path.is_symlink()
+    except OSError:
+        return False
+
+
+def safe_exists(path: Path) -> bool:
+    try:
+        return path.exists() or path.is_symlink()
+    except OSError:
+        return True
+
+
+def remove_path(path: Path) -> None:
+    if not safe_exists(path):
+        return
+    try:
+        if safe_is_dir(path):
+            shutil.rmtree(path)
         else:
-            log_err('.claude/commands -> .agent/workflows (FAILED)')
+            path.unlink()
+    except FileNotFoundError:
+        return
+    except OSError:
+        shutil.rmtree(path, ignore_errors=True)
 
-# ─── Main ────────────────────────────────────────────────────────────────────
 
-def main():
-    print('=' * 60)
-    print('  Cross-CLI Adapter Sync')
-    print(f'  Platform: {platform.system()} | Python: {sys.version.split()[0]}')
-    print(f'  Base: {BASE_DIR}')
-    print('=' * 60)
+def copy_file_if_changed(source: Path, destination: Path) -> bool:
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if safe_is_dir(destination):
+        remove_path(destination)
+    if destination.is_symlink():
+        remove_path(destination)
+    if safe_exists(destination):
+        try:
+            source_stat = source.stat()
+            destination_stat = destination.stat()
+            if (
+                not destination.is_symlink()
+                and source_stat.st_size == destination_stat.st_size
+                and source_stat.st_mtime_ns == destination_stat.st_mtime_ns
+            ):
+                return False
+            if not destination.is_symlink() and destination.read_bytes() == source.read_bytes():
+                return False
+        except OSError:
+            remove_path(destination)
+    shutil.copy2(source, destination)
+    return True
 
-    if not os.path.isdir(CANONICAL):
-        print(f'\n[FATAL] .agent/ directory not found at {CANONICAL}')
-        sys.exit(1)
 
-    sync_folder_aliases()
-    sync_cli_directories()
-    ensure_codex_agents_dir()
-    generate_claude_md()
-    generate_agents_md()
-    generate_codex_commands()
-    generate_codex_rules()
-    generate_codex_prompt()
-    sync_claude_dir()
+def copy_tree_changed(source: Path, destination: Path) -> int:
+    changed = 0
+    if safe_exists(destination) and not safe_is_dir(destination):
+        remove_path(destination)
+        changed += 1
+    destination.mkdir(parents=True, exist_ok=True)
 
-    # Summary
-    ok_count = sum(1 for s, _ in results if s == '[OK]')
-    fix_count = sum(1 for s, _ in results if s == '[FIX]')
-    err_count = sum(1 for s, _ in results if s == '[ERR]')
+    source_entries: set[str] = set()
+    for source_item in source.rglob("*"):
+        rel = source_item.relative_to(source)
+        source_entries.add(rel.as_posix())
+        dest_item = destination / rel
+        if source_item.is_dir():
+            if not safe_is_dir(dest_item):
+                remove_path(dest_item)
+                dest_item.mkdir(parents=True, exist_ok=True)
+                changed += 1
+        elif source_item.is_file():
+            if copy_file_if_changed(source_item, dest_item):
+                changed += 1
 
-    print('\n' + '=' * 60)
-    print(f'  SUMMARY: {ok_count} OK · {fix_count} Repaired · {err_count} Failed')
-    print('=' * 60)
+    for dest_item in sorted(destination.rglob("*"), key=lambda item: len(item.parts), reverse=True):
+        rel = dest_item.relative_to(destination).as_posix()
+        if rel not in source_entries:
+            remove_path(dest_item)
+            changed += 1
+    return changed
 
-    if err_count > 0:
-        print('\n[WARN] Some operations failed. On Windows, symlink creation may require:')
-        print('   - Run as Administrator, OR')
-        print('   - Enable Developer Mode (Settings > For Developers > Developer Mode)')
-        sys.exit(1)
+
+def sync_workflow_adapter_dir(destination: Path) -> int:
+    """Sync only canonical, non-ignored workflow files into a runtime adapter."""
+    changed = 0
+    if safe_exists(destination) and not safe_is_dir(destination):
+        remove_path(destination)
+        changed += 1
+    destination.mkdir(parents=True, exist_ok=True)
+
+    expected = {path.name for path in workflow_files()}
+    for source in workflow_files():
+        if copy_file_if_changed(source, destination / source.name):
+            changed += 1
+
+    for dest_item in sorted(destination.rglob("*"), key=lambda item: len(item.parts), reverse=True):
+        rel = dest_item.relative_to(destination).as_posix()
+        if rel not in expected:
+            remove_path(dest_item)
+            changed += 1
+    return changed
+
+def normalize_kilocode_agent_frontmatter(content: str) -> str:
+    lines = content.splitlines()
+    if not lines or lines[0] != "---":
+        return content
+
+    normalized: list[str] = []
+    in_frontmatter = True
+    changed = False
+    for index, line in enumerate(lines):
+        if index > 0 and line == "---":
+            in_frontmatter = False
+            normalized.append(line)
+            continue
+        if in_frontmatter and line.startswith("tools:") and "," in line:
+            tools = [tool.strip() for tool in line.split(":", 1)[1].split(",") if tool.strip()]
+            normalized.append("tools:")
+            normalized.extend(f"  {tool}: true" for tool in tools)
+            changed = True
+            continue
+        normalized.append(line)
+
+    if not changed:
+        return content
+    suffix = "\n" if content.endswith("\n") else ""
+    return "\n".join(normalized) + suffix
+
+
+def normalize_kilocode_agents(path: Path) -> int:
+    if not safe_is_dir(path):
+        return 0
+    changed = 0
+    for agent_file in sorted(path.glob("*.md")):
+        normalized = normalize_kilocode_agent_frontmatter(read_text(agent_file))
+        if write_if_changed(agent_file, normalized):
+            changed += 1
+    return changed
+
+
+def ensure_local_copy(path: Path, target: Path) -> str:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if target.is_dir():
+        changed = copy_tree_changed(target, path)
+        return "unchanged" if changed == 0 else f"synced {changed}"
+    changed = copy_file_if_changed(target, path)
+    return "updated" if changed else "unchanged"
+
+
+def sync_runtime_links() -> list[str]:
+    messages: list[str] = []
+    for adapter, entries in CORE_ADAPTER_DIRS.items():
+        for name, target in entries.items():
+            if target == AGENT_DIR / "workflows":
+                changed = sync_workflow_adapter_dir(ROOT / adapter / name)
+                status = "unchanged" if changed == 0 else f"synced {changed}"
+            else:
+                status = ensure_local_copy(ROOT / adapter / name, target)
+                if adapter == ".kilocode" and name == "agents":
+                    normalized = normalize_kilocode_agents(ROOT / adapter / name)
+                    if normalized:
+                        status = f"{status}; normalized {normalized}"
+            messages.append(f"{adapter}/{name}: {status}")
+
+    commands_dir = ROOT / ".claude" / "commands"
+    if safe_exists(commands_dir) and not safe_is_dir(commands_dir):
+        remove_path(commands_dir)
+    commands_dir.mkdir(parents=True, exist_ok=True)
+    expected_commands = {f"{workflow.stem}.md" for workflow in workflow_files()}
+    for workflow in workflow_files():
+        changed = write_if_changed(commands_dir / f"{workflow.stem}.md", render_claude_command(workflow))
+        messages.append(f".claude/commands/{workflow.stem}.md: {'updated' if changed else 'unchanged'}")
+    for command_file in sorted(commands_dir.glob("*.md")):
+        if command_file.name not in expected_commands:
+            remove_path(command_file)
+            messages.append(f".claude/commands/{command_file.name}: removed")
+    return messages
+
+
+def render_summary() -> str:
+    return (
+        "Adapter sync complete: "
+        f"{len(agent_files())} agents, "
+        f"{len(workflow_files())} workflows, "
+        f"{len(skill_files())} skills."
+    )
+
+
+def main() -> int:
+    if not AGENT_DIR.exists():
+        print(f"missing canonical .agent directory: {AGENT_DIR}", file=sys.stderr)
+        return 1
+
+    generated = {
+        ROOT / "AGENTS.md": render_agents_md(),
+        ROOT / "CLAUDE.md": render_claude_md(),
+        ROOT / "GEMINI.md": render_gemini_md(),
+        ROOT / "CODEX_COMMANDS.md": render_codex_commands(),
+        ROOT / ".codex" / "rules.md": render_codex_rules(),
+        ROOT / ".claude" / "CLAUDE.md": render_claude_runtime(),
+        ROOT / ".gemini" / "GEMINI.md": render_gemini_md(),
+    }
+
+    changed = []
+    for path, content in generated.items():
+        if write_if_changed(path, content):
+            changed.append(relative(path))
+
+    link_messages = sync_runtime_links()
+    print(render_summary())
+    if changed:
+        print("Updated files:")
+        for path in changed:
+            print(f"  - {path}")
     else:
-        print('\n[OK] All CLI adapters are in sync.')
+        print("No tracked adapter stubs changed.")
+    for message in link_messages:
+        print(f"  - {message}")
+    return 0
 
-if __name__ == '__main__':
-    main()
+
+if __name__ == "__main__":
+    raise SystemExit(main())

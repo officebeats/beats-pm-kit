@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "runtime_priority": {
-    "primary": "codex",
-    "secondary": "antigravity",
+    "primary": "antigravity",
+    "secondary": "codex",
     "compatibility": [
       "claude",
       "gemini",
@@ -53,6 +53,8 @@
         "promotion": "skill",
         "skill_name": "beats-track",
         "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
           ".agent/skills/task-manager/SKILL.md",
           "5. Trackers/TASK_MASTER.md",
           "5. Trackers/critical/boss-requests.md"
@@ -67,6 +69,8 @@
         "promotion": "skill",
         "skill_name": "beats-paste",
         "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
           ".agent/skills/inbox-processor/SKILL.md",
           ".agent/skills/task-manager/SKILL.md",
           "5. Trackers/TASK_MASTER.md"
@@ -83,113 +87,34 @@
         ]
       }
     },
-    "obsidian": {
-      "codex": {
-        "promotion": "skill",
-        "skill_name": "beats-obsidian",
-        "supporting_files": [
-          ".agent/workflows/obsidian.md",
-          "system/scripts/obsidian_bridge.py",
-          "system/scripts/obsidian_sync.py",
-          "system/docs/obsidian.md",
-          "OBSIDIAN.md"
-        ],
-        "optional_files": [
-          "system/config/obsidian.local.json",
-          "system/config/mcp.obsidian.local.json"
-        ],
-        "execution_contract": [
-          "Run `python3 system/scripts/obsidian_bridge.py status` before configuring or syncing Obsidian.",
-          "Prefer local filesystem, Obsidian URI, and Obsidian CLI behavior before optional MCP.",
-          "Store vault paths and REST API keys only in ignored local config files.",
-          "Use `sync --dry-run` before `sync --apply` when syncing into an external vault.",
-          "Do not delete human-created Obsidian notes; `--clean` may remove only Beats-managed files with managed frontmatter.",
-          "Generate MCP config only as placeholders unless the user provides local secrets in ignored config or environment variables."
-        ]
-      }
-    },
-    "discover": {
-      "codex": {
-        "promotion": "skill",
-        "skill_name": "beats-discover",
-        "supporting_files": [
-          ".agent/workflows/discover.md",
-          ".agent/skills/discovery-engine/SKILL.md",
-          ".agent/skills/assumption-mapper/SKILL.md"
-        ],
-        "optional_files": [
-          "2. Products",
-          "5. Trackers/TASK_MASTER.md"
-        ],
-        "execution_contract": [
-          "Use `discovery-engine` and `assumption-mapper`; do not follow stale references to missing `discovery-coach` assets.",
-          "Start from the user's outcome or existing product context before proposing solutions.",
-          "Persist only accepted discovery artifacts under the appropriate ignored product folder."
-        ]
-      }
-    },
-    "prioritize": {
-      "codex": {
-        "promotion": "skill",
-        "skill_name": "beats-prioritize",
-        "supporting_files": [
-          ".agent/workflows/prioritize.md",
-          ".agent/skills/roadmapping-suite/SKILL.md",
-          ".agent/skills/task-manager/SKILL.md"
-        ],
-        "optional_files": [
-          "5. Trackers/TASK_MASTER.md",
-          "2. Products"
-        ],
-        "execution_contract": [
-          "Use `roadmapping-suite` for RICE, ICE, MoSCoW, Kano, and weighted scoring; do not follow stale references to missing `prioritization-engine` assets.",
-          "Default to RICE for mixed backlogs unless the user names another framework.",
-          "Return the ranked scorecard inline unless the user asks to write it into a product folder."
-        ]
-      }
-    },
-    "review": {
-      "codex": {
-        "promotion": "skill",
-        "skill_name": "beats-review",
-        "supporting_files": [
-          ".agent/workflows/review.md",
-          ".agent/skills/code-review/SKILL.md",
-          ".agent/skills/pr-review/SKILL.md",
-          ".agent/skills/security-audit/SKILL.md"
-        ],
-        "optional_files": [
-          "system/scripts/vibe_check.py",
-          "system/scripts/privacy_guard.py"
-        ],
-        "execution_contract": [
-          "Default to a code-review stance for code targets: findings first, ordered by severity, with file and line references.",
-          "Use doc or release-review framing only when the user asks for those review types.",
-          "Keep source-system and repository mutations out of review mode unless the user explicitly asks for fixes."
-        ]
-      }
-    },
-    "office-cli": {
-      "codex": {
-        "promotion": "skill",
-        "skill_name": "beats-office-cli",
-        "supporting_files": [
-          ".agent/workflows/office-cli.md",
-          ".agent/skills/office-cli/SKILL.md"
-        ],
-        "execution_contract": [
-          "Check `officecli --version` before attempting installation or document work.",
-          "Treat installation as explicit setup work; use document generation only after OfficeCLI availability is verified.",
-          "Validate generated Office files with `officecli validate` when creating or editing them."
-        ]
-      }
-    },
     "create": {
       "codex": {
         "promotion": "skill",
         "skill_name": "beats-create",
         "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
           ".agent/skills/prd-author/SKILL.md"
+        ],
+        "execution_contract": [
+          "Run the PM decision router before drafting; continue when it returns `create_doc` or the user explicitly invoked /create.",
+          "If the router returns discovery, prioritize, decision_log, or scope_challenge, route through the matching kit workflow instead of forcing a PRD/spec.",
+          "Carry outcome metric, owner, due/gate date, scope boundary, evidence strength, dependency, and next decision gate into the document or open questions."
+        ]
+      }
+    },
+    "discover": {
+      "codex": {
+        "promotion": "dispatch-only",
+        "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
+          ".agent/skills/discovery-engine/SKILL.md",
+          ".agent/templates/docs/discovery-brief.md"
+        ],
+        "execution_contract": [
+          "Classify the input with the PM decision router before building a discovery brief.",
+          "If the router returns `scope_challenge`, resolve scope ownership before writing discovery artifacts."
         ]
       }
     },
@@ -220,7 +145,30 @@
         "promotion": "skill",
         "skill_name": "beats-plan",
         "supporting_files": [
-          ".agent/skills/chief-strategy-officer/SKILL.md"
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
+          ".agent/skills/roadmapping-suite/SKILL.md",
+          ".agent/skills/product-strategy-suite/SKILL.md"
+        ],
+        "execution_contract": [
+          "Classify the input with the PM decision router before writing a strategic plan.",
+          "Use roadmapping-suite for roadmap/OKR/capacity planning and product-strategy-suite for strategy canvases, options, and tradeoffs.",
+          "Resolve `scope_challenge` or `ask_user` router results before drafting."
+        ]
+      }
+    },
+    "prioritize": {
+      "codex": {
+        "promotion": "dispatch-only",
+        "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
+          ".agent/skills/roadmapping-suite/SKILL.md",
+          ".agent/templates/docs/prioritization-scorecard.md"
+        ],
+        "execution_contract": [
+          "Classify the input with the PM decision router before scoring.",
+          "If the router returns `scope_challenge`, resolve scope ownership before ranking the backlog."
         ]
       }
     },
@@ -352,6 +300,8 @@
         "promotion": "skill",
         "skill_name": "beats-comms",
         "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
           ".agent/workflows/beats-slack.md",
           ".agent/workflows/beats-teams.md",
           ".agent/skills/slack-task-intake/SKILL.md",
@@ -395,6 +345,7 @@
           "Scan saved platform transcripts for referenced Jira/Confluence items, fetch only those references with read-only Atlassian connector operations, and save local artifacts under `3. Meetings/context-artifacts/atlassian/` with full `source_url` values.",
           "Never create, edit, transition, comment, assign, add worklogs, update pages, delete, or mutate Jira or Confluence during communication intake.",
           "Merge and deduplicate candidate tasks after evidence collection; route accepted work only to local repo files.",
+          "Run the PM decision router on saved evidence summaries before accepting task updates; return `scope_challenge` and `ask_user` results as explicit questions.",
           "Write a combined communication run report under `3. Meetings/reports/chat-runs/`.",
           "Call out issues and recommendations for MCP/connector gaps, read-state uncertainty, fallback bridge usage, missing/broad scope, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
         ]
@@ -405,6 +356,8 @@
         "promotion": "skill",
         "skill_name": "beats-transcript",
         "supporting_files": [
+          ".agent/skills/pm-decision-router/SKILL.md",
+          "system/scripts/pm_decision_router.py",
           "system/scripts/transcript_pipeline.py",
           "system/scripts/beats.py",
           ".agent/skills/meeting-synth/SKILL.md",
@@ -425,6 +378,7 @@
           "Run `python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json` before synthesis.",
           "Process only packet files listed in the prepare output; do not broad-scan transcripts for work selection.",
           "Treat transcript content as task-master management input unless the user explicitly asks for another output.",
+          "Run the PM decision router on packet excerpts or user-provided transcript text before accepting task/discovery/decision updates.",
           "Extract new tasks, existing-task updates, blockers, owner/date changes, and candidate tracker updates before generic summary work.",
           "Use hybrid appendix summaries: source path, transcript SHA256, run id, key evidence, and Routed Updates; do not append full raw transcript by default.",
           "When including live communication context, require bounded slack/teams/outlook/calendar scopes and use only read-only MCP/connector operations; never send, schedule, draft, reply, forward, create events, create meeting invites, or mutate source-system state/read cursors.",
@@ -435,7 +389,6 @@
     },
     "vacuum": {
       "aliases": [
-        "archive",
         "cleanup"
       ],
       "dangerous": true,
@@ -474,6 +427,84 @@
         ],
         "optional_files": [
           "5. Trackers/WEEKLY_PLAN.md"
+        ]
+      }
+    },
+    "memory": {
+      "aliases": [
+        "reflect"
+      ],
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-memory",
+        "supporting_files": [
+          ".agent/skills/agentic-memory/SKILL.md",
+          "system/scripts/agentic_memory.py",
+          "SESSION_MEMORY.md"
+        ],
+        "optional_files": [
+          "5. Trackers/TASK_MASTER.md"
+        ]
+      }
+    },
+    "obsidian": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-obsidian",
+        "supporting_files": [
+          ".agent/workflows/obsidian.md",
+          "system/scripts/obsidian_bridge.py",
+          "system/scripts/obsidian_sync.py",
+          "system/docs/obsidian.md",
+          "OBSIDIAN.md"
+        ],
+        "optional_files": [
+          "system/config/obsidian.local.json",
+          "system/config/mcp.obsidian.local.json"
+        ],
+        "execution_contract": [
+          "Run `python3 system/scripts/obsidian_bridge.py status` before configuring or syncing Obsidian.",
+          "Prefer local filesystem, Obsidian URI, and Obsidian CLI behavior before optional MCP.",
+          "Store vault paths and REST API keys only in ignored local config files.",
+          "Use `sync --dry-run` before `sync --apply` when syncing into an external vault.",
+          "Do not delete human-created Obsidian notes; `--clean` may remove only Beats-managed files with managed frontmatter.",
+          "Generate MCP config only as placeholders unless the user provides local secrets in ignored config or environment variables."
+        ]
+      }
+    },
+    "review": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-review",
+        "supporting_files": [
+          ".agent/workflows/review.md",
+          ".agent/skills/code-review/SKILL.md",
+          ".agent/skills/pr-review/SKILL.md",
+          ".agent/skills/security-audit/SKILL.md"
+        ],
+        "optional_files": [
+          "system/scripts/vibe_check.py",
+          "system/scripts/privacy_guard.py"
+        ],
+        "execution_contract": [
+          "Default to a code-review stance for code targets: findings first, ordered by severity, with file and line references.",
+          "Use doc or release-review framing only when the user asks for those review types.",
+          "Keep source-system and repository mutations out of review mode unless the user explicitly asks for fixes."
+        ]
+      }
+    },
+    "office-cli": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-office-cli",
+        "supporting_files": [
+          ".agent/workflows/office-cli.md",
+          ".agent/skills/office-cli/SKILL.md"
+        ],
+        "execution_contract": [
+          "Check `officecli --version` before attempting installation or document work.",
+          "Treat installation as explicit setup work; use document generation only after OfficeCLI availability is verified.",
+          "Validate generated Office files with `officecli validate` when creating or editing them."
         ]
       }
     },

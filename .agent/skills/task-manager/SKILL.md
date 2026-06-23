@@ -30,6 +30,14 @@ author: Beats PM Brain
 - **Inputs**: /task, /triage, /paste screenshots, /transcript packets, BRAIN_DUMP.md (Inbox), TASK_MASTER.md (Ledger).
 - **Tools**: run_command (cat), view_file.
 
+If Trello is enabled in local settings/config and the entrypoint is `/track`, run:
+
+```bash
+python3 system/scripts/trello_bridge.py intake --apply
+```
+
+Then review `system/inbox/trello/reports/latest-intake.md` plus packet files in `system/inbox/trello/incoming/` before accepting any new Trello-originated work into the ledger.
+
 ---
 
 ## 1A. Default Evidence Inputs
@@ -40,6 +48,24 @@ Screenshots/images and transcripts are task-master management inputs by default.
 - Then apply the Priority Gate before accepting any new active work.
 - If the source is ambiguous, return exact candidate `TASK_MASTER.md` rows or detail-file updates for the user to confirm.
 - Do not treat screenshots or transcripts as generic profile lookup, reply drafting, or summary requests unless the user explicitly asks for that in the same turn.
+
+### 1B. Fast Raw-Evidence Intake
+
+For a single pasted email/chat/thread or a message prefaced with "for task manager", use the fast path unless the user explicitly asks for full triage, Trello sync, `/day`, `/week`, or broad communication refresh:
+
+```bash
+python3 system/scripts/task_intake_fast.py --text "<raw pasted evidence>" --source "<source label>"
+```
+
+Fast intake rules:
+
+- Always save the raw evidence first under `0. Incoming/raw/`, preserving names, timestamps, links, and message wording.
+- Add a short summary and task-manager routing read below the raw evidence; keep interpretation separate from the raw source.
+- If an existing task match is strong enough, update that task and the matching `TASK_MASTER.md` row.
+- If confidence is low, still create an `INBOX-###` candidate task rather than dropping the signal.
+- Defer expensive health triage by default. Run `task_master_triage.py --apply --touched-task <ID>` only when the user asks for the full health refresh or a deeper workflow needs it.
+- Rebuild the task cache with `python3 system/scripts/build_task_index.py` during `/day`, `/week`, `/vacuum`, or after substantial tracker edits.
+- Treat task IDs as internal anchors only. User-facing labels, weekly-email sections, closeouts, and source-note headings must use succinct descriptive phrases such as `[New] IAD Indicia guideline tenant configuration`.
 
 ---
 
@@ -93,14 +119,25 @@ The authoritative source for scope and operating rules is: `1. Company/ways-of-w
 
 ### B. Ledger Management (/task)
 
-- **Structure**: | Priority | Reason | Due | ID | Task | Description | Status | Owner |
+- **Task writing standard**:
+  - Task titles must be useful, succinct, and descriptive: usually 3-8 words as a plain-English phrase.
+  - Trello card titles, weekly-email sections, closeouts, and source-note headings must omit Task Master IDs. Keep the ID in links, internal fields, card bodies, managed comments, attachments, or local-path references instead.
+  - Put the longer explanation in the body, not the title: one summary sentence of 15 words or fewer.
+  - Support the summary with at most 3 short bullets when more context is needed.
+  - Include outcome metric, scope boundary, evidence strength, dependency, and next decision gate in the detail file for every accepted active task when known.
+  - If any of owner, due date, outcome metric, scope boundary, evidence strength, dependency, or next decision gate is missing for committed work, list the missing field as a concrete question instead of silently accepting a vague task.
+  - Maintain a concrete checkbox list for pending work. `## ✅ Subtasks` is the canonical source for task-level open items and should map cleanly to the Trello checklist.
+  - Completed checkbox items can stay in the local doc for history, but Trello should only mirror what is still open.
+  - Keep the open-item checklist to 3 items or fewer when possible; exceed that only when the work genuinely needs it.
+  - Do not use `P0`/`P1`/`P2` prefixes in status labels or Trello labels. Prefer lane-based placement such as `Today`, `Next`, `Later`, or `Follow Up`.
+- **Structure**: | ID | Task | Owner | Due | Status |
 - **Linking**: The ID column MUST link to tasks/ID.md. The Owner MUST link to 4. People/{owner}.md.
 - **Operations**:
   - **Add**: Run Priority Gate (§ 2) first, then append new row, create detail file, and update Owner profile.
   - **Schedule**: Use 🗓️ Scheduled for [Date] for tasks representing meetings/events booked but not yet occurred.
   - **Manual Override**: If user says "X is scheduled" without calendar verification, trust and update status.
   - **Complete**: Move to "Completed Tasks" and update the task detail header and Progress Log to ✅ Done.
-- **Sort**: STRICT SORT by Priority (P0>P1>P2), then by Due Date (Closest first).
+- **Sort**: Keep active work grouped by lane (`Today`, `Next`, `Later`, `Follow Up`, `Triage`) and then by Due Date (closest first).
 
 ### B1. Task Health Review (MANDATORY)
 
@@ -131,6 +168,9 @@ python3 system/scripts/task_master_triage.py --apply --touched-task TASK-123
 ### C. FAANG/BCG Rigor
 
 - **Outcome**: Every task includes expected outcome/metric.
+- **Scope Boundary**: Every accepted task states what is in scope, what is out of scope, and who owns the next decision.
+- **Evidence Strength**: Mark the source as None, Weak, Moderate, or Strong so the user can tell whether work came from a hard signal or a loose ask.
+- **Decision Gate**: Every non-trivial task includes the next date or event where the task should be continued, killed, delegated, or reframed.
 - **Progress Log**: Every task detail file MUST track a chronological log of updates.
 
 ---
@@ -139,14 +179,15 @@ python3 system/scripts/task_master_triage.py --apply --touched-task TASK-123
 
 - **Table**: Show exactly what moved Inbox -> Ledger.
 - **Gate Results**: Flag any tasks that were rejected or flagged "Needs manager approval."
-- **Next Action**: Suggest top P0 item from 5. Trackers/TASK_MASTER.md.
+- **Next Action**: Suggest the top `Today` item from `5. Trackers/TASK_MASTER.md`.
+- **Display rule**: Show descriptive task phrases first. Put internal IDs in parentheses or links only when needed.
 
 ---
 
 ## 5. Fallback Patterns
 
 - Use run_command for all file writes to avoid iCloud sync-locks.
-- Redact PII before writing.
+- Preserve user-provided raw source details in source notes; do not summarize away names, timestamps, links, or message wording.
 
 ---
 
