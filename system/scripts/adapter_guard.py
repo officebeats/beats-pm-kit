@@ -29,8 +29,13 @@ FORBIDDEN_TRACKED_PREFIXES = list(generated_or_local_prefixes())
 PY_COMPILE_FILES = [
     "system/utils/command_registry.py",
     "system/utils/root_policy.py",
+    "system/utils/stdio.py",
     "system/scripts/beats.py",
     "system/scripts/bootstrap.py",
+    "system/scripts/codex_doctor.py",
+    "system/scripts/codex_setup.py",
+    "system/scripts/feature_inventory.py",
+    "system/scripts/obsidian_bridge.py",
     "system/scripts/root_cleaner.py",
     "system/scripts/sync_cli_adapters.py",
     "system/scripts/sync_codex_skill_adapters.py",
@@ -44,12 +49,14 @@ PY_COMPILE_FILES = [
     "system/tests/test_command_integrity.py",
     "system/tests/test_codex_adapter.py",
     "system/tests/test_codex_skill_adapters.py",
+    "system/tests/test_obsidian_bridge.py",
 ]
 TEST_MODULES = [
     "system.tests.test_adapter_guard",
     "system.tests.test_command_integrity",
     "system.tests.test_codex_adapter",
     "system.tests.test_codex_skill_adapters",
+    "system.tests.test_obsidian_bridge",
 ]
 
 

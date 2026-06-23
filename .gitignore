@@ -28,6 +28,9 @@ system/config.json
 system/config/trello_config.json
 5. Trackers/.trello_ledger.json
 
+# Local Obsidian vault paths, MCP keys, and sync preferences
+system/config/obsidian.local*.json
+
 # Local Beats runtime diagnostics, caches, and test logs
 /.beats/
 /.agent/cache/
@@ -193,6 +196,9 @@ manager_notes_clean.txt
 /checks*.json
 /pr_*.json
 /tmp/
+
+# Codex Action output artifacts
+/codex-output.md
 
 # ----------------------------------------
 # 6. LEGACY FOLDERS (SHOULD BE DELETED)

@@ -36,14 +36,15 @@ matching slash-command workflow.
 | `/maintain` | `.agent/workflows/maintain.md` | Dispatch only |
 | `/meet` | `.agent/workflows/meet.md` | Native skill `beats-meet` |
 | `/memory` | `.agent/workflows/memory.md` | Native skill `beats-memory` |
-| `/office-cli` | `.agent/workflows/office-cli.md` | Dispatch only |
+| `/obsidian` | `.agent/workflows/obsidian.md` | Native skill `beats-obsidian` |
+| `/office-cli` | `.agent/workflows/office-cli.md` | Native skill `beats-office-cli` |
 | `/paste` | `.agent/workflows/paste.md` | Native skill `beats-paste` |
 | `/plan` | `.agent/workflows/plan.md` | Native skill `beats-plan` |
 | `/prep` | `.agent/workflows/prep.md` | Dispatch only |
 | `/prioritize` | `.agent/workflows/prioritize.md` | Dispatch only |
 | `/regression` | `.agent/workflows/regression.md` | Dispatch only |
 | `/retro` | `.agent/workflows/retro.md` | Dispatch only |
-| `/review` | `.agent/workflows/review.md` | Dispatch only |
+| `/review` | `.agent/workflows/review.md` | Native skill `beats-review` |
 | `/sop` | `.agent/workflows/sop.md` | Native skill `beats-sop` |
 | `/sprint` | `.agent/workflows/sprint.md` | Dispatch only |
 | `/start` | `.agent/workflows/start.md` | Dispatch only |
@@ -53,5 +54,5 @@ matching slash-command workflow.
 | `/trello` | `.agent/workflows/trello.md` | Dispatch only |
 | `/update` | `.agent/workflows/update.md` | Guarded skill `beats-update` |
 | `/vacuum` | `.agent/workflows/vacuum.md` | Guarded skill `beats-vacuum` |
-| `/vibe` | `.agent/workflows/vibe.md` | Dispatch only |
+| `/vibe` | `.agent/workflows/vibe.md` | Native skill `beats-vibe` |
 | `/week` | `.agent/workflows/week.md` | Native skill `beats-week` |
