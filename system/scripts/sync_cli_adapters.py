@@ -382,7 +382,6 @@ def sync_workflow_adapter_dir(destination: Path) -> int:
             changed += 1
     return changed
 
-
 def normalize_kilocode_agent_frontmatter(content: str) -> str:
     lines = content.splitlines()
     if not lines or lines[0] != "---":
@@ -439,10 +438,10 @@ def sync_runtime_links() -> list[str]:
                 status = "unchanged" if changed == 0 else f"synced {changed}"
             else:
                 status = ensure_local_copy(ROOT / adapter / name, target)
-            if adapter == ".kilocode" and name == "agents":
-                normalized = normalize_kilocode_agents(ROOT / adapter / name)
-                if normalized:
-                    status = f"{status}; normalized {normalized}"
+                if adapter == ".kilocode" and name == "agents":
+                    normalized = normalize_kilocode_agents(ROOT / adapter / name)
+                    if normalized:
+                        status = f"{status}; normalized {normalized}"
             messages.append(f"{adapter}/{name}: {status}")
 
     commands_dir = ROOT / ".claude" / "commands"
