@@ -29,10 +29,11 @@ def render_skill_description(command):
     """Render a trigger-friendly one-line Codex skill description."""
     triggers = [f"`/{command['name']}`"] + [f"`/{alias}`" for alias in command["aliases"]]
     trigger_text = ", ".join(triggers)
-    return (
+    description = (
         f"Run the Beats PM {trigger_text} workflow for the active Beats PM repo. "
         f"Use when the user invokes one of those commands or asks for {command['description'].rstrip('.').lower()}."
     )
+    return description[:300]
 
 
 def render_skill_md(command, repo_root: Path) -> str:
@@ -60,7 +61,7 @@ def render_skill_md(command, repo_root: Path) -> str:
                 "5. If an optional file is missing, continue without it and note that briefly.",
                 f"6. If the user typed `/{command['name']}` or one of its aliases, treat the remaining text as workflow input.",
                 "7. Follow the repo workflow instead of inventing a parallel Codex-only process.",
-                "8. Keep durable output inside the repo so Antigravity and Codex share the same state.",
+                "8. Keep durable output inside the repo so Codex and compatibility runtimes share the same state.",
             ]
         )
     else:
@@ -68,7 +69,7 @@ def render_skill_md(command, repo_root: Path) -> str:
             [
                 f"4. If the user typed `/{command['name']}` or one of its aliases, treat the remaining text as workflow input.",
                 "5. Follow the repo workflow instead of inventing a parallel Codex-only process.",
-                "6. Keep durable output inside the repo so Antigravity and Codex share the same state.",
+                "6. Keep durable output inside the repo so Codex and compatibility runtimes share the same state.",
             ]
         )
 

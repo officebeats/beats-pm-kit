@@ -15,6 +15,8 @@ SCRIPT_COMMANDS = {
     "runtime": ["python3", "system/scripts/detect_runtime.py", "--human"],
     "sync": ["python3", "system/scripts/sync_cli_adapters.py"],
     "codex-skills": ["python3", "system/scripts/sync_codex_skill_adapters.py"],
+    "codex-doctor": ["python3", "system/scripts/codex_doctor.py"],
+    "codex-setup": ["python3", "system/scripts/codex_setup.py"],
     "command-integrity": ["python3", "system/scripts/command_integrity.py"],
     "context-router": ["python3", "system/scripts/context_router.py"],
     "guard": ["python3", "system/scripts/adapter_guard.py", "--mode", "fix"],
@@ -24,6 +26,7 @@ SCRIPT_COMMANDS = {
     "atlassian-context": ["python3", "system/scripts/atlassian_context_state.py"],
     "transcript": ["python3", "system/scripts/transcript_pipeline.py"],
     "route": ["python3", "system/scripts/pm_decision_router.py"],
+    "obsidian": ["python3", "system/scripts/obsidian_bridge.py"],
     "obsidian-mcp": ["python3", "system/scripts/obsidian_mcp_health.py"],
     "root-cleaner": ["python3", "system/scripts/root_cleaner.py"],
     "real-use-tests": ["python3", "system/scripts/run_real_usecase_tests.py"],
@@ -41,6 +44,9 @@ WORKFLOW_HINTS = {
 
 def run_cmd(cmd):
     """Run a concrete script command."""
+    cmd = list(cmd)
+    if cmd and cmd[0] in {"python", "python3"}:
+        cmd[0] = sys.executable
     script_path = ROOT / cmd[1]
     if not script_path.exists():
         print(f"Missing script: {cmd[1]}")
@@ -126,6 +132,11 @@ def main():
         if extra_args and extra_args[0] in {"prepare", "validate", "recent"}:
             return run_cmd(command_config + extra_args)
         return run_cmd(command_config + ["prepare"] + extra_args)
+
+    if args.command == "obsidian":
+        command_config = SCRIPT_COMMANDS[args.command]
+        extra_args = collect_extra_args(args)
+        return run_cmd(command_config + (extra_args or ["status"]))
 
     if args.command in WORKFLOW_HINTS:
         print_workflow_hint(args.command)
