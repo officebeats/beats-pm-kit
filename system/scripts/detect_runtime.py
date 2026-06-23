@@ -13,6 +13,13 @@ import shutil
 import sys
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from system.utils.stdio import force_utf8_stdio
+
+force_utf8_stdio()
+
 
 def _has_env(*names):
     """Return True when any listed environment variable is set."""
@@ -21,7 +28,7 @@ def _has_env(*names):
 
 def detect_runtime():
     """Detect which AI runtime is active and return its capabilities."""
-    root = Path(__file__).resolve().parent.parent.parent
+    root = ROOT
     runtimes = []
 
     # Antigravity
