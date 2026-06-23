@@ -126,8 +126,12 @@ class TestCodexAdapter(unittest.TestCase):
     def test_beats_gateway_exposes_router_and_obsidian_health_scripts(self):
         """The universal gateway should expose deterministic router utilities."""
         self.assertIn("route", beats.SCRIPT_COMMANDS)
+        self.assertIn("context-router", beats.SCRIPT_COMMANDS)
+        self.assertIn("command-integrity", beats.SCRIPT_COMMANDS)
         self.assertIn("obsidian-mcp", beats.SCRIPT_COMMANDS)
         self.assertIn("system/scripts/pm_decision_router.py", beats.SCRIPT_COMMANDS["route"])
+        self.assertIn("system/scripts/context_router.py", beats.SCRIPT_COMMANDS["context-router"])
+        self.assertIn("system/scripts/command_integrity.py", beats.SCRIPT_COMMANDS["command-integrity"])
         self.assertIn("system/scripts/obsidian_mcp_health.py", beats.SCRIPT_COMMANDS["obsidian-mcp"])
 
 

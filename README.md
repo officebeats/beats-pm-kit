@@ -49,7 +49,6 @@ It is not a generic prompt pack. It is a local-first product management workspac
 ## Built And Used Daily By An AI-Forward PM
 
 I built Beats PM Kit because I needed a practical AI PM operating system for my own daily product work. I use it to process real product-management context: meeting transcripts, partner follow-ups, stakeholder asks, task triage, planning artifacts, reasoning QA, developer portal work, release questions, and the operational noise that usually gets lost between tools.
-
 The result is both a working toolkit and a portfolio of AI-forward product management practice: context engineering, local-first AI workflows, agentic task management, privacy-aware automation, and cross-runtime PM operations. The goal is simple: make an AI assistant useful for the messy middle of product work, not only for polished strategy docs.
 
 ## Core Functionality

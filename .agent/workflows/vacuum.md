@@ -1,5 +1,5 @@
 ---
-description: Execute the full Centrifuge Protocol to keep the brain lean, private, and organized. Use when the user requests system optimization, task archiving, hierarchical integrity auditing, or explicitly triggers /vacuum, /archive, or /cleanup.
+description: Execute the full Centrifuge Protocol to keep the brain lean, private, and organized. Use when the user requests system optimization, task cleanup, hierarchical integrity auditing, or explicitly triggers /vacuum or /cleanup.
 ---
 
 // turbo-all
