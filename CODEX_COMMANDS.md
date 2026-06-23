@@ -6,6 +6,11 @@
 Codex should resolve slash commands through this table, then load the
 matching workflow file from `.agent/workflows/`.
 
+If the user only provides the GitHub repo URL, clone/open the repo, run
+`python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>`,
+then route any remaining request through the PM decision router or the
+matching slash-command workflow.
+
 | Command | Workflow | Promoted Codex Skill |
 | --- | --- | --- |
 | `/accuracy` | `.agent/workflows/accuracy.md` | Dispatch only |
@@ -30,6 +35,7 @@ matching workflow file from `.agent/workflows/`.
 | `/interview` | `.agent/workflows/interview.md` | Dispatch only |
 | `/maintain` | `.agent/workflows/maintain.md` | Dispatch only |
 | `/meet` | `.agent/workflows/meet.md` | Native skill `beats-meet` |
+| `/memory` | `.agent/workflows/memory.md` | Native skill `beats-memory` |
 | `/office-cli` | `.agent/workflows/office-cli.md` | Dispatch only |
 | `/paste` | `.agent/workflows/paste.md` | Native skill `beats-paste` |
 | `/plan` | `.agent/workflows/plan.md` | Native skill `beats-plan` |

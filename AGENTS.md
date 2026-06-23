@@ -12,12 +12,37 @@
 
 On a new Codex session:
 
-1. Read `SETTINGS.md` and `STATUS.md` first when they are relevant to the task.
-2. Treat `.agent/` as the source of truth.
-3. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
-4. Load only the minimum `.agent/workflows/` and `.agent/skills/` files needed for the current task.
-5. Translate Antigravity-only primitives into Codex equivalents instead of failing.
-6. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
+1. If the user provides only the GitHub repo URL, clone/open the repo and run `python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>` from the repo root.
+2. Read `SETTINGS.md` and `STATUS.md` first when they are relevant to the task.
+3. Treat `.agent/` as the source of truth.
+4. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
+5. Load only the minimum `.agent/workflows/` and `.agent/skills/` files needed for the current task.
+6. Translate Antigravity-only primitives into Codex equivalents instead of failing.
+7. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
+
+## Codex Browser First
+
+When a task needs a browser for local apps, rendered UI checks, localhost demos, screenshots, click-through validation, or page inspection:
+
+1. Use the Codex in-app Browser first.
+2. Keep browser work contained in the Codex session whenever possible.
+3. Start local servers with terminal commands when needed, then open and validate the URL in the Codex Browser.
+4. Capture screenshots, DOM state, console warnings/errors, and interaction evidence through the Codex Browser whenever possible.
+5. Do not default to macOS `open`, Chrome, Edge, Safari, Computer Use, or standalone Playwright before trying the Codex Browser.
+
+Use an external browser only when there is a concrete reason: the user explicitly asks for it, the task needs the user's browser profile/cookies/extensions/SSO, the bug is browser-specific, the Codex Browser is unavailable or cannot reach the target after a reasonable attempt, or the workflow needs browser permissions/downloads/OS integration the Codex Browser cannot provide. State the reason briefly before using the external browser.
+
+## Agent Bootstrap
+
+When starting from a GitHub URL:
+
+```bash
+git clone <url>
+cd beats-pm-kit
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>
+```
+
+After bootstrap, route the user's first real PM input through `system/scripts/pm_decision_router.py` or the matching slash-command workflow.
 
 ## Slash Command Dispatch
 
@@ -36,5 +61,5 @@ Generated runtime folders such as `.codex/`, `.gemini/`, `.claude/`, and `.kiloc
 
 ```bash
 python system/scripts/sync_cli_adapters.py
-python system/scripts/sync_codex_skill_adapters.py --output <codex-skills-dir>
+python system/scripts/sync_codex_skill_adapters.py --output-dir <codex-skills-dir>
 ```

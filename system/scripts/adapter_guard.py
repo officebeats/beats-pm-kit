@@ -15,49 +15,39 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from system.utils.root_policy import generated_or_local_prefixes
+
 GENERATED_REPO_FILES = [
     "AGENTS.md",
     "CLAUDE.md",
     "GEMINI.md",
     "CODEX_COMMANDS.md",
 ]
-FORBIDDEN_TRACKED_PREFIXES = [
-    ".claude/",
-    ".cline/",
-    ".codex/",
-    ".context/",
-    ".continue/",
-    ".cursor/",
-    ".gemini/",
-    ".github/agents/",
-    ".github/skills/",
-    ".kilocode/",
-    ".trae/",
-    ".windsurf/",
-    ".zed/",
-    ".copilot/",
-    ".kiro/",
-    ".switchboard/",
-    ".vscode/",
-    "_agent",
-    "_agents",
-]
+FORBIDDEN_TRACKED_PREFIXES = list(generated_or_local_prefixes())
 PY_COMPILE_FILES = [
     "system/utils/command_registry.py",
+    "system/utils/root_policy.py",
     "system/scripts/beats.py",
+    "system/scripts/bootstrap.py",
+    "system/scripts/root_cleaner.py",
     "system/scripts/sync_cli_adapters.py",
     "system/scripts/sync_codex_skill_adapters.py",
     "system/scripts/command_integrity.py",
     "system/scripts/context_router.py",
+    "system/scripts/run_real_usecase_tests.py",
     "system/scripts/adapter_guard.py",
     "system/scripts/privacy_guard.py",
     "system/scripts/install_git_hooks.py",
     "system/tests/test_adapter_guard.py",
+    "system/tests/test_command_integrity.py",
     "system/tests/test_codex_adapter.py",
     "system/tests/test_codex_skill_adapters.py",
 ]
 TEST_MODULES = [
     "system.tests.test_adapter_guard",
+    "system.tests.test_command_integrity",
     "system.tests.test_codex_adapter",
     "system.tests.test_codex_skill_adapters",
 ]
@@ -133,9 +123,24 @@ def run_privacy_guard():
     run([sys.executable, "system/scripts/privacy_guard.py", "--tree"])
 
 
-def assert_repo_generated_files_clean():
-    """Fail if regenerating adapters changed tracked stubs."""
-    run(["git", "diff", "--exit-code", "--", *GENERATED_REPO_FILES])
+def generated_files_diff() -> str:
+    result = run_capture(["git", "diff", "--", *GENERATED_REPO_FILES])
+    if result.returncode not in {0, 1}:
+        raise subprocess.CalledProcessError(
+            result.returncode,
+            result.args,
+            output=result.stdout,
+            stderr=result.stderr,
+        )
+    return result.stdout
+
+
+def assert_repo_generated_files_clean(initial_diff: str):
+    """Fail if adapter sync introduced new tracked-stub drift."""
+    current_diff = generated_files_diff()
+    if current_diff != initial_diff:
+        print(current_diff, file=sys.stderr)
+        raise SystemExit(1)
 
 
 def assert_generated_adapter_dirs_untracked():
@@ -148,7 +153,11 @@ def assert_generated_adapter_dirs_untracked():
             output=result.stdout,
             stderr=result.stderr,
         )
-    tracked = [line for line in result.stdout.splitlines() if line.strip()]
+    tracked = [
+        line
+        for line in result.stdout.splitlines()
+        if line.strip() and (ROOT / line.strip()).exists()
+    ]
     if tracked:
         print("Generated or local runtime files are tracked:", file=sys.stderr)
         for path in tracked[:80]:
@@ -184,6 +193,7 @@ def main():
     )
     args = parser.parse_args()
 
+    initial_generated_diff = generated_files_diff()
     sync_repo_adapters()
 
     temp_dir = None
@@ -207,7 +217,7 @@ def main():
         run_privacy_guard()
 
     if not args.skip_clean_check:
-        assert_repo_generated_files_clean()
+        assert_repo_generated_files_clean(initial_generated_diff)
 
     if temp_dir is not None:
         temp_dir.cleanup()

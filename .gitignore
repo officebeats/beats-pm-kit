@@ -28,6 +28,11 @@ system/config.json
 system/config/trello_config.json
 5. Trackers/.trello_ledger.json
 
+# Local Beats runtime diagnostics, caches, and test logs
+/.beats/
+/.agent/cache/
+/test_logs/
+
 # Local MCP runtime configuration, OAuth state, and diagnostics
 system/config/mcp.local*.json
 system/config/mcp.*.local.json

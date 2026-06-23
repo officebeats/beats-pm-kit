@@ -49,6 +49,24 @@ Screenshots/images and transcripts are task-master management inputs by default.
 - If the source is ambiguous, return exact candidate `TASK_MASTER.md` rows or detail-file updates for the user to confirm.
 - Do not treat screenshots or transcripts as generic profile lookup, reply drafting, or summary requests unless the user explicitly asks for that in the same turn.
 
+### 1B. Fast Raw-Evidence Intake
+
+For a single pasted email/chat/thread or a message prefaced with "for task manager", use the fast path unless the user explicitly asks for full triage, Trello sync, `/day`, `/week`, or broad communication refresh:
+
+```bash
+python3 system/scripts/task_intake_fast.py --text "<raw pasted evidence>" --source "<source label>"
+```
+
+Fast intake rules:
+
+- Always save the raw evidence first under `0. Incoming/raw/`, preserving names, timestamps, links, and message wording.
+- Add a short summary and task-manager routing read below the raw evidence; keep interpretation separate from the raw source.
+- If an existing task match is strong enough, update that task and the matching `TASK_MASTER.md` row.
+- If confidence is low, still create an `INBOX-###` candidate task rather than dropping the signal.
+- Defer expensive health triage by default. Run `task_master_triage.py --apply --touched-task <ID>` only when the user asks for the full health refresh or a deeper workflow needs it.
+- Rebuild the task cache with `python3 system/scripts/build_task_index.py` during `/day`, `/week`, `/vacuum`, or after substantial tracker edits.
+- Treat task IDs as internal anchors only. User-facing labels, weekly-email sections, closeouts, and source-note headings must use succinct descriptive phrases such as `[New] IAD Indicia guideline tenant configuration`.
+
 ---
 
 ## 2. Priority Gate (MANDATORY)
@@ -102,8 +120,8 @@ The authoritative source for scope and operating rules is: `1. Company/ways-of-w
 ### B. Ledger Management (/task)
 
 - **Task writing standard**:
-  - Task titles must be useful and succinct: 5 words or fewer for the task/card title itself.
-  - Trello card titles must omit Task Master IDs. Keep the ID in the card body, managed comment, attachment, or local-path reference instead.
+  - Task titles must be useful, succinct, and descriptive: usually 3-8 words as a plain-English phrase.
+  - Trello card titles, weekly-email sections, closeouts, and source-note headings must omit Task Master IDs. Keep the ID in links, internal fields, card bodies, managed comments, attachments, or local-path references instead.
   - Put the longer explanation in the body, not the title: one summary sentence of 15 words or fewer.
   - Support the summary with at most 3 short bullets when more context is needed.
   - Include outcome metric, scope boundary, evidence strength, dependency, and next decision gate in the detail file for every accepted active task when known.
@@ -162,13 +180,14 @@ python3 system/scripts/task_master_triage.py --apply --touched-task TASK-123
 - **Table**: Show exactly what moved Inbox -> Ledger.
 - **Gate Results**: Flag any tasks that were rejected or flagged "Needs manager approval."
 - **Next Action**: Suggest the top `Today` item from `5. Trackers/TASK_MASTER.md`.
+- **Display rule**: Show descriptive task phrases first. Put internal IDs in parentheses or links only when needed.
 
 ---
 
 ## 5. Fallback Patterns
 
 - Use run_command for all file writes to avoid iCloud sync-locks.
-- Redact PII before writing.
+- Preserve user-provided raw source details in source notes; do not summarize away names, timestamps, links, or message wording.
 
 ---
 

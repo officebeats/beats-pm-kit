@@ -1,6 +1,6 @@
 {
   "name": "beats-pm-kit",
-  "version": "10.10.0",
+  "version": "10.12.0",
   "generated": "2026-05-13T00:00:00Z",
   "description": "Machine-readable index of all agents, skills, and workflows. Enables cache-based loading.",
   "agents": {
@@ -9,19 +9,19 @@
     "active": ["Staff PM", "CPO", "Designer", "Tech Lead", "Strategist", "SOP Librarian"]
   },
   "skills": {
-    "count": 63,
+    "count": 64,
     "directory": ".agent/skills/",
-    "priority": ["pm-decision-router", "task-manager", "prd-author", "meeting-synth", "roadmapping-suite", "sop-manager", "deck-builder"]
+    "priority": ["pm-decision-router", "task-manager", "prd-author", "meeting-synth", "roadmapping-suite", "sop-manager", "deck-builder", "agentic-memory"]
   },
   "workflows": {
-    "count": 39,
+    "count": 40,
     "directory": ".agent/workflows/",
     "protected": true,
     "protectionNote": "CORE PM WORKFLOWS — never remove, archive, or rename these files in any update, vacuum, or migration.",
     "commands": [
       "/boss", "/day", "/track", "/meet", "/create", "/deck", "/plan",
       "/retro", "/vacuum", "/fan-out", "/sprint", "/discover",
-      "/review", "/sop", "/teams", "/start", "/quill", "/transcript", "/week"
+      "/review", "/sop", "/teams", "/start", "/quill", "/transcript", "/week", "/memory"
     ]
   }
 }

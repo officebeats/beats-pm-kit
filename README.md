@@ -49,7 +49,6 @@ It is not a generic prompt pack. It is a local-first product management workspac
 ## Built And Used Daily By An AI-Forward PM
 
 I built Beats PM Kit because I needed a practical AI PM operating system for my own daily product work. I use it to process real product-management context: meeting transcripts, partner follow-ups, stakeholder asks, task triage, planning artifacts, reasoning QA, developer portal work, release questions, and the operational noise that usually gets lost between tools.
-
 The result is both a working toolkit and a portfolio of AI-forward product management practice: context engineering, local-first AI workflows, agentic task management, privacy-aware automation, and cross-runtime PM operations. The goal is simple: make an AI assistant useful for the messy middle of product work, not only for polished strategy docs.
 
 ## Core Functionality
@@ -112,15 +111,31 @@ This keeps the kit snappy while preserving reliable references to local files an
 
 ## Quick Start
 
-### 1. Clone And Install
+### 1. Agent-First Bootstrap
+
+Give Codex, Antigravity, or a supported CLI agent the repo URL:
+
+```text
+https://github.com/officebeats/beats-pm-kit
+```
+
+The agent should clone or open the repo, then run the canonical bootstrap:
+
+```bash
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url https://github.com/officebeats/beats-pm-kit
+```
+
+Bootstrap creates the ignored local workspace, seeds templates, syncs runtime adapters, installs hooks when possible, runs privacy and adapter health checks, suggests Obsidian setup, and prints the next useful commands.
+
+This same URL-only flow is supported for Codex, Gemini CLI, Claude Code, and KiloCode. Start the CLI in a safe parent folder, paste the repo URL as the first request, and let the agent run the bootstrap command from the cloned repo root.
+
+Terminal fallback:
 
 ```bash
 git clone https://github.com/officebeats/beats-pm-kit
 cd beats-pm-kit
-chmod +x install.sh && ./install.sh
+./install.sh
 ```
-
-The installer creates the folder structure, detects your AI runtime, fixes symlinks, syncs local adapter support when needed, and runs a health check.
 
 Requires Python 3.8+. Optional runtime integrations may use their own CLIs or desktop apps.
 
@@ -144,7 +159,7 @@ If you have Antigravity, use it for the fastest workflow. If you live in Codex, 
 /start
 ```
 
-The setup workflow asks for your name, manager, product focus, and local operating preferences. It seeds the local files that make daily AI product management workflows more useful.
+The setup workflow calls the same bootstrap backend, then asks for optional profile details such as your name, manager, product focus, and local operating preferences.
 
 Type `/help` anytime to see the workflow catalog.
 
@@ -203,6 +218,7 @@ beats-pm-kit/
 +-- 8. Clients/            # Client context and account materials
 +-- .agent/                # Canonical agents, rules, skills, templates, workflows
 +-- system/                # Scripts, tests, adapters, privacy checks
++-- .beats/                # Ignored local diagnostics, caches, reports, and test logs
 +-- AGENTS.md              # Thin Codex adapter
 +-- CODEX_COMMANDS.md      # Generated Codex command routing table
 +-- CLAUDE.md              # Thin Claude Code adapter
@@ -215,8 +231,7 @@ Generated adapter directories such as `.codex/`, `.gemini/`, `.claude/`, `.kiloc
 Regenerate runtime adapters with:
 
 ```bash
-python system/scripts/sync_cli_adapters.py
-python system/scripts/sync_codex_skill_adapters.py --output <codex-skills-dir>
+python3 system/scripts/bootstrap.py --agent --non-interactive
 ```
 
 Verify the public feature inventory with:
@@ -224,6 +239,20 @@ Verify the public feature inventory with:
 ```bash
 python system/scripts/feature_inventory.py --json
 ```
+
+Preview local root cleanup with:
+
+```bash
+python3 system/scripts/root_cleaner.py --dry-run
+```
+
+Apply cleanup with:
+
+```bash
+python3 system/scripts/root_cleaner.py --apply
+```
+
+The cleaner moves unknown local root files into ignored `0. Incoming/root-cleanup/` instead of deleting user work.
 
 ## Optional Obsidian And Markdown Knowledge Graph
 
@@ -237,6 +266,14 @@ python3 system/scripts/obsidian_vault_setup.py --apply
 ```
 
 This gives product managers a local knowledge graph over tasks, meetings, people, partners, clients, SOPs, and reference documents while preserving the same files Codex and Antigravity already read.
+
+Optional MCP read/search/open checks:
+
+```bash
+python3 system/scripts/obsidian_mcp_health.py --pretty
+```
+
+If Obsidian MCP is unavailable, agents use repo-local `rg` search. Obsidian MCP is not a write path for kit workflows.
 
 ## Privacy-Aware Local Workspace
 
