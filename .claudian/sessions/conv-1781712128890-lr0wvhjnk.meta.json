@@ -1,0 +1,22 @@
+{
+  "id": "conv-1781712128890-lr0wvhjnk",
+  "providerId": "claude",
+  "title": "What are some ways to tidy up teh obsidian graph",
+  "titleGenerationStatus": "failed",
+  "createdAt": 1781712128892,
+  "updatedAt": 1781719530791,
+  "lastResponseAt": 1781719530791,
+  "sessionId": "5ccc06f5-a5a7-41e3-8ac3-e9cb2ca973ed",
+  "providerState": {
+    "providerSessionId": "5ccc06f5-a5a7-41e3-8ac3-e9cb2ca973ed"
+  },
+  "usage": {
+    "model": "opus",
+    "inputTokens": 0,
+    "cacheCreationInputTokens": 0,
+    "cacheReadInputTokens": 0,
+    "contextWindow": 200000,
+    "contextTokens": 0,
+    "percentage": 0
+  }
+}
