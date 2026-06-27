@@ -159,18 +159,26 @@ class TestCodexSkillAdapters(unittest.TestCase):
             self.assertNotIn("chief-strategy-officer", content)
 
     def test_promoted_supporting_files_exist_when_required(self):
-        """New promoted workflows should resolve to repo-owned contracts."""
-        newly_promoted_commands = {
-            "review",
-            "office-cli",
-            "obsidian",
-            "vibe",
-        }
+        """Promoted repo-owned supporting files should resolve."""
+        private_roots = (
+            "0. Incoming/",
+            "1. Company/",
+            "2. Products/",
+            "3. Meetings/",
+            "4. People/",
+            "5. Trackers/",
+            "6. SOPs/",
+            "7. Partners/",
+            "8. Clients/",
+            "SETTINGS.md",
+            "STATUS.md",
+            "SESSION_MEMORY.md",
+        )
         for command in get_promoted_codex_commands(ROOT_DIR):
-            if command["name"] not in newly_promoted_commands:
-                continue
             with self.subTest(command=command["name"]):
                 for relative in command["codex_supporting_files"]:
+                    if relative == "<repo>" or relative.startswith(private_roots):
+                        continue
                     self.assertTrue((ROOT_DIR / relative).exists(), relative)
 
     def test_generated_descriptions_stay_concise(self):

@@ -12,6 +12,21 @@ description: Prepare for your 1:1 with your boss. Tracks all Boss Asks, pulls re
 
 > **🗓️ Key Checkpoint**: Boss 1:1 is **every Friday @ 10:05 AM**. This workflow prepares you for that meeting by synthesizing progress, identifying blockers, and drafting a pre-brief DM.
 
+## 0. Critical Commitment Preflight
+
+Before context acquisition, run:
+
+```bash
+python3 system/scripts/critical_commitment_refresh.py plan --mode boss --json
+python3 system/scripts/critical_commitment_refresh.py rank --mode boss --json
+```
+
+If the plan reports `should_pause_for_user: true`, stop and tell the user which configured or expected integration failed, why it matters for boss-readiness, the recommended fix, and the safe choices: reconnect/configure, paste or export for this run, skip once, or disable that source from defaults.
+
+Use the ranked commitments so direct manager, boss-of-boss, executive, external partner/customer, and dated end-user commitments outrank ordinary stale work.
+
+Third-party systems are read-only by default. Never send, draft, reply, react, schedule, create, assign, transition, comment, upload, patch, delete, move, or mutate Slack, Teams, Outlook, Calendar, Jira, Confluence, Obsidian, Quill, Granola, or graph-memory state unless the user explicitly confirms that exact mutation in the current turn.
+
 ## 1. Context Acquisition (Parallel)
 
 In a **single turn**, read:
@@ -21,7 +36,8 @@ In a **single turn**, read:
 4. `1. Company/ways-of-working.md` → Review standing agreements and operating rules.
 5. The boss's people profile (e.g., `4. People/{boss-name}.md`) → Check committed tasks ("Awaiting") and interaction patterns.
 6. **Last 2 boss meeting summaries**: Search `3. Meetings/summaries/` for files containing the boss's name. Select the 2 most recent.
-7. **Calendar**: Prefer `/beats-comms calendar: next 7 days` with read-only MS365 MCP/connector access to pull upcoming meetings. Use `python3 system/scripts/outlook_bridge.py --calendar 7` only as a less-portable macOS AppleScript fallback and label that limitation in the prep notes.
+7. **Default source refresh**: Use manifest-backed bounded Slack, Outlook, Calendar, Teams, transcript, Quill, Granola, Obsidian, Atlassian, and agent-memory reads from the preflight plan. Use parallel agents for independent read-only source collection when available.
+8. **Calendar**: Use the manifest-backed Calendar scope from the preflight plan with read-only MS365 MCP/connector access. Use `python3 system/scripts/outlook_bridge.py --calendar 7` only as a less-portable fallback after the user approves degraded operation, and label that limitation in the prep notes.
 
 ## 2. Progress Analysis
 

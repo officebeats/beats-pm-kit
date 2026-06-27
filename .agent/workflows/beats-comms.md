@@ -24,6 +24,8 @@ Use the router result only after bounded source evidence has been collected. `sc
 
 Use the remainder of the user's `/beats-comms` command to determine platform scopes.
 
+If `/beats-comms` is called by `/day`, `/week`, or `/boss`, first use the caller's `critical_commitment_refresh.py plan` output. Manifest-backed scopes from that plan are explicit bounded scopes for this run.
+
 Supported scope forms:
 - `slack: <channel|DM|thread|query|window>`
 - `teams: <chat|channel|thread|query|window>`
@@ -32,7 +34,7 @@ Supported scope forms:
 - `transcripts: <manual|quill|granola|packet|meeting title|window>`
 - `both:` may be used only as a shorthand for explicit Slack and Teams scopes.
 
-If any requested platform lacks explicit scope, ask the user for a scope before reading that platform. The default scope policy is `require_scope`.
+If any requested or expected platform lacks explicit scope, ask the user for a scope before reading that platform. The default scope policy is `require_scope`.
 
 Do not broad-scan Slack workspaces, all Teams, all channels, all chats, all DMs, all mail, all folders, full calendar history, or unknown unread surfaces.
 
@@ -66,6 +68,7 @@ This workflow is read-only for source systems:
 - Preserve unread state. Do not call tools that mark messages read/unread, set read cursors, acknowledge notifications, or clear unread indicators.
 - Do not use Slack, Teams, Outlook, or Calendar UI/browser navigation for unread review.
 - Use MCP/connector reads only when they are read-only; otherwise ask for user-provided export/text.
+- If an expected connector, manifest-backed scope, or fallback integration fails, stop and prompt the user with the failure, risk if skipped, recommended fix, and safe choices. Do not silently continue degraded.
 
 ## 3. Execute Platform Workflows
 
@@ -79,6 +82,8 @@ Run the scoped platform workflows independently:
 Each platform workflow must save its communication transcript, scan that saved transcript with `.agent/skills/atlassian-context-archive/SKILL.md`, and archive only referenced Jira/Confluence context before task routing.
 
 If runtime supports parallel execution, platform intake may run in parallel because source reads and local transcript files are independent. Avoid concurrent writes to the same task detail file, chat intake manifest, or Atlassian manifest; merge task updates after evidence sets are collected.
+
+For recurring `/day`, `/week`, and `/boss` callers, prefer parallel source agents for Slack, Outlook/Calendar, Teams, transcript/Quill/Granola, and second-brain context so the full run stays within the 90-second budget. Token cost is secondary to wall-clock speed unless the user says otherwise.
 
 ## 4. Merge Results
 

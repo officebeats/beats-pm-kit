@@ -17,6 +17,8 @@
         "skill_name": "beats-boss",
         "supporting_files": [
           ".agent/skills/boss-tracker/SKILL.md",
+          "system/scripts/critical_commitment_refresh.py",
+          ".agent/rules/MCP_COMMUNICATION_INTAKE.md",
           "5. Trackers/TASK_MASTER.md",
           "5. Trackers/critical/boss-requests.md",
           "1. Company/ways-of-working.md"
@@ -41,6 +43,8 @@
         "skill_name": "beats-day",
         "supporting_files": [
           ".agent/skills/daily-synth/SKILL.md",
+          "system/scripts/critical_commitment_refresh.py",
+          ".agent/rules/MCP_COMMUNICATION_INTAKE.md",
           "STATUS.md",
           "5. Trackers/TASK_MASTER.md",
           "5. Trackers/critical/boss-requests.md"
@@ -59,6 +63,7 @@
         "supporting_files": [
           ".agent/skills/pm-decision-router/SKILL.md",
           "system/scripts/pm_decision_router.py",
+          "system/scripts/critical_commitment_refresh.py",
           ".agent/skills/task-manager/SKILL.md",
           "5. Trackers/TASK_MASTER.md",
           "5. Trackers/critical/boss-requests.md"
@@ -230,6 +235,7 @@
           ".agent/skills/atlassian-context-archive/SKILL.md",
           ".agent/skills/task-manager/SKILL.md",
           ".agent/rules/MCP_COMMUNICATION_INTAKE.md",
+          "system/scripts/critical_commitment_refresh.py",
           "system/scripts/chat_intake_state.py",
           "system/scripts/atlassian_context_state.py",
           "SETTINGS.md",
@@ -384,6 +390,7 @@
           ".agent/skills/meeting-synth/SKILL.md",
           ".agent/skills/task-manager/SKILL.md",
           ".agent/rules/MCP_COMMUNICATION_INTAKE.md",
+          "system/scripts/critical_commitment_refresh.py",
           "SETTINGS.md",
           "3. Meetings/transcripts",
           "3. Meetings/summaries",
@@ -447,6 +454,8 @@
         "skill_name": "beats-week",
         "supporting_files": [
           ".agent/skills/weekly-synth/SKILL.md",
+          "system/scripts/critical_commitment_refresh.py",
+          ".agent/rules/MCP_COMMUNICATION_INTAKE.md",
           "5. Trackers/TASK_MASTER.md",
           "5. Trackers/critical/boss-requests.md"
         ],
