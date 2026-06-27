@@ -15,20 +15,40 @@ description: Prepare for your 1:1 with your boss. Tracks all Boss Asks, pulls re
 ## 1. Context Acquisition (Parallel)
 
 In a **single turn**, read:
-1. `5. Trackers/TASK_MASTER.md` → Get full current sprint view.
-2. `1. Company/ways-of-working.md` → Review standing agreements and operating rules.
-3. The boss's people profile (e.g., `4. People/{boss-name}.md`) → Check committed tasks ("Awaiting") and interaction patterns.
-4. **Last 2 boss meeting summaries**: Search `3. Meetings/summaries/` for files containing the boss's name. Select the 2 most recent.
-5. **Calendar**: Prefer `/beats-comms calendar: next 7 days` with read-only MS365 MCP/connector access to pull upcoming meetings. Use `python3 system/scripts/outlook_bridge.py --calendar 7` only as a less-portable macOS AppleScript fallback and label that limitation in the prep notes.
+1. `5. Trackers/WORKSTREAMS.md` and relevant `5. Trackers/workstreams/` files → Get the human-facing workstream list.
+2. `5. Trackers/TASK_MASTER.md` → Get internal task refs and detailed execution state.
+3. `5. Trackers/critical/boss-requests.md` → Get leadership commitments and unresolved asks.
+4. `1. Company/ways-of-working.md` → Review standing agreements and operating rules.
+5. The boss's people profile (e.g., `4. People/{boss-name}.md`) → Check committed tasks ("Awaiting") and interaction patterns.
+6. **Last 2 boss meeting summaries**: Search `3. Meetings/summaries/` for files containing the boss's name. Select the 2 most recent.
+7. **Calendar**: Prefer `/beats-comms calendar: next 7 days` with read-only MS365 MCP/connector access to pull upcoming meetings. Use `python3 system/scripts/outlook_bridge.py --calendar 7` only as a less-portable macOS AppleScript fallback and label that limitation in the prep notes.
 
 ## 2. Progress Analysis
 
 For the period since last 1:1:
-1. **What's been completed**: Tasks moved to ✅ since last Friday.
-2. **What's in progress**: Active tasks with status updates.
-3. **People connected with**: New stakeholder interactions from meeting summaries and people profiles.
-4. **What's been learned**: Self-study, product insights, strategic context gathered.
-5. **Blockers**: Anything stuck, awaiting someone, or missing information.
+1. **Outcomes**: Succinct action-item style commitments or expected results, grouped by workstream.
+2. **Completed outcomes**: Tasks, decisions, checklist items, or commitments completed since last Friday, with completion date/source.
+3. **Readiness checks**: Short checklist of upcoming validation, prep, or follow-up actions.
+4. **What's in progress**: Active workstreams with status updates.
+5. **People connected with**: New stakeholder interactions from meeting summaries and people profiles.
+6. **What's been learned**: Self-study, product insights, strategic context gathered.
+7. **Blockers**: Anything stuck, awaiting someone, or missing information.
+
+Paru outcome format:
+
+```markdown
+Outcomes:
+
+[Date/Gate]: [succinct expected result]
+[Date/Gate]: [succinct expected result]
+
+Readiness checks:
+- [Owner] will [action]
+- [Owner] please [action]
+- [Owner] will [action]
+```
+
+Use that concise action-item style, but group the underlying evidence and next actions under the relevant workstream.
 
 ## 3. Boss's Commitments Check
 
@@ -61,7 +81,9 @@ Reference `1. Company/ways-of-working.md` → "How to DM Her" section for framin
 Save to `3. Meetings/summaries/YYYY-MM-DD_Boss_Prep.md`:
 
 Structure:
-- **PART 1: Progress Report** — Who I connected with, what I learned, deliverables in progress
+- **PART 0: Outcomes** — Succinct action-item style outcomes grouped by workstream and date/gate
+- **PART 0B: Completed Outcomes** — Completed work and checked-off items with completion date/source
+- **PART 1: Workstream Status** — Latest outcome, completed items, open items, and recommended next 3
 - **PART 2: Blockers & FYIs** — What's stuck, what the boss needs to know
 - **PART 3: Questions** — 3-4 targeted questions with context and "Listen for" hints
 - **PART 4: Talking Points** — Optional strategic topics if conversation opens up
@@ -71,8 +93,9 @@ Structure:
 Generate a copy-paste-ready Teams DM that:
 - Uses **no emojis** (looks AI-generated)
 - Is succinct — bullets only, no prose
-- Covers: Who I connected with, What I learned, In Progress, Questions for today
+- Covers: Outcomes, Completed outcomes, Readiness checks, Blockers/FYIs, and Questions for today
 - Tone: Professional but personable, shows initiative without overdoing it
+- Uses workstream titles of 9 words or fewer and does not expose internal task/card/source IDs
 
 Present the DM to the user for review before they send it.
 
@@ -89,17 +112,23 @@ After the 1:1 concludes:
 ```
 Hi [Boss Name] — ahead of our sync, quick recap:
 
-Who I Connected With
-- [Person] — [1-line outcome]
-- [Person] — [1-line outcome]
+Outcomes
+- [Date/Gate]: [succinct expected result]
+- [Date/Gate]: [succinct expected result]
 
-What I've Learned
-- [Topic] — [insight]
-- [Topic] — [insight]
+Completed outcomes
+- [Completed result]
+  - Completed: [date/source]
 
-In Progress
-- [Task] — [status]
-- [Task] — [status]
+Readiness checks
+- [Owner] will [action]
+- [Owner] please [action]
+- [Owner] will [action]
+
+Workstreams
+- [Workstream title]
+  - Latest outcome: [current state]
+  - Open items: [owner/action/date]
 
 Questions for Today
 1. [Direct, specific question]

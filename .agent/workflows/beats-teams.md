@@ -1,5 +1,5 @@
 ---
-description: Process scoped Microsoft Teams chats or channels into local Beats PM tasks and searchable chat transcripts without sending or mutating Teams.
+description: Process scoped Microsoft Teams chats or channels into local Beats PM workstreams, tasks, and searchable chat transcripts without sending or mutating Teams.
 ---
 
 > **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same read-only Teams intake and durable output contract. Prefer the runtime MS365 MCP/connector read capability described in `.agent/rules/MCP_COMMUNICATION_INTAKE.md`.
@@ -57,6 +57,8 @@ Read:
 Read optional files only when needed and when they exist:
 - `4. People/`
 - `2. Products/partners/`
+- `5. Trackers/WORKSTREAMS.md`
+- `5. Trackers/workstreams/`
 - `5. Trackers/tasks/`
 - `3. Meetings/chat-transcripts/_manifest.json`
 - `3. Meetings/chat-transcripts/teams/`
@@ -119,6 +121,7 @@ Every successful artifact must include `source_url` in frontmatter and a visible
 ## 7. Extract And Route Tasks
 
 Execute `.agent/skills/teams-task-intake/SKILL.md` with `task-manager` Priority Gate rules:
+- Workstream deltas -> `5. Trackers/WORKSTREAMS.md` and matching `5. Trackers/workstreams/{slug}.md` when present.
 - New action items -> `5. Trackers/TASK_MASTER.md` and task detail files in `5. Trackers/tasks/` when needed.
 - Existing task updates -> task detail `Progress Log` / `Stakeholder Quotes`.
 - Status tracking updates -> relevant task detail progress logs or final response only.
@@ -126,6 +129,8 @@ Execute `.agent/skills/teams-task-intake/SKILL.md` with `task-manager` Priority 
 - Out-of-scope or unclear items -> final response only, with no Teams response sent.
 
 All Teams-derived updates must be labeled as Teams evidence and include only short snippets plus source references. If an Atlassian artifact materially supports a task or status update, include the local artifact path and full Atlassian source URL in the evidence.
+
+Before creating a new visible workstream, triangulate Teams evidence against the current workstream list. Workstream titles must be plain English, 9 words or fewer, and free of internal Task Master, Trello, Jira, or source IDs. Check off completed items only when Teams evidence or the user explicitly confirms completion, and preserve completion date/source.
 
 ## 8. Write Teams Run Report
 
@@ -142,6 +147,7 @@ The report must include:
 - Chat transcript files written.
 - Atlassian references found, artifacts written, unchanged artifacts skipped, and unresolved references.
 - Candidate tasks and gate outcomes.
+- Workstream outcomes, completed outcomes, open items, and recommended next 3 updates.
 - Issues encountered: connector unavailable or missing read-only operation, read-state uncertainty, scope too broad/missing, Atlassian connector unavailable or unauthorized, Atlassian source URL unresolved, duplicate/previously processed content skipped, reference cap exceeded, or task routing conflicts requiring manual review.
 - Routed Updates listing exact local files changed or `No durable update required`.
 - Items needing manual Teams response by the user.
@@ -161,7 +167,7 @@ Return a compact summary with:
 - Chat transcript files saved.
 - Atlassian artifacts saved or skipped.
 - Files updated.
-- Accepted tasks and IDs.
+- Accepted workstreams, tasks, and internal IDs.
 - Existing task or status updates.
 - Issues and recommended follow-ups.
 - Items needing confirmation or manual Teams response.

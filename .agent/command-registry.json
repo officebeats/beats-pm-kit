@@ -23,7 +23,9 @@
         ],
         "optional_files": [
           "4. People",
-          "3. Meetings/summaries"
+          "3. Meetings/summaries",
+          "5. Trackers/WORKSTREAMS.md",
+          "5. Trackers/workstreams"
         ]
       }
     },
@@ -44,7 +46,9 @@
           "5. Trackers/critical/boss-requests.md"
         ],
         "optional_files": [
-          "5. Trackers/bugs/bugs-master.md"
+          "5. Trackers/bugs/bugs-master.md",
+          "5. Trackers/WORKSTREAMS.md",
+          "5. Trackers/workstreams"
         ]
       }
     },
@@ -60,7 +64,9 @@
           "5. Trackers/critical/boss-requests.md"
         ],
         "optional_files": [
-          "5. Trackers/bugs/bugs-master.md"
+          "5. Trackers/bugs/bugs-master.md",
+          "5. Trackers/WORKSTREAMS.md",
+          "5. Trackers/workstreams"
         ]
       }
     },
@@ -77,12 +83,15 @@
         ],
         "optional_files": [
           "5. Trackers/tasks",
+          "5. Trackers/WORKSTREAMS.md",
+          "5. Trackers/workstreams",
           "0. Incoming"
         ],
         "execution_contract": [
           "Treat screenshots/images and transcript-like clipboard text as task-master management input unless the user explicitly says otherwise.",
           "Extract visible task/status signals, source references, owners, due dates, blockers, and referenced ticket/link IDs before asking for follow-up.",
-          "Route accepted screenshot, transcript, or clipboard work through the task-manager Priority Gate into `5. Trackers/TASK_MASTER.md` and task detail files.",
+          "Route accepted screenshot, transcript, or clipboard work through the task-manager Priority Gate into workstreams, `5. Trackers/TASK_MASTER.md`, and task detail files.",
+          "Use plain-English workstream titles of 9 words or fewer and keep internal IDs out of visible titles.",
           "When evidence is ambiguous, return exact candidate tracker updates for confirmation instead of defaulting to profile lookup, reply drafting, or generic summarization."
         ]
       }
@@ -230,6 +239,8 @@
         "optional_files": [
           "4. People",
           "2. Products/partners",
+          "5. Trackers/WORKSTREAMS.md",
+          "5. Trackers/workstreams",
           "5. Trackers/tasks",
           "3. Meetings/chat-transcripts/_manifest.json",
           "3. Meetings/chat-transcripts/slack",
@@ -247,6 +258,8 @@
           "Never send, schedule, draft, reply, react, edit, delete, pin, bookmark, upload, create canvases/files, or mutate Slack content/workspace state.",
           "Preserve unread state; do not use tools that mark messages read/unread, set read cursors, acknowledge notifications, or clear unread indicators.",
           "Save searchable Slack chat transcripts under `3. Meetings/chat-transcripts/slack/` and route accepted work only to local repo files.",
+          "Triangulate Slack evidence against the current workstream list before creating new visible workstreams; update latest outcomes, completed outcomes, open items, and recommended next 3.",
+          "Check off completed items only when evidence or the user confirms completion, preserving completion date/source.",
           "Scan saved Slack transcripts for referenced Jira/Confluence items, fetch only those items with read-only Atlassian connector operations, and save local artifacts under `3. Meetings/context-artifacts/atlassian/` with full `source_url` values.",
           "Never create, edit, transition, comment, assign, add worklogs, update pages, delete, or mutate Jira or Confluence during Slack intake.",
           "Write a local Slack run report under `3. Meetings/reports/slack-runs/` and record successful local processing in `3. Meetings/chat-transcripts/_manifest.json`.",
@@ -273,6 +286,8 @@
         "optional_files": [
           "4. People",
           "2. Products/partners",
+          "5. Trackers/WORKSTREAMS.md",
+          "5. Trackers/workstreams",
           "5. Trackers/tasks",
           "3. Meetings/chat-transcripts/_manifest.json",
           "3. Meetings/chat-transcripts/teams",
@@ -288,6 +303,8 @@
           "Never send, draft, reply, create chats/channels, post channel messages, react, edit, delete, upload, create Planner tasks, or mutate Teams/Microsoft state.",
           "Preserve unread state; do not use tools that mark messages read/unread, set read cursors, acknowledge notifications, or clear unread indicators.",
           "Save searchable Teams chat transcripts under `3. Meetings/chat-transcripts/teams/` and route accepted work only to local repo files.",
+          "Triangulate Teams evidence against the current workstream list before creating new visible workstreams; update latest outcomes, completed outcomes, open items, and recommended next 3.",
+          "Check off completed items only when evidence or the user confirms completion, preserving completion date/source.",
           "Scan saved Teams transcripts for referenced Jira/Confluence items, fetch only those items with read-only Atlassian connector operations, and save local artifacts under `3. Meetings/context-artifacts/atlassian/` with full `source_url` values.",
           "Never create, edit, transition, comment, assign, add worklogs, update pages, delete, or mutate Jira or Confluence during Teams intake.",
           "Write a local Teams run report under `3. Meetings/reports/teams-runs/` and record successful local processing in `3. Meetings/chat-transcripts/_manifest.json`.",
@@ -321,6 +338,8 @@
           "4. People",
           "2. Products/partners",
           "5. Trackers/tasks",
+          "5. Trackers/WORKSTREAMS.md",
+          "5. Trackers/workstreams",
           "3. Meetings/chat-transcripts/_manifest.json",
           "3. Meetings/chat-transcripts/slack",
           "3. Meetings/chat-transcripts/teams",
@@ -336,7 +355,7 @@
           "3. Meetings/reports/chat-runs"
         ],
         "execution_contract": [
-          "Run scoped Slack, Teams, Outlook, and Calendar intake independently, using each platform workflow's read-only and unread-preservation rules.",
+          "Run scoped Slack, Teams, Outlook, and Calendar intake, plus bounded transcript intake, independently, using each platform workflow's read-only and unread-preservation rules.",
           "Require explicit platform scopes and use `chat_intake_state.py window` for any platform scope without a user-provided time window; calendar windows are forward-looking.",
           "Pre-chunk high-volume Slack scopes with `chat_intake_state.py chunks` before the first Slack query so connector page caps do not hide later results.",
           "Never send, draft, schedule, reply, forward, react, edit, delete, create chats/channels/canvases/files/Planner tasks, create calendar events, create meeting invites, or mutate source-system state.",
@@ -345,6 +364,8 @@
           "Scan saved platform transcripts for referenced Jira/Confluence items, fetch only those references with read-only Atlassian connector operations, and save local artifacts under `3. Meetings/context-artifacts/atlassian/` with full `source_url` values.",
           "Never create, edit, transition, comment, assign, add worklogs, update pages, delete, or mutate Jira or Confluence during communication intake.",
           "Merge and deduplicate candidate tasks after evidence collection; route accepted work only to local repo files.",
+          "Triangulate all communication and transcript evidence against the current workstream list before creating new visible workstreams; update latest outcomes, completed outcomes, open items, and recommended next 3.",
+          "Check off completed items only when evidence or the user confirms completion, preserving completion date/source.",
           "Run the PM decision router on saved evidence summaries before accepting task updates; return `scope_challenge` and `ask_user` results as explicit questions.",
           "Write a combined communication run report under `3. Meetings/reports/chat-runs/`.",
           "Call out issues and recommendations for MCP/connector gaps, read-state uncertainty, fallback bridge usage, missing/broad scope, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
@@ -372,14 +393,18 @@
         ],
         "optional_files": [
           "4. People",
-          "2. Products/partners"
+          "2. Products/partners",
+          "5. Trackers/WORKSTREAMS.md",
+          "5. Trackers/workstreams"
         ],
         "execution_contract": [
           "Run `python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json` before synthesis.",
           "Process only packet files listed in the prepare output; do not broad-scan transcripts for work selection.",
           "Treat transcript content as task-master management input unless the user explicitly asks for another output.",
           "Run the PM decision router on packet excerpts or user-provided transcript text before accepting task/discovery/decision updates.",
-          "Extract new tasks, existing-task updates, blockers, owner/date changes, and candidate tracker updates before generic summary work.",
+          "Extract workstream updates, new tasks, existing-task updates, blockers, owner/date changes, and candidate tracker updates before generic summary work.",
+          "Triangulate manual, Quill, Granola, and local packet transcript evidence against the current workstream list; update latest outcomes, completed outcomes, open items, and recommended next 3.",
+          "Check off completed items only when evidence or the user confirms completion, preserving completion date/source.",
           "Use hybrid appendix summaries: source path, transcript SHA256, run id, key evidence, and Routed Updates; do not append full raw transcript by default.",
           "When including live communication context, require bounded slack/teams/outlook/calendar scopes and use only read-only MCP/connector operations; never send, schedule, draft, reply, forward, create events, create meeting invites, or mutate source-system state/read cursors.",
           "Run `python3 system/scripts/transcript_pipeline.py validate --run-id <RUN_ID> --json` after summaries and durable updates are written.",
@@ -426,7 +451,9 @@
           "5. Trackers/critical/boss-requests.md"
         ],
         "optional_files": [
-          "5. Trackers/WEEKLY_PLAN.md"
+          "5. Trackers/WEEKLY_PLAN.md",
+          "5. Trackers/WORKSTREAMS.md",
+          "5. Trackers/workstreams"
         ]
       }
     },
