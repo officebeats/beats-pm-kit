@@ -14,17 +14,23 @@ description: Plan the current and upcoming week.
 
 ## Steps
 
-1.  **Optional Communication Context Refresh**:
-    - **Action**: If the user asks for updated/current communication context and provides bounded scopes such as `slack: #channel`, `teams: <chat>`, `outlook: <query>`, `calendar: next 14 days`, `transcripts: quill|granola|manual|packet`, or a bounded combination, run `/beats-comms` or `/transcript` before weekly synthesis as appropriate.
-    - **Safety**: Use only read-only MCP/connector operations, save communication transcripts through `chat-transcript-archive`, and preserve unread state. If no bounded scope is supplied, do not read source systems; continue from existing local transcripts or ask for the missing scope.
+1.  **Critical Commitment Preflight**:
+    - **Action**: Run `python3 system/scripts/critical_commitment_refresh.py plan --mode week --json` and `python3 system/scripts/critical_commitment_refresh.py rank --mode week --json` before weekly synthesis.
+    - **Prompt-on-breakage**: If the plan reports `should_pause_for_user: true`, stop and tell the user which configured or expected integration failed, why it matters, the recommended fix, and the safe choices: reconnect/configure, paste or export for this run, skip once, or disable that source from defaults.
+    - **Priority**: Use the ranked commitments so direct manager, boss-of-boss, executive, external partner/customer, and dated end-user commitments outrank ordinary stale work.
+
+2.  **Default Communication Context Refresh**:
+    - **Action**: Use manifest-backed bounded Slack, Outlook, Calendar, Teams, transcript, Quill, Granola, Obsidian, Atlassian, and agent-memory reads before synthesis. Use parallel agents for independent read-only source collection when available.
+    - **Safety**: Third-party systems are read-only by default. Never send, draft, reply, react, schedule, create, assign, transition, comment, upload, patch, delete, move, or mutate Slack, Teams, Outlook, Calendar, Jira, Confluence, Obsidian, Quill, Granola, or graph-memory state unless the user explicitly confirms that exact mutation in the current turn.
+    - **Scope**: If a platform lacks a manifest/config scope, prompt instead of broad-scanning. If a configured source read fails, prompt before proceeding degraded.
     - **Context Handoff**: Include newly written transcript and run report paths in the weekly context mining step.
 
-2.  **Parallel Context Mining**:
+3.  **Parallel Context Mining**:
     - **Action**: In a SINGLE turn, read `5. Trackers/WORKSTREAMS.md`, relevant `5. Trackers/workstreams/` files, `5. Trackers/TASK_MASTER.md`, and `5. Trackers/critical/boss-requests.md` when present.
     - **Deadlines**: Scan for dates in the next 14 days.
-    - **Calendar**: Ask user "Any key meetings this week?" (Interactive).
+    - **Calendar**: Use the preflight Calendar plan first; ask the user about key missing meetings only when Calendar is unavailable or incomplete.
 
-3.  **Synthesis (Staff PM)**:
+4.  **Synthesis (Staff PM)**:
     - Group by workstream first; do not lead with Task Master IDs.
     - Workstream titles must be plain English, 9 words or fewer, and never include internal task/card/source IDs.
     - Highlight **Boss Outcomes**: succinct action-item style outcomes that satisfy leadership requests.
@@ -33,7 +39,7 @@ description: Plan the current and upcoming week.
     - Highlight **Recommended Next 3** for each active workstream.
     - Highlight **Risks**: items due soon but not started or blocked.
 
-4.  **Output**:
+5.  **Output**:
     - Create/Update `5. Trackers/WEEKLY_PLAN.md`.
     - Format:
 

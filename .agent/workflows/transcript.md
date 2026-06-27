@@ -52,6 +52,10 @@ If using the universal gateway, prefer:
 python3 system/scripts/beats.py transcript -- --json
 ```
 
+When `/transcript` is called by `/day`, `/week`, or `/boss`, include the caller's `critical_commitment_refresh.py plan` output in the packet context. Quill, Granola, local transcript packets, Obsidian, and graph memory are expected read-only context sources when locally configured.
+
+If a configured or expected transcript source is unavailable, unsafe, missing scope, or broken, stop and prompt the user with what failed, why the missing meeting evidence puts commitments at risk, the recommended fix, and safe choices. Do not silently proceed degraded unless the user chooses to skip once, paste/export evidence, configure the source, or disable it from defaults.
+
 ## 1A. Optional Communication Intake (Read-Only)
 
 Only include live communication context when the user explicitly asks `/transcript` to process it and provides bounded scopes such as `slack:`, `teams:`, `outlook:`, or `calendar:`.
@@ -61,6 +65,7 @@ Communication systems are intake-only sources for task compilation:
 - Never send, schedule, draft, reply, forward, react, edit, delete, pin, bookmark, create canvases/files, create chats/channels, create calendar events, create meeting invites, or otherwise mutate source-system state.
 - Preserve unread state. Do not call any tool or endpoint that marks messages read/unread, sets a read cursor, acknowledges notifications, or clears unread indicators. If a tool implies state mutation, stop and ask the user.
 - Do not use Slack/Teams/Outlook UI/browser navigation to inspect unread content. Use read-only MCP/connector reads so unread items remain under the user's manual control.
+- Never mutate Obsidian, Quill, Granola, graph memory, Jira, or Confluence during transcript intake unless the user explicitly confirms that exact mutation in the current turn.
 
 For scoped communication sources, extract candidate tasks with:
 - Source channel/DM/thread/mail/calendar reference, timestamp or link when available, requester, owner, due date, and a short evidence snippet.

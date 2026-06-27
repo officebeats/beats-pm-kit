@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "runtime_budget_seconds": 90,
+  "require_user_decision_on_expected_failure": true,
+  "third_party_policy": {
+    "default_mode": "read_only",
+    "allowed_without_confirmation": [
+      "read",
+      "search",
+      "list",
+      "get",
+      "download_metadata",
+      "open"
+    ],
+    "requires_current_turn_confirmation": [
+      "send",
+      "draft",
+      "reply",
+      "react",
+      "schedule",
+      "create",
+      "assign",
+      "transition",
+      "comment",
+      "upload",
+      "patch",
+      "delete",
+      "move"
+    ]
+  },
+  "default_sources": {
+    "slack": {
+      "enabled": true,
+      "scope_source": "manifest",
+      "risk_if_skipped": "Misses direct leadership or partner chat callouts."
+    },
+    "outlook": {
+      "enabled": true,
+      "scope_source": "manifest",
+      "risk_if_skipped": "Misses email commitments, deadlines, and customer or partner asks."
+    },
+    "calendar": {
+      "enabled": true,
+      "scope_source": "manifest",
+      "risk_if_skipped": "Misses upcoming gates and scheduled readiness checks."
+    },
+    "teams": {
+      "enabled": true,
+      "scope_source": "manifest_or_local_config",
+      "risk_if_skipped": "Misses Teams-only leadership, partner, or customer follow-ups."
+    },
+    "transcripts": {
+      "enabled": true,
+      "scope_source": "local_manifest",
+      "risk_if_skipped": "Misses meeting-derived open items and completed outcomes."
+    },
+    "quill": {
+      "enabled": true,
+      "scope_source": "local_app",
+      "risk_if_skipped": "Misses Quill-captured meeting action items."
+    },
+    "granola": {
+      "enabled": true,
+      "scope_source": "local_app",
+      "risk_if_skipped": "Misses Granola-captured meeting action items."
+    },
+    "obsidian": {
+      "enabled": true,
+      "scope_source": "local_config_or_mcp",
+      "risk_if_skipped": "Misses second-brain context that can improve reasoning accuracy."
+    },
+    "agent_memory": {
+      "enabled": true,
+      "scope_source": "local_graph",
+      "risk_if_skipped": "Misses local graph and short-term dependency context."
+    },
+    "atlassian": {
+      "enabled": true,
+      "scope_source": "referenced_only",
+      "risk_if_skipped": "Misses Jira or Confluence context linked from accepted evidence."
+    },
+    "trello": {
+      "enabled": false,
+      "scope_source": "local_config",
+      "risk_if_skipped": "Trello board may lag accepted local tracker state."
+    }
+  },
+  "ranking": {
+    "authority_weights": {
+      "executive": 1000,
+      "skip_level": 900,
+      "direct_manager": 850,
+      "authorized_leader": 700,
+      "standard": 100
+    },
+    "commitment_weights": {
+      "external_customer": 500,
+      "partner": 450,
+      "end_user_deadline": 425,
+      "leadership": 400,
+      "internal_deadline": 250,
+      "internal": 100
+    }
+  }
+}

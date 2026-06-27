@@ -41,6 +41,9 @@ PY_COMPILE_FILES = [
     "system/scripts/sync_codex_skill_adapters.py",
     "system/scripts/command_integrity.py",
     "system/scripts/context_router.py",
+    "system/scripts/critical_commitment_refresh.py",
+    "system/scripts/agent_memory_health.py",
+    "system/scripts/trello_bridge.py",
     "system/scripts/run_real_usecase_tests.py",
     "system/scripts/adapter_guard.py",
     "system/scripts/privacy_guard.py",
@@ -49,14 +52,18 @@ PY_COMPILE_FILES = [
     "system/tests/test_command_integrity.py",
     "system/tests/test_codex_adapter.py",
     "system/tests/test_codex_skill_adapters.py",
+    "system/tests/test_critical_commitment_refresh.py",
     "system/tests/test_obsidian_bridge.py",
+    "system/tests/test_trello_bridge.py",
 ]
 TEST_MODULES = [
     "system.tests.test_adapter_guard",
     "system.tests.test_command_integrity",
     "system.tests.test_codex_adapter",
     "system.tests.test_codex_skill_adapters",
+    "system.tests.test_critical_commitment_refresh",
     "system.tests.test_obsidian_bridge",
+    "system.tests.test_trello_bridge",
 ]
 
 
