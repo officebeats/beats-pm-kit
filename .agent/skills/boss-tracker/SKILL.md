@@ -55,6 +55,37 @@ For every new ask, generate a **Reaction Plan**:
 - **Why It Matters**: [1 line]
 - **Next Step**: [Owner + date]
 
+### Phase 3.6: Manager Outcome Contract
+
+For Manager-facing weekly email, boss-prep, and status-update drafts, treat
+**Outcomes** as a concise action-item commitment list, not a narrative summary.
+
+Required shape:
+
+```markdown
+Outcomes:
+[Date]: [thing will be ready / decision will be made / owner will confirm X]
+[Date]: [next externally visible milestone, with scope caveat if needed]
+
+Completed outcomes:
+[Date completed]: [thing completed] - [evidence/source]
+
+Readiness checks:
+- @[Owner] [specific action needed before the outcome date]
+- @[Owner] [specific action needed before the outcome date]
+```
+
+Rules:
+
+1. Lead with the dated outcome list before background, accomplishments, or analysis.
+2. Use concrete verbs: ready, confirm, communicate, draft, validate, sanity check.
+3. Include owner + date whenever a readiness check depends on another person.
+4. Keep each bullet short enough to paste into Teams or email without rewriting.
+5. If UX, scope, data, or dependency risk exists, add it inline as a caveat; do not bury it in prose.
+6. Avoid labeling broad progress as an "outcome" unless it results in a committed milestone, decision, or handoff.
+7. Track what has been completed and when. Do not delete completed readiness checks; mark them complete with date and evidence source in boss prep, task-manager, and Trello.
+8. Triangulate Manager-facing outcomes against the workstream list before every `/boss` output so the same completed/open state appears in boss prep, Task Master, and Trello.
+
 ### Phase 4: Output Rendering
 
 Format the log entry:

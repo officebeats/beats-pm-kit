@@ -45,4 +45,4 @@ Disallowed:
 
 ## Workflow Contract
 
-The `pm-decision-router` may use Obsidian MCP to retrieve relevant notes when available. If unavailable, it must use repo-local search and continue. Either way, durable updates are written only through the selected kit workflow.
+The `pm-decision-router` may use Obsidian MCP to retrieve relevant notes when available. If unavailable, it must use repo-local search and continue. Optional TenscentDB/TencentDB agent memory may sit behind the same retrieval step, but memory hits must point back to local repo artifacts before driving task, decision, or status updates. Either way, durable updates are written only through the selected kit workflow.

@@ -4,9 +4,9 @@ description: Capture Jira and Confluence references found during Slack, Teams, O
 priority: P0
 maxTokens: 3000
 triggers:
-  - "/beats-slack"
-  - "/beats-teams"
-  - "/beats-comms"
+  - "Slack Atlassian context"
+  - "Teams Atlassian context"
+  - "communications Atlassian context"
 version: 1.0.0
 author: Beats PM Brain
 ---

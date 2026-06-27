@@ -19,6 +19,7 @@ CI_MODULES = [
     "system.tests.test_transcript_pipeline",
     "system.tests.test_obsidian_vault_setup",
     "system.tests.test_obsidian_mcp_health",
+    "system.tests.test_agent_memory_health",
     "system.tests.test_adapter_guard",
     "system.tests.test_privacy_guard",
 ]

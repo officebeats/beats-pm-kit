@@ -46,6 +46,8 @@ python3 system/scripts/obsidian_mcp_health.py --pretty
 
 If the MCP endpoint or API key is unavailable, agents must fall back to repo-local `rg` searches.
 
+Obsidian composes with optional agent memory. Use Obsidian for direct-vault navigation and source inspection; use agent memory only as a read/retrieve accelerator that points back to local files.
+
 ## Useful Commands
 
 Preview changes:

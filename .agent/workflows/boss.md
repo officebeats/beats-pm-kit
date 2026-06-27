@@ -24,11 +24,19 @@ In a **single turn**, read:
 ## 2. Progress Analysis
 
 For the period since last 1:1:
-1. **What's been completed**: Tasks moved to ✅ since last Friday.
-2. **What's in progress**: Active tasks with status updates.
-3. **People connected with**: New stakeholder interactions from meeting summaries and people profiles.
-4. **What's been learned**: Self-study, product insights, strategic context gathered.
-5. **Blockers**: Anything stuck, awaiting someone, or missing information.
+1. **Outcomes for Manager**: Date-bound commitments and readiness checks, written as action items.
+2. **Completed outcomes**: What got checked off, when, and from what evidence source.
+3. **What's in progress**: Active tasks with status updates.
+4. **People connected with**: New stakeholder interactions from meeting summaries and people profiles.
+5. **What's been learned**: Self-study, product insights, strategic context gathered.
+6. **Blockers**: Anything stuck, awaiting someone, or missing information.
+
+When the boss is Manager, "outcomes" means:
+- A short list of dated readiness commitments, not a narrative recap.
+- A short **Completed outcomes** section with completion date and source evidence.
+- A follow-on **Readiness checks** list with named owners and concrete actions.
+- Scope caveats inline, e.g. "UX may not be perfect" or "pending CTT confirmation."
+- Triangulate against `5. Trackers/WORKSTREAMS.md`, task details, recent chat transcripts, and meeting transcripts before finalizing.
 
 ## 3. Boss's Commitments Check
 
@@ -61,6 +69,8 @@ Reference `1. Company/ways-of-working.md` → "How to DM Her" section for framin
 Save to `3. Meetings/summaries/YYYY-MM-DD_Boss_Prep.md`:
 
 Structure:
+- **PART 0: Outcomes** — Dated commitments and readiness checks in Manager's preferred action-item style
+- **PART 0B: Completed Outcomes** — Checked-off outcomes with completion date and evidence source
 - **PART 1: Progress Report** — Who I connected with, what I learned, deliverables in progress
 - **PART 2: Blockers & FYIs** — What's stuck, what the boss needs to know
 - **PART 3: Questions** — 3-4 targeted questions with context and "Listen for" hints
@@ -69,9 +79,10 @@ Structure:
 ### B. Teams DM Draft (External Send)
 
 Generate a copy-paste-ready Teams DM that:
-- Uses **no emojis** (looks AI-generated)
-- Is succinct — bullets only, no prose
-- Covers: Who I connected with, What I learned, In Progress, Questions for today
+- Uses **no emojis** because they can make the message look AI-generated
+- Is succinct — short headings and bullets, no prose
+- Starts with **Outcomes** in the action-item format Manager expects
+- Covers: Outcomes, Completed outcomes, Readiness checks, Blockers/FYIs, Questions for today
 - Tone: Professional but personable, shows initiative without overdoing it
 
 Present the DM to the user for review before they send it.
@@ -89,17 +100,19 @@ After the 1:1 concludes:
 ```
 Hi [Boss Name] — ahead of our sync, quick recap:
 
-Who I Connected With
-- [Person] — [1-line outcome]
-- [Person] — [1-line outcome]
+Outcomes
+[Date]: [Workstream/deliverable] will be ready - [scope/caveat if needed]
+[Date]: [Decision/checkpoint] will be confirmed
 
-What I've Learned
-- [Topic] — [insight]
-- [Topic] — [insight]
+Completed outcomes
+[Date completed]: [Completed item] - [source/evidence]
 
-In Progress
-- [Task] — [status]
-- [Task] — [status]
+Readiness checks
+- [Owner] will [specific action] by [date]
+- [Owner] will [specific action] by [date]
+
+Blockers/FYIs
+- [Issue] - [what I am doing about it]
 
 Questions for Today
 1. [Direct, specific question]

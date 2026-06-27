@@ -396,7 +396,7 @@
         "promotion": "skill",
         "skill_name": "beats-vacuum",
         "supporting_files": [
-          ".agent/skills/vacuum-protocol/SKILL.md",
+          ".agent/skills/centrifuge-protocol/SKILL.md",
           "system/scripts/vacuum.py",
           "system/scripts/enforce_structure.py",
           "system/scripts/context_health.py"

@@ -1,6 +1,6 @@
 ---
 name: sop-manager
-description: Create, normalize, organize, and validate privacy-safe SOPs, runbooks, checklists, and worked examples for product management and consulting workflows. Use for `/sop`, SOP capture from transcripts or docs, release/process runbooks, and local-only operating procedures.
+description: Create, normalize, organize, and validate privacy-safe SOPs, runbooks, checklists, and worked examples for product management and consulting workflows. Use for SOP capture from transcripts or docs, release/process runbooks, and local-only operating procedures.
 ---
 
 # SOP Manager

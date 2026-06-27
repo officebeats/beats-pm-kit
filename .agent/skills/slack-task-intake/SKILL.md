@@ -1,10 +1,10 @@
 ---
 name: slack-task-intake
-description: Extract local Beats PM tasks from scoped Slack messages using read-only Slack access. Use with /beats-slack when Slack is connected and the user wants Slack-only task compilation.
+description: Extract local Beats PM tasks from scoped Slack messages using read-only Slack access. Use when a Slack-scoped communication workflow needs task compilation.
 priority: P0
 maxTokens: 3000
 triggers:
-  - "/beats-slack"
+  - "Slack task intake"
 version: 1.0.0
 author: Beats PM Brain
 ---
@@ -17,7 +17,7 @@ author: Beats PM Brain
 
 ## 1. Native Interface
 
-- **Inputs**: `/beats-slack` with a channel, DM, thread, search query, time window, or configured Slack intake scope.
+- **Inputs**: A Slack channel, DM, thread, search query, time window, or configured Slack intake scope.
 - **Allowed Slack tools**: Read-only Slack MCP/connector channel search, channel history read, thread read, user lookup, canvas read, and read-only message search when available.
 - **Local files**: `SETTINGS.md`, `1. Company/ways-of-working.md`, `5. Trackers/TASK_MASTER.md`, `5. Trackers/tasks/`, `3. Meetings/chat-transcripts/slack/`, optional `4. People/`, and optional `2. Products/partners/`.
 

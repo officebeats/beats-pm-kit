@@ -2,6 +2,24 @@
 
 > **Days Until 1:1**: [N] (Friday Lunch)
 
+## Outcomes (Manager-Ready)
+
+*Lead with this in weekly email/status updates. Outcomes are dated action commitments, not a progress narrative.*
+
+[Date]: [Deliverable/checkpoint] will be ready - [scope caveat if needed]
+[Date]: [Decision/checkpoint] will be confirmed
+
+### Completed Outcomes
+
+- [x] [Date completed]: [Completed item] — Source: [evidence/source]
+
+### Readiness Checks
+
+- [Owner] will [specific action] by [date]
+- [Owner] will [specific action] by [date]
+
+---
+
 ## 🚨 Friday Morning Priorities (Stale Workstreams)
 
 *These items have NOT had recent progress and MUST be updated before your 1:1:*
@@ -67,12 +85,18 @@
 
 Hey [Boss], wanted to drop a quick update so we end the week strong:
 
-1. **[Top Priority Category]**:
-    a. [Update 1]
-    b. [Update 2]
-2. **[Secondary Priority]**:
-    a. [Update 1]
-3. **[Other Ask]**:
-    a. [Update 1]
+Outcomes:
+[Date]: [Deliverable/checkpoint] will be ready - [scope caveat if needed]
+[Date]: [Decision/checkpoint] will be confirmed
+
+Completed outcomes:
+- [x] [Date completed]: [Completed item] — Source: [evidence/source]
+
+Readiness checks:
+- [Owner] will [specific action] by [date]
+- [Owner] will [specific action] by [date]
+
+Blockers/FYIs:
+- [Issue] - [what I am doing about it]
 
 Have a good weekend!

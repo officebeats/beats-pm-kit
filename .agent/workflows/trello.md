@@ -40,8 +40,13 @@ python3 system/scripts/trello_bridge.py uninstall-agent
    - Use `sync --dry-run` before a risky run.
    - Use `sync --apply` for normal operation.
    - The bridge keeps Trello titles clean and writes a Trello-safe working brief into the managed card-description block.
+   - Trello should mirror workstreams first: one human-facing card per active workstream whenever possible.
+   - Workstream card titles must be 9 words or fewer and must not include Task Master IDs.
    - It preserves human-written Trello notes above the managed block.
    - It posts automated comments only for meaningful changes to open items, urgency, next action, lane/status, or important links.
+   - The managed checklist must include latest outcomes and recommended next 3 actions.
+   - Completed outcomes and completed open items must remain visible as checked checklist items with completion date/source, rather than being deleted immediately.
+   - Internal task IDs belong in the managed description block under `Agent Refs`, not in the card title.
 
 4. **Outputs**
    - Per-card markdown is stored under `5. Trackers/tasks/`, `5. Trackers/trello/important-links/`, `3. Meetings/notes/`, or `4. People/`.

@@ -3,14 +3,11 @@ name: pm-decision-router
 description: Classify messy PM input before workflow execution. Use for task intake, transcripts, communication refreshes, discovery, planning, prioritization, PRD creation, decision logging, and scope-boundary challenges.
 priority: P0
 triggers:
-  - "/paste"
-  - "/track"
-  - "/transcript"
-  - "/beats-comms"
-  - "/discover"
-  - "/create"
-  - "/plan"
-  - "/prioritize"
+  - "messy PM intake"
+  - "task routing"
+  - "communication refresh"
+  - "planning preflight"
+  - "prioritization preflight"
   - "scope"
   - "discovery"
   - "decision"

@@ -1,10 +1,10 @@
 ---
 name: teams-task-intake
-description: Extract local Beats PM tasks from scoped Microsoft Teams chats or channels using read-only Teams access. Use with /beats-teams when Teams is connected and the user wants Teams-only task/status compilation.
+description: Extract local Beats PM tasks from scoped Microsoft Teams chats or channels using read-only Teams access. Use when a Teams-scoped communication workflow needs task or status compilation.
 priority: P0
 maxTokens: 3000
 triggers:
-  - "/beats-teams"
+  - "Teams task intake"
 version: 1.0.0
 author: Beats PM Brain
 ---
@@ -17,7 +17,7 @@ author: Beats PM Brain
 
 ## 1. Native Interface
 
-- **Inputs**: `/beats-teams` with a chat, channel, team/channel pair, person, thread, search query, time window, or configured Teams intake scope.
+- **Inputs**: A Teams chat, channel, team/channel pair, person, thread, search query, time window, or configured Teams intake scope.
 - **Allowed Teams operations**: Read-only MS365 MCP/connector profile resolution, chat listing, unread chat listing, chat message reads, recent thread listing, team/channel resolution, channel message reads, and meeting transcript reads when available.
 - **Local files**: `SETTINGS.md`, `1. Company/ways-of-working.md`, `5. Trackers/TASK_MASTER.md`, `5. Trackers/tasks/`, optional `4. People/`, optional `2. Products/partners/`, and `3. Meetings/chat-transcripts/teams/`.
 

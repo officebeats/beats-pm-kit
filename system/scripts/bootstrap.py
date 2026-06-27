@@ -210,6 +210,19 @@ def suggest_obsidian(root: Path, phases: list[Phase], *, apply_obsidian: bool) -
     )
 
 
+def suggest_agent_memory(root: Path, phases: list[Phase]) -> None:
+    result = run_command(root, [sys.executable, "system/scripts/agent_memory_health.py", "--json"])
+    status = "unavailable"
+    detail = short_output(result, 700) or "Use Obsidian MCP or repo-local rg fallback."
+    if result.returncode == 0:
+        try:
+            payload = json.loads(result.stdout or "{}")
+        except json.JSONDecodeError:
+            payload = {}
+        status = "ok" if payload.get("configured") else "unavailable"
+    add_phase(phases, "agent_memory", status, detail)
+
+
 def root_cleanup_phase(root: Path, phases: list[Phase], *, apply: bool) -> None:
     actions = clean_root(root, apply=apply)
     mode = "applied" if apply else "dry_run"
@@ -222,6 +235,7 @@ def next_steps() -> list[str]:
         "Run /start for guided profile setup when you want personalized local settings.",
         "Run /paste to process messy PM input or /day to see current priorities.",
         "For Obsidian, open this existing folder as the vault; do not create a mirrored copy.",
+        "For optional agent memory, run python3 system/scripts/agent_memory_health.py --pretty.",
     ]
 
 
@@ -279,6 +293,8 @@ def main() -> int:
         add_phase(phases, "obsidian", "skipped", "--skip-obsidian requested")
     else:
         suggest_obsidian(root, phases, apply_obsidian=args.apply_obsidian)
+
+    suggest_agent_memory(root, phases)
 
     payload = {
         "agent": bool(args.agent),

@@ -146,8 +146,13 @@ python3 system/scripts/beats.py hooks
 python3 system/scripts/beats.py guard
 python3 system/scripts/beats.py route -- --text "Need to follow up on this scope question"
 python3 system/scripts/beats.py obsidian-mcp -- --pretty
+python3 system/scripts/beats.py agent-memory -- --pretty
 python3 system/scripts/beats.py day
 python3 system/scripts/beats.py resolve --args /day
 ```
 
-`beats.py` runs script-backed utilities directly, syncs promoted Codex skill adapters, installs hooks, runs the adapter guard, and gives workflow hints for model-driven commands.
+`beats.py` runs script-backed utilities directly, syncs promoted Codex skill adapters, installs hooks, runs the adapter guard, checks optional Obsidian and agent-memory retrieval, and gives workflow hints for model-driven commands.
+
+## Retrieval Stack
+
+Codex should read local repo files first. Obsidian MCP is optional read/search/open context, and agent memory is optional read/retrieve context. If a TenscentDB/TencentDB memory hit is useful, verify it against local repo artifacts before changing tasks, decisions, or status.

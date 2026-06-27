@@ -4,8 +4,8 @@ description: "Synthesize a single meeting transcript into TASK_MASTER updates, s
 priority: P0
 maxTokens: 3000
 triggers:
-  - "/meet"
-  - "/transcript"
+  - "meeting synthesis"
+  - "transcript synthesis"
 version: 6.0.0 (Manager Meeting Mode)
 author: Beats PM Brain
 ---
@@ -20,7 +20,7 @@ author: Beats PM Brain
 
 ## 1. Native Interface
 
-- **Inputs**: /meet, /transcript. Synthesis packet JSON, raw transcript text, Quill paste, or file path.
+- **Inputs**: Synthesis packet JSON, raw transcript text, Quill paste, or file path.
 - **Tools**: run_command (cat), view_file.
 
 ---

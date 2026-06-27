@@ -118,6 +118,16 @@
 - **MCP mode**: read_search_open_only
 - **MCP health check**: `python3 system/scripts/obsidian_mcp_health.py --pretty`
 
+### Agent Memory
+
+- **Enabled**: optional
+- **Preferred provider**: `tenscentdb` / `tencentdb`
+- **Mode**: read_retrieve_only
+- **Canonical source**: local Markdown repo and manifests
+- **Health check**: `python3 system/scripts/agent_memory_health.py --pretty`
+- **Fallback**: Obsidian MCP, then repo-local `rg`
+- **Write policy**: no external memory writes unless a workflow explicitly allows them
+
 ### Trello
 
 - **Enabled**: no

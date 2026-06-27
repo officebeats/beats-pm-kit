@@ -4,9 +4,9 @@ description: Persist scoped Slack, Teams, Outlook, and Calendar reads as searcha
 priority: P0
 maxTokens: 2500
 triggers:
-  - "/beats-slack"
-  - "/beats-teams"
-  - "/beats-comms"
+  - "Slack transcript archive"
+  - "Teams transcript archive"
+  - "communications transcript archive"
 version: 1.1.0
 author: Beats PM Brain
 ---

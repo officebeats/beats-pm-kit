@@ -29,6 +29,7 @@ FORBIDDEN_TRACKED_PREFIXES = list(generated_or_local_prefixes())
 PY_COMPILE_FILES = [
     "system/utils/command_registry.py",
     "system/utils/root_policy.py",
+    "system/scripts/agent_memory_health.py",
     "system/scripts/beats.py",
     "system/scripts/bootstrap.py",
     "system/scripts/root_cleaner.py",
@@ -36,17 +37,22 @@ PY_COMPILE_FILES = [
     "system/scripts/sync_codex_skill_adapters.py",
     "system/scripts/run_real_usecase_tests.py",
     "system/scripts/command_integrity.py",
+    "system/scripts/command_surface_audit.py",
     "system/scripts/adapter_guard.py",
     "system/scripts/privacy_guard.py",
     "system/scripts/install_git_hooks.py",
     "system/tests/test_adapter_guard.py",
+    "system/tests/test_agent_memory_health.py",
     "system/tests/test_command_integrity.py",
+    "system/tests/test_command_surface_audit.py",
     "system/tests/test_codex_adapter.py",
     "system/tests/test_codex_skill_adapters.py",
 ]
 TEST_MODULES = [
     "system.tests.test_adapter_guard",
+    "system.tests.test_agent_memory_health",
     "system.tests.test_command_integrity",
+    "system.tests.test_command_surface_audit",
     "system.tests.test_codex_adapter",
     "system.tests.test_codex_skill_adapters",
 ]
@@ -110,6 +116,11 @@ def run_command_integrity(codex_output_dir: str | None = None):
     if codex_output_dir:
         cmd.extend(["--codex-skills-dir", codex_output_dir])
     run(cmd)
+
+
+def run_command_surface_audit():
+    """Fail when project skill metadata advertises canonical slash commands."""
+    run([sys.executable, "system/scripts/command_surface_audit.py"])
 
 
 def run_tests():
@@ -205,6 +216,7 @@ def main():
 
     sync_codex_skill_adapters(codex_output_dir, quiet=quiet_codex_sync)
     run_command_integrity(codex_output_dir)
+    run_command_surface_audit()
     compile_sources()
 
     if not args.skip_tests:

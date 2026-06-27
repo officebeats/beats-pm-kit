@@ -276,6 +276,26 @@ python3 system/scripts/obsidian_mcp_health.py --pretty
 
 If Obsidian MCP is unavailable, agents use repo-local `rg` search. Obsidian MCP is not a write path for kit workflows.
 
+## Optional Agent Memory Retrieval
+
+Agent memory is optional and retrieval-only. The kit should lean on a TenscentDB/TencentDB-style backend when it is configured, but only to find relevant context faster. Local Markdown files and manifests remain canonical.
+
+Health checks:
+
+```bash
+python3 system/scripts/agent_memory_health.py --pretty
+python3 system/scripts/beats.py agent-memory -- --pretty
+```
+
+Recommended retrieval order for Codex, Antigravity, and other runtimes:
+
+1. Canonical repo files and manifests.
+2. Obsidian direct vault or MCP, read/search/open only.
+3. TenscentDB/TencentDB agent memory, read/retrieve only.
+4. Repo-local `rg` fallback.
+
+See [Agent Memory Retrieval](system/docs/agent-memory.md) for environment variables and policy.
+
 ## Privacy-Aware Local Workspace
 
 The kit stores private product-management context locally by default.
@@ -339,6 +359,7 @@ The kit operates from `.agent/` as the canonical system. Runtime-specific root f
 | File | Purpose |
 |:---|:---|
 | `.agent/rules/GEMINI.md` | System constitution, Context Guard, agent and skill loading protocol, privacy directives, and architecture overview. |
+| `.agent/rules/AGENT_MEMORY.md` | Runtime-neutral retrieval contract for Obsidian and optional TenscentDB/TencentDB memory. |
 | `AGENTS.md` | Codex startup and slash-command adapter. |
 | `CODEX_COMMANDS.md` | Codex command index generated from `.agent/workflows/`. |
 | `CLAUDE.md` | Claude Code adapter. |

@@ -17,7 +17,7 @@ Persona instances that define decision logic, escalation paths, and capabilities
 
 | Agent | Focus | Key Skills |
 |-------|-------|-----------|
-| Chief Product Officer | Strategy & Org | boss-tracker, vacuum-protocol |
+| Chief Product Officer | Strategy & Org | boss-tracker, centrifuge-protocol |
 | Staff PM | Execution & Delivery | task-manager, prd-author, meeting-synth |
 | Product Strategist | Market & Vision | okr-manager, competitive-intel |
 | Program Manager | Governance & Releases | release-manager, retrospective |

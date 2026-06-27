@@ -123,12 +123,14 @@ class TestCodexAdapter(unittest.TestCase):
         args = Namespace(args="--json --count 3", passthrough=[])
         self.assertEqual(beats.collect_extra_args(args), ["--json", "--count", "3"])
 
-    def test_beats_gateway_exposes_router_and_obsidian_health_scripts(self):
+    def test_beats_gateway_exposes_router_obsidian_and_memory_health_scripts(self):
         """The universal gateway should expose deterministic router utilities."""
         self.assertIn("route", beats.SCRIPT_COMMANDS)
         self.assertIn("obsidian-mcp", beats.SCRIPT_COMMANDS)
+        self.assertIn("agent-memory", beats.SCRIPT_COMMANDS)
         self.assertIn("system/scripts/pm_decision_router.py", beats.SCRIPT_COMMANDS["route"])
         self.assertIn("system/scripts/obsidian_mcp_health.py", beats.SCRIPT_COMMANDS["obsidian-mcp"])
+        self.assertIn("system/scripts/agent_memory_health.py", beats.SCRIPT_COMMANDS["agent-memory"])
 
 
 if __name__ == "__main__":

@@ -41,7 +41,8 @@ Silently run `system/scripts/context_health.py`.
 11. **Screenshot & Transcript Default Intent:** When the user shares a screenshot, image, or transcript without an explicit alternate instruction, assume the intent is task-master management. Extract tasks, status changes, blockers, owners, due dates, source references, and referenced tickets/links; route through the task-manager Priority Gate into `5. Trackers/TASK_MASTER.md` or return exact local tracker updates to confirm. Do not default to profile lookup, reply drafting, or generic summarization.
 12. **PM Decision Router:** For `/paste`, `/track`, `/transcript`, `/beats-comms`, `/discover`, `/create`, `/plan`, and `/prioritize`, classify ambiguous input with `.agent/skills/pm-decision-router/SKILL.md` before accepting durable work. `scope_challenge` and `ask_user` results become explicit questions, not silent active tasks.
 13. **Obsidian MCP Read-Only:** Obsidian may be used only as optional read/search/open-file context for the direct-vault kit folder. Check `system/scripts/obsidian_mcp_health.py`; if unavailable, fall back to repo-local `rg`. Never write, patch, delete, move, or command-execute through Obsidian MCP in v1.
-14. **Root Cleanliness:** Keep public root clutter minimal. Use `system/scripts/root_cleaner.py --dry-run` to inspect local clutter and `--apply` only when cleanup is explicitly intended; unknown user files move to ignored `0. Incoming/root-cleanup/` instead of being deleted.
+14. **Agent Memory Retrieval:** Follow `.agent/rules/AGENT_MEMORY.md`. Local Markdown remains canonical; optional TenscentDB/TencentDB memory is read/retrieve only and must point back to local repo artifacts before task, decision, or status changes. Check `system/scripts/agent_memory_health.py --pretty`; if unavailable, use Obsidian MCP or repo-local `rg`.
+15. **Root Cleanliness:** Keep public root clutter minimal. Use `system/scripts/root_cleaner.py --dry-run` to inspect local clutter and `--apply` only when cleanup is explicitly intended; unknown user files move to ignored `0. Incoming/root-cleanup/` instead of being deleted.
 
 ---
 
@@ -51,6 +52,7 @@ Silently run `system/scripts/context_health.py`.
 2. **Antigravity**: Eagerly use parallel tool calls and `mcp-pencil`.
 3. **Shared Context**: Read `5. Trackers/STATUS.md` before starting.
 4. **Runtime-Neutral Communication Capabilities**: Prefer runtime-provided read-only MCP/connector capabilities for Slack, Teams, Outlook, and Calendar. Use bridge scripts only as documented fallbacks.
+5. **Context Retrieval Stack**: Read local source files first; use Obsidian MCP and agent memory as optional retrieval accelerators, never as write paths or canonical ledgers.
 
 ---
 

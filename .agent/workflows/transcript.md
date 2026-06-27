@@ -36,6 +36,7 @@ python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json
 
 This step must:
 - Import recent Quill transcripts when available.
+- Import or process Granola transcripts when a read-only MCP/export path is available; otherwise accept Granola content only as user-provided pasted/exported evidence.
 - Normalize date-stamped files from `0. Incoming/` into `3. Meetings/transcripts/`.
 - Collect Outlook inbox/calendar context through read-only MS365 MCP/connector access when the user has provided bounded `/beats-comms outlook:` or `calendar:` scope; otherwise use the pipeline's AppleScript bridge fallback and label that limitation in the run report.
 - Attempt Teams context capture through read-only MS365 MCP/connector access when a bounded Teams scope is provided; otherwise fall back safely without failing the run when Teams access is unavailable.
@@ -96,12 +97,19 @@ For every packet:
 
 Apply the packet routing checklist:
 - New action items -> `5. Trackers/TASK_MASTER.md` and detail files in `5. Trackers/tasks/` when needed.
+- Workstream deltas -> `5. Trackers/WORKSTREAMS.md` and matching files under `5. Trackers/workstreams/`.
 - Existing task updates -> task detail `Progress Log` / `Stakeholder Quotes`.
 - Stakeholder enrichment -> `4. People/{firstname-lastname}.md`.
 - Manager-mode updates -> `1. Company/ways-of-working.md`, manager profile, stakeholder dynamics, and scope changes.
 - Partner/customer updates -> relevant `2. Products/partners/` or client/product files when applicable.
 
-Task-master routing is the default path. Every accepted action item or progress signal must either update `5. Trackers/TASK_MASTER.md` / `5. Trackers/tasks/` or be listed as a candidate requiring confirmation with the source evidence and reason it was not applied.
+Task-master routing is the default path. Every accepted action item or progress signal must either update the relevant workstream, `5. Trackers/TASK_MASTER.md`, and `5. Trackers/tasks/`, or be listed as a candidate requiring confirmation with the source evidence and reason it was not applied.
+
+Every transcript pass must triangulate against the current workstream list:
+- Map each action item, decision, blocker, and completion signal to an existing workstream when possible.
+- Create a candidate workstream only when no existing workstream fits and the Priority Gate allows it.
+- Update **Latest Outcomes**, **Completed Outcomes**, **Open Items**, and **Recommended Next 3** for touched workstreams.
+- Mark completed checklist items with completion date and transcript/source path; do not silently close ambiguous items.
 
 Every summary must include a `Routed Updates` section that lists the exact files updated or says `No durable update required`.
 

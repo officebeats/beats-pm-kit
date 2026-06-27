@@ -44,7 +44,7 @@ Antigravity Kit is a modular system consisting of:
 | Agent | Focus | Key Skills |
 |:--|:--|:--|
 | `orchestrator` | Multi-agent coordination | parallel-agents, behavioral-modes |
-| `cpo` | Strategy & Org | product-strategy-suite, boss-tracker, vacuum-protocol |
+| `cpo` | Strategy & Org | product-strategy-suite, boss-tracker, centrifuge-protocol |
 | `staff-pm` | Execution & Delivery | pm-decision-router, task-manager, prd-author, meeting-synth |
 
 ### PM Extended (P1 — loaded on demand)

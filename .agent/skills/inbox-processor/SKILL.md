@@ -13,7 +13,7 @@ description: The "Black Hole" for chaos. Aggressively extracts tasks from raw in
 
 ## 1. Native Interface
 
-- **Inputs**: /paste, /inbox. Text, screenshots/images, transcript-like notes, and files.
+- **Inputs**: Text, screenshots/images, transcript-like notes, and files from a workflow, clipboard, drop zone, or direct user-provided evidence.
 - **Tools**: run_command (cat), view_file.
 
 ---

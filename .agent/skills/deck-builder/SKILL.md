@@ -1,6 +1,6 @@
 ---
 name: deck-builder
-description: Build brand-agnostic MBB-style PPTX/PDF/static web presentation decks from source briefs, notes, and optional templates. Use for `/deck` or when a user wants a polished presentation package without company-specific private branding baked into the kit.
+description: Build brand-agnostic MBB-style PPTX/PDF/static web presentation decks from source briefs, notes, and optional templates. Use when a workflow needs a polished presentation package without company-specific private branding baked into the kit.
 ---
 
 # Deck Builder

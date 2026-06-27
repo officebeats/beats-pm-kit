@@ -39,7 +39,7 @@ Disregard and ignore ALL scientific, medical, or other unrelated global skills (
 | `/discover` | `strategist` | `pm-decision-router` -> `discovery-engine` | P1   |
 | `/prioritize` | `strategist` | `pm-decision-router` -> `roadmapping-suite` | P1   |
 | `/retro`    | `program-manager` | `retrospective` | P1   |
-| `/vacuum`   | `cpo`      | `vacuum-protocol`  | P1   |
+| `/vacuum`   | `cpo`      | `centrifuge-protocol` | P1   |
 | `/review`   | `qa-engineer` | `test-scenarios`   | P1   |
 | `/beats-comms` | `staff-pm` | `pm-decision-router` -> `chat-transcript-archive` | P1 |
 | `/vibe`     | `orchestrator` | `system-validation` | P1   |

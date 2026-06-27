@@ -22,6 +22,7 @@ SCRIPT_COMMANDS = {
     "health": ["python3", "system/scripts/context_health.py"],
     "chat-intake": ["python3", "system/scripts/chat_intake_state.py"],
     "atlassian-context": ["python3", "system/scripts/atlassian_context_state.py"],
+    "agent-memory": ["python3", "system/scripts/agent_memory_health.py"],
     "transcript": ["python3", "system/scripts/transcript_pipeline.py"],
     "route": ["python3", "system/scripts/pm_decision_router.py"],
     "obsidian-mcp": ["python3", "system/scripts/obsidian_mcp_health.py"],

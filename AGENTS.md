@@ -20,6 +20,20 @@ On a new Codex session:
 6. Translate Antigravity-only primitives into Codex equivalents instead of failing.
 7. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
 
+## Context Retrieval Stack
+
+1. Read canonical repo files and manifests first.
+2. Use Obsidian MCP only as optional read/search/open-file context for the direct-vault kit folder.
+3. Use optional TenscentDB/TencentDB agent memory only as read/retrieve context, and verify memory hits against local repo artifacts before task, decision, or status changes.
+4. If optional integrations are unavailable, fall back to repo-local `rg` and report the gap briefly.
+
+Health checks:
+
+```bash
+python3 system/scripts/obsidian_mcp_health.py --pretty
+python3 system/scripts/agent_memory_health.py --pretty
+```
+
 ## Codex Browser First
 
 When a task needs a browser for local apps, rendered UI checks, localhost demos, screenshots, click-through validation, or page inspection:
