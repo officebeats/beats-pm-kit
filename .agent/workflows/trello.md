@@ -39,12 +39,16 @@ python3 system/scripts/trello_bridge.py uninstall-agent
 3. **Recurring sync**
    - Use `sync --dry-run` before a risky run.
    - Use `sync --apply` for normal operation.
+   - The bridge mirrors workstreams first. Trello card titles should be plain-English workstream titles of 9 words or fewer, with Task Master IDs and other source IDs kept inside managed card bodies, comments, links, or attachments.
    - The bridge keeps Trello titles clean and writes a Trello-safe working brief into the managed card-description block.
+   - The managed brief should include latest outcomes, completed outcomes, open items, recommended next 3 actions, and internal agent refs.
+   - Managed checklists should include current open items and the latest completed outcomes/checklist items as checked entries with completion date/source.
+   - Never delete completed items from the current managed view merely because they are done; preserve enough completed history for the user to see what changed and when.
    - It preserves human-written Trello notes above the managed block.
    - It posts automated comments only for meaningful changes to open items, urgency, next action, lane/status, or important links.
 
 4. **Outputs**
-   - Per-card markdown is stored under `5. Trackers/tasks/`, `5. Trackers/trello/important-links/`, `3. Meetings/notes/`, or `4. People/`.
+   - Per-card markdown is stored under `5. Trackers/workstreams/`, `5. Trackers/tasks/`, `5. Trackers/trello/important-links/`, `3. Meetings/notes/`, or `4. People/`.
    - Trello cards keep one latest managed `.md` attachment as an archival snapshot, but daily reading should happen in the card description.
    - Run reports are written under `5. Trackers/trello/sync-runs/`.
    - Conflicts are written under `5. Trackers/trello/conflicts/`.

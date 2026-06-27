@@ -49,7 +49,42 @@ Screenshots/images and transcripts are task-master management inputs by default.
 - If the source is ambiguous, return exact candidate `TASK_MASTER.md` rows or detail-file updates for the user to confirm.
 - Do not treat screenshots or transcripts as generic profile lookup, reply drafting, or summary requests unless the user explicitly asks for that in the same turn.
 
-### 1B. Fast Raw-Evidence Intake
+## 1B. Workstream Operating Model
+
+The human-facing unit of planning is the workstream, not the Task Master ID.
+
+- Maintain the workstream index in `5. Trackers/WORKSTREAMS.md` when present.
+- Maintain per-workstream detail files in `5. Trackers/workstreams/{slug}.md` when present.
+- Workstream titles must be well-articulated, plain English, and 9 words or fewer.
+- Do not show Task Master IDs, Jira IDs, card IDs, or source IDs in the workstream title. Keep them in agent refs, links, metadata, card bodies, managed comments, or evidence logs.
+- Each workstream must track:
+  - Latest outcomes.
+  - Completed outcomes and completed checklist items, with completion date and source.
+  - Open items from Outlook, Teams, Slack, Calendar, manual transcripts, Quill, Granola, and local transcript packets when bounded access is available.
+  - The recommended next 3 actions.
+  - Internal agent references linking to Task Master rows, task files, Trello cards, Jira/Confluence artifacts, and transcript/chat evidence.
+- Before finishing `/task`, `/track`, `/day`, `/week`, `/boss`, `/beats-comms`, or `/transcript`, reconcile new evidence against the workstream list so duplicate source signals consolidate into the same workstream instead of creating parallel status islands.
+- If live Outlook, Teams, Slack, Quill, or Granola access is unavailable or not explicitly scoped, continue from local transcripts/trackers and report the source gap instead of broad-scanning.
+
+Default user-facing format:
+
+```markdown
+### Workstream Title
+- Latest outcome: [succinct result, decision, or state]
+  - Evidence: [source, date, link/path when available]
+- Completed: [done item or "None newly confirmed"]
+  - Completed: [date/source]
+- Open items: [count or short list]
+  - [Owner] - [action] by [date/gate], from [source]
+- Recommended next 3:
+  - [Action 1]
+  - [Action 2]
+  - [Action 3]
+```
+
+Use this title, bullet, and sub-bullet structure for recurring Task Master-related closeouts unless the user explicitly asks for a table or export format.
+
+## 1C. Fast Raw-Evidence Intake
 
 For a single pasted email/chat/thread or a message prefaced with "for task manager", use the fast path unless the user explicitly asks for full triage, Trello sync, `/day`, `/week`, or broad communication refresh:
 
@@ -120,14 +155,15 @@ The authoritative source for scope and operating rules is: `1. Company/ways-of-w
 ### B. Ledger Management (/task)
 
 - **Task writing standard**:
-  - Task titles must be useful, succinct, and descriptive: usually 3-8 words as a plain-English phrase.
+  - Workstream and card titles must be useful, succinct, and descriptive: 9 words or fewer as a plain-English phrase.
+  - Task titles should still be short and descriptive, usually 3-8 words.
   - Trello card titles, weekly-email sections, closeouts, and source-note headings must omit Task Master IDs. Keep the ID in links, internal fields, card bodies, managed comments, attachments, or local-path references instead.
   - Put the longer explanation in the body, not the title: one summary sentence of 15 words or fewer.
   - Support the summary with at most 3 short bullets when more context is needed.
   - Include outcome metric, scope boundary, evidence strength, dependency, and next decision gate in the detail file for every accepted active task when known.
   - If any of owner, due date, outcome metric, scope boundary, evidence strength, dependency, or next decision gate is missing for committed work, list the missing field as a concrete question instead of silently accepting a vague task.
   - Maintain a concrete checkbox list for pending work. `## ✅ Subtasks` is the canonical source for task-level open items and should map cleanly to the Trello checklist.
-  - Completed checkbox items can stay in the local doc for history, but Trello should only mirror what is still open.
+  - Completed checkbox items must stay visible in local task/workstream history with completion date and source. During Trello sync, mirror completed items as checked checklist entries for the current reporting window instead of deleting them from the managed view.
   - Keep the open-item checklist to 3 items or fewer when possible; exceed that only when the work genuinely needs it.
   - Do not use `P0`/`P1`/`P2` prefixes in status labels or Trello labels. Prefer lane-based placement such as `Today`, `Next`, `Later`, or `Follow Up`.
 - **Structure**: | ID | Task | Owner | Due | Status |
@@ -145,15 +181,16 @@ Before finishing `/task`, `/triage`, or any daily planning pass:
 
 1. Run `python3 system/scripts/task_master_triage.py --apply`
 2. Refresh the managed triage summary block in `5. Trackers/TASK_MASTER.md`
-3. Surface overdue, stale, at-risk, and possibly-complete items as explicit questions to the owner
-4. For each flagged item, include:
+3. Refresh `5. Trackers/WORKSTREAMS.md` and matching `5. Trackers/workstreams/` files when they exist
+4. Surface overdue, stale, at-risk, and possibly-complete items as explicit questions to the owner
+5. For each flagged item, include:
    - What it is
    - Last activity
    - Communication signal
    - Relevant links
    - Clarify
-5. Never ask the owner to interpret a bare task ID without title/context
-6. Never silently mark an open task done just because the latest note sounds positive
+6. Never ask the owner to interpret a bare task ID without title/context
+7. Never silently mark an open task done just because the latest note sounds positive
 
 For a single user-provided screenshot, email/chat snippet, or transcript excerpt that updates known task IDs, use the targeted fast path instead of rewriting every flagged task file:
 
@@ -171,16 +208,18 @@ python3 system/scripts/task_master_triage.py --apply --touched-task TASK-123
 - **Scope Boundary**: Every accepted task states what is in scope, what is out of scope, and who owns the next decision.
 - **Evidence Strength**: Mark the source as None, Weak, Moderate, or Strong so the user can tell whether work came from a hard signal or a loose ask.
 - **Decision Gate**: Every non-trivial task includes the next date or event where the task should be continued, killed, delegated, or reframed.
+- **Completion Evidence**: Every completed item includes when it completed and which source confirmed it.
 - **Progress Log**: Every task detail file MUST track a chronological log of updates.
 
 ---
 
 ## 4. Output
 
-- **Table**: Show exactly what moved Inbox -> Ledger.
+- **Workstreams first**: Lead with the title, bullet, and sub-bullet format from § 1B for any recurring Task Master-related output.
+- **Movement summary**: Show exactly what moved Inbox -> Ledger after the workstream readout.
 - **Gate Results**: Flag any tasks that were rejected or flagged "Needs manager approval."
 - **Next Action**: Suggest the top `Today` item from `5. Trackers/TASK_MASTER.md`.
-- **Display rule**: Show descriptive task phrases first. Put internal IDs in parentheses or links only when needed.
+- **Display rule**: Show descriptive workstream/task phrases first. Put internal IDs in parentheses or links only when needed.
 
 ---
 

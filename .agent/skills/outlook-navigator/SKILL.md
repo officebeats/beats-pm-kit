@@ -8,7 +8,7 @@ description: Read-only Outlook mail and Calendar intake for context, task extrac
 # Outlook Navigator Skill
 
 ## Goal
-The outlook-navigator is the read-only mail and calendar intake path. It fetches bounded Outlook and Calendar context for local synthesis but does not mutate Microsoft 365 state.
+The outlook-navigator is the read-only mail and calendar intake path. It fetches bounded Outlook and Calendar context for local workstream/task synthesis but does not mutate Microsoft 365 state.
 
 ## Inputs
 - `/outlook` (Fetch last 5)
@@ -79,11 +79,16 @@ Use short snippets and metadata, not full unbounded mailbox or calendar dumps. T
 
 If an upcoming calendar event maps to an active task in `TASK_MASTER.md` to "Schedule a meeting with X", update the task status to `🗓️ Scheduled for [Date]` instead of completing it.
 
+Triangulate bounded mail and calendar evidence against `5. Trackers/WORKSTREAMS.md` and matching `5. Trackers/workstreams/` files when present. Workstream titles must be plain English, 9 words or fewer, and free of Task Master, Trello, Jira, or source IDs.
+
 ### Step 5: Analyze
 - Identify **Deadlines** (dates, "by Friday", "asap").
 - Identify **Decisions** (approvals, rejects).
 - Identify **Company Strategy** changes.
 - Identify **Scheduled Events** that satisfy existing scheduling tasks.
+- Identify **Latest Outcomes** that should update the matching workstream.
+- Identify **Completed Outcomes** only when the email/calendar evidence explicitly confirms completion, then preserve completion date/source.
+- Identify **Open Items** and **Recommended Next 3** actions per workstream.
 
 ### Step 6: Stakeholder Enrichment
 For each person found in emails (senders, CC'd, mentioned, or in signatures):
@@ -94,10 +99,12 @@ For each person found in emails (senders, CC'd, mentioned, or in signatures):
 - **Privacy**: Store only professional context (name, role, org, relationship). PII (phone, email, address) may be stored in profiles since `4. People/` is gitignored. Extract everything useful from signatures — work email, cell, office address, pronouns, direct reports.
 
 ### Step 7: Triage
+- If a workstream update is found -> route latest outcome, completed outcome, open item, or recommended next action into the matching workstream.
 - If a task is found → Suggest `/track` item.
 - If a boss ask is found → Route to `5. Trackers/critical/boss-requests.md`.
 - If a new stakeholder is mentioned → Create/update profile in `4. People/`.
 - If context is found → Suggest `memory-consolidator` update.
+- If completion is implied but not explicit -> ask for confirmation instead of checking it off.
 
 ## Implementation Notes
 
@@ -123,5 +130,10 @@ For each person found in emails (senders, CC'd, mentioned, or in signatures):
 
 - **[Subject]** (from [Sender] at [Date])
   * *Snippet*: "[200-char preview...]"
+  * *Workstream*: [9-word-or-fewer workstream title]
+  * *Latest outcome*: [Result, decision, or current state]
+  * *Completed*: [Done item + date/source, or None newly confirmed]
+  * *Open items*: [Owner/action/date]
+  * *Recommended next 3*: [Three short actions]
   * *PM Action*: [Identified task or context update]
   * *Stakeholder*: [Created/Updated profile for X] (if applicable)
