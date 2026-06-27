@@ -64,7 +64,11 @@ The human-facing unit of planning is the workstream, not the Task Master ID.
   - The recommended next 3 actions.
   - Internal agent references linking to Task Master rows, task files, Trello cards, Jira/Confluence artifacts, and transcript/chat evidence.
 - Before finishing `/task`, `/track`, `/day`, `/week`, `/boss`, `/beats-comms`, or `/transcript`, reconcile new evidence against the workstream list so duplicate source signals consolidate into the same workstream instead of creating parallel status islands.
-- If live Outlook, Teams, Slack, Quill, or Granola access is unavailable or not explicitly scoped, continue from local transcripts/trackers and report the source gap instead of broad-scanning.
+- Before recurring aggregation for `/day`, `/week`, or `/boss`, run `python3 system/scripts/critical_commitment_refresh.py plan --mode <day|week|boss> --json` and `python3 system/scripts/critical_commitment_refresh.py rank --mode <day|week|boss> --json`.
+- If a configured or expected integration is broken, unavailable, missing a scope, or unsafe, prompt the user with what failed, why it matters, the recommended fix, and safe choices. Do not silently proceed with degraded coverage.
+- If live Outlook, Teams, Slack, Quill, Granola, Obsidian, or graph-memory access is unavailable or not scoped, prompt instead of broad-scanning. Continue degraded only after the user explicitly chooses to skip once, paste/export evidence, configure the source, or disable it from defaults.
+- Treat third-party systems as read-only unless the user explicitly confirms the exact mutation in the current turn. Never send, draft, reply, react, schedule, create, assign, transition, comment, upload, patch, delete, or move third-party state by default.
+- Leadership, boss-of-boss, external partner/customer, and dated end-user commitments must rank above ordinary stale work.
 
 Default user-facing format:
 

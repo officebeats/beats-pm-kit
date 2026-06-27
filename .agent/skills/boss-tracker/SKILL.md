@@ -32,6 +32,21 @@ Read `SETTINGS.md`. Is the speaker a defined "Boss" or "VIP"?
 - **Tier 2 (Director)**: SLA < 24 Hours.
 - **Tier 3 (Other)**: Standard Priority.
 
+Before preparing `/boss` output, run:
+
+```bash
+python3 system/scripts/critical_commitment_refresh.py plan --mode boss --json
+python3 system/scripts/critical_commitment_refresh.py rank --mode boss --json
+```
+
+If a configured or expected source is broken, missing scope, unavailable, or unsafe, stop and tell the user:
+- What failed.
+- Why boss-readiness or commitment coverage is at risk.
+- The recommended fix.
+- Safe choices: reconnect/configure, paste/export for this run, skip once, or disable from defaults.
+
+Do not silently proceed with degraded boss coverage.
+
 ### Phase 2: Zero-Loss Capture Protocol
 
 Every entry in `5. Trackers/critical/boss-requests.md` MUST include:
@@ -66,6 +81,8 @@ When preparing manager-facing updates, treat "outcomes" as a succinct list of ex
 - Completed outcomes and checked-off items must include completion date/source and stay visible in task, workstream, boss tracker, and Trello managed checklist history.
 - If a completion is implied but not confirmed, ask for confirmation instead of checking it off.
 - Triangulate Outlook, Teams, Slack, Calendar, manual transcripts, Quill, Granola, and local transcript packets against the current workstream list before creating new visible workstreams.
+- Use Obsidian, agent memory, and graph integrations only as read-only context accelerators when locally detected.
+- Treat third-party systems as read-only unless the user explicitly confirms the exact mutation in the current turn.
 
 Manager-facing shape:
 

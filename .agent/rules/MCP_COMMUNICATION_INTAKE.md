@@ -25,10 +25,13 @@ This kit supports read-only communication intake through runtime-provided MCP or
 - Email is stricter: never create, send, forward, or reply to email unless the user explicitly asks for that specific message in the current turn. Prefer draft text in chat or local artifacts.
 - Never create or modify calendar events or meeting invites.
 - Preserve unread state. Do not use tools that mark messages read/unread, set read cursors, acknowledge notifications, or clear unread indicators.
+- Obsidian, Quill, Granola, Jira, Confluence, graph memory, and agent memory are read/search/open context sources by default. Never write, patch, move, delete, comment, transition, upload, or mutate those systems unless the user explicitly confirms that exact mutation in the current turn.
+- Configured or expected integration failures must be visible to the user. Prompt with the failed source, risk if skipped, recommended fix, and safe choices before proceeding degraded.
 
 ## Workflow Use
 
 - `/beats-comms` is the canonical bounded intake command for `slack:`, `teams:`, `outlook:`, and `calendar:` scopes.
 - Platform scopes must be explicit. Do not broad-scan workspaces, all chats, all channels, all mail, all DMs, or calendar history.
+- Recurring `/day`, `/week`, and `/boss` runs may use manifest-backed scopes from `system/scripts/critical_commitment_refresh.py plan` as explicit bounded scopes.
 - Slack scopes that may return many results must be pre-chunked with `system/scripts/chat_intake_state.py chunks` before the first Slack query. This includes mention/DM intake, `to:me`, multi-day channel history, and explicit windows longer than 5 calendar days.
 - Prefer MCP/connector reads first. Use bridge scripts only when MCP/connector access is unavailable and the workflow labels the fallback limitations in the run report.
