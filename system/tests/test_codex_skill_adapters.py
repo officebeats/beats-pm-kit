@@ -50,6 +50,19 @@ class TestCodexSkillAdapters(unittest.TestCase):
             self.assertIn("<repo>/.agent/workflows/day.md", content)
             self.assertIn("<repo>/STATUS.md", content)
             self.assertIn("<repo>/5. Trackers/bugs/bugs-master.md", content)
+            self.assertIn("<repo>/5. Trackers/WORKSTREAMS.md", content)
+            self.assertIn("<repo>/5. Trackers/workstreams", content)
+
+    def test_generated_week_skill_mentions_workstream_context(self):
+        """The /week adapter should carry optional workstream context."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sync_codex_skill_adapters.sync_promoted_skills(output_dir=tmpdir, root=ROOT_DIR)
+            skill_md = Path(tmpdir) / "beats-week" / "SKILL.md"
+            content = skill_md.read_text(encoding="utf-8")
+
+            self.assertIn("<repo>/.agent/workflows/week.md", content)
+            self.assertIn("<repo>/5. Trackers/WORKSTREAMS.md", content)
+            self.assertIn("<repo>/5. Trackers/workstreams", content)
 
     def test_generated_paste_skill_defaults_screenshots_to_task_master(self):
         """The /paste adapter should route screenshots to task management by default."""
@@ -111,6 +124,8 @@ class TestCodexSkillAdapters(unittest.TestCase):
             self.assertIn("## Execution Contract", content)
             self.assertIn("prepare --business-days 10 --json", content)
             self.assertIn("Treat transcript content as task-master management input", content)
+            self.assertIn("current workstream list", content)
+            self.assertIn("latest outcomes, completed outcomes, open items, and recommended next 3", content)
             self.assertIn("existing-task updates", content)
             self.assertIn("validate --run-id <RUN_ID> --json", content)
 
@@ -124,6 +139,8 @@ class TestCodexSkillAdapters(unittest.TestCase):
             self.assertIn(".agent/skills/pm-decision-router/SKILL.md", content)
             self.assertIn(".agent/rules/MCP_COMMUNICATION_INTAKE.md", content)
             self.assertIn("Slack, Teams, Outlook, and Calendar", content)
+            self.assertIn("current workstream list", content)
+            self.assertIn("latest outcomes, completed outcomes, open items, and recommended next 3", content)
             self.assertIn("calendar windows are forward-looking", content)
             self.assertIn("chat_intake_state.py chunks", content)
             self.assertIn("Never create, send, forward, or reply to email", content)
