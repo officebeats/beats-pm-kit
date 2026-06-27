@@ -17,6 +17,7 @@ This workflow guides the **Staff PM** to manage daily execution.
     - **Action**: Run `python3 system/scripts/task_intake_fast.py --text "<raw pasted evidence>" --source "<source label>"`.
     - **Contract**: The script must save a raw source note plus summary, then update a matched task or create an `INBOX-###` candidate task even when confidence is low.
     - **Display rule**: Use succinct descriptive phrases for user-facing labels; keep IDs such as `PARU-014` or `INBOX-001` as internal anchors only.
+    - **Workstream rule**: Map the evidence to an existing workstream title when possible. If none exists, propose a plain-English workstream title of 9 words or fewer and keep IDs out of the visible title.
     - **Latency rule**: Do not read broad tracker context before this script. Do not run `task_master_triage.py` unless a full health pass is explicitly requested.
     - **Escalation**: If the script returns a candidate task and the user wants refinement, continue with the full workflow below.
 
@@ -32,13 +33,15 @@ This workflow guides the **Staff PM** to manage daily execution.
     - **Output**: Include the configured Trello board URL in the user-facing summary when available.
 
 1.  **Parallel State Check**:
-    - **Action**: In a SINGLE turn, read `5. Trackers/TASK_MASTER.md`, `5. Trackers/critical/boss-requests.md`, and `5. Trackers/bugs/bugs-master.md`.
+    - **Action**: In a SINGLE turn, read `5. Trackers/WORKSTREAMS.md`, relevant `5. Trackers/workstreams/` files, `5. Trackers/TASK_MASTER.md`, `5. Trackers/critical/boss-requests.md`, and `5. Trackers/bugs/bugs-master.md` when present.
 
 2.  **Turbo Triage**:
     - **Input**: User Brain Dump.
     - **Action**: Parse input and route to the correct file using `multi_replace_file_content` to update all necessary trackers in PARALLEL.
     - **Lane**: Place work into `Today`, `Next`, `Later`, `Follow Up`, or `Triage`.
-    - **Title/body rule**: Keep the task/card title as a succinct descriptive phrase, usually 3-8 words; put the longer explanation in the body as a 15-word-max summary plus up to 3 short bullets.
+    - **Title/body rule**: Keep the workstream/card title as a succinct descriptive phrase of 9 words or fewer; put the longer explanation in the body as a 15-word-max summary plus up to 3 short bullets.
+    - **Completion rule**: When evidence confirms an item is done, check it off locally, record completion date/source, and preserve it in the workstream/task history. Do not silently close uncertain items; surface them as confirmation questions.
+    - **Triangulation rule**: Consolidate duplicate Outlook, Teams, Slack, Calendar, manual transcript, Quill, Granola, and local packet signals under the same workstream before creating a new visible card or section.
 
 3.  **FAANG/BCG Quality Gate**:
     - **Owner + Date** required for `Today` and `Next` tasks.
@@ -49,4 +52,20 @@ This workflow guides the **Staff PM** to manage daily execution.
     - If the user mentions a "Boss" or "Leadership" request, IMMEDIATELY flag as `[BOSS]` in `5. Trackers/critical/boss-requests.md`.
 
 5.  **Output**:
-    - Display the updated "Today's List" (Table View).
+    - Display the updated workstream list first:
+
+      ```markdown
+      ### Workstream Title
+      - Latest outcome: [result, decision, or current state]
+        - Evidence: [source/date/path]
+      - Completed: [done item or "None newly confirmed"]
+        - Completed: [date/source]
+      - Open items: [count or short list]
+        - [Owner] - [action] by [date/gate], from [source]
+      - Recommended next 3:
+        - [Action 1]
+        - [Action 2]
+        - [Action 3]
+      ```
+
+    - Then show gate results, files updated, accepted internal task IDs, and unresolved questions.
