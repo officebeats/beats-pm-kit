@@ -1,12 +1,12 @@
 ---
-description: Run scoped Slack, Teams, Outlook, and Calendar communication intake into local task updates and searchable transcripts without sending or mutating source systems.
+description: Run scoped Slack, Teams, Outlook, Calendar, and transcript intake into local workstream/task updates without sending or mutating source systems.
 ---
 
 > **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same read-only communication intake and durable output contract.
 
 # Workflow: `/beats-comms`
 
-Use this workflow as the canonical communication context refresh path. Other workflows may call it before synthesis when the user asks for updated Slack, Teams, Outlook, or Calendar context, but only with explicit bounded scopes.
+Use this workflow as the canonical communication context refresh path. Other workflows may call it before synthesis when the user asks for updated Slack, Teams, Outlook, Calendar, Quill, Granola, or manually pasted transcript context, but only with explicit bounded scopes or user-provided evidence.
 
 Read `.agent/rules/MCP_COMMUNICATION_INTAKE.md` before platform reads. It defines the shared runtime capability table for Antigravity, Codex, Claude Code, and fallback bridge behavior.
 
@@ -29,6 +29,7 @@ Supported scope forms:
 - `teams: <chat|channel|thread|query|window>`
 - `outlook: <mail query|sender|subject|folder|window>`
 - `calendar: <lookahead|date range|meeting query>`
+- `transcripts: <manual|quill|granola|packet|meeting title|window>`
 - `both:` may be used only as a shorthand for explicit Slack and Teams scopes.
 
 If any requested platform lacks explicit scope, ask the user for a scope before reading that platform. The default scope policy is `require_scope`.
@@ -43,7 +44,7 @@ For Slack scopes that may return many results, including mention/DM intake such 
 
 ### Manual Evidence Shortcut
 
-If the user provides the communication evidence directly in the current turn as a screenshot, pasted email/chat text, or short exported snippet, do not require a platform scope and do not run connector window/chunk planning. Treat the user-provided artifact as the bounded source.
+If the user provides the communication evidence directly in the current turn as a screenshot, pasted email/chat text, transcript excerpt, meeting notes, or short exported snippet, do not require a platform scope and do not run connector window/chunk planning. Treat the user-provided artifact as the bounded source.
 
 The shortcut still must:
 - Preserve source-system safety rules.
@@ -51,6 +52,7 @@ The shortcut still must:
 - Save the platform and combined run reports.
 - Record the successful run in `3. Meetings/chat-transcripts/_manifest.json`.
 - Route local task/profile updates through `task-manager`.
+- Triangulate the extracted signal against `5. Trackers/WORKSTREAMS.md` and matching `5. Trackers/workstreams/` files when present.
 - Run targeted task health refresh with `python3 system/scripts/task_master_triage.py --apply --touched-task <TASK_ID>` for each touched task.
 
 Escalate back to the normal scoped connector flow only when the screenshot/snippet is insufficient and fresh source-system reading is needed.
@@ -72,6 +74,7 @@ Run the scoped platform workflows independently:
 - Teams scope -> follow `.agent/workflows/beats-teams.md`.
 - Outlook mail scope -> follow `.agent/skills/outlook-navigator/SKILL.md` with MS365 MCP/connector reads before macOS AppleScript fallback.
 - Calendar scope -> follow `.agent/skills/outlook-navigator/SKILL.md` with MS365 MCP/connector schedule reads before macOS AppleScript fallback.
+- Transcript scope -> follow `.agent/workflows/transcript.md`; prefer read-only Quill/Granola MCP or export paths when available, otherwise use manual/user-provided text or local transcript packets only.
 
 Each platform workflow must save its communication transcript, scan that saved transcript with `.agent/skills/atlassian-context-archive/SKILL.md`, and archive only referenced Jira/Confluence context before task routing.
 
@@ -80,9 +83,12 @@ If runtime supports parallel execution, platform intake may run in parallel beca
 ## 4. Merge Results
 
 After platform-specific transcripts and run reports are written:
-- Deduplicate candidate tasks across Slack, Teams, Outlook, and Calendar.
+- Deduplicate candidate tasks and open items across Slack, Teams, Outlook, Calendar, manual transcripts, Quill, Granola, and local transcript packets.
 - Deduplicate Atlassian artifact references across all processed platforms by manifest key and content hash.
 - Prefer existing task updates over duplicate new tasks.
+- Map every accepted item to a succinct workstream title of 9 words or fewer. Do not expose internal IDs in user-facing workstream titles.
+- Update latest outcomes, completed outcomes, open items, and recommended next 3 actions on the relevant workstream when evidence supports it.
+- Check off completed checklist items only when the source evidence or user confirmation explicitly confirms completion; keep completion date/source visible.
 - Route accepted work to local repo files only.
 - Write a combined run report to `3. Meetings/reports/chat-runs/{RUN_ID}.md`.
 - Include combined issues and recommendations for MCP/connector gaps, read-state uncertainty, fallback bridge usage, Atlassian connector gaps, unresolved source URLs, duplicate skips, reference cap skips, and task routing conflicts.
@@ -94,10 +100,12 @@ Return:
 - Teams transcript files saved.
 - Outlook transcript files saved.
 - Calendar transcript files saved.
+- Transcript packet, Quill, Granola, or manual transcript files processed.
 - Atlassian artifacts saved or skipped.
 - Combined run report path.
 - Files updated.
-- Accepted tasks and IDs.
+- Accepted workstreams, tasks, and internal IDs.
+- Latest outcomes, completed outcomes, open items, and recommended next 3 by workstream.
 - Issues and recommended follow-ups.
 - Manual Slack/Teams/Outlook follow-ups owned by the user.
 - Safety confirmation that no source-system send or mutation actions were performed, including no Jira/Confluence mutations.
