@@ -1726,6 +1726,50 @@ def classification_summary(classifications: list[dict[str, Any]]) -> str:
     return ", ".join(f"{key}={counts[key]}" for key in sorted(counts)) or "no cards"
 
 
+def normalized_filter_values(values: list[str] | None) -> set[str]:
+    return {normalize(value) for value in values or [] if normalize(value)}
+
+
+def classification_matches_filters(
+    classification: dict[str, Any],
+    task_filters: set[str],
+    workstream_filters: set[str],
+) -> bool:
+    """Return whether a Trello classification is inside the requested bounded sync scope."""
+    if not task_filters and not workstream_filters:
+        return True
+
+    card = classification.get("card", {})
+    local_id = normalize(str(classification.get("local_id") or ""))
+    local_path_value = classification.get("local_path", Path(""))
+    local_path = normalize(rel(local_path_value if isinstance(local_path_value, Path) else Path(str(local_path_value))))
+    card_name = normalize(card.get("name", ""))
+    card_desc = normalize(card.get("desc", ""))
+    haystack = " ".join([local_id, local_path, card_name, card_desc])
+
+    if task_filters and any(task_filter == local_id or task_filter in haystack for task_filter in task_filters):
+        return True
+    if workstream_filters and any(workstream_filter in haystack for workstream_filter in workstream_filters):
+        return True
+    return False
+
+
+def filter_classifications(
+    classifications: list[dict[str, Any]],
+    only_tasks: list[str] | None = None,
+    only_workstreams: list[str] | None = None,
+) -> list[dict[str, Any]]:
+    task_filters = normalized_filter_values(only_tasks)
+    workstream_filters = normalized_filter_values(only_workstreams)
+    if not task_filters and not workstream_filters:
+        return classifications
+    return [
+        item
+        for item in classifications
+        if classification_matches_filters(item, task_filters, workstream_filters)
+    ]
+
+
 def print_classification_table(classifications: list[dict[str, Any]]) -> None:
     print("| Action | Lane | Card | Local | Confidence | Reason |")
     print("|:-------|:-----|:-----|:------|:-----------|:-------|")
@@ -1856,22 +1900,33 @@ def run_bootstrap(apply: bool) -> int:
     return 0
 
 
-def run_sync(apply: bool, quiet: bool = False) -> int:
+def run_sync(
+    apply: bool,
+    quiet: bool = False,
+    only_tasks: list[str] | None = None,
+    only_workstreams: list[str] | None = None,
+    fail_on_unrelated: bool = False,
+) -> int:
+    has_bounded_filter = bool(only_tasks or only_workstreams)
+    if fail_on_unrelated and not has_bounded_filter:
+        print("Refusing fail-on-unrelated sync without --only-task or --only-workstream.", file=sys.stderr)
+        return 2
     api = TrelloAPI()
     if quiet and not within_workday(api):
         return 0
     ledger = load_ledger()
     tasks = load_task_master_tasks()
     cards, _lists_by_id, _lists = fetch_context(api)
-    classifications = classify_all(api, cards, tasks, ledger)
-    label_ids = ensure_operational_labels(api, apply=apply)
+    all_classifications = classify_all(api, cards, tasks, ledger)
+    classifications = filter_classifications(all_classifications, only_tasks, only_workstreams)
+    label_ids = ensure_operational_labels(api, apply=(apply and not has_bounded_filter))
     actions_cache: dict[str, list[dict[str, Any]]] = {}
 
     rows = [
         sync_card(api, ledger, item, label_ids, apply=apply, actions_cache=actions_cache)
         for item in classifications
     ]
-    hotlist_changes = update_task_master_hotlist(rows, apply=apply)
+    hotlist_changes = [] if has_bounded_filter else update_task_master_hotlist(rows, apply=apply)
     if hotlist_changes:
         rows.append(
             {
@@ -1890,7 +1945,13 @@ def run_sync(apply: bool, quiet: bool = False) -> int:
         report = None
 
     if not quiet:
-        print(f"Sync {'apply' if apply else 'dry-run'}: {classification_summary(classifications)}")
+        filter_note = ""
+        if has_bounded_filter:
+            filter_note = f" (bounded: tasks={only_tasks or []}, workstreams={only_workstreams or []})"
+        print(f"Sync {'apply' if apply else 'dry-run'}{filter_note}: {classification_summary(classifications)}")
+        if has_bounded_filter:
+            skipped = len(all_classifications) - len(classifications)
+            print(f"Bounded sync skipped {skipped} unrelated Trello card(s).")
         for row in rows:
             changes = row.get("changes") or []
             if changes:
@@ -2034,6 +2095,9 @@ def build_parser() -> argparse.ArgumentParser:
     sync.add_argument("--dry-run", action="store_true", help="Preview sync without writes.")
     sync.add_argument("--apply", action="store_true", help="Write sync changes.")
     sync.add_argument("--quiet", action="store_true", help="Only print errors; intended for LaunchAgent.")
+    sync.add_argument("--only-task", action="append", default=[], help="Bound sync to a Task Master ID. May be repeated.")
+    sync.add_argument("--only-workstream", action="append", default=[], help="Bound sync to a plain-English workstream/card title. May be repeated.")
+    sync.add_argument("--fail-on-unrelated", action="store_true", help="Refuse apply unless --only-task or --only-workstream bounds the sync.")
 
     subparsers.add_parser("status", help="Show board/local sync status.")
     subparsers.add_parser("lists", help="Print Trello list IDs.")
@@ -2057,7 +2121,13 @@ def main(argv: list[str] | None = None) -> int:
     if command == "bootstrap":
         return run_bootstrap(apply=bool(args.apply and not args.dry_run))
     if command == "sync":
-        return run_sync(apply=bool(args.apply and not args.dry_run), quiet=args.quiet)
+        return run_sync(
+            apply=bool(args.apply and not args.dry_run),
+            quiet=args.quiet,
+            only_tasks=args.only_task,
+            only_workstreams=args.only_workstream,
+            fail_on_unrelated=args.fail_on_unrelated,
+        )
     if command == "status":
         return run_status()
     if command == "lists":

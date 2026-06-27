@@ -39,6 +39,7 @@ system/config/obsidian.local*.json
 # Local MCP runtime configuration, OAuth state, and diagnostics
 system/config/mcp.local*.json
 system/config/mcp.*.local.json
+system/config/critical_intake.local*.json
 system/config/mcp-diagnostics/**
 system/config/mcp-runtime/**
 .gemini/state/
