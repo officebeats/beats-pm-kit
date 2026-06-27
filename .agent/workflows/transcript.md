@@ -12,6 +12,8 @@ Transcripts are task-master management inputs unless the user explicitly asks fo
 
 - Default output is not a generic summary; it is a task/status delta against `5. Trackers/TASK_MASTER.md`.
 - Extract action items, existing-task updates, blockers, decisions that change work, owners, due dates, source references, and follow-up candidates.
+- Map every extracted signal to the current workstream list when possible.
+- Update latest outcomes, completed outcomes, open items, and recommended next 3 actions for the relevant workstream when evidence supports it.
 - Run accepted new work through `task-manager` Priority Gate before adding it to active trackers.
 - Put uncertain work in the final response as concrete candidate tracker updates for the user to confirm.
 - Preserve the meeting summary and transcript archive, but lead with task-master routing in `Routed Updates`.
@@ -35,7 +37,8 @@ python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json
 ```
 
 This step must:
-- Import recent Quill transcripts when available.
+- Import recent Quill and Granola transcripts when available through read-only MCP/export paths.
+- Accept manual transcript text and local packet files as bounded transcript evidence.
 - Normalize date-stamped files from `0. Incoming/` into `3. Meetings/transcripts/`.
 - Collect Outlook inbox/calendar context through read-only MS365 MCP/connector access when the user has provided bounded `/beats-comms outlook:` or `calendar:` scope; otherwise use the pipeline's AppleScript bridge fallback and label that limitation in the run report.
 - Attempt Teams context capture through read-only MS365 MCP/connector access when a bounded Teams scope is provided; otherwise fall back safely without failing the run when Teams access is unavailable.
@@ -95,13 +98,21 @@ For every packet:
 ## 4. Route Durable Updates
 
 Apply the packet routing checklist:
+- Workstream deltas -> `5. Trackers/WORKSTREAMS.md` and matching `5. Trackers/workstreams/{slug}.md` when present.
 - New action items -> `5. Trackers/TASK_MASTER.md` and detail files in `5. Trackers/tasks/` when needed.
 - Existing task updates -> task detail `Progress Log` / `Stakeholder Quotes`.
 - Stakeholder enrichment -> `4. People/{firstname-lastname}.md`.
 - Manager-mode updates -> `1. Company/ways-of-working.md`, manager profile, stakeholder dynamics, and scope changes.
 - Partner/customer updates -> relevant `2. Products/partners/` or client/product files when applicable.
 
-Task-master routing is the default path. Every accepted action item or progress signal must either update `5. Trackers/TASK_MASTER.md` / `5. Trackers/tasks/` or be listed as a candidate requiring confirmation with the source evidence and reason it was not applied.
+Task-master routing is the default path. Every accepted action item or progress signal must either update `5. Trackers/WORKSTREAMS.md`, `5. Trackers/workstreams/`, `5. Trackers/TASK_MASTER.md`, or `5. Trackers/tasks/`, or be listed as a candidate requiring confirmation with the source evidence and reason it was not applied.
+
+Every transcript pass must triangulate against the workstream list:
+- Use plain-English workstream titles of 9 words or fewer.
+- Keep Task Master IDs, card IDs, Jira IDs, and source IDs in internal refs only.
+- Check off completed items only when the transcript or user confirms completion.
+- Preserve completion date/source in workstream, task, boss tracker, and Trello-managed checklist history.
+- Report source gaps if Quill, Granola, Outlook, Teams, or Slack access was requested but unavailable.
 
 Every summary must include a `Routed Updates` section that lists the exact files updated or says `No durable update required`.
 

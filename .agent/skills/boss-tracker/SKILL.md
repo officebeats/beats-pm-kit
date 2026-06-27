@@ -55,6 +55,36 @@ For every new ask, generate a **Reaction Plan**:
 - **Why It Matters**: [1 line]
 - **Next Step**: [Owner + date]
 
+### Phase 3.6: Outcome Contract for Manager
+
+When preparing manager-facing updates, treat "outcomes" as a succinct list of expected results, action items, and readiness checks.
+
+- Lead with `Outcomes:` before narrative progress.
+- Use plain-English workstream titles of 9 words or fewer.
+- Do not expose Task Master IDs, Trello IDs, Jira IDs, or source IDs in manager-facing titles.
+- Under each workstream, include latest outcomes, completed outcomes, open items, and recommended next 3 actions.
+- Completed outcomes and checked-off items must include completion date/source and stay visible in task, workstream, boss tracker, and Trello managed checklist history.
+- If a completion is implied but not confirmed, ask for confirmation instead of checking it off.
+- Triangulate Outlook, Teams, Slack, Calendar, manual transcripts, Quill, Granola, and local transcript packets against the current workstream list before creating new visible workstreams.
+
+Manager-facing shape:
+
+```markdown
+Outcomes:
+
+[Date/Gate]: [succinct expected result]
+[Date/Gate]: [succinct expected result]
+
+Completed outcomes:
+- [Completed result]
+  - Completed: [date/source]
+
+Readiness checks:
+- [Owner] will [action]
+- [Owner] please [action]
+- [Owner] will [action]
+```
+
 ### Phase 4: Output Rendering
 
 Format the log entry:
