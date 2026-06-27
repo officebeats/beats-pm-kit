@@ -32,6 +32,8 @@ All templates are used by Antigravity Conductor first, with CLI fallback. Prefer
 
 ## Trackers
 
+- `trackers/workstreams.md` — Workstream index
+- `trackers/workstream.md` — Workstream detail page
 - `trackers/bug-report.md` — Bug report
 - `trackers/boss-request.md` — Boss ask
 - `trackers/dependency-map.md` — Cross-team dependency tracker

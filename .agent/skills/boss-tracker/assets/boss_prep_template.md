@@ -2,24 +2,42 @@
 
 > **Days Until 1:1**: [N] (Friday Lunch)
 
-## 🚨 Friday Morning Priorities (Stale Workstreams)
+## Outcomes
 
-*These items have NOT had recent progress and MUST be updated before your 1:1:*
+[Date/Gate]: [succinct expected result]
+[Date/Gate]: [succinct expected result]
 
-| ID | Task | Last Update | Suggested Friday AM Action |
-| :--- | :--- | :--- | :--- |
-| 🔴 [ID] | [Task Name] | [Date or "Unknown"] | [e.g., "Ping Tech Lead for update", "Check JIRA status"] |
+## Completed Outcomes
+
+- [Completed result]
+  - Completed: [date/source]
+- [Completed checklist item]
+  - Completed: [date/source]
 
 ---
 
-## 📋 All Boss Asks (Status + Talking Point)
+## Readiness Checks
 
-*For each workstream, here's what to SAY to your boss:*
+- [Owner] will [action]
+- [Owner] please [action]
+- [Owner] will [action]
 
-| ID | Task | Status | 💬 Talking Point |
-| :--- | :--- | :--- | :--- |
-| [ID] | [Task Name] | [Current Status] | "[One-liner to say, e.g., 'On track for next week, Dev is in code review.']" |
-| [ID] | [Task Name] | [Current Status] | "[One-liner]" |
+---
+
+## Workstreams
+
+### [Workstream Title]
+
+- Latest outcome: [result, decision, or current state]
+  - Evidence: [source/date/path]
+- Completed: [done item or "None newly confirmed"]
+  - Completed: [date/source]
+- Open items: [count or short list]
+  - [Owner] - [action] by [date/gate], from [source]
+- Recommended next 3:
+  - [Action 1]
+  - [Action 2]
+  - [Action 3]
 
 ---
 
@@ -35,7 +53,7 @@
 
 ---
 
-## 🔥 "Closing the Loop" Items
+## Closing the Loop
 
 *These are items your boss specifically asked about that require a status update:*
 
@@ -61,18 +79,28 @@
 
 ---
 
-## 💬 Draft Slack Message (Friday EOD)
+## Draft Teams Message
 
 *Copy/Paste this if you miss the sync or want to send a summary:*
 
 Hey [Boss], wanted to drop a quick update so we end the week strong:
 
-1. **[Top Priority Category]**:
-    a. [Update 1]
-    b. [Update 2]
-2. **[Secondary Priority]**:
-    a. [Update 1]
-3. **[Other Ask]**:
-    a. [Update 1]
+Outcomes
+- [Date/Gate]: [succinct expected result]
+- [Date/Gate]: [succinct expected result]
+
+Completed outcomes
+- [Completed result]
+  - Completed: [date/source]
+
+Readiness checks
+- [Owner] will [action]
+- [Owner] please [action]
+- [Owner] will [action]
+
+Workstreams
+- [Workstream title]
+  - Latest outcome: [current state]
+  - Open items: [owner/action/date]
 
 Have a good weekend!

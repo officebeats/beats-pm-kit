@@ -1,5 +1,5 @@
 ---
-description: Process scoped Slack messages into local Beats PM tasks without sending or mutating Slack.
+description: Process scoped Slack messages into local Beats PM workstreams and tasks without sending or mutating Slack.
 ---
 
 > **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same read-only Slack intake and durable output contract. Prefer the runtime Slack MCP/connector read capability described in `.agent/rules/MCP_COMMUNICATION_INTAKE.md`.
@@ -75,6 +75,8 @@ Read:
 Read optional files only when needed and when they exist:
 - `4. People/`
 - `2. Products/partners/`
+- `5. Trackers/WORKSTREAMS.md`
+- `5. Trackers/workstreams/`
 - `5. Trackers/tasks/`
 - `3. Meetings/chat-transcripts/_manifest.json`
 - `3. Meetings/chat-transcripts/slack/`
@@ -138,12 +140,15 @@ Every successful artifact must include `source_url` in frontmatter and a visible
 ## 7. Extract And Route Tasks
 
 Execute `.agent/skills/slack-task-intake/SKILL.md` with `task-manager` Priority Gate rules:
+- Workstream deltas -> `5. Trackers/WORKSTREAMS.md` and matching `5. Trackers/workstreams/{slug}.md` when present.
 - New action items -> `5. Trackers/TASK_MASTER.md` and task detail files in `5. Trackers/tasks/` when needed.
 - Existing task updates -> task detail `Progress Log` / `Stakeholder Quotes`.
 - Stakeholder enrichment -> `4. People/{firstname-lastname}.md` when useful and bounded.
 - Out-of-scope or unclear items -> final response only, with no Slack response sent.
 
 All Slack-derived updates must be labeled as Slack evidence and include only short snippets plus source references. If an Atlassian artifact materially supports a task or status update, include the local artifact path and full Atlassian source URL in the evidence.
+
+Before creating a new visible workstream, triangulate Slack evidence against the current workstream list. Workstream titles must be plain English, 9 words or fewer, and free of internal Task Master, Trello, Jira, or source IDs. Check off completed items only when Slack evidence or the user explicitly confirms completion, and preserve completion date/source.
 
 ## 8. Write Slack Run Report
 
@@ -161,6 +166,7 @@ The report must include:
 - Chat transcript files written.
 - Atlassian references found, artifacts written, unchanged artifacts skipped, and unresolved references.
 - Candidate tasks and gate outcomes.
+- Workstream outcomes, completed outcomes, open items, and recommended next 3 updates.
 - Issues encountered: connector unavailable or missing read-only operation, read-state uncertainty, scope too broad/missing, Atlassian connector unavailable or unauthorized, Atlassian source URL unresolved, duplicate/previously processed content skipped, reference cap exceeded, or task routing conflicts requiring manual review.
 - Routed Updates listing exact local files changed or `No durable update required`.
 - Items needing manual Slack response by the user.
@@ -180,7 +186,7 @@ Return a compact summary with:
 - Chat transcript files saved.
 - Atlassian artifacts saved or skipped.
 - Files updated.
-- Accepted tasks and IDs.
+- Accepted workstreams, tasks, and internal IDs.
 - Existing task updates.
 - Issues and recommended follow-ups.
 - Items needing confirmation or manual Slack response.
