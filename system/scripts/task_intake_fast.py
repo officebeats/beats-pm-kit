@@ -534,7 +534,7 @@ def update_task_master_status(root: Path, task_id: str, status: str) -> bool:
 def append_fast_triage_row(root: Path, task_id: str, title: str, due: str, status: str) -> None:
     path = root / TASK_MASTER_REL
     text = read_text(path)
-    row = f"| [{task_id}](tasks/{task_id}.md) | **{escape_table(title)}** — Fast intake candidate | OfficeBeats | {due} | {escape_table(status)} |"
+    row = f"| [{task_id}](tasks/{task_id}.md) | **{escape_table(title)}** — Fast intake candidate | Owner | {due} | {escape_table(status)} |"
     if row in text:
         return
     heading = "## Fast Intake Triage"
@@ -580,7 +580,7 @@ def create_candidate_task(
             f"> **Internal ID:** {task_id}",
             f"> **Status:** 🟡 Needs triage — {summary}",
             "> **Lane:** Triage",
-            "> **Owner:** Beats PM Kit",
+            "> **Owner:** Owner",
             "> **Due:** TBD",
             f"> **Created:** {date}",
             f"> **Last Updated:** {date}",

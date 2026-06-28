@@ -29,7 +29,7 @@
 ### [Workstream Title]
 
 - Latest outcome: [result, decision, or current state]
-  - Evidence: [source/date/path]
+  - Evidence: [workstream title; started from initial source on date; latest progress from latest source on date]
 - Completed: [done item or "None newly confirmed"]
   - Completed: [date/source]
 - Open items: [count or short list]

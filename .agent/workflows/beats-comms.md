@@ -6,7 +6,7 @@ description: Run scoped Slack, Teams, Outlook, Calendar, and transcript intake i
 
 # Workflow: `/beats-comms`
 
-Use this workflow as the canonical communication context refresh path. Other workflows may call it before synthesis when the user asks for updated Slack, Teams, Outlook, Calendar, Quill, Granola, or manually pasted transcript context, but only with explicit bounded scopes or user-provided evidence.
+Use this workflow as the canonical communication context refresh path. Other workflows may call it before synthesis when the user asks for updated Slack, Teams, Outlook, Calendar, Quill, Granola, or manually pasted transcript context, but only with explicit named read-only source windows or user-provided evidence.
 
 Read `.agent/rules/MCP_COMMUNICATION_INTAKE.md` before platform reads. It defines the shared runtime capability table for Antigravity, Codex, Claude Code, and fallback bridge behavior.
 
@@ -18,13 +18,13 @@ Load `.agent/skills/pm-decision-router/SKILL.md` before task routing. For manual
 python3 system/scripts/pm_decision_router.py --text "<communication evidence>"
 ```
 
-Use the router result only after bounded source evidence has been collected. `scope_challenge` and `ask_user` results must be returned as explicit questions; do not create active Task Master work from ambiguous communication evidence. Source-system safety rules remain stronger than router output.
+Use the router result only after named read-only source evidence has been collected. `scope_challenge` and `ask_user` results must be returned as explicit questions; do not create active Task Master work from ambiguous communication evidence. Source-system safety rules remain stronger than router output.
 
 ## 1. Resolve Communication Scope
 
 Use the remainder of the user's `/beats-comms` command to determine platform scopes.
 
-If `/beats-comms` is called by `/day`, `/week`, or `/boss`, first use the caller's `critical_commitment_refresh.py plan` output. Manifest-backed scopes from that plan are explicit bounded scopes for this run.
+If `/beats-comms` is called by `/day`, `/week`, or `/boss`, first use the caller's `critical_commitment_refresh.py plan` output. Manifest-backed scopes from that plan are explicit named read-only source windows for this run.
 
 Supported scope forms:
 - `slack: <channel|DM|thread|query|window>`
@@ -39,20 +39,21 @@ If any requested or expected platform lacks explicit scope, ask the user for a s
 Do not broad-scan Slack workspaces, all Teams, all channels, all chats, all DMs, all mail, all folders, full calendar history, or unknown unread surfaces.
 
 If a platform scope omits a time window, compute the effective window with `system/scripts/chat_intake_state.py window`:
-- `slack`, `teams`, and `outlook` default to 5 business days back, shortened to the newer `last_successful_processed_at` for the same platform/scope when present in `3. Meetings/chat-transcripts/_manifest.json`.
-- `calendar` defaults to a 14-day forward lookahead and reports `effective_start_at` plus `effective_end_at`.
+- `slack`, `teams`, and `outlook` default to 5 business days back, shortened to the newer successful checkpoint for the same platform/scope when present in `3. Meetings/chat-transcripts/_manifest.json` or `3. Meetings/reports/command-runs/_manifest.json`.
+- `calendar` includes the last 5 business days of calendar changes plus forward lookahead, shortened only when the same calendar source/window has a newer successful checkpoint.
 
 For Slack scopes that may return many results, including mention/DM intake such as `to:me`, channel history over multiple days, and any explicit window longer than 5 calendar days, pre-plan page-cap-safe reads with `system/scripts/chat_intake_state.py chunks` before calling Slack. Do not try one full-window Slack query first; follow `.agent/workflows/beats-slack.md` and execute the chunk plan oldest-to-newest.
 
 ### Manual Evidence Shortcut
 
-If the user provides the communication evidence directly in the current turn as a screenshot, pasted email/chat text, transcript excerpt, meeting notes, or short exported snippet, do not require a platform scope and do not run connector window/chunk planning. Treat the user-provided artifact as the bounded source.
+If the user provides the communication evidence directly in the current turn as a screenshot, pasted email/chat text, transcript excerpt, meeting notes, or short exported snippet, do not require a platform scope and do not run connector window/chunk planning. Treat the user-provided artifact as the named read-only source for this run.
 
 The shortcut still must:
 - Preserve source-system safety rules.
 - Save a compact transcript under `3. Meetings/chat-transcripts/{platform}/`.
 - Save the platform and combined run reports.
 - Record the successful run in `3. Meetings/chat-transcripts/_manifest.json`.
+- Record the command/source outcome in `3. Meetings/reports/command-runs/_manifest.json` when this intake is invoked by a recurring task command.
 - Route local task/profile updates through `task-manager`.
 - Triangulate the extracted signal against `5. Trackers/WORKSTREAMS.md` and matching `5. Trackers/workstreams/` files when present.
 - Run targeted task health refresh with `python3 system/scripts/task_master_triage.py --apply --touched-task <TASK_ID>` for each touched task.
@@ -92,6 +93,7 @@ After platform-specific transcripts and run reports are written:
 - Deduplicate Atlassian artifact references across all processed platforms by manifest key and content hash.
 - Prefer existing task updates over duplicate new tasks.
 - Map every accepted item to a succinct workstream title of 9 words or fewer. Do not expose internal IDs in user-facing workstream titles.
+- Render user-facing task/workstream evidence from display provenance: readable title, started date/source, and latest progress source. Keep Task Master IDs, Jira IDs, Trello IDs, and source IDs only in local links, metadata, or an `Agent refs` line.
 - Update latest outcomes, completed outcomes, open items, and recommended next 3 actions on the relevant workstream when evidence supports it.
 - Check off completed checklist items only when the source evidence or user confirmation explicitly confirms completion; keep completion date/source visible.
 - Route accepted work to local repo files only.
@@ -109,7 +111,7 @@ Return:
 - Atlassian artifacts saved or skipped.
 - Combined run report path.
 - Files updated.
-- Accepted workstreams, tasks, and internal IDs.
+- Accepted workstreams, tasks, and internal refs.
 - Latest outcomes, completed outcomes, open items, and recommended next 3 by workstream.
 - Issues and recommended follow-ups.
 - Manual Slack/Teams/Outlook follow-ups owned by the user.

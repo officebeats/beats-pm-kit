@@ -24,9 +24,9 @@ class TestCriticalCommitmentRefresh(unittest.TestCase):
         manifest = {
             "schema_version": 1,
             "scopes": {
-                "slack:people-manager": {
+                "slack:people-requester": {
                     "platform": "slack",
-                    "scope": "people: Manager [redacted]",
+                    "scope": "people: requester",
                     "last_successful_processed_at": "2026-06-27T04:12:00Z",
                 }
             },
@@ -36,7 +36,7 @@ class TestCriticalCommitmentRefresh(unittest.TestCase):
         health = {item.source: item for item in ccr.build_health(root)}
 
         self.assertEqual(health["slack"].status, "healthy")
-        self.assertEqual(health["slack"].configured_scope, "people: Manager [redacted]")
+        self.assertEqual(health["slack"].configured_scope, "people: requester")
         self.assertFalse(health["slack"].requires_user_decision)
 
     def test_missing_expected_integration_prompts_user(self):
@@ -54,8 +54,8 @@ class TestCriticalCommitmentRefresh(unittest.TestCase):
                 [
                     "| ID | Task | Owner | Due | Status |",
                     "|:---|:-----|:------|:----|:-------|",
-                    "| [PLAN-001](tasks/PLAN-001.md) | Ordinary stale internal cleanup | OfficeBeats | 2026-01-01 | Active |",
-                    "| [PLAN-002](tasks/PLAN-002.md) | Manager requested a client readiness by 2026-07-10 | OfficeBeats | 2026-07-10 | Active |",
+                    "| [PLAN-001](tasks/PLAN-001.md) | Ordinary stale internal cleanup | Owner | 2026-01-01 | Active |",
+                    "| [PLAN-002](tasks/PLAN-002.md) | Manager requested readiness by 2026-07-10 | Owner | 2026-07-10 | Active |",
                 ]
             ),
             encoding="utf-8",
@@ -73,8 +73,8 @@ class TestCriticalCommitmentRefresh(unittest.TestCase):
                 [
                     "| ID | Task | Owner | Due | Status |",
                     "|:---|:-----|:------|:----|:-------|",
-                    "| [TASK-001](tasks/TASK-001.md) | Internal backlog cleanup | OfficeBeats | TBD | Active |",
-                    "| [TASK-002](tasks/TASK-002.md) | Customer testing commitment by 2026-07-03 | OfficeBeats | 2026-07-03 | Active |",
+                    "| [TASK-001](tasks/TASK-001.md) | Internal backlog cleanup | Owner | TBD | Active |",
+                    "| [TASK-002](tasks/TASK-002.md) | Customer testing commitment by 2026-07-03 | Owner | 2026-07-03 | Active |",
                 ]
             ),
             encoding="utf-8",

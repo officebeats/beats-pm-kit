@@ -14,6 +14,7 @@ Transcripts are task-master management inputs unless the user explicitly asks fo
 - Extract action items, existing-task updates, blockers, decisions that change work, owners, due dates, source references, and follow-up candidates.
 - Map every extracted signal to the current workstream list when possible.
 - Update latest outcomes, completed outcomes, open items, and recommended next 3 actions for the relevant workstream when evidence supports it.
+- Render task/workstream labels and evidence from display provenance: readable title, started date/source, and latest progress source. Keep Task Master IDs, Jira IDs, Trello IDs, and source IDs only in local links, metadata, or an `Agent refs` line.
 - Run accepted new work through `task-manager` Priority Gate before adding it to active trackers.
 - Put uncertain work in the final response as concrete candidate tracker updates for the user to confirm.
 - Preserve the meeting summary and transcript archive, but lead with task-master routing in `Routed Updates`.
@@ -38,10 +39,10 @@ python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json
 
 This step must:
 - Import recent Quill and Granola transcripts when available through read-only MCP/export paths.
-- Accept manual transcript text and local packet files as bounded transcript evidence.
+- Accept manual transcript text and local packet files as named read-only transcript evidence.
 - Normalize date-stamped files from `0. Incoming/` into `3. Meetings/transcripts/`.
-- Collect Outlook inbox/calendar context through read-only MS365 MCP/connector access when the user has provided bounded `/beats-comms outlook:` or `calendar:` scope; otherwise use the pipeline's AppleScript bridge fallback and label that limitation in the run report.
-- Attempt Teams context capture through read-only MS365 MCP/connector access when a bounded Teams scope is provided; otherwise fall back safely without failing the run when Teams access is unavailable.
+- Collect Outlook inbox/calendar context through read-only MS365 MCP/connector access when the user has provided a named read-only `/beats-comms outlook:` or `calendar:` source window; otherwise use the pipeline's AppleScript bridge fallback and label that limitation in the run report.
+- Attempt Teams context capture through read-only MS365 MCP/connector access when a named read-only Teams source window is provided; otherwise fall back safely without failing the run when Teams access is unavailable.
 - Update `3. Meetings/transcripts/_manifest.json`.
 - Create synthesis packets in `3. Meetings/reports/packets/`.
 - Write a run report in `3. Meetings/reports/transcript-runs/`.
@@ -58,7 +59,7 @@ If a configured or expected transcript source is unavailable, unsafe, missing sc
 
 ## 1A. Optional Communication Intake (Read-Only)
 
-Only include live communication context when the user explicitly asks `/transcript` to process it and provides bounded scopes such as `slack:`, `teams:`, `outlook:`, or `calendar:`.
+Only include live communication context when the user explicitly asks `/transcript` to process it and provides named read-only source windows such as `slack:`, `teams:`, `outlook:`, or `calendar:`.
 
 Communication systems are intake-only sources for task compilation:
 - Use only read-only MCP/connector operations permitted by `.agent/rules/MCP_COMMUNICATION_INTAKE.md`.
@@ -114,7 +115,7 @@ Task-master routing is the default path. Every accepted action item or progress 
 
 Every transcript pass must triangulate against the workstream list:
 - Use plain-English workstream titles of 9 words or fewer.
-- Keep Task Master IDs, card IDs, Jira IDs, and source IDs in internal refs only.
+- Keep Task Master IDs, card IDs, Jira IDs, and source IDs in internal refs only; do not expose them in visible task/workstream descriptions, evidence prose, or owner questions.
 - Check off completed items only when the transcript or user confirms completion.
 - Preserve completion date/source in workstream, task, boss tracker, and Trello-managed checklist history.
 - Report source gaps if Quill, Granola, Outlook, Teams, or Slack access was requested but unavailable.
