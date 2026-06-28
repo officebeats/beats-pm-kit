@@ -36,7 +36,7 @@ In a **single turn**, read:
 4. `1. Company/ways-of-working.md` → Review standing agreements and operating rules.
 5. The boss's people profile (e.g., `4. People/{boss-name}.md`) → Check committed tasks ("Awaiting") and interaction patterns.
 6. **Last 2 boss meeting summaries**: Search `3. Meetings/summaries/` for files containing the boss's name. Select the 2 most recent.
-7. **Default source refresh**: Use manifest-backed bounded Slack, Outlook, Calendar, Teams, transcript, Quill, Granola, Obsidian, Atlassian, and agent-memory reads from the preflight plan. Use parallel agents for independent read-only source collection when available.
+7. **Default source refresh**: Use manifest-backed named read-only source windows for Slack, Outlook, Calendar, Teams, transcript, Quill, Granola, Obsidian, Atlassian, and agent-memory reads from the preflight plan. Backward windows default to the last 5 business days and may shorten only from a successful source/command checkpoint for the same source/window; calendar also includes forward lookahead for upcoming active-workstream gates. Use parallel agents for independent read-only source collection when available.
 8. **Calendar**: Use the manifest-backed Calendar scope from the preflight plan with read-only MS365 MCP/connector access. Use `python3 system/scripts/outlook_bridge.py --calendar 7` only as a less-portable fallback after the user approves degraded operation, and label that limitation in the prep notes.
 
 ## 2. Progress Analysis
@@ -50,7 +50,9 @@ For the period since last 1:1:
 6. **What's been learned**: Self-study, product insights, strategic context gathered.
 7. **Blockers**: Anything stuck, awaiting someone, or missing information.
 
-Paru outcome format:
+User-facing task/workstream descriptions must be rendered from display provenance: use the readable title, started date/source, and latest progress source. Keep Task Master IDs, Jira IDs, Trello IDs, and source IDs only in local links, metadata, or an `Agent refs` line, never in manager-facing titles, evidence prose, or questions.
+
+Manager outcome format:
 
 ```markdown
 Outcomes:
@@ -112,6 +114,7 @@ Generate a copy-paste-ready Teams DM that:
 - Covers: Outcomes, Completed outcomes, Readiness checks, Blockers/FYIs, and Questions for today
 - Tone: Professional but personable, shows initiative without overdoing it
 - Uses workstream titles of 9 words or fewer and does not expose internal task/card/source IDs
+- Uses provenance evidence like `[task/workstream title]; started from [initial source] on [date]; latest progress from [latest source] on [date]`
 
 Present the DM to the user for review before they send it.
 

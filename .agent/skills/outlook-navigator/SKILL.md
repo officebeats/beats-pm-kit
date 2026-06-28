@@ -8,21 +8,21 @@ description: Read-only Outlook mail and Calendar intake for context, task extrac
 # Outlook Navigator Skill
 
 ## Goal
-The outlook-navigator is the read-only mail and calendar intake path. It fetches bounded Outlook and Calendar context for local workstream/task synthesis but does not mutate Microsoft 365 state.
+The outlook-navigator is the read-only mail and calendar intake path. It fetches named Outlook and Calendar source windows for local workstream/task synthesis but does not mutate Microsoft 365 state.
 
 ## Inputs
 - `/outlook` (Fetch last 5)
 - `/outlook --count 10`
 - `/outlook --calendar 7` (Fetch calendar events for next N days)
-- `/beats-comms outlook: <bounded mail query/window>`
-- `/beats-comms calendar: <bounded lookahead/window>`
+- `/beats-comms outlook: <named mail query/window>`
+- `/beats-comms calendar: <named lookahead/window>`
 - `/inbox`
 
 ## Protocol
 
 ### Step 1: Resolve Scope And Window
 
-Require an explicit bounded mail or calendar scope before reading source systems.
+Require an explicit named read-only mail or calendar source window before reading source systems.
 
 Valid mail scopes include sender, subject keyword, folder, conversation, or time window. Valid calendar scopes include lookahead days, date range, meeting title, or participant.
 
@@ -48,7 +48,7 @@ Do not use write-capable tools for sends, replies, forwards, draft creation, eve
 
 Use `outlook_bridge.py` only when MCP/connector reads are unavailable or the runtime cannot surface the needed read operation. Label this as a less-portable AppleScript fallback in the run report.
 
-Fetch recent bounded inbox snippets:
+Fetch recent scoped inbox snippets:
 
 ```bash
 python3 system/scripts/outlook_bridge.py --count {n}
@@ -68,7 +68,7 @@ python3 system/scripts/outlook_bridge.py --calendar {days}
 
 ### Step 4: Persist Local Evidence
 
-Save bounded evidence through `.agent/skills/chat-transcript-archive/SKILL.md`:
+Save named source evidence through `.agent/skills/chat-transcript-archive/SKILL.md`:
 
 - Outlook transcript -> `3. Meetings/chat-transcripts/outlook/{YYYY-MM-DD}_{scope-slug}_{RUN_ID}.md`
 - Calendar transcript -> `3. Meetings/chat-transcripts/calendar/{YYYY-MM-DD}_{scope-slug}_{RUN_ID}.md`
@@ -79,7 +79,7 @@ Use short snippets and metadata, not full unbounded mailbox or calendar dumps. T
 
 If an upcoming calendar event maps to an active task in `TASK_MASTER.md` to "Schedule a meeting with X", update the task status to `🗓️ Scheduled for [Date]` instead of completing it.
 
-Triangulate bounded mail and calendar evidence against `5. Trackers/WORKSTREAMS.md` and matching `5. Trackers/workstreams/` files when present. Workstream titles must be plain English, 9 words or fewer, and free of Task Master, Trello, Jira, or source IDs.
+Triangulate named mail and calendar evidence against `5. Trackers/WORKSTREAMS.md` and matching `5. Trackers/workstreams/` files when present. Workstream titles must be plain English, 9 words or fewer, and free of Task Master, Trello, Jira, or source IDs.
 
 ### Step 5: Analyze
 - Identify **Deadlines** (dates, "by Friday", "asap").

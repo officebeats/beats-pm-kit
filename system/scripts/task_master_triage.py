@@ -19,6 +19,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import quote
 
+try:  # pragma: no cover - import path differs for script vs package execution.
+    from . import task_display
+except ImportError:  # pragma: no cover
+    import task_display
+
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 TASK_MASTER_PATH = BASE_DIR / "5. Trackers" / "TASK_MASTER.md"
@@ -477,7 +482,7 @@ def build_summary_block(items: list[TriageItem], report_path: Path) -> str:
         lines.append("- No urgent triage pillar was detected.")
     else:
         for item in pillars:
-            lines.append(f"- `{item.task_id}` — {item.title}: {item.reason}")
+            lines.append(f"- {item.title}: {item.reason}")
     lines.extend(
         [
             "",
@@ -491,7 +496,7 @@ def build_summary_block(items: list[TriageItem], report_path: Path) -> str:
         for item in items:
             link = item.path.relative_to(TASK_MASTER_PATH.parent).as_posix()
             lines.append(
-                f"| [{item.task_id}]({link}) | {item.need} | {item.reason} | {item.evidence} |"
+                f"| [{item.title}]({link}) | {item.need} | {item.reason} | {item.evidence} |"
             )
         lines.extend(
             [
@@ -501,7 +506,7 @@ def build_summary_block(items: list[TriageItem], report_path: Path) -> str:
             ]
         )
         for index, item in enumerate(items, start=1):
-            lines.append(f"{index}. `{item.task_id}` — {item.title}: {item.question}")
+            lines.append(f"{index}. {item.title}: {item.question}")
     return "\n".join(lines)
 
 
@@ -522,7 +527,7 @@ def build_report(items: list[TriageItem]) -> str:
         lines.append("- No urgent triage pillar was detected.")
     else:
         for item in items[:3]:
-            lines.append(f"- `{item.task_id}` — {item.title}: {item.reason}")
+            lines.append(f"- {item.title}: {item.reason}")
     lines.extend(
         [
             "",
@@ -534,7 +539,7 @@ def build_report(items: list[TriageItem]) -> str:
         lines.append("- No overdue, stale, or likely-complete open items were detected from local task files.")
     else:
         for item in items:
-            lines.append(f"- `{item.task_id}` — {item.title} ({item.need}): {item.question}")
+            lines.append(f"- {item.title} ({item.need}): {item.question}")
     lines.extend(
         [
             "",
@@ -548,11 +553,12 @@ def build_report(items: list[TriageItem]) -> str:
         for item in items:
             lines.extend(
                 [
-                    f"### {item.task_id} — {item.title}",
+                    f"### {item.title}",
                     f"- What it is: {item.summary}",
                     f"- Last activity: {item.last_activity}",
                     f"- Communication signal: {item.comms_signal}",
                     f"- Relevant links: {' | '.join(item.relevant_links)}",
+                    f"- Agent refs: {item.task_id}",
                     f"- Clarify: {item.question}",
                     "",
                 ]
@@ -564,7 +570,16 @@ def collect_triage() -> tuple[list[TriageItem], dict[str, list[TriageItem]]]:
     items: list[TriageItem] = []
     by_task: dict[str, list[TriageItem]] = {}
     today = today_local()
-    for record in parse_task_master():
+    records = parse_task_master()
+    known_titles: dict[str, str] = {}
+    for record in records:
+        text = read_text(record.path)
+        known_titles[record.task_id] = parse_headline_title(text) or record.title
+
+    def scrub(value: str) -> str:
+        return task_display.scrub_visible_refs(value, known_titles)
+
+    for record in records:
         text = read_text(record.path)
         if not text:
             continue
@@ -576,8 +591,8 @@ def collect_triage() -> tuple[list[TriageItem], dict[str, list[TriageItem]]]:
         due_date = parse_iso_date(due_text)
         last_updated_text = task_header_value(text, "Last Updated")
         last_updated_date = parse_iso_date(last_updated_text)
-        display_title = parse_headline_title(text) or record.title
-        summary = parse_context_summary(text) or display_title
+        display_title = scrub(parse_headline_title(text) or record.title)
+        summary = scrub(parse_context_summary(text) or display_title)
         progress_entries = parse_progress_entries(text)
         progress_dates = [parse_iso_date(entry.date) for entry in progress_entries if parse_iso_date(entry.date)]
         latest_progress = max(progress_dates) if progress_dates else None
@@ -585,12 +600,12 @@ def collect_triage() -> tuple[list[TriageItem], dict[str, list[TriageItem]]]:
         latest_entry = progress_entries[-1] if progress_entries else None
         latest_row = latest_progress_row(text)
         if latest_entry:
-            last_activity = f"{latest_entry.date} via {source_type(latest_entry.source)}: {latest_entry.update}"
+            last_activity = scrub(f"{latest_entry.date} via {source_type(latest_entry.source)}: {latest_entry.update}")
         elif last_updated_date:
             last_activity = f"Last Updated {iso_date(last_updated_date)} with no structured progress entry."
         else:
             last_activity = "No structured recent activity found in the task file."
-        comms_signal = infer_comms_signal(latest_entry)
+        comms_signal = scrub(infer_comms_signal(latest_entry))
         relevant_links = select_relevant_links(record.path, parse_reference_links(text, record.path.parent))
         subtasks_done, subtasks_total = parse_subtasks(text)
 
@@ -605,8 +620,8 @@ def collect_triage() -> tuple[list[TriageItem], dict[str, list[TriageItem]]]:
                         title=display_title,
                         path=record.path,
                         need="Overdue",
-                        reason=f"due date {iso_date(due_date)} has passed and the task is still open",
-                        evidence=f"Task file due `{iso_date(due_date)}`; status `{status}`",
+                        reason=scrub(f"due date {iso_date(due_date)} has passed and the task is still open"),
+                        evidence=scrub(f"Task file due `{iso_date(due_date)}`; status `{status}`"),
                         question=f"is this still open, and if yes what exact new due date should replace {iso_date(due_date)}?",
                         severity=0,
                         summary=summary,
@@ -622,8 +637,8 @@ def collect_triage() -> tuple[list[TriageItem], dict[str, list[TriageItem]]]:
                         title=display_title,
                         path=record.path,
                         need="At risk",
-                        reason=f"due date {iso_date(due_date)} is within {days_until_due} business day(s) and the task is not clearly done",
-                        evidence=f"Task file due `{iso_date(due_date)}`; status `{status}`",
+                        reason=scrub(f"due date {iso_date(due_date)} is within {days_until_due} business day(s) and the task is not clearly done"),
+                        evidence=scrub(f"Task file due `{iso_date(due_date)}`; status `{status}`"),
                         question=f"is the current due date {iso_date(due_date)} still realistic, or should this be rescheduled or split?",
                         severity=3,
                         summary=summary,
@@ -642,7 +657,7 @@ def collect_triage() -> tuple[list[TriageItem], dict[str, list[TriageItem]]]:
                         title=display_title,
                         path=record.path,
                         need="Stale",
-                        reason=f"no local progress signal has been recorded for {stale_days} business days",
+                        reason=scrub(f"no local progress signal has been recorded for {stale_days} business days"),
                         evidence=f"Last Updated `{iso_date(evidence_date)}`",
                         question="is this still active, blocked, or ready to be deprioritized or closed?",
                         severity=2,
@@ -662,8 +677,8 @@ def collect_triage() -> tuple[list[TriageItem], dict[str, list[TriageItem]]]:
                     title=display_title,
                     path=record.path,
                     need="Possibly complete",
-                    reason=complete_reason,
-                    evidence=evidence or f"Status `{status}`",
+                    reason=scrub(complete_reason),
+                    evidence=scrub(evidence or f"Status `{status}`"),
                     question="can this be marked done or partial, or is a remaining deliverable still open?",
                     severity=1,
                     summary=summary,
@@ -719,7 +734,7 @@ def apply_updates(
 def print_questions(items: list[TriageItem]) -> None:
     print(f"Items needing confirmation: {len(items)}")
     for item in items:
-        print(f"- {item.task_id} — {item.title} [{item.need}]: {item.question}")
+        print(f"- {item.title} [{item.need}]: {item.question}")
 
 
 def main() -> int:
