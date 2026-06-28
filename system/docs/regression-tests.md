@@ -8,7 +8,7 @@ Run the CI gate locally with:
 python3 -B system/scripts/run_real_usecase_tests.py --ci
 ```
 
-Fixtures live under `system/tests/fixtures/workspaces/` and should represent realistic PM inputs, expected artifact deltas, and bounded failure modes.
+Fixtures live under `system/tests/fixtures/workspaces/` and should represent realistic PM inputs, expected artifact deltas, and scoped failure modes.
 
 ---
 
@@ -30,7 +30,7 @@ These scenarios define the release gate for the core kit workflows after a safe 
 **Test Steps:**
 1. Run `python3 system/scripts/task_master_triage.py --apply` -> a triage report is generated and managed triage blocks are updated.
 2. Run the same command with `--touched-task <ID>` -> only relevant scoped analysis is refreshed.
-3. Invoke `/track` with a bounded pasted task update -> accepted changes route to local tracker files.
+3. Invoke `/track` with a scoped pasted task update -> accepted changes route to local tracker files.
 
 **Expected Outcomes:**
 - Existing non-managed task content is preserved.
@@ -108,14 +108,14 @@ These scenarios define the release gate for the core kit workflows after a safe 
 **Test Objective:** Verify that `/beats-comms`, `/beats-slack`, and `/beats-teams` require explicit scope, preserve read-only source-system safety, and produce local manifests/reports.
 
 **Starting Conditions:**
-- The user provides a bounded scope such as `slack: #team channel last 5 business days` or `teams: named chat last 3 days`.
+- The user provides a named read-only source window such as `slack: #team channel last 5 business days` or `teams: named chat last 3 days`.
 - Connector availability may vary by runtime.
 
 **User Role:** PM kit operator
 
 **Test Steps:**
-1. Invoke `/beats-comms` without bounded scope -> workflow asks for missing scope instead of broad-scanning.
-2. Invoke with a bounded Slack or Teams scope -> saved transcripts and run reports are written locally.
+1. Invoke `/beats-comms` without a named read-only source window -> workflow asks for the missing window instead of broad-scanning.
+2. Invoke with a named Slack or Teams source window -> saved transcripts and run reports are written locally.
 3. Use a dense Slack window -> chunk planning is computed before reads proceed.
 
 **Expected Outcomes:**

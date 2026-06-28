@@ -4,7 +4,7 @@ Deterministic transcript pipeline for /transcript workflows.
 This script owns the runtime-safe parts of transcript processing:
 - import/normalize transcript files
 - maintain a hash-based manifest
-- create bounded synthesis packets for model runtimes
+- create scoped synthesis packets for model runtimes
 - validate synthesized summaries before marking transcripts complete
 - emit compact recent-meeting output
 
@@ -334,7 +334,7 @@ def collect_sources(root: Path, skip_import: bool = False) -> dict[str, Any]:
         "status": "ok" if teams["returncode"] == 0 else "unavailable",
         "result": teams,
         "remediation": (
-            "Prefer bounded /beats-comms teams: scope with read-only MS365 MCP/connector access. "
+            "Prefer a named read-only /beats-comms teams: source window with read-only MS365 MCP/connector access. "
             "If unavailable, open Teams, select/copy the target chat/channel, then rerun prepare."
         ),
     }

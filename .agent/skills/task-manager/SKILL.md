@@ -13,7 +13,7 @@ triggers:
   - "/transcript"
   - "screenshot"
   - "transcript"
-version: 4.0.0 (Priority Gate)
+version: 4.1.0 (Workstream Snapshot)
 author: Beats PM Brain
 ---
 
@@ -27,7 +27,7 @@ author: Beats PM Brain
 
 ## 1. Native Interface
 
-- **Inputs**: /task, /triage, /paste screenshots, /transcript packets, BRAIN_DUMP.md (Inbox), TASK_MASTER.md (Ledger).
+- **Inputs**: /task, /triage, /paste screenshots, /transcript packets, bare `task-manager` / `$task-manager`, BRAIN_DUMP.md (Inbox), TASK_MASTER.md (Ledger).
 - **Tools**: run_command (cat), view_file.
 
 If Trello is enabled in local settings/config and the entrypoint is `/track`, run:
@@ -40,7 +40,29 @@ Then review `system/inbox/trello/reports/latest-intake.md` plus packet files in 
 
 ---
 
-## 1A. Default Evidence Inputs
+## 1A. No-Context Workstream Snapshot
+
+When the user invokes `task-manager`, `$task-manager`, `/task`, or the Task Manager skill without additional pasted evidence, a command, or a scoped source:
+
+1. Do **not** broad-scan Outlook, Teams, Slack, Trello, Jira, Confluence, Quill, Granola, Obsidian, or local graph memory.
+2. Return the human-facing workstream snapshot first, using:
+
+```bash
+python3 system/scripts/workstream_snapshot.py --mode task --limit 12
+```
+
+3. If `5. Trackers/WORKSTREAMS.md` has real workstream rows, render those rows exactly in the title, bullet, and sub-bullet format from § 1B.
+4. If `5. Trackers/WORKSTREAMS.md` is missing or only contains the template row, use the script fallback from ranked local Task Master commitments and say that it is a local fallback, not a live-source refresh.
+5. Keep internal Task Master IDs, Jira IDs, Trello IDs, and source IDs out of headings and evidence prose. Use them only as local links, metadata, or an `Agent refs` line.
+6. Include a short coverage note:
+   - `Local workstream snapshot only` when no live source refresh was requested.
+   - `Live refresh blocked` only when a requested or configured source failed health and the user must decide how to proceed.
+
+This no-context mode is a snapshot command, not a triage run. Do not run `task_master_triage.py --apply`, Trello sync, live connector reads, or third-party health prompts unless the user asks for a refresh, `/day`, `/week`, `/boss`, `/track`, `/beats-comms`, or a scoped source intake.
+
+---
+
+## 1B. Default Evidence Inputs
 
 Screenshots/images and transcripts are task-master management inputs by default.
 
@@ -49,33 +71,38 @@ Screenshots/images and transcripts are task-master management inputs by default.
 - If the source is ambiguous, return exact candidate `TASK_MASTER.md` rows or detail-file updates for the user to confirm.
 - Do not treat screenshots or transcripts as generic profile lookup, reply drafting, or summary requests unless the user explicitly asks for that in the same turn.
 
-## 1B. Workstream Operating Model
+## 1C. Workstream Operating Model
 
 The human-facing unit of planning is the workstream, not the Task Master ID.
 
 - Maintain the workstream index in `5. Trackers/WORKSTREAMS.md` when present.
 - Maintain per-workstream detail files in `5. Trackers/workstreams/{slug}.md` when present.
 - Workstream titles must be well-articulated, plain English, and 9 words or fewer.
-- Do not show Task Master IDs, Jira IDs, card IDs, or source IDs in the workstream title. Keep them in agent refs, links, metadata, card bodies, managed comments, or evidence logs.
+- Do not show Task Master IDs, Jira IDs, card IDs, or source IDs in workstream titles, task labels, evidence prose, or owner questions. Keep them in agent refs, links, metadata, card bodies, managed comments, or evidence logs.
 - Each workstream must track:
   - Latest outcomes.
   - Completed outcomes and completed checklist items, with completion date and source.
-  - Open items from Outlook, Teams, Slack, Calendar, manual transcripts, Quill, Granola, and local transcript packets when bounded access is available.
+  - Open items from Outlook, Teams, Slack, Calendar, manual transcripts, Quill, Granola, and local transcript packets when a named read-only source window is available.
   - The recommended next 3 actions.
   - Internal agent references linking to Task Master rows, task files, Trello cards, Jira/Confluence artifacts, and transcript/chat evidence.
 - Before finishing `/task`, `/track`, `/day`, `/week`, `/boss`, `/beats-comms`, or `/transcript`, reconcile new evidence against the workstream list so duplicate source signals consolidate into the same workstream instead of creating parallel status islands.
 - Before recurring aggregation for `/day`, `/week`, or `/boss`, run `python3 system/scripts/critical_commitment_refresh.py plan --mode <day|week|boss> --json` and `python3 system/scripts/critical_commitment_refresh.py rank --mode <day|week|boss> --json`.
 - If a configured or expected integration is broken, unavailable, missing a scope, or unsafe, prompt the user with what failed, why it matters, the recommended fix, and safe choices. Do not silently proceed with degraded coverage.
-- If live Outlook, Teams, Slack, Quill, Granola, Obsidian, or graph-memory access is unavailable or not scoped, prompt instead of broad-scanning. Continue degraded only after the user explicitly chooses to skip once, paste/export evidence, configure the source, or disable it from defaults.
+- If live Outlook, Teams, Slack, Quill, Granola, Obsidian, or graph-memory access is unavailable or lacks a named read-only source window, prompt instead of broad-scanning. Continue degraded only after the user explicitly chooses to skip once, paste/export evidence, configure the source, or disable it from defaults.
 - Treat third-party systems as read-only unless the user explicitly confirms the exact mutation in the current turn. Never send, draft, reply, react, schedule, create, assign, transition, comment, upload, patch, delete, or move third-party state by default.
 - Leadership, boss-of-boss, external partner/customer, and dated end-user commitments must rank above ordinary stale work.
+- Intake from Outlook, Teams, Slack, Planner, Atlassian, transcripts, Quill, Granola, Trello, Obsidian, and graph memory must normalize into this workstream model before creating new local tasks.
+- Each source finding should carry: workstream match/title, latest outcome, completed outcome signal, open item, recommended next action, authority tier, commitment type, due gate, evidence strength, completion state, and source reference.
+- Each task/workstream display must carry `display_title`, `started_at`, `initial_source`, `latest_source`, and internal `agent_refs`. Render evidence as `[title]; started from [initial source] on [date]; latest progress from [latest source] on [date].`
+- Explicit completion evidence may check off local/Trello checklist items and must preserve the completion date/source.
+- Implied completion evidence becomes a confirmation question; do not check off the item silently.
 
 Default user-facing format:
 
 ```markdown
 ### Workstream Title
 - Latest outcome: [succinct result, decision, or state]
-  - Evidence: [source, date, link/path when available]
+  - Evidence: [task/workstream title; started from initial source on date; latest progress from latest source on date]
 - Completed: [done item or "None newly confirmed"]
   - Completed: [date/source]
 - Open items: [count or short list]
@@ -88,7 +115,7 @@ Default user-facing format:
 
 Use this title, bullet, and sub-bullet structure for recurring Task Master-related closeouts unless the user explicitly asks for a table or export format.
 
-## 1C. Fast Raw-Evidence Intake
+## 1D. Fast Raw-Evidence Intake
 
 For a single pasted email/chat/thread or a message prefaced with "for task manager", use the fast path unless the user explicitly asks for full triage, Trello sync, `/day`, `/week`, or broad communication refresh:
 
@@ -183,6 +210,8 @@ The authoritative source for scope and operating rules is: `1. Company/ways-of-w
 
 Before finishing `/task`, `/triage`, or any daily planning pass:
 
+Exception: the no-context workstream snapshot mode in § 1A is read-only and must not run this broad apply pass unless the user asks for triage or refresh.
+
 1. Run `python3 system/scripts/task_master_triage.py --apply`
 2. Refresh the managed triage summary block in `5. Trackers/TASK_MASTER.md`
 3. Refresh `5. Trackers/WORKSTREAMS.md` and matching `5. Trackers/workstreams/` files when they exist
@@ -223,7 +252,7 @@ python3 system/scripts/task_master_triage.py --apply --touched-task TASK-123
 - **Movement summary**: Show exactly what moved Inbox -> Ledger after the workstream readout.
 - **Gate Results**: Flag any tasks that were rejected or flagged "Needs manager approval."
 - **Next Action**: Suggest the top `Today` item from `5. Trackers/TASK_MASTER.md`.
-- **Display rule**: Show descriptive workstream/task phrases first. Put internal IDs in parentheses or links only when needed.
+- **Display rule**: Show descriptive workstream/task phrases first. Put internal IDs only in local links, metadata, managed bodies, or an `Agent refs` line.
 
 ---
 
