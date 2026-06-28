@@ -70,13 +70,14 @@ For every new ask, generate a **Reaction Plan**:
 - **Why It Matters**: [1 line]
 - **Next Step**: [Owner + date]
 
-### Phase 3.6: Outcome Contract for Manager
+### Phase 3.6: Outcome Contract for Manager Updates
 
 When preparing manager-facing updates, treat "outcomes" as a succinct list of expected results, action items, and readiness checks.
 
 - Lead with `Outcomes:` before narrative progress.
 - Use plain-English workstream titles of 9 words or fewer.
-- Do not expose Task Master IDs, Trello IDs, Jira IDs, or source IDs in manager-facing titles.
+- Do not expose Task Master IDs, Trello IDs, Jira IDs, or source IDs in manager-facing titles, evidence prose, or questions. Keep them only in local links, metadata, or an `Agent refs` line.
+- Render evidence from display provenance: `[task/workstream title]; started from [initial source] on [date]; latest progress from [latest source] on [date].`
 - Under each workstream, include latest outcomes, completed outcomes, open items, and recommended next 3 actions.
 - Completed outcomes and checked-off items must include completion date/source and stay visible in task, workstream, boss tracker, and Trello managed checklist history.
 - If a completion is implied but not confirmed, ask for confirmation instead of checking it off.

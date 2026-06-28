@@ -8,7 +8,7 @@
 ## Latest Outcomes
 
 - [Result, decision, or current state]
-  - Evidence: [source/date/path]
+  - Evidence: [workstream title; started from initial source on date; latest progress from latest source on date]
 
 ## Completed Outcomes
 

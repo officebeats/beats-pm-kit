@@ -2,7 +2,7 @@
 """Plan and rank critical commitment intake for recurring Beats PM commands.
 
 This helper is deterministic and local-first. It does not read or mutate live
-third-party systems. It builds bounded source plans from local manifests and
+third-party systems. It builds named read-only source windows from local manifests and
 config, reports expected integration failures loudly, and ranks local work so
 leadership/customer commitments do not get buried under ordinary stale work.
 """
@@ -13,12 +13,17 @@ import argparse
 import datetime as dt
 import json
 import re
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from system.scripts import task_display  # noqa: E402
+
 CONFIG_TEMPLATE = ROOT / "system" / "config" / "critical_intake.template.json"
 CONFIG_LOCAL = ROOT / "system" / "config" / "critical_intake.local.json"
 CHAT_MANIFEST = Path("3. Meetings/chat-transcripts/_manifest.json")
@@ -85,6 +90,12 @@ class RankedItem:
     priority_reason: str
     score: int
     task_id: str = ""
+    display_title: str = ""
+    started_at: str = ""
+    initial_source: str = ""
+    latest_source: str = ""
+    display_evidence: str = ""
+    agent_refs: list[str] | None = None
 
 
 def read_json(path: Path, default: Any) -> Any:
@@ -195,7 +206,7 @@ def source_health(root: Path, source: str, source_config: dict[str, Any], groupe
                 last_successful_at=newest_success(entries),
                 configured_scope=scope_summary(entries),
                 risk_if_skipped=risk,
-                recommended_fix="Use the manifest-backed bounded scope for this run.",
+                recommended_fix="Use the manifest-backed named read-only source window for this run.",
                 requires_user_decision=False,
                 read_only=True,
             )
@@ -205,7 +216,7 @@ def source_health(root: Path, source: str, source_config: dict[str, Any], groupe
             last_successful_at="",
             configured_scope="",
             risk_if_skipped=risk,
-            recommended_fix=f"Add a bounded {source} scope to critical_intake.local.json or run /beats-comms {source}: <scope> once.",
+            recommended_fix=f"Add a named read-only {source} source window to critical_intake.local.json or run /beats-comms {source}: <scope> once.",
             requires_user_decision=True,
             read_only=True,
         )
@@ -254,16 +265,16 @@ def source_health(root: Path, source: str, source_config: dict[str, Any], groupe
         artifact_manifest = root / "3. Meetings" / "context-artifacts" / "atlassian" / "_manifest.json"
         if artifact_manifest.exists():
             return SourceHealth(source, "healthy", "", "referenced artifacts manifest", risk, "Use referenced-only local artifacts and read-only fetches.", False, True)
-        return SourceHealth(source, "degraded", "", "referenced-only", risk, "Fetch only Jira/Confluence links found in bounded evidence, or skip Atlassian once.", True, True)
+        return SourceHealth(source, "degraded", "", "referenced-only", risk, "Fetch only Jira/Confluence links found in named source evidence, or skip Atlassian once.", True, True)
 
     if source == "trello":
         trello_enabled = parse_settings_enabled(root, "Trello")
         config_path = root / "system" / "config" / "trello_config.json"
         if trello_enabled is False and not config_path.exists():
-            return SourceHealth(source, "disabled", "", "Trello disabled in SETTINGS.md", risk, "Enable Trello config before bounded board sync.", False, False)
+            return SourceHealth(source, "disabled", "", "Trello disabled in SETTINGS.md", risk, "Enable Trello config before named board sync.", False, False)
         if config_path.exists():
-            return SourceHealth(source, "healthy", "", str(config_path), risk, "Run status and bounded dry-run before any apply.", False, False)
-        return SourceHealth(source, "missing_config", "", str(config_path), risk, "Copy trello_config.template.json locally and enable bounded apply.", True, False)
+            return SourceHealth(source, "healthy", "", str(config_path), risk, "Run status and scoped dry-run before any apply.", False, False)
+        return SourceHealth(source, "missing_config", "", str(config_path), risk, "Copy trello_config.template.json locally and enable scoped apply.", True, False)
 
     return SourceHealth(source, "unavailable", "", "", risk, "Add a supported source health handler.", True, read_only)
 
@@ -433,6 +444,17 @@ def build_ranked_items(root: Path, mode: str) -> list[RankedItem]:
         if mode == "boss" and tier != "standard":
             score += 120
             reason += ", boss-mode boost"
+        task_id = item.get("task_id", "")
+        task_path = root / "5. Trackers" / "tasks" / f"{task_id}.md" if task_id else Path()
+        if task_id and task_path.exists():
+            provenance = task_display.build_provenance(task_path, fallback_title=item.get("title", ""), extra_refs=[task_id])
+        else:
+            provenance = task_display.provenance_from_title(
+                item.get("title", ""),
+                source=item.get("source", "Local tracker"),
+                date=gate.isoformat() if gate else "",
+                agent_refs=[task_id] if task_id else [],
+            )
         ranked.append(
             RankedItem(
                 title=item.get("title", ""),
@@ -445,7 +467,13 @@ def build_ranked_items(root: Path, mode: str) -> list[RankedItem]:
                 completion_state=state,
                 priority_reason=reason,
                 score=score,
-                task_id=item.get("task_id", ""),
+                task_id=task_id,
+                display_title=provenance.display_title,
+                started_at=provenance.started_at,
+                initial_source=task_display.format_source_pointer(provenance.initial_source),
+                latest_source=task_display.format_source_pointer(provenance.latest_source),
+                display_evidence=task_display.format_evidence(provenance),
+                agent_refs=provenance.agent_refs,
             )
         )
     ranked.sort(key=lambda item: (-item.score, item.gate_date or "9999-12-31", item.title))
@@ -461,6 +489,7 @@ def build_plan(root: Path, mode: str) -> dict[str, Any]:
             "configured_scope": item.configured_scope,
             "last_successful_at": item.last_successful_at,
             "requires_user_decision": item.requires_user_decision,
+            "configured_read_window": item.configured_scope,
         }
         for item in health
     }
@@ -503,7 +532,7 @@ def main() -> int:
     health_parser = subparsers.add_parser("health", help="Report integration health and prompts.")
     health_parser.add_argument("--json", action="store_true", help="Emit JSON. Default is JSON for automation.")
 
-    plan_parser = subparsers.add_parser("plan", help="Build bounded source plan.")
+    plan_parser = subparsers.add_parser("plan", help="Build named read-only source windows.")
     plan_parser.add_argument("--mode", choices=["day", "week", "boss"], required=True)
     plan_parser.add_argument("--json", action="store_true")
 

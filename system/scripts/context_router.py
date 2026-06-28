@@ -269,7 +269,7 @@ def missing_scopes_for(query: str, match_count: int) -> list[str]:
     lowered = query.lower()
     missing: list[str] = []
     if any(word in lowered for word in ["slack", "teams", "outlook", "calendar"]):
-        missing.append("Live communication context requires an explicit bounded scope before source-system reads.")
+        missing.append("Live communication context requires an explicit named read-only source window before source-system reads.")
     if any(word in lowered for word in ["jira", "confluence"]):
         missing.append("Atlassian context is captured only from referenced local links or explicit read-only scope.")
     if match_count == 0:
