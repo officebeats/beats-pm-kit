@@ -20,7 +20,7 @@ class TestTaskIntakeFast(unittest.TestCase):
                     "",
                     "| ID | Task | Owner | Due | Status |",
                     "|:---|:-----|:------|:----|:-------|",
-                    "| [PARU-014](tasks/PARU-014.md) | **Review DS Guideline Recommendation work** — GLR ramp | Ernesto | 2026-05-13 | 🔴 Active — GLR production target needs context |",
+                    "| [PARU-014](tasks/PARU-014.md) | **Review DS Guideline Recommendation work** — GLR ramp | Owner | 2026-05-13 | 🔴 Active — GLR production target needs context |",
                 ]
             ),
             encoding="utf-8",
@@ -31,18 +31,18 @@ class TestTaskIntakeFast(unittest.TestCase):
                     "# PARU-014 — Review DS Guideline Recommendation work",
                     "",
                     "> **Status:** 🔴 Active — GLR production target needs context",
-                    "> **Owner:** Beats PM Kit",
+                    "> **Owner:** Owner",
                     "> **Last Updated:** 2026-06-17",
                     "",
                     "## Context & Background",
                     "",
-                    "Guideline Recommender, GLR, reasoning service, IAD, Indicia, Abbey, tenant-specific configuration, and June 30 production target.",
+                    "Guideline Recommender, GLR, reasoning service, IAD, Indicia, stakeholder-specific configuration, and June 30 production target.",
                     "",
                     "## 👥 Stakeholders",
                     "",
                     "| Role | Person | Context |",
                     "|:-----|:-------|:--------|",
-                    "| Consult | Abbey Armstead | IAD / Indicia context |",
+                    "| Consult | Stakeholder One | IAD / Indicia context |",
                     "",
                     "## 📎 References",
                     "",
@@ -53,7 +53,7 @@ class TestTaskIntakeFast(unittest.TestCase):
                     "",
                     "| Date | Source | Update / Outcome | Status |",
                     "|:-----|:-------|:-----------------|:-------|",
-                    "| 2026-06-17 | Calendar | Tavis GLR follow-up is next checkpoint. | 🔴 |",
+                    "| 2026-06-17 | Calendar | Stakeholder follow-up is next checkpoint. | 🔴 |",
                     "",
                     "## ✅ Subtasks",
                     "",
@@ -68,18 +68,18 @@ class TestTaskIntakeFast(unittest.TestCase):
         root = self.make_repo()
         raw = "\n".join(
             [
-                "Abbey Armstead",
-                "Beats PM Kit 2:00 PM",
-                "Paru said Ernesto will set-up some time to talk to you about guideline/tenant specific configuration.",
-                "Abbey 3:30 PM",
+                "Stakeholder One",
+                "Task Owner 2:00 PM",
+                "IAD Indicia guideline tenant configuration needs task owner follow-up with the stakeholder.",
+                "Stakeholder One 3:30 PM",
                 "I think this was all referring to the set up we are doing to provide LLM reasoning to IAD.",
-                "https://hbmchat.slack.com/archives/D0BC5KGDT8T/p1782160177453819",
+                "https://example.slack.com/archives/D0000000000/p1782160177453819",
             ]
         )
         result = task_intake_fast.run_intake(
             root=root,
             raw_text=raw,
-            source="Slack DM with Abbey",
+            source="Slack DM with stakeholder",
             captured_at=dt.datetime(2026, 6, 22, 15, 35, tzinfo=dt.timezone.utc),
         )
 
@@ -93,8 +93,8 @@ class TestTaskIntakeFast(unittest.TestCase):
         note_text = source_note.read_text(encoding="utf-8")
         self.assertIn("## Raw Evidence", note_text)
         self.assertIn("# IAD Indicia guideline tenant configuration", note_text)
-        self.assertIn("Beats PM Kit 2:00 PM", note_text)
-        self.assertIn("https://hbmchat.slack.com/archives/D0BC5KGDT8T/p1782160177453819", note_text)
+        self.assertIn("Task Owner 2:00 PM", note_text)
+        self.assertIn("https://example.slack.com/archives/D0000000000/p1782160177453819", note_text)
         self.assertIn("## Summary", note_text)
         updated_task = task_file.read_text(encoding="utf-8")
         self.assertIn("Source Note", updated_task)

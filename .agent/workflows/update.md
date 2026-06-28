@@ -6,7 +6,7 @@ description: Pull the latest kit version from GitHub, run migrations, verify str
 
 This workflow updates the kit software and structure. It is not the communication context refresh path.
 
-If the user asks to update or refresh working context from Slack, Teams, Outlook, or Calendar, route to `/beats-comms` with explicit bounded scopes instead of running this workflow. Communication context refresh must remain read-only, preserve unread state, save transcripts through `chat-transcript-archive`, and write durable outputs under `3. Meetings/chat-transcripts/` and `3. Meetings/reports/`.
+If the user asks to update or refresh working context from Slack, Teams, Outlook, or Calendar, route to `/beats-comms` with explicit named read-only source windows instead of running this workflow. Communication context refresh must remain read-only, preserve unread state, save transcripts through `chat-transcript-archive`, and write durable outputs under `3. Meetings/chat-transcripts/` and `3. Meetings/reports/`.
 
 1. Run the update script:
 

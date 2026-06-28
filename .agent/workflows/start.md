@@ -49,7 +49,7 @@ Display:
 ```text
 Welcome to Beats PM Kit.
 
-The kit is ready to process PM work from local Markdown, transcripts, screenshots, task ledgers, and bounded communication context.
+The kit is ready to process PM work from local Markdown, transcripts, screenshots, task ledgers, and named read-only communication source windows.
 ```
 
 ---

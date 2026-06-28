@@ -2,6 +2,8 @@
 
 This kit supports read-only communication intake through runtime-provided MCP or connector capabilities while keeping `.agent/` as the workflow source of truth.
 
+In user-facing language, a source window is a named read-only source plus an effective start/end window. It is not permission to broad-scan a workspace, mailbox, calendar, or tenant.
+
 ## Runtime Capability Table
 
 | Capability | Antigravity | Codex | Claude Code | Fallback |
@@ -30,8 +32,9 @@ This kit supports read-only communication intake through runtime-provided MCP or
 
 ## Workflow Use
 
-- `/beats-comms` is the canonical bounded intake command for `slack:`, `teams:`, `outlook:`, and `calendar:` scopes.
-- Platform scopes must be explicit. Do not broad-scan workspaces, all chats, all channels, all mail, all DMs, or calendar history.
-- Recurring `/day`, `/week`, and `/boss` runs may use manifest-backed scopes from `system/scripts/critical_commitment_refresh.py plan` as explicit bounded scopes.
+- `/beats-comms` is the canonical named read-only intake command for `slack:`, `teams:`, `outlook:`, and `calendar:` source windows.
+- Platform source windows must be explicit. Do not broad-scan workspaces, all chats, all channels, all mail, all DMs, or calendar history.
+- Recurring `/day`, `/week`, and `/boss` runs may use manifest-backed scopes from `system/scripts/critical_commitment_refresh.py plan` as explicit named read-only source windows.
+- Backward source windows default to the last 5 business days and may shorten only when `3. Meetings/chat-transcripts/_manifest.json` or `3. Meetings/reports/command-runs/_manifest.json` has a successful checkpoint for the same source/window. Calendar includes the last 5 business days of changes plus forward lookahead for upcoming active-workstream gates.
 - Slack scopes that may return many results must be pre-chunked with `system/scripts/chat_intake_state.py chunks` before the first Slack query. This includes mention/DM intake, `to:me`, multi-day channel history, and explicit windows longer than 5 calendar days.
 - Prefer MCP/connector reads first. Use bridge scripts only when MCP/connector access is unavailable and the workflow labels the fallback limitations in the run report.
