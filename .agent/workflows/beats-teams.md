@@ -26,7 +26,7 @@ If the scope omits a time window, compute the effective read window before readi
 python3 system/scripts/chat_intake_state.py window --platform teams --scope "<SCOPE>"
 ```
 
-Use `effective_start_at` from the helper output. It defaults to 5 business days back, unless `3. Meetings/chat-transcripts/_manifest.json` has a newer `last_successful_processed_at` for the same normalized Teams scope.
+Use `effective_start_at` from the helper output. It defaults to 5 business days back, unless `3. Meetings/chat-transcripts/_manifest.json` or `3. Meetings/reports/command-runs/_manifest.json` has a newer successful checkpoint for the same normalized Teams source window.
 
 ## 2. Bind Safety Rules
 
@@ -125,12 +125,12 @@ Execute `.agent/skills/teams-task-intake/SKILL.md` with `task-manager` Priority 
 - New action items -> `5. Trackers/TASK_MASTER.md` and task detail files in `5. Trackers/tasks/` when needed.
 - Existing task updates -> task detail `Progress Log` / `Stakeholder Quotes`.
 - Status tracking updates -> relevant task detail progress logs or final response only.
-- Stakeholder enrichment -> `4. People/{firstname-lastname}.md` when useful and bounded.
+- Stakeholder enrichment -> `4. People/{firstname-lastname}.md` when useful and covered by the named read-only source window.
 - Out-of-scope or unclear items -> final response only, with no Teams response sent.
 
 All Teams-derived updates must be labeled as Teams evidence and include only short snippets plus source references. If an Atlassian artifact materially supports a task or status update, include the local artifact path and full Atlassian source URL in the evidence.
 
-Before creating a new visible workstream, triangulate Teams evidence against the current workstream list. Workstream titles must be plain English, 9 words or fewer, and free of internal Task Master, Trello, Jira, or source IDs. Check off completed items only when Teams evidence or the user explicitly confirms completion, and preserve completion date/source.
+Before creating a new visible workstream, triangulate Teams evidence against the current workstream list. Workstream titles, task labels, evidence prose, and owner questions must be plain English and free of internal Task Master, Trello, Jira, or source IDs. Render source evidence from display provenance: readable title, started date/source, and latest progress source. Keep hard IDs only in local links, metadata, or an `Agent refs` line. Check off completed items only when Teams evidence or the user explicitly confirms completion, and preserve completion date/source.
 
 ## 8. Write Teams Run Report
 
@@ -142,12 +142,13 @@ Write a run report to:
 
 The report must include:
 - Teams scope processed.
-- Effective read window and whether it came from the 5-business-day default or the manifest.
+- Effective read window and whether it came from the 5-business-day default, the chat manifest, or the command-run manifest.
 - Read-only Teams operations used.
 - Chat transcript files written.
 - Atlassian references found, artifacts written, unchanged artifacts skipped, and unresolved references.
 - Candidate tasks and gate outcomes.
 - Workstream outcomes, completed outcomes, open items, and recommended next 3 updates.
+- Display provenance for touched tasks/workstreams plus internal refs kept out of user-facing labels.
 - Issues encountered: connector unavailable or missing read-only operation, read-state uncertainty, scope too broad/missing, Atlassian connector unavailable or unauthorized, Atlassian source URL unresolved, duplicate/previously processed content skipped, reference cap exceeded, or task routing conflicts requiring manual review.
 - Routed Updates listing exact local files changed or `No durable update required`.
 - Items needing manual Teams response by the user.
@@ -161,13 +162,15 @@ python3 system/scripts/chat_intake_state.py record --platform teams --scope "<SC
 
 If Teams results do not expose a reliable latest source timestamp, omit `--latest-source-timestamp`; the helper will record run completion time and flag that issue in the manifest.
 
+When Teams intake is invoked by `/day`, `/week`, `/boss`, or another recurring task command, also record the source result in `3. Meetings/reports/command-runs/_manifest.json` after transcript/report writes succeed.
+
 ## 9. Final Output
 
 Return a compact summary with:
 - Chat transcript files saved.
 - Atlassian artifacts saved or skipped.
 - Files updated.
-- Accepted workstreams, tasks, and internal IDs.
+- Accepted workstreams, tasks, and internal refs.
 - Existing task or status updates.
 - Issues and recommended follow-ups.
 - Items needing confirmation or manual Teams response.

@@ -11,7 +11,7 @@ Use this workflow when the user asks to refresh, validate, optimize, or maintain
 ## Contract
 
 - Local-only by default.
-- Do not read or mutate Slack, Teams, Outlook, Calendar, Jira, Confluence, Trello, or email unless the user provides a bounded scope and explicitly asks for that source.
+- Do not read or mutate Slack, Teams, Outlook, Calendar, Jira, Confluence, Trello, or email unless the user provides a named read-only source window and explicitly asks for that source.
 - Generated cache/wiki outputs stay under ignored local paths.
 - Report what changed, what stayed local, and which follow-up commands are useful.
 

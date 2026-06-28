@@ -16,7 +16,7 @@ This workflow guides the **Staff PM** to manage daily execution.
     - **Use when**: The user provides a single pasted chat/email/thread, especially prefaced with "for task manager", and does not ask for full triage, Trello sync, `/day`, `/week`, or broad source refresh.
     - **Action**: Run `python3 system/scripts/task_intake_fast.py --text "<raw pasted evidence>" --source "<source label>"`.
     - **Contract**: The script must save a raw source note plus summary, then update a matched task or create an `INBOX-###` candidate task even when confidence is low.
-    - **Display rule**: Use succinct descriptive phrases for user-facing labels; keep IDs such as `PLAN-014` or `INBOX-001` as internal anchors only.
+    - **Display rule**: Use succinct descriptive phrases for user-facing labels; keep local tracker IDs as internal anchors only.
     - **Workstream rule**: Map the evidence to an existing workstream title when possible. If none exists, propose a plain-English workstream title of 9 words or fewer and keep IDs out of the visible title.
     - **Latency rule**: Do not read broad tracker context before this script. Do not run `task_master_triage.py` unless a full health pass is explicitly requested.
     - **Escalation**: If the script returns a candidate task and the user wants refinement, continue with the full workflow below.
@@ -40,6 +40,7 @@ This workflow guides the **Staff PM** to manage daily execution.
     - **Action**: Parse input and route to the correct file using `multi_replace_file_content` to update all necessary trackers in PARALLEL.
     - **Lane**: Place work into `Today`, `Next`, `Later`, `Follow Up`, or `Triage`.
     - **Title/body rule**: Keep the workstream/card title as a succinct descriptive phrase of 9 words or fewer; put the longer explanation in the body as a 15-word-max summary plus up to 3 short bullets.
+    - **Display provenance rule**: User-facing task/workstream descriptions must use readable titles and source provenance, not hard IDs. Keep Task Master IDs, Jira IDs, Trello IDs, and source IDs only in local links, metadata, managed bodies, or an `Agent refs` line.
     - **Completion rule**: When evidence confirms an item is done, check it off locally, record completion date/source, and preserve it in the workstream/task history. Do not silently close uncertain items; surface them as confirmation questions.
     - **Triangulation rule**: Consolidate duplicate Outlook, Teams, Slack, Calendar, manual transcript, Quill, Granola, and local packet signals under the same workstream before creating a new visible card or section.
 
@@ -57,7 +58,7 @@ This workflow guides the **Staff PM** to manage daily execution.
       ```markdown
       ### Workstream Title
       - Latest outcome: [result, decision, or current state]
-        - Evidence: [source/date/path]
+        - Evidence: [task/workstream title; started from initial source on date; latest progress from latest source on date]
       - Completed: [done item or "None newly confirmed"]
         - Completed: [date/source]
       - Open items: [count or short list]
@@ -68,4 +69,4 @@ This workflow guides the **Staff PM** to manage daily execution.
         - [Action 3]
       ```
 
-    - Then show gate results, files updated, accepted internal task IDs, and unresolved questions.
+    - Then show gate results, files updated, accepted internal refs, and unresolved questions.
