@@ -256,9 +256,9 @@
           "3. Meetings/reports/slack-runs"
         ],
         "execution_contract": [
-          "Require an explicit Slack scope before reading Slack; do not broad-scan workspaces, all channels, all DMs, or unknown unread surfaces.",
-          "When no time window is provided, compute the effective window with `python3 system/scripts/chat_intake_state.py window --platform slack --scope <SCOPE>`; default to 5 business days unless the manifest has a newer successful processed timestamp for that scope.",
-          "Before reading high-volume Slack scopes such as `to:me`, mention/DM intake, multi-day channel history, or windows longer than 5 calendar days, compute page-cap-safe chunks with `python3 system/scripts/chat_intake_state.py chunks --platform slack --scope <SCOPE> --start <START> --end <END>` and execute the chunks oldest-to-newest.",
+          "Require an explicit Slack source window before reading Slack; do not broad-scan workspaces, all channels, all DMs, or unknown unread surfaces.",
+          "When no time window is provided, compute the effective window with `python3 system/scripts/chat_intake_state.py window --platform slack --scope <SCOPE>`; default to 5 business days unless the manifest has a newer successful processed timestamp for that source window.",
+          "Before reading high-volume Slack source windows such as `to:me`, mention/DM intake, multi-day channel history, or windows longer than 5 calendar days, compute page-cap-safe chunks with `python3 system/scripts/chat_intake_state.py chunks --platform slack --scope <SCOPE> --start <START> --end <END>` and execute the chunks oldest-to-newest.",
           "If a Slack chunk hits a connector page cap, split only that chunk with a smaller `--chunk-hours` value before continuing; do not treat a capped chunk as complete.",
           "Use only read-only Slack MCP/connector search/read/thread/user/canvas operations.",
           "Never send, schedule, draft, reply, react, edit, delete, pin, bookmark, upload, create canvases/files, or mutate Slack content/workspace state.",
@@ -269,7 +269,7 @@
           "Scan saved Slack transcripts for referenced Jira/Confluence items, fetch only those items with read-only Atlassian connector operations, and save local artifacts under `3. Meetings/context-artifacts/atlassian/` with full `source_url` values.",
           "Never create, edit, transition, comment, assign, add worklogs, update pages, delete, or mutate Jira or Confluence during Slack intake.",
           "Write a local Slack run report under `3. Meetings/reports/slack-runs/` and record successful local processing in `3. Meetings/chat-transcripts/_manifest.json`.",
-          "Call out issues and recommendations for MCP/connector gaps, read-state uncertainty, missing/broad scope, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
+          "Call out issues and recommendations for MCP/connector gaps, read-state uncertainty, missing/broad source windows, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
         ]
       }
     },
@@ -303,8 +303,8 @@
           "3. Meetings/reports/teams-runs"
         ],
         "execution_contract": [
-          "Require an explicit Teams scope before reading Teams; do not broad-scan all Teams, all channels, all chats, or unknown unread surfaces.",
-          "When no time window is provided, compute the effective window with `python3 system/scripts/chat_intake_state.py window --platform teams --scope <SCOPE>`; default to 5 business days unless the manifest has a newer successful processed timestamp for that scope.",
+          "Require an explicit Teams source window before reading Teams; do not broad-scan all Teams, all channels, all chats, or unknown unread surfaces.",
+          "When no time window is provided, compute the effective window with `python3 system/scripts/chat_intake_state.py window --platform teams --scope <SCOPE>`; default to 5 business days unless the manifest has a newer successful processed timestamp for that source window.",
           "Use only read-only MS365 MCP/connector Teams operations when surfaced; otherwise require user-provided export/text for unread-preserving intake.",
           "Never send, draft, reply, create chats/channels, post channel messages, react, edit, delete, upload, create Planner tasks, or mutate Teams/Microsoft state.",
           "Preserve unread state; do not use tools that mark messages read/unread, set read cursors, acknowledge notifications, or clear unread indicators.",
@@ -314,7 +314,7 @@
           "Scan saved Teams transcripts for referenced Jira/Confluence items, fetch only those items with read-only Atlassian connector operations, and save local artifacts under `3. Meetings/context-artifacts/atlassian/` with full `source_url` values.",
           "Never create, edit, transition, comment, assign, add worklogs, update pages, delete, or mutate Jira or Confluence during Teams intake.",
           "Write a local Teams run report under `3. Meetings/reports/teams-runs/` and record successful local processing in `3. Meetings/chat-transcripts/_manifest.json`.",
-          "Call out issues and recommendations for MCP/connector gaps, read-state uncertainty, fallback bridge usage, missing/broad scope, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
+          "Call out issues and recommendations for MCP/connector gaps, read-state uncertainty, fallback bridge usage, missing/broad source windows, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
         ]
       }
     },
@@ -361,9 +361,9 @@
           "3. Meetings/reports/chat-runs"
         ],
         "execution_contract": [
-          "Run scoped Slack, Teams, Outlook, and Calendar intake, plus bounded transcript intake, independently, using each platform workflow's read-only and unread-preservation rules.",
-          "Require explicit platform scopes and use `chat_intake_state.py window` for any platform scope without a user-provided time window; calendar windows are forward-looking.",
-          "Pre-chunk high-volume Slack scopes with `chat_intake_state.py chunks` before the first Slack query so connector page caps do not hide later results.",
+          "Run named read-only Slack, Teams, Outlook, and Calendar source windows, plus scoped transcript intake, independently, using each platform workflow's read-only and unread-preservation rules.",
+          "Require explicit platform source windows and use `chat_intake_state.py window` for any platform source window without a user-provided time window; calendar windows are forward-looking.",
+          "Pre-chunk high-volume Slack source windows with `chat_intake_state.py chunks` before the first Slack query so connector page caps do not hide later results.",
           "Never send, draft, schedule, reply, forward, react, edit, delete, create chats/channels/canvases/files/Planner tasks, create calendar events, create meeting invites, or mutate source-system state.",
           "Never create, send, forward, or reply to email unless the user explicitly asks for that specific message in the current turn.",
           "Save searchable platform transcripts under `3. Meetings/chat-transcripts/{slack|teams|outlook|calendar}/`.",
@@ -374,7 +374,7 @@
           "Check off completed items only when evidence or the user confirms completion, preserving completion date/source.",
           "Run the PM decision router on saved evidence summaries before accepting task updates; return `scope_challenge` and `ask_user` results as explicit questions.",
           "Write a combined communication run report under `3. Meetings/reports/chat-runs/`.",
-          "Call out issues and recommendations for MCP/connector gaps, read-state uncertainty, fallback bridge usage, missing/broad scope, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
+          "Call out issues and recommendations for MCP/connector gaps, read-state uncertainty, fallback bridge usage, missing/broad source windows, Atlassian URL resolution/fetch failures, duplicate skips, reference cap skips, and task routing conflicts."
         ]
       }
     },
@@ -413,7 +413,7 @@
           "Triangulate manual, Quill, Granola, and local packet transcript evidence against the current workstream list; update latest outcomes, completed outcomes, open items, and recommended next 3.",
           "Check off completed items only when evidence or the user confirms completion, preserving completion date/source.",
           "Use hybrid appendix summaries: source path, transcript SHA256, run id, key evidence, and Routed Updates; do not append full raw transcript by default.",
-          "When including live communication context, require bounded slack/teams/outlook/calendar scopes and use only read-only MCP/connector operations; never send, schedule, draft, reply, forward, create events, create meeting invites, or mutate source-system state/read cursors.",
+          "When including live communication context, require named read-only Slack/Teams/Outlook/Calendar source windows and use only read-only MCP/connector operations; never send, schedule, draft, reply, forward, create events, create meeting invites, or mutate source-system state/read cursors.",
           "Run `python3 system/scripts/transcript_pipeline.py validate --run-id <RUN_ID> --json` after summaries and durable updates are written.",
           "Run `python3 system/scripts/transcript_pipeline.py recent --limit 5 --md` for the final compact meeting output."
         ]
