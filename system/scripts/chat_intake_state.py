@@ -17,6 +17,11 @@ from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+try:  # pragma: no cover - import path differs for script vs package execution.
+    from . import command_run_state
+except ImportError:  # pragma: no cover
+    import command_run_state
+
 
 CURRENT_FILE = Path(__file__).resolve()
 SYSTEM_ROOT = CURRENT_FILE.parent.parent
@@ -225,17 +230,31 @@ def compute_window_result(
     key = scope_key(platform, scope) if scope else ""
     entry = manifest.get("scopes", {}).get(key, {})
     last_success = parse_datetime(entry.get("last_successful_processed_at"))
+    command_checkpoint = command_run_state.latest_successful_checkpoint(root, platform, scope)
 
     now = dt.datetime.now(dt.timezone.utc)
     effective_end: dt.datetime | None = now
     if platform in FORWARD_WINDOW_PLATFORMS:
-        cutoff, effective_end = default_forward_window(
-            calendar_days,
+        cutoff = default_cutoff_at(
+            business_days,
             timezone_name=str(settings["timezone"]),
             now=now,
         )
         effective_start = cutoff
-        window_source = f"default_{calendar_days}_calendar_days_forward"
+        window_source = f"default_{business_days}_business_days_plus_{calendar_days}_calendar_days_forward"
+        candidates = [
+            ("manifest_last_successful_processed_at", last_success),
+            ("command_run_last_successful_processed_at", command_checkpoint),
+        ]
+        for candidate_source, candidate in candidates:
+            if candidate and candidate > effective_start:
+                effective_start = candidate
+                window_source = candidate_source
+        lookahead_start, effective_end = default_forward_window(
+            calendar_days,
+            timezone_name=str(settings["timezone"]),
+            now=now,
+        )
     else:
         cutoff = default_cutoff_at(
             business_days,
@@ -244,11 +263,17 @@ def compute_window_result(
         )
         effective_start = cutoff
         window_source = f"default_{business_days}_business_days"
-        if last_success and last_success > cutoff:
-            effective_start = last_success
-            window_source = "manifest_last_successful_processed_at"
-        elif last_success:
+        candidates = [
+            ("manifest_last_successful_processed_at", last_success),
+            ("command_run_last_successful_processed_at", command_checkpoint),
+        ]
+        for candidate_source, candidate in candidates:
+            if candidate and candidate > effective_start:
+                effective_start = candidate
+                window_source = candidate_source
+        if window_source == f"default_{business_days}_business_days" and last_success:
             window_source = f"default_{business_days}_business_days_last_success_older"
+        lookahead_start = None
 
     return {
         "ok": not issues,
@@ -267,10 +292,14 @@ def compute_window_result(
         "manifest_path": str(manifest_path),
         "default_cutoff_at": isoformat_utc(cutoff),
         "last_successful_processed_at": isoformat_utc(last_success) if last_success else None,
+        "command_run_last_successful_processed_at": isoformat_utc(command_checkpoint) if command_checkpoint else None,
         "effective_start_at": isoformat_utc(effective_start),
         "effective_end_at": isoformat_utc(effective_end) if effective_end else None,
+        "lookahead_start_at": isoformat_utc(lookahead_start) if lookahead_start else None,
+        "lookahead_end_at": isoformat_utc(effective_end) if lookahead_start and effective_end else None,
         "window_source": window_source,
-        "window_direction": "forward" if platform in FORWARD_WINDOW_PLATFORMS else "backward",
+        "window_direction": "backward_plus_forward" if platform in FORWARD_WINDOW_PLATFORMS else "backward",
+        "window_label": "named read-only source window",
         "issues": issues,
     }
 

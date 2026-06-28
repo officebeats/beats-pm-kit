@@ -62,7 +62,7 @@ Every saved communication transcript must include:
 
 - Platform.
 - Scope processed.
-- Time window or bounded read size.
+- Time window or capped read size.
 - Effective read window source: explicit user window, 5-business-day default, 14-day calendar lookahead, or manifest-shortened window.
 - Read-only operations used.
 - Source references such as channel, chat, thread, mail subject, mailbox folder, calendar title, timestamp, or link when available.
@@ -86,7 +86,7 @@ Use this Markdown shape:
 **Run ID**: <RUN_ID>
 **Platform**: <Slack|Teams|Outlook|Calendar>
 **Scope**: <channel/chat/thread/mail query/calendar query/window>
-**Effective Window**: <start/end or bounded size>
+**Effective Window**: <start/end or capped size>
 **Read Policy**: Read-only; no send or mutation actions.
 **Unread Policy**: No intentional read/unread mutation.
 
@@ -140,15 +140,15 @@ Use this skill as the durable memory step whenever a communication intake run sh
 
 Eligible callers include:
 - `/beats-slack`, `/beats-teams`, and `/beats-comms`.
-- Daily, weekly, status, prep, create, or other context-consuming workflows when the user explicitly asks for current chat context and provides a bounded platform scope.
+- Daily, weekly, status, prep, create, or other context-consuming workflows when the user explicitly asks for current chat context and provides a named read-only platform source window.
 
-This skill does not initiate source-system reads by itself. A caller must first resolve the platform scope and read only that bounded source through the platform intake workflow.
+This skill does not initiate source-system reads by itself. A caller must first resolve the platform source window and read only that named read-only source window through the platform intake workflow.
 
 Required refresh order:
 
-1. Resolve an explicit or configured scope for Slack, Teams, Outlook, Calendar, or a bounded combination.
-2. If the scope has no time window, run `system/scripts/chat_intake_state.py window` and use the returned `effective_start_at`.
-3. For Slack scopes likely to return many results, run `system/scripts/chat_intake_state.py chunks` and execute the returned chunks before merging/deduplicating evidence.
+1. Resolve an explicit or configured named read-only source window for Slack, Teams, Outlook, Calendar, or a scoped combination.
+2. If the source window has no time window, run `system/scripts/chat_intake_state.py window` and use the returned `effective_start_at`.
+3. For Slack source windows likely to return many results, run `system/scripts/chat_intake_state.py chunks` and execute the returned chunks before merging/deduplicating evidence.
 4. Read source messages/events only with read-only MCP/connector operations allowed by the platform workflow.
 5. Save the communication transcript using this contract.
 6. Scan the saved transcript for referenced Jira and Confluence context, then archive only referenced artifacts when read-only Atlassian access is available.
@@ -156,7 +156,7 @@ Required refresh order:
 8. Write the platform run report and record the successful run in `3. Meetings/chat-transcripts/_manifest.json`.
 9. Hand the new transcript path, run report path, routed update paths, and unresolved follow-ups back to the caller so they are included in the context synthesis.
 
-If a context-consuming workflow asks for fresh Slack, Teams, Outlook, or Calendar context but no bounded scope is available, do not read the source system. Ask for a channel, chat, DM, thread, mail query, calendar lookahead, or time window, or continue using existing local transcripts.
+If a context-consuming workflow asks for fresh Slack, Teams, Outlook, or Calendar context but no named read-only source window is available, do not read the source system. Ask for a channel, chat, DM, thread, mail query, calendar lookahead, or time window, or continue using existing local transcripts.
 
 Cross-runtime Slack MCP/connector mapping:
 - Allowed read-only operations when surfaced: channel search, channel history read, thread read, canvas read, user lookup, and read-only message search.
@@ -164,16 +164,16 @@ Cross-runtime Slack MCP/connector mapping:
 - High-volume searches must be pre-chunked with `chat_intake_state.py chunks` so connector page caps do not hide later results.
 
 Cross-runtime Teams MCP/connector mapping:
-- Allowed read-only operations when surfaced: chat/channel search, bounded message reads, thread/reply reads, user or team/channel lookup, meeting transcript reads, and file/context reads needed to interpret the scoped messages.
+- Allowed read-only operations when surfaced: chat/channel search, scoped message reads, thread/reply reads, user or team/channel lookup, meeting transcript reads, and file/context reads needed to interpret the scoped messages.
 - Prohibited operations: send, draft, reply, react, edit, delete, create chats/channels/meetings/Planner tasks, upload files, or any operation that changes read/unread state.
 - If read-only Teams retrieval is not surfaced in the current runtime, process only user-provided Teams exports, pasted chat text, or saved local notes, and record the connector gap in the transcript and run report.
 
 Cross-runtime Outlook/Calendar MCP/connector mapping:
-- Allowed read-only operations when surfaced: bounded mail search/list/get, folder metadata, attachment metadata, calendar event list/get, schedule view, meeting metadata, and meeting transcript reads when explicitly scoped.
+- Allowed read-only operations when surfaced: scoped mail search/list/get, folder metadata, attachment metadata, calendar event list/get, schedule view, meeting metadata, and meeting transcript reads when explicitly scoped.
 - Prohibited operations: send, draft, reply, forward, delete, move, mark read/unread, create/update/cancel events, create meeting invites, update reminders, create Planner/Todo items, or any operation that changes mailbox/calendar state.
 - If MS365 MCP/connector retrieval is unavailable, use `outlook_bridge.py` only as a less-portable macOS AppleScript fallback and record that limitation in the transcript and run report.
 
-The manifest is the dedupe gate for context refresh. A successful run may shorten future windows for the same normalized platform scope, but it must not suppress a user-requested explicit time window.
+The manifest is the dedupe gate for context refresh. A successful run may shorten future windows for the same normalized platform source window, but it must not suppress a user-requested explicit time window.
 
 ---
 

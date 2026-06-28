@@ -33,6 +33,7 @@ Screenshots/images and transcript-like clipboard text are task-master management
 - Do not ask "what should I do with this?" for a screenshot or transcript that contains visible work signal.
 - Extract tasks, status changes, blockers, owners, due dates, source references, and referenced tickets/links first.
 - Route accepted work through `task-manager` Priority Gate into `5. Trackers/TASK_MASTER.md` and `5. Trackers/tasks/`.
+- Render user-facing task/workstream labels from readable titles and source provenance. Keep Task Master IDs, Jira IDs, Trello IDs, and source IDs only in local links, metadata, or an `Agent refs` line.
 - If the evidence is ambiguous, return concrete candidate tracker updates for user confirmation instead of switching to profile lookup, reply drafting, or generic summarization.
 
 ---
@@ -51,8 +52,9 @@ Fast-path steps:
 2. Search local trackers for a matching existing item before creating anything new.
 3. Read only `TASK_MASTER.md`, the matched task detail file(s), and relevant people profiles.
 4. Save the compact local evidence transcript/report when the screenshot represents communication evidence.
-5. Apply local tracker/profile updates.
-6. Refresh task health with targeted triage:
+5. Capture display provenance for touched work: readable title, started date/source, latest progress source, and internal refs.
+6. Apply local tracker/profile updates.
+7. Refresh task health with targeted triage:
 
 ```bash
 python3 system/scripts/task_master_triage.py --apply --touched-task <TASK_ID>
@@ -109,7 +111,7 @@ Get-ChildItem -Path "0. Incoming/" -Recurse | Where-Object { $_.PSIsContainer -e
     - **Existing Task Update** (status/progress/blocker on known work) → Update `TASK_MASTER.md` and the matching detail file
     - **Decision** (decided, agreed, go/no-go) → Route to `5. Trackers/DECISION_LOG.md`
     - **FYI** (heads up, no action) → Keep in `0. Incoming/fyi/`
-    - **Unclear screenshot/transcript** → Return candidate `TASK_MASTER.md` updates for confirmation
+    - **Unclear screenshot/transcript** → Return candidate local tracker updates for confirmation with readable task/workstream labels
     - **Unclear non-task input** → Route to `BRAIN_DUMP.md` (Parking Lot)
 
 9.  **Entity Tagging**:
@@ -117,6 +119,7 @@ Get-ChildItem -Path "0. Incoming/" -Recurse | Where-Object { $_.PSIsContainer -e
 
 10. **Output**:
     - Confirmation table of what was captured and where it was routed.
+    - Human-readable task/workstream labels plus source provenance; IDs only in internal refs.
 
 ## Supported Content Types
 
