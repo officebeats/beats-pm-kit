@@ -1,4 +1,4 @@
-# Beats Product Management Antigravity Brain - Settings
+# Beats PM Kit Settings
 
 > Your personalized configuration. Run the FTUE in START-HERE-FTUE.md for guided setup.
 
@@ -118,14 +118,16 @@
 - **MCP mode**: read_search_open_only
 - **MCP health check**: `python3 system/scripts/obsidian_mcp_health.py --pretty`
 
-### Trello
+### Daily Evidence Sources
 
-- **Enabled**: no
-- **Sync path**: `system/inbox/trello/`
-- **Boards**: [Board names]
-- **Reverse sync**: structured_fields_only
-- **New card mode**: inbox_first
-- **Preflight commands**: `/day`, `/week`, `/boss`, `/track`
+- **Outlook source window**: [Mailbox/folder/query or disabled]
+- **Teams source window**: [Chat/channel/query or disabled]
+- **Slack source window**: [Channel/DM/query or disabled]
+- **Granola intake**: [Local/export/paste or disabled]
+- **Quill intake**: [Local/export/paste or disabled]
+- **Default behavior**: read-only, archive locally, then triangulate tasks and workstreams
+
+Optional task boards such as Trello are configured through `/pack`, not as core task storage.
 
 ### Other
 
@@ -173,4 +175,4 @@
 
 ---
 
-_Beats Product Management Antigravity Brain v3.2.1_
+_Beats PM Kit v11.0.0_

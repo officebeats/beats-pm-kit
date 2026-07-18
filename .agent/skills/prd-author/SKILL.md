@@ -3,7 +3,7 @@ name: prd-author
 description: Author comprehensive Product Requirements Documents (PRDs) using a strict 8-section unified template, and translate requirements into JTBD Job Stories. Use when drafting new product specifications, breaking down features into Job Stories, or outlining a new feature.
 ---
 
-> **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 ## Skill Selection Guide
 

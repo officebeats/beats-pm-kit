@@ -21,6 +21,10 @@ CI_MODULES = [
     "system.tests.test_obsidian_mcp_health",
     "system.tests.test_adapter_guard",
     "system.tests.test_privacy_guard",
+    "system.tests.test_runtime_detection",
+    "system.tests.test_model_policy",
+    "system.tests.test_model_eval",
+    "system.tests.test_model_neutrality",
 ]
 
 

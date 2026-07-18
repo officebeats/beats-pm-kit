@@ -17,6 +17,15 @@ tags:
 - [[3. Meetings]]
 - [[5. Trackers]]
 
+## Task Workspace
+
+- [[5. Trackers/WORKSTREAMS|Workstreams]]
+- [[5. Trackers/TASK_MASTER|Task Master]]
+- [[5. Trackers/critical/boss-requests|Boss Requests]]
+- [[5. Trackers/bugs/bugs-master|Bugs]]
+
+Run `/track` to update canonical Markdown task state. Run `/obsidian tasks` to reopen this task view.
+
 ## Core Workflows
 
 - `/day` - daily brief and planning

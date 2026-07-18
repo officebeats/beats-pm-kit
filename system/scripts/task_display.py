@@ -18,7 +18,7 @@ TASK_ID_RE = re.compile(r"\b[A-Z][A-Z0-9]+-\d{3,}[a-z]?\b")
 ISSUE_ID_RE = re.compile(r"\b[A-Z][A-Z0-9]+-\d{1,}[a-z]?\b")
 DATE_RE = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\b")
 HEADER_RE_TEMPLATE = r"^>\s+\*\*{label}:\*\*\s*(.+?)\s*$"
-PROGRESS_HEADER_RE = re.compile(r"^##\s+(?:[\W_]+\s+)?Progress Log\s*$")
+PROGRESS_HEADER_RE = re.compile(r"^##\s+(?:[\W_]+\s+)?Progress(?: Log)?\s*$")
 
 
 @dataclass
@@ -64,6 +64,16 @@ def table_cells(line: str) -> list[str]:
 def header_value(text: str, label: str) -> str:
     pattern = re.compile(HEADER_RE_TEMPLATE.format(label=re.escape(label)), flags=re.MULTILINE)
     match = pattern.search(text)
+    return match.group(1).strip() if match else ""
+
+
+def frontmatter_value(text: str, key: str) -> str:
+    if not text.startswith("---\n"):
+        return ""
+    end = text.find("\n---", 4)
+    if end < 0:
+        return ""
+    match = re.search(rf"^{re.escape(key)}:\s*[\"']?(.+?)[\"']?\s*$", text[4:end], flags=re.MULTILINE | re.IGNORECASE)
     return match.group(1).strip() if match else ""
 
 
@@ -113,13 +123,13 @@ def parse_progress_entries(text: str) -> list[ProgressEntry]:
             continue
 
         cells = table_cells(stripped)
-        if len(cells) >= 4 and DATE_RE.search(cells[0]) and cells[0].lower() != "date":
+        if len(cells) >= 3 and DATE_RE.search(cells[0]) and cells[0].lower() != "date":
             entries.append(
                 ProgressEntry(
                     date=strip_markdown(cells[0]),
                     source=strip_markdown(cells[1]),
                     update=strip_markdown(cells[2]),
-                    status=strip_markdown(cells[3]),
+                    status=strip_markdown(cells[3]) if len(cells) > 3 else "",
                 )
             )
     return entries
@@ -145,8 +155,8 @@ def build_provenance(
 ) -> DisplayProvenance:
     text = task_path.read_text(encoding="utf-8", errors="replace") if task_path.exists() else ""
     title = display_title_from_task_text(text, fallback=fallback_title)
-    created = header_value(text, "Created")
-    last_updated = header_value(text, "Last Updated")
+    created = frontmatter_value(text, "created") or header_value(text, "Created")
+    last_updated = frontmatter_value(text, "updated") or header_value(text, "Last Updated")
     progress_entries = parse_progress_entries(text)
     initial = source_pointer_from_entry(progress_entries[0]) if progress_entries else None
     latest = source_pointer_from_entry(progress_entries[-1]) if progress_entries else None

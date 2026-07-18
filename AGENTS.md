@@ -2,11 +2,11 @@
 
 > Thin runtime adapter. Source of truth: `.agent/`.
 
-## Runtime Priority
+## Runtime Selection
 
-1. **Antigravity first** - canonical command behavior and orchestration semantics live in `.agent/`.
-2. **Codex second** - use native-feeling adapters for the most-used commands: `/boss`, `/create`, `/day`, `/meet`, `/paste`, `/plan`, `/track`, `/transcript`, `/update`, `/vacuum`, `/week`.
-3. **Compatibility CLIs next** - Gemini CLI, Claude Code, and KiloCode generate local adapters from `.agent/` without redefining workflow logic.
+Use the active runtime and its positively detected capabilities. Do not apply a permanent provider hierarchy or silently switch providers. Model defaults are inherited; local promotions require evaluation evidence. Promoted Codex commands: `/beats-comms`, `/beats-slack`, `/beats-teams`, `/boss`, `/create`, `/day`, `/deck`, `/find`, `/meet`, `/memory`, `/obsidian`, `/office-cli`, `/pack`, `/paste`, `/plan`, `/review`, `/sop`, `/track`, `/transcript`, `/update`, `/vacuum`, `/vibe`, `/week`.
+
+Resolve the execution profile with `python system/scripts/model_policy.py resolve <command> --json`. Unknown capabilities fail closed, and missing Deep support must produce a visible downgrade warning.
 
 ## Startup
 
@@ -17,7 +17,7 @@ On a new Codex session:
 3. Treat `.agent/` as the source of truth.
 4. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
 5. Load only the minimum `.agent/workflows/` and `.agent/skills/` files needed for the current task.
-6. Translate Antigravity-only primitives into Codex equivalents instead of failing.
+6. Translate unsupported primitives only when the active runtime reports the required capability.
 7. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
 
 ## Codex Browser First

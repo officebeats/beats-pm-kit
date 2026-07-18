@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from system.scripts import core_setup
+from system.scripts import upgrade_compat
 from system.scripts.root_cleaner import clean_root
 
 
@@ -98,6 +99,32 @@ def verify_repo(root: Path, repo_url: str | None, phases: list[Phase]) -> None:
     if origin:
         detail += f"; origin={origin}"
     add_phase(phases, "verify_repo", "ok", detail)
+
+
+def upgrade_compatibility(root: Path, phases: list[Phase], *, apply: bool) -> None:
+    """Gate existing workspaces before setup changes local Markdown."""
+    report = upgrade_compat.inspect(root)
+    if report.blockers:
+        detail = f"blockers={len(report.blockers)}; run system/scripts/upgrade_compat.py --json"
+        add_phase(phases, "upgrade_compatibility", "failed", detail)
+        return
+    if report.changes and not apply:
+        detail = (
+            f"safe_title_updates={len(report.changes)}; review with upgrade_compat.py --json, "
+            "then rerun bootstrap with --apply-upgrade"
+        )
+        add_phase(phases, "upgrade_compatibility", "failed", detail)
+        return
+    if report.changes:
+        result = upgrade_compat.apply_safe_changes(root, report)
+        add_phase(
+            phases,
+            "upgrade_compatibility",
+            "ok",
+            f"migrated={result['changed']}; backup={result['backup']}",
+        )
+        return
+    add_phase(phases, "upgrade_compatibility", "ok", "existing Markdown is v11-compatible")
 
 
 def create_workspace(root: Path, phases: list[Phase]) -> None:
@@ -188,11 +215,11 @@ def run_health(root: Path, phases: list[Phase], *, skip_guards: bool) -> None:
 
 
 def suggest_obsidian(root: Path, phases: list[Phase], *, apply_obsidian: bool) -> None:
-    setup_cmd = [
-        sys.executable,
-        "system/scripts/obsidian_vault_setup.py",
-        "--apply" if apply_obsidian else "--dry-run",
-    ]
+    setup_cmd = [sys.executable, "system/scripts/obsidian_bridge.py"]
+    if apply_obsidian:
+        setup_cmd.extend(["configure", "--mode", "kit-vault", "--vault", str(root)])
+    else:
+        setup_cmd.extend(["guide", "--json"])
     setup = run_command(root, setup_cmd)
     add_phase(
         phases,
@@ -216,12 +243,12 @@ def root_cleanup_phase(root: Path, phases: list[Phase], *, apply: bool) -> None:
     add_phase(phases, "root_cleaner", "ok", f"{mode}; actions={len(actions)}")
 
 
-def next_steps() -> list[str]:
+def next_steps(root: Path) -> list[str]:
     return [
         "Open this folder in Codex or Antigravity.",
         "Run /start for guided profile setup when you want personalized local settings.",
         "Run /paste to process messy PM input or /day to see current priorities.",
-        "For Obsidian, open this existing folder as the vault; do not create a mirrored copy.",
+        f"Optional Obsidian: run /obsidian, then open this existing folder as the vault: {root}",
     ]
 
 
@@ -249,6 +276,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--skip-obsidian", action="store_true", help="Skip Obsidian direct-vault and MCP checks")
     parser.add_argument("--apply-obsidian", action="store_true", help="Apply local Obsidian direct-vault settings")
     parser.add_argument("--clean-root", action="store_true", help="Apply root cleaner instead of dry-run preview")
+    parser.add_argument("--apply-upgrade", action="store_true", help="Back up and apply safe v11 Markdown-title migrations")
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON")
     return parser.parse_args()
 
@@ -259,6 +287,20 @@ def main() -> int:
     phases: list[Phase] = []
 
     verify_repo(root, args.repo_url, phases)
+    upgrade_compatibility(root, phases, apply=args.apply_upgrade)
+    if any(phase.status == "failed" for phase in phases):
+        payload = {
+            "agent": bool(args.agent),
+            "non_interactive": bool(args.non_interactive),
+            "root": root.as_posix(),
+            "phases": [asdict(phase) for phase in phases],
+            "next_steps": ["Resolve the compatibility report before bootstrap changes local workspace files."],
+        }
+        if args.json:
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print_human(phases)
+        return 1
     create_workspace(root, phases)
     seed_templates(root, phases)
     root_cleanup_phase(root, phases, apply=args.clean_root)
@@ -285,7 +327,7 @@ def main() -> int:
         "non_interactive": bool(args.non_interactive),
         "root": root.as_posix(),
         "phases": [asdict(phase) for phase in phases],
-        "next_steps": next_steps(),
+        "next_steps": next_steps(root),
     }
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))

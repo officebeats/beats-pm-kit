@@ -1,7 +1,8 @@
 ---
+title: Security Review Advisor
 name: security-reviewer
 description: Security vulnerability detection specialist (OWASP Top 10, secrets, unsafe patterns)
-model: claude-opus-4-6
+model: inherit
 level: 3
 disallowedTools: Write, Edit
 ---
@@ -182,4 +183,3 @@ disallowedTools: Write, Edit
     - Is the overall risk level clearly stated?
   </Final_Checklist>
 </Agent_Prompt>
-

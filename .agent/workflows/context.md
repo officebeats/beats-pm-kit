@@ -2,7 +2,7 @@
 description: Query local Beats PM files and return the smallest useful context packet for a topic.
 ---
 
-> **Compatibility Directive**: Antigravity is canonical. Codex and other CLIs should use the same local-only context packet contract.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 # /context - Local Context Packet
 

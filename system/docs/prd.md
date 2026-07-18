@@ -1,6 +1,6 @@
 # PRD: Beats PM "Neural Mesh" Autonomous Second Brain (v2.0)
 
-**Project Code Name**: Antigravity Brain
+**Project Code Name**: Beats PM Kit
 **Document Status**: Final / Holistic High-Fidelity
 **Author**: Antigravity AI (Strategic Product Management)
 **Stakeholders**: Founder/Owner, Engineering Lead, Product Lead
@@ -9,7 +9,7 @@
 
 ## 1. Vision & Strategic Objective
 
-To build the world’s first **autonomous, local-first AI Operating System** for Product Managers. The "Antigravity Brain" eliminates documentation latency by using a decentralized mesh of AI agents to convert high-entropy inputs (transcripts, screenshots, raw thoughts) into structured, prioritized project artifacts.
+Build a local-first AI operating kit for product managers that turns high-entropy evidence such as transcripts, screenshots, and raw notes into structured, prioritized product artifacts.
 
 **The Goal**: Zero-manual-entry execution
 

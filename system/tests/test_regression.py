@@ -11,7 +11,7 @@ from pathlib import Path
 from unittest.mock import MagicMock
 
 # Setup paths
-ROOT_DIR = Path(__file__).resolve().parent.parent.parent   # beats-pm-antigravity-brain/
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent   # beats-pm-kit/
 SYSTEM_DIR = ROOT_DIR / 'system'                           # system/
 SKILLS_DIR = ROOT_DIR / '.agent' / 'skills'
 TEMPLATES_DIR = ROOT_DIR / '.agent' / 'templates'

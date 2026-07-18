@@ -1,6 +1,6 @@
 # External Skills Integration Guide
 
-The Antigravity Kit is designed to be compatible with the **Agent Skills** open standard. This allows you to easily import skills from external libraries like [google-labs-code/stitch-skills](https://github.com/google-labs-code/stitch-skills).
+Beats PM Kit is compatible with the **Agent Skills** open standard. This allows focused capabilities to remain portable across supported runtimes.
 
 ## How to Add a Skill Manually
 

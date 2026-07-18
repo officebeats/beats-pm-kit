@@ -112,7 +112,9 @@ class TestBootstrapRealUse(unittest.TestCase):
             self.assertTrue((clone / "5. Trackers").is_dir())
             self.assertTrue((clone / ".codex" / "workflows").is_dir())
             self.assertTrue(any(codex_output.glob("beats-*/SKILL.md")))
-            self.assertIn("Obsidian", " ".join(payload["next_steps"]))
+            obsidian_step = next(step for step in payload["next_steps"] if "Obsidian" in step)
+            self.assertIn("/obsidian", obsidian_step)
+            self.assertIn(str(clone.resolve()), obsidian_step)
 
 
 if __name__ == "__main__":

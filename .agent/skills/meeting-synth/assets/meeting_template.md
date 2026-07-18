@@ -1,3 +1,5 @@
+# Meeting Summary Template
+
 ## Meeting Summary
 
 **Date & Time**: [Date and start/end time]

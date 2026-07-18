@@ -3,7 +3,7 @@ name: boss-tracker
 description: Track high-priority leadership requests.
 ---
 
-> **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 
 # Boss Tracker Skill (Native)
@@ -76,10 +76,10 @@ When preparing manager-facing updates, treat "outcomes" as a succinct list of ex
 
 - Lead with `Outcomes:` before narrative progress.
 - Use plain-English workstream titles of 9 words or fewer.
-- Do not expose Task Master IDs, Trello IDs, Jira IDs, or source IDs in manager-facing titles, evidence prose, or questions. Keep them only in local links, metadata, or an `Agent refs` line.
+- Do not expose internal or source IDs in manager-facing titles, evidence prose, or questions. Keep them only in local links, metadata, or an `Agent refs` line.
 - Render evidence from display provenance: `[task/workstream title]; started from [initial source] on [date]; latest progress from [latest source] on [date].`
 - Under each workstream, include latest outcomes, completed outcomes, open items, and recommended next 3 actions.
-- Completed outcomes and checked-off items must include completion date/source and stay visible in task, workstream, boss tracker, and Trello managed checklist history.
+- Completed outcomes and checked-off items must include completion date/source and stay visible in task, workstream, and boss-tracker history.
 - If a completion is implied but not confirmed, ask for confirmation instead of checking it off.
 - Triangulate Outlook, Teams, Slack, Calendar, manual transcripts, Quill, Granola, and local transcript packets against the current workstream list before creating new visible workstreams.
 - Use Obsidian, agent memory, and graph integrations only as read-only context accelerators when locally detected.

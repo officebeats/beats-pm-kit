@@ -1,17 +1,16 @@
-"""
-Runtime Detection Script
-Detects which AI CLI environment is active and returns capabilities.
+#!/usr/bin/env python3
+"""Detect the active AI runtime through versioned, fail-closed probes."""
 
-Usage:
-    python3 system/scripts/detect_runtime.py          # JSON output
-    python3 system/scripts/detect_runtime.py --human   # Human-readable output
-"""
+from __future__ import annotations
 
 import json
 import os
 import shutil
+import subprocess
 import sys
+from collections.abc import Callable, Mapping
 from pathlib import Path
+
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -20,132 +19,222 @@ from system.utils.stdio import force_utf8_stdio
 
 force_utf8_stdio()
 
+PROBE_SCHEMA_VERSION = 1
+RUNTIME_SCHEMA_VERSION = 2
+SUPPORTED_PROFILES = ("fast", "balanced", "deep")
 
-def _has_env(*names):
-    """Return True when any listed environment variable is set."""
-    return any(os.environ.get(name) for name in names)
+RUNTIME_SPECS = (
+    {
+        "name": "antigravity",
+        "display": "Antigravity",
+        "binary": "antigravity",
+        "env": ("ANTIGRAVITY_ROOT",),
+        "config_dir": ".agent",
+        "rules_file": ".agent/rules/GEMINI.md",
+        "capabilities": (
+            "filesystem_read",
+            "filesystem_write",
+            "command_execution",
+            "structured_output",
+            "browser",
+            "connectors",
+            "subagents",
+            "parallelism",
+        ),
+    },
+    {
+        "name": "claude",
+        "display": "Claude Code",
+        "binary": "claude",
+        "env": ("CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT"),
+        "config_dir": ".claude",
+        "rules_file": ".claude/CLAUDE.md",
+        "capabilities": (
+            "filesystem_read",
+            "filesystem_write",
+            "command_execution",
+            "structured_output",
+            "subagents",
+        ),
+    },
+    {
+        "name": "codex",
+        "display": "OpenAI Codex",
+        "binary": "codex",
+        "env": ("CODEX_SHELL", "CODEX_THREAD_ID", "CODEX_CI"),
+        "config_dir": ".codex",
+        "rules_file": "AGENTS.md",
+        "capabilities": (
+            "filesystem_read",
+            "filesystem_write",
+            "command_execution",
+            "structured_output",
+            "subagents",
+            "parallelism",
+        ),
+    },
+    {
+        "name": "gemini",
+        "display": "Gemini CLI",
+        "binary": "gemini",
+        "env": ("GEMINI_CLI",),
+        "config_dir": ".gemini",
+        "rules_file": ".gemini/GEMINI.md",
+        "capabilities": (
+            "filesystem_read",
+            "filesystem_write",
+            "command_execution",
+            "structured_output",
+            "web_search",
+        ),
+    },
+    {
+        "name": "kilocode",
+        "display": "KiloCode",
+        "binary": "kilocode",
+        "env": ("KILOCODE",),
+        "config_dir": ".kilocode",
+        "rules_file": ".kilocode/rules.md",
+        "capabilities": (
+            "filesystem_read",
+            "filesystem_write",
+            "command_execution",
+            "structured_output",
+        ),
+    },
+)
 
 
-def detect_runtime():
-    """Detect which AI runtime is active and return its capabilities."""
-    root = ROOT
-    runtimes = []
-
-    # Antigravity
-    antigravity_active = _has_env("ANTIGRAVITY_ROOT")
-    if antigravity_active or (root / ".agent").is_dir():
-        runtimes.append({
-            "name": "antigravity",
-            "display": "Google Antigravity",
-            "detected_by": "env:ANTIGRAVITY_ROOT" if antigravity_active else ".agent/ directory",
-            "capabilities": ["parallel_fan_out", "mcp_tools", "browser_agent", "native_clipboard", "pencil_design"],
-            "config_dir": ".agent/",
-            "rules_file": ".agent/rules/GEMINI.md",
-            "priority": 10 if antigravity_active else 90,
-            "active": antigravity_active
-        })
-
-    # Gemini CLI
-    gemini_active = _has_env("GEMINI_CLI")
-    if gemini_active or shutil.which("gemini") or (root / ".gemini").is_dir():
-        runtimes.append({
-            "name": "gemini_cli",
-            "display": "Gemini CLI",
-            "detected_by": (
-                "env:GEMINI_CLI" if gemini_active else
-                "binary:gemini" if shutil.which("gemini") else
-                ".gemini/ directory"
-            ),
-            "capabilities": ["sequential_tools", "file_access", "web_search"],
-            "config_dir": ".gemini/",
-            "rules_file": ".gemini/GEMINI.md",
-            "priority": 20 if gemini_active else 60,
-            "active": gemini_active
-        })
-
-    # Claude Code
-    claude_active = _has_env("CLAUDECODE", "CLAUDE_CODE_ENTRYPOINT")
-    if claude_active or shutil.which("claude") or (root / ".claude").is_dir():
-        runtimes.append({
-            "name": "claude_code",
-            "display": "Claude Code",
-            "detected_by": (
-                "env:CLAUDECODE" if claude_active else
-                "binary:claude" if shutil.which("claude") else
-                ".claude/ directory"
-            ),
-            "capabilities": ["sequential_tools", "file_access", "xml_output", "subagents"],
-            "config_dir": ".claude/",
-            "rules_file": ".claude/CLAUDE.md",
-            "priority": 30 if claude_active else 70,
-            "active": claude_active
-        })
+def _probe_version(command: str) -> str | None:
+    """Return one bounded version line without invoking a shell."""
+    try:
+        result = subprocess.run(
+            [command, "--version"],
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=3,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    output = (result.stdout or result.stderr).strip().splitlines()
+    return output[0][:200] if result.returncode == 0 and output else None
 
 
-    # OpenAI Codex CLI
-    codex_active = _has_env("CODEX_SHELL", "CODEX_THREAD_ID", "CODEX_CI")
-    if codex_active or shutil.which("codex") or (root / ".codex").is_dir():
-        runtimes.append({
-            "name": "codex_cli",
-            "display": "OpenAI Codex CLI",
-            "detected_by": (
-                "env:CODEX_SHELL" if codex_active else
-                "binary:codex" if shutil.which("codex") else
-                ".codex/ directory"
-            ),
-            "capabilities": ["sequential_tools", "file_access", "code_execution"],
-            "config_dir": ".codex/",
-            "rules_file": "AGENTS.md",
-            "priority": 40 if codex_active else 50,
-            "active": codex_active
-        })
+def _active_marker(spec: dict, env: Mapping[str, str]) -> str | None:
+    for name in spec["env"]:
+        if env.get(name):
+            return f"env:{name}"
+    return None
 
-    # KiloCode
-    kilocode_active = _has_env("KILOCODE")
-    if kilocode_active or (root / ".kilocode").is_dir():
-        runtimes.append({
-            "name": "kilocode",
-            "display": "KiloCode CLI",
-            "detected_by": "env:KILOCODE" if kilocode_active else ".kilocode/ directory",
-            "capabilities": ["sequential_tools", "file_access"],
-            "config_dir": ".kilocode/",
-            "rules_file": ".kilocode/rules.md",
-            "priority": 50 if kilocode_active else 80,
-            "active": kilocode_active
-        })
 
-    # Determine primary
-    runtimes.sort(key=lambda runtime: runtime["priority"])
-    primary = runtimes[0] if runtimes else None
+def detect_runtime(
+    *,
+    root: Path = ROOT,
+    env: Mapping[str, str] | None = None,
+    which: Callable[[str], str | None] = shutil.which,
+    version_probe: Callable[[str], str | None] = _probe_version,
+) -> dict:
+    """Detect active and available runtimes without applying brand priority."""
+    environment = os.environ if env is None else env
+    runtimes: list[dict] = []
 
+    for spec in RUNTIME_SPECS:
+        active_marker = _active_marker(spec, environment)
+        binary_path = which(spec["binary"])
+        config_present = (root / spec["config_dir"]).is_dir()
+        if not active_marker and not binary_path and not config_present:
+            continue
+        version = version_probe(binary_path) if binary_path else None
+        available = bool(active_marker or version)
+        if active_marker:
+            detected_by = active_marker
+        elif binary_path:
+            detected_by = f"binary:{spec['binary']}"
+        else:
+            detected_by = f"config:{spec['config_dir']}"
+        runtimes.append(
+            {
+                "name": spec["name"],
+                "display": spec["display"],
+                "active": bool(active_marker),
+                "available": available,
+                "adapter_present": config_present,
+                "detected_by": detected_by,
+                "version": version,
+                "capabilities": list(spec["capabilities"]) if available else [],
+                "supported_profiles": list(SUPPORTED_PROFILES) if available else [],
+                "config_dir": spec["config_dir"] + "/",
+                "rules_file": spec["rules_file"],
+                "probe": {
+                    "schema_version": PROBE_SCHEMA_VERSION,
+                    "command": [spec["binary"], "--version"],
+                },
+            }
+        )
+
+    runtimes.sort(key=lambda item: item["name"])
+    active = [item for item in runtimes if item["active"]]
+    primary = active[0] if len(active) == 1 else None
+    selection_status = "active" if primary else "ambiguous" if len(active) > 1 else "none"
     return {
+        "schema_version": RUNTIME_SCHEMA_VERSION,
+        "probe_schema_version": PROBE_SCHEMA_VERSION,
+        "selection_policy": "active-runtime",
+        "selection_status": selection_status,
         "primary": primary["name"] if primary else "unknown",
-        "primary_display": primary["display"] if primary else "No AI runtime detected",
-        "capabilities": primary["capabilities"] if primary else [],
-        "all_runtimes": [r["name"] for r in runtimes],
+        "primary_display": primary["display"] if primary else "No unambiguous active runtime",
+        "primary_version": primary["version"] if primary else None,
+        "capabilities": list(primary["capabilities"]) if primary else [],
+        "supported_profiles": list(primary["supported_profiles"]) if primary else [],
+        "all_runtimes": [item["name"] for item in runtimes],
+        "available_runtimes": [item["name"] for item in runtimes if item["available"]],
+        "active_runtimes": [item["name"] for item in active],
+        "active_count": len(active),
         "count": len(runtimes),
-        "details": runtimes
+        "details": runtimes,
     }
 
 
-def print_human(result):
-    """Print detection results in human-readable format."""
-    print(f"\n🔍 Runtime Detection")
-    print(f"   Primary: {result['primary_display']}")
-    print(f"   Capabilities: {', '.join(result['capabilities'])}")
-    if result['count'] > 1:
-        others = [r for r in result['details'] if r['name'] != result['primary']]
-        for r in others:
-            qualifier = "active" if r.get("active") else "available"
-            print(f"   Also found: {r['display']} ({qualifier}; {r['detected_by']})")
-    elif result['count'] == 0:
-        print("   ⚠️  No AI runtimes detected. Install Antigravity, Gemini CLI, Claude Code, or Codex CLI.")
-    print()
+def capability_supported(result: Mapping[str, object], capability: str) -> bool:
+    """Deny capabilities that were not positively reported by the active probe."""
+    capabilities = result.get("capabilities", [])
+    return isinstance(capabilities, list) and capability in capabilities
+
+
+def print_human(result: dict) -> None:
+    """Print a concise runtime status report."""
+    print("Runtime detection")
+    print(f"- Selection: {result['selection_status']}")
+    print(f"- Primary: {result['primary_display']}")
+    if result["primary_version"]:
+        print(f"- Version: {result['primary_version']}")
+    print(f"- Profiles: {', '.join(result['supported_profiles']) or 'none (fail closed)'}")
+    print(f"- Capabilities: {', '.join(result['capabilities']) or 'none (fail closed)'}")
+    for runtime in result["details"]:
+        state = (
+            "active"
+            if runtime["active"]
+            else "available"
+            if runtime["available"]
+            else "adapter only"
+        )
+        version = f"; {runtime['version']}" if runtime["version"] else ""
+        print(f"- {runtime['display']}: {state}; {runtime['detected_by']}{version}")
+
+
+def main(argv: list[str] | None = None) -> int:
+    result = detect_runtime()
+    if argv is None:
+        argv = sys.argv[1:]
+    if "--human" in argv:
+        print_human(result)
+    else:
+        print(json.dumps(result, indent=2, sort_keys=True))
+    return 0
 
 
 if __name__ == "__main__":
-    result = detect_runtime()
-    if "--human" in sys.argv:
-        print_human(result)
-    else:
-        print(json.dumps(result, indent=2))
+    raise SystemExit(main())

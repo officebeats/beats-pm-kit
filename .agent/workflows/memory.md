@@ -1,8 +1,9 @@
 ---
+title: Product Memory Consolidation
 description: Perform memory reflection, consolidate facts and scenarios, update the Mermaid state graph, and clear trace logs.
 ---
 
-> **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 1. Ingest existing memory state from `SESSION_MEMORY.md` and L1 facts.
 2. Run `python system/scripts/agentic_memory.py consolidate` to process and archive any unconsolidated L0 traces.

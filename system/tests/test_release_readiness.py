@@ -193,7 +193,7 @@ class TestAgentQuality(unittest.TestCase):
                 pass
         # This is a warning, not a hard fail — some agents are generic
         if no_skills:
-            print(f"  ⚠ Agents without skill references: {no_skills}")
+            print(f"  Warning: Agents without skill references: {no_skills}")
 
 
 # ============================================================================
@@ -227,7 +227,7 @@ class TestWorkflowQuality(unittest.TestCase):
                 no_desc.append(f"{name} (unreadable)")
         # Warn only — not all workflows may have frontmatter yet
         if no_desc:
-            print(f"  ⚠ Workflows without YAML frontmatter: {no_desc[:10]}...")
+            print(f"  Warning: Workflows without YAML frontmatter: {no_desc[:10]}...")
 
 
 # ============================================================================
@@ -310,7 +310,8 @@ class TestReadmeTruth(unittest.TestCase):
             "Built And Used Daily By An AI-Forward PM",
             "Core Functionality",
             "Local-First PM Task Management",
-            "Codex And Antigravity Support",
+            "Runtime-Neutral Support",
+            "Model Adaptation And Evaluation",
             "Context Engineering For Product Managers",
         ]
         for section in sections:
@@ -478,7 +479,7 @@ class TestPerformance(unittest.TestCase):
                 except Exception:
                     pass
         if oversized:
-            print(f"  ⚠ Oversized skills (>500 lines): {oversized[:10]}")
+            print(f"  Warning: Oversized skills (>500 lines): {oversized[:10]}")
 
     def test_no_empty_skill_directories(self):
         """Skill directories must not be empty (no orphaned folders)."""

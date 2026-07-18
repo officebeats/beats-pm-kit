@@ -1,36 +1,33 @@
-import typer
-from rich.console import Console
+#!/usr/bin/env python3
+"""Dependency-free compatibility shim for the retired experimental CLI."""
 
-app = typer.Typer(help="Beats PM Kit CLI - powered by Antigravity")
-console = Console()
+from __future__ import annotations
 
-@app.command()
-def dashboard():
-    """Launch the Beats PM Kit TUI Dashboard"""
-    # We will hook this up to Textual later
-    console.print("[bold cyan]Launching the Beats PM TUI Dashboard...[/bold cyan]")
-    try:
-        from tui import BeatsDashboard
-        app_tui = BeatsDashboard()
-        app_tui.run()
-    except ImportError:
-        console.print("[bold yellow]TUI modules not fully implemented yet.[/bold yellow]")
+import argparse
+import sys
+from pathlib import Path
 
-@app.command()
-def discover():
-    """Run the discover workflow"""
-    console.print("[bold green]Starting /discover workflow...[/bold green]")
-    from router import execute_prompt
-    response = execute_prompt("Run the /discover workflow on the current backlog.")
-    console.print(response)
 
-@app.command()
-def retro():
-    """Run the retro workflow"""
-    console.print("[bold green]Starting /retro workflow...[/bold green]")
-    from router import execute_prompt
-    response = execute_prompt("Facilitate a retrospective on the active sprint.")
-    console.print(response)
+ROOT = Path(__file__).resolve().parents[2]
+WORKFLOWS = {
+    "discover": ".agent/workflows/discover.md",
+    "retro": ".agent/workflows/retro.md",
+}
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("command", choices=["dashboard", *sorted(WORKFLOWS)])
+    args = parser.parse_args(argv)
+    print("This is a deprecated compatibility shim; it never selects or calls a model provider.")
+    if args.command == "dashboard":
+        print("Use the canonical Markdown task index at `5. Trackers/TASK_MASTER.md`.")
+        print("The optional local dashboard remains under `system/dashboard/`.")
+        return 0
+    workflow = WORKFLOWS[args.command]
+    print(f"Run `/{args.command}` in the active AI runtime by loading `{workflow}`.")
+    return 0
+
 
 if __name__ == "__main__":
-    app()
+    sys.exit(main())

@@ -25,5 +25,8 @@ jobs:
       - name: Run real-use bootstrap scenarios
         run: python3 -B system/scripts/run_real_usecase_tests.py --ci
 
+      - name: Run deterministic sanitized model evaluation
+        run: python3 system/scripts/model_eval.py run --mode offline --json
+
       - name: Verify privacy boundaries
         run: python3 system/scripts/privacy_guard.py --tree

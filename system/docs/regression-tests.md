@@ -1,6 +1,6 @@
 # 🛡️ FAANG-Grade Chaos & Regression Suite (v1.4.1+)
 
-This suite now treats sanitized real-use workspaces as the primary release gate. Inventory and existence checks are lint signals unless they protect a real runtime contract.
+This suite now treats sanitized real-use workspaces as the primary release gate. Inventory and existence checks are lint signals unless they protect a real runtime contract. Model adaptation uses a separate deterministic sanitized suite and never invokes a live provider in CI.
 
 Run the CI gate locally with:
 
@@ -18,7 +18,7 @@ These scenarios define the release gate for the core kit workflows after a safe 
 
 ### Test Scenario: Task Master Management Triage
 
-**Test Objective:** Verify that `/track` and local triage automation preserve `5. Trackers/TASK_MASTER.md`, update only managed triage regions, and respect scoped task inputs.
+**Test Objective:** Verify that `/track` and local triage automation preserve canonical task notes, regenerate `5. Trackers/TASK_MASTER.md`, update only managed note regions, and respect scoped task inputs.
 
 **Starting Conditions:**
 - `5. Trackers/TASK_MASTER.md` contains active, stale, overdue, and completed-looking tasks.
@@ -163,6 +163,25 @@ These scenarios define the release gate for the core kit workflows after a safe 
 - `AGENTS.md`, `CODEX_COMMANDS.md`, `CODEX_PROMPT.md`, `CLAUDE.md`, and `GEMINI.md` are not deleted or moved.
 - Deprecated root files can still be cleaned safely.
 - Rollback uses the recorded safety branch and stash; destructive reset is not performed without confirming both.
+
+### Test Scenario: Model Adaptation And Evaluation
+
+**Test Objective:** Keep routing model-neutral while preventing unsafe or unproven local promotions.
+
+**Test Steps:**
+
+1. Run `python3 -m unittest system.tests.test_runtime_detection system.tests.test_model_policy system.tests.test_model_eval system.tests.test_model_neutrality`.
+2. Run `python3 system/scripts/model_eval.py run --mode offline --json`.
+3. Verify a live run without `--allow-live` is rejected.
+
+**Expected Outcomes:**
+
+- Known active runtimes report a versioned capability probe; unavailable or ambiguous runtimes fail closed.
+- Fast, Balanced, and Deep resolve from the command registry with inherited model defaults.
+- Risk signals escalate to Deep and missing support produces a visible downgrade warning.
+- Tracked runtime code contains no provider-pinned model IDs outside fixtures and migration tests.
+- Live evaluation requires explicit opt-in, uses sanitized fixtures, runs three repetitions, and writes only under `.beats/evals/`.
+- Promotion evidence must pass every safety gate and meet the quality or latency threshold.
 
 ---
 

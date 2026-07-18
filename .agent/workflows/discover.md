@@ -2,7 +2,7 @@
 description: Run a product discovery cycle with OST, assumption mapping, and experiment design.
 ---
 
-> **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 
 

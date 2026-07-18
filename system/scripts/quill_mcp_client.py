@@ -16,7 +16,7 @@ from pathlib import Path
 # Path settings — dynamic resolution; no hardcoded personal paths
 CURRENT_FILE = Path(__file__).resolve()
 SYSTEM_ROOT = CURRENT_FILE.parent.parent    # system/
-BRAIN_DIR = SYSTEM_ROOT.parent              # beats-pm-antigravity-brain/
+BRAIN_DIR = SYSTEM_ROOT.parent              # beats-pm-kit/
 TRANSCRIPT_ARCHIVE_DIR = BRAIN_DIR / "3. Meetings" / "transcripts"
 REPORT_DIR = BRAIN_DIR / "3. Meetings" / "reports"
 SUMMARY_DIR = BRAIN_DIR / "3. Meetings" / "summaries"

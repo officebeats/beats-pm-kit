@@ -99,7 +99,8 @@ class TestTaskIntakeFast(unittest.TestCase):
         updated_task = task_file.read_text(encoding="utf-8")
         self.assertIn("Source Note", updated_task)
         self.assertIn("IAD Indicia guideline tenant configuration", updated_task)
-        self.assertIn("🟡 Updated", task_master)
+        self.assertIn("title: 'Review DS Guideline Recommendation work'", updated_task)
+        self.assertIn("[Review DS Guideline Recommendation work](tasks/PLAN-014.md)", task_master)
         self.assertTrue(result.triage_deferred)
 
     def test_creates_candidate_task_when_match_is_low_confidence(self):
@@ -119,10 +120,38 @@ class TestTaskIntakeFast(unittest.TestCase):
         self.assertTrue(task_file.exists())
         self.assertTrue(source_note.exists())
         self.assertIn("Random stakeholder note", source_note.read_text(encoding="utf-8"))
-        self.assertIn("Fast Intake Triage", (root / "5. Trackers" / "TASK_MASTER.md").read_text(encoding="utf-8"))
+        self.assertNotIn("INBOX-001", task_file.name)
+        self.assertIn("[Random stakeholder note ask Finance]", (root / "5. Trackers" / "TASK_MASTER.md").read_text(encoding="utf-8"))
         self.assertIn("# Random stakeholder note ask", task_file.read_text(encoding="utf-8"))
-        self.assertIn("INBOX-001", task_file.read_text(encoding="utf-8"))
+        self.assertIn("task_id: INBOX-001", task_file.read_text(encoding="utf-8"))
+        self.assertIn("workstream: Unassigned", task_file.read_text(encoding="utf-8"))
+        self.assertIn("  - workstream", task_file.read_text(encoding="utf-8"))
         self.assertTrue(result.triage_deferred)
+
+    def test_repeated_updates_append_frontmatter_sources_without_corrupting_yaml(self):
+        root = self.make_repo()
+        first = task_intake_fast.run_intake(
+            root=root,
+            raw_text="IAD Indicia guideline setup needs owner follow-up.",
+            source="Teams",
+            explicit_task_id="PLAN-014",
+            captured_at=dt.datetime(2026, 6, 22, 16, 0, tzinfo=dt.timezone.utc),
+        )
+        second = task_intake_fast.run_intake(
+            root=root,
+            raw_text="The same IAD Indicia task was confirmed in Outlook.",
+            source="Outlook",
+            explicit_task_id="PLAN-014",
+            captured_at=dt.datetime(2026, 6, 23, 9, 0, tzinfo=dt.timezone.utc),
+        )
+
+        text = (root / second.task_path).read_text(encoding="utf-8")
+        frontmatter = text.split("\n---\n", 1)[0]
+
+        self.assertEqual(first.task_path, second.task_path)
+        self.assertIn("updated: 2026-06-23", frontmatter)
+        self.assertEqual(frontmatter.count("0. Incoming/raw/"), 2)
+        self.assertNotIn("> **Last Updated:**", text)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 description: Run scoped Slack, Teams, Outlook, Calendar, and transcript intake into local workstream/task updates without sending or mutating source systems.
 ---
 
-> **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same read-only communication intake and durable output contract.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 # Workflow: `/beats-comms`
 
