@@ -109,6 +109,8 @@ description: {render_skill_description(command)}
 
 Use this skill only for a Beats PM kit repo.
 
+Execution profile: **{str(command['execution_profile']).title()}**. Resolve risk escalation and model inheritance through `<repo>/system/scripts/model_policy.py`.
+
 ## Repo Resolution
 
 1. Prefer the current workspace when it contains all of:

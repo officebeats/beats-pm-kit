@@ -1,7 +1,8 @@
 ---
+title: Product Design Advisor
 name: designer
-description: UI/UX Designer-Developer for stunning interfaces (Sonnet)
-model: claude-sonnet-4-6
+description: UI/UX Designer-Developer for effective, accessible interfaces
+model: inherit
 level: 2
 ---
 
@@ -102,4 +103,3 @@ level: 2
     - Is it responsive and accessible?
   </Final_Checklist>
 </Agent_Prompt>
-

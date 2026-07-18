@@ -101,6 +101,80 @@ class TestObsidianDetection(unittest.TestCase):
             self.assertFalse(result["installed"])
             self.assertEqual(result["valid_vaults"], [])
 
+    def test_default_config_prefers_the_kit_as_the_direct_vault(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            root = tmp_path / "kit"
+            external_vault = tmp_path / "existing-vault"
+            root.mkdir()
+            external_vault.mkdir()
+            detection = {
+                "valid_vaults": [
+                    {"id": "external", "path": str(external_vault), "exists": True, "is_dir": True}
+                ]
+            }
+
+            config = obsidian_bridge.choose_default_config(detection, root=root)
+
+            self.assertEqual(config["mode"], "kit-vault")
+            self.assertEqual(Path(config["vault_path"]), root.resolve())
+            self.assertEqual(config["target_folder"], "")
+
+
+class TestObsidianTaskGuide(unittest.TestCase):
+    def test_task_guide_points_to_the_canonical_tracker_paths(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "beats-pm-kit"
+            tracker_folder = root / "5. Trackers"
+            tracker_folder.mkdir(parents=True)
+            (tracker_folder / "tasks").mkdir()
+            (tracker_folder / "TASK_MASTER.md").write_text("# Task Master\n", encoding="utf-8")
+            config = {
+                "mode": "kit-vault",
+                "vault_path": str(root),
+                "target_folder": "",
+            }
+            detection = {"installed": True}
+
+            guide = obsidian_bridge.build_task_guide(root, detection, config)
+
+            self.assertTrue(guide["should_prompt"])
+            self.assertEqual(Path(guide["kit_folder"]), root)
+            self.assertEqual(Path(guide["tracker_folder"]), tracker_folder)
+            self.assertEqual(Path(guide["task_folder"]), tracker_folder / "tasks")
+            self.assertEqual(Path(guide["task_master"]), tracker_folder / "TASK_MASTER.md")
+            self.assertEqual(Path(guide["guide"]), root / "system" / "docs" / "obsidian.md")
+            self.assertIn("obsidian_bridge.py configure --mode kit-vault", guide["setup_command"])
+
+            (root / ".obsidian").mkdir()
+            ready = obsidian_bridge.build_task_guide(root, detection, config)
+            self.assertFalse(ready["should_prompt"])
+            self.assertTrue(ready["ready"])
+
+    def test_sync_guide_requires_the_synced_task_master(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "beats-pm-kit"
+            vault = Path(tmp) / "external-vault"
+            root.mkdir()
+            vault.mkdir()
+            config = {
+                "mode": "sync",
+                "vault_path": str(vault),
+                "target_folder": "Beats PM Kit",
+            }
+            detection = {"installed": True}
+
+            not_ready = obsidian_bridge.build_task_guide(root, detection, config)
+            expected_task_master = vault / "Beats PM Kit" / "Trackers" / "TASK_MASTER.md"
+            self.assertTrue(not_ready["should_prompt"])
+            self.assertEqual(Path(not_ready["obsidian_task_master"]), expected_task_master)
+
+            expected_task_master.parent.mkdir(parents=True)
+            expected_task_master.write_text("# Task Master\n", encoding="utf-8")
+            ready = obsidian_bridge.build_task_guide(root, detection, config)
+            self.assertTrue(ready["ready"])
+            self.assertFalse(ready["should_prompt"])
+
 
 class TestObsidianSync(unittest.TestCase):
     def make_root(self, tmp_path: Path) -> Path:

@@ -9,7 +9,7 @@
 ### Step 1: Navigate to Your PM Brain
 
 ```bash
-cd /path/to/your/beats-pm-antigravity-brain
+cd /path/to/your/beats-pm-kit
 ```
 
 ### Step 2: Start Gemini CLI
@@ -23,7 +23,7 @@ gemini
 Tell Gemini about your PM system:
 
 ```
-I'm using the Beats PM Antigravity Brain system in this folder.
+I'm using Beats PM Kit in this folder.
 Please read the _AGENTS folder to understand the available agents,
 and read SETTINGS.md for my personal configuration.
 ```
@@ -111,7 +111,7 @@ gemini --system-instruction ".agent/skills/stakeholder-mgr/SKILL.md"
 1. **Create an alias** for quick access:
 
    ```bash
-   alias pm='cd ~/beats-pm-antigravity-brain && gemini'
+   alias pm='cd ~/beats-pm-kit && gemini'
    ```
 
 2. **Combine with file operations** - Gemini CLI can read/write your markdown files directly
@@ -175,4 +175,4 @@ mv "3. Meetings/daily-briefs/2025-*" "3. Meetings/archive/"
 
 ---
 
-_Need help? Open an issue at [github.com/officebeats/beats-pm-antigravity-brain](https://github.com/officebeats/beats-pm-antigravity-brain)_
+_Need help? Open an issue at [github.com/officebeats/beats-pm-kit](https://github.com/officebeats/beats-pm-kit)_

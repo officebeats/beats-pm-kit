@@ -1,20 +1,19 @@
 ---
 name: ui-ux-designer
-description: A team of multimodal agents for UI/UX design, visual analysis, and creative ideation.
+description: Review product interfaces for visual hierarchy, usability, accessibility, and delivery-ready improvements.
 ---
 
-# Multimodal Design Agent Team
+# UI and UX Design Review
 
-**A team of multimodal agents for UI/UX design, visual analysis, and creative ideation.**
+Use the active runtime's native image and browser capabilities when positively detected. Do not request API keys or start a separate provider-specific application.
 
-This skill leverages an advanced Python-based AI Agent or Multi-Agent Team located in the `scripts/` directory.
+## Workflow
 
-## Instructions
-1. Use this skill whenever the user triggers the associated playbook or asks for ui-ux-designer.
-2. Navigate to `scripts/` inside this skill's directory.
-3. Review the `requirements.txt` and python script to understand how to invoke the agent (e.g. via `streamlit run` or `python`).
-4. Execute the agent script to perform the requested tasks.
+1. Confirm the product goal, target user, platform, and decision needed.
+2. Inspect only the supplied designs or explicitly authorized product surface.
+3. Review hierarchy, layout, typography, color, interaction clarity, responsive behavior, accessibility, and consistency.
+4. Separate observed evidence from inference.
+5. Prioritize improvements by user impact, delivery effort, and confidence.
+6. Return concrete acceptance criteria and validation steps for the highest-value changes.
 
-## Protocol constraints
-- Do not hallucinate capabilities. Rely on the underlying python agent.
-- Keep output concise and delegate complex reasoning to the agent in `scripts/`.
+If visual inspection is unavailable, say so and request the minimum screenshot or design artifact needed.

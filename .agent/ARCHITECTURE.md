@@ -1,149 +1,42 @@
-# Antigravity Kit Architecture
+# Beats PM Kit Architecture
 
-> Comprehensive AI Agent Capability Expansion Toolkit
+> Generated from `.agent/command-registry.json` and the canonical `.agent/` tree.
 
----
+## Current Surface
 
-## 📋 Overview
+| Surface | Count | Canonical location |
+| --- | ---: | --- |
+| Agents | 22 | `.agent/agents/` |
+| Skills | 66 | `.agent/skills/` |
+| Workflows | 44 | `.agent/workflows/` |
+| Runtime adapters | 5 | Generated from the registry |
 
-Antigravity Kit is a modular system consisting of:
+## Source Boundaries
 
-- **22 Specialist Agents** - Role-based AI personas
-- **63 Skills** - Domain-specific knowledge modules
-- **39 Workflows** - Slash command procedures
+- `.agent/command-registry.json` owns routing, aliases, execution profiles, escalation signals, and runtime policy.
+- `.agent/workflows/` owns workflow behavior.
+- `.agent/skills/` owns reusable PM methods.
+- `MANIFEST.json`, `rules/ROUTING.md`, `CODEX_COMMANDS.md`, runtime adapters, and compatibility documentation are generated views.
+- `.beats/model-policy.json` is ignored local state for explicit, evaluated model promotions.
 
-> **Routing:** See [ROUTING.md](rules/ROUTING.md) for the unified command → agent → skill mapping.
-> **Manifest:** See [MANIFEST.json](MANIFEST.json) for the machine-readable index with token budgets.
+## Execution Profiles
 
----
+| Profile | Intent | Default model |
+| --- | --- | --- |
+| Fast | Retrieval, capture, help, and routine daily status with the minimum sufficient evidence. | `inherit` |
+| Balanced | Task reconciliation, meetings, transcripts, weekly synthesis, and communication intake. | `inherit` |
+| Deep | Strategy, PRDs, consequential decisions, critical review, security, and release work. | `inherit` |
 
-## 🏗️ Directory Structure
+## Loading Flow
 
-```plaintext
-.agent/
-├── ARCHITECTURE.md          # This file
-├── MANIFEST.json            # Machine-readable skill/agent index
-├── agents/                  # 22 Specialist Agents
-├── skills/                  # 63 Skills (P0/P1/P2 tiered)
-├── workflows/               # 39 Slash Commands
-├── rules/                   # Global Rules + ROUTING.md
-│   ├── GEMINI.md            # Canonical system config
-│   └── ROUTING.md           # Unified routing table (SSOT)
-├── templates/               # Document templates (JIT loaded)
-└── scripts/                 # Validation scripts
+```text
+User request
+  -> command registry
+  -> workflow and execution profile
+  -> minimum required skills and evidence
+  -> active runtime capability probe
+  -> inherited model or explicit local promotion
+  -> validation and durable Markdown output
 ```
 
-> **Note:** Runtime-specific adapter directories are generated locally from `.agent/` and intentionally ignored by Git.
-
----
-
-## 🤖 Agents (22)
-
-### PM Core (P0 — loaded eagerly)
-
-| Agent | Focus | Key Skills |
-|:--|:--|:--|
-| `orchestrator` | Multi-agent coordination | parallel-agents, behavioral-modes |
-| `cpo` | Strategy & Org | product-strategy-suite, boss-tracker, vacuum-protocol |
-| `staff-pm` | Execution & Delivery | pm-decision-router, task-manager, prd-author, meeting-synth |
-
-### PM Extended (P1 — loaded on demand)
-
-| Agent | Focus | Key Skills |
-|:--|:--|:--|
-| `strategist` | Market & Vision | pm-decision-router, product-strategy-suite, roadmapping-suite |
-| `program-manager` | Governance & Releases | dependency-tracker, retrospective |
-| `tech-lead` | Feasibility & Eng | engineering-collab, code-simplifier |
-| `data-scientist` | Quant Insights | data-analytics |
-| `ux-researcher` | Qual Insights | ux-researcher |
-| `gtm-lead` | Launch & Growth | product-marketer |
-| `qa-engineer` | Quality Assurance | system-validation |
-| `career-coach` | PM Career Growth | leadership-career-coach |
-
-### Engineering Specialists (P2 — loaded only when triggered)
-
-| Agent | Focus |
-|:--|:--|
-| `frontend-specialist` | Web UI/UX |
-| `backend-specialist` | API & Business Logic |
-| `database-architect` | Schema & SQL |
-| `mobile-developer` | iOS/Android/RN |
-| `devops-engineer` | CI/CD & Docker |
-| `security-auditor` | Security Compliance |
-| `penetration-tester` | Offensive Security |
-| `debugger` | Root Cause Analysis |
-| `performance-optimizer` | Speed & Web Vitals |
-| `seo-specialist` | Ranking & Visibility |
-| `documentation-writer` | Docs & Manuals |
-| `code-archaeologist` | Legacy & Refactoring |
-| `explorer-agent` | Codebase Analysis |
-
----
-
-## 🧩 Skills (63) — Priority Tiered
-
-Skills are loaded **Just-In-Time** based on priority tier:
-
-- **P0 (Core):** loaded eagerly for daily PM workflows
-- **P1 (Extended):** loaded on command invocation
-- **P2 (Specialist):** loaded only when explicitly triggered
-
-> See [MANIFEST.json](MANIFEST.json) for complete skill registry with byte sizes and token budgets.
-
-### Top Skills by Usage
-
-| Skill | Size | Tier | When Used |
-|:--|:--|:--|:--|
-| `pm-decision-router` | 4.0KB | P0 | `/paste`, `/track`, `/transcript`, `/beats-comms`, `/discover`, `/create`, `/plan`, `/prioritize` |
-| `task-manager` | 2.3KB | P0 | `/track`, `/task` |
-| `daily-synth` | 1.7KB | P0 | `/day` |
-| `boss-tracker` | 2.6KB | P0 | `/boss` |
-| `inbox-processor` | 6.1KB | P0 | `/paste` |
-| `prd-author` | 1.8KB | P0 | `/create` |
-| `intelligent-routing` | 10.6KB | P0 | Auto-routing |
-
----
-
-## 🎯 Skill Loading Protocol
-
-```plaintext
-User Request → ROUTING.md lookup → Agent file → SKILL.md (index only) → JIT templates
-                                                    ↓
-                                            Read references/ (only if needed)
-                                                    ↓
-                                            Read scripts/ (only if needed)
-```
-
-### Key Principles
-
-1. **Index, don't inline** — SKILL.md is an index; templates live in `assets/`
-2. **Single source of truth** — One routing table (`ROUTING.md`), one manifest (`MANIFEST.json`)
-3. **JIT everything** — Templates, references, and scripts load only when skill executes
-4. **Priority tiering** — P0 eager, P1/P2 lazy
-
-### Skill Structure
-
-```plaintext
-skill-name/
-├── SKILL.md           # (Required) Metadata & instructions (<500 lines ideal)
-├── assets/            # (Optional) Templates (JIT loaded)
-├── scripts/           # (Optional) Python/Bash scripts
-└── references/        # (Optional) Docs, schemas
-```
-
----
-
-## 📊 Statistics
-
-| Metric | Value |
-|:--|:--|
-| **Total Agents** | 22 |
-| **Total Skills** | 63 |
-| **Total Workflows** | 39 |
-| **Total Skill Surface** | ~391KB |
-| **P0 Core Surface** | ~33KB |
-| **Architecture Version** | 10.0.1 |
-
----
-
-_Last updated: 2026-03-18_
+Unknown capabilities are denied. The kit does not silently switch providers, rewrite skills, or persist model output outside ignored local evaluation storage.

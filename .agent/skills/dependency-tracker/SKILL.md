@@ -3,7 +3,7 @@ name: dependency-tracker
 description: Map, score, and visualize cross-team dependencies for programs and releases.
 ---
 
-> **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 
 # Dependency Tracker Skill

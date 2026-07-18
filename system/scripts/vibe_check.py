@@ -14,7 +14,7 @@ from typing import List
 # Path setup
 CURRENT_FILE = Path(__file__).resolve()
 SYSTEM_ROOT = CURRENT_FILE.parent.parent      # system/
-BRAIN_ROOT = SYSTEM_ROOT.parent               # beats-pm-antigravity-brain/
+BRAIN_ROOT = SYSTEM_ROOT.parent               # beats-pm-kit/
 REPORTS_DIR = SYSTEM_ROOT / "reports"
 
 # Add BRAIN_ROOT to path for 'system.*' imports

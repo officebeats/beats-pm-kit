@@ -1,6 +1,6 @@
 ---
 description: >-
-  Run full continuous integration (CI) tests on the Antigravity Kit architecture to ensure no template bloat, agent mapping faults, or skill corruption exists.
+  Run the full Beats PM Kit release gates to catch routing drift, privacy leaks, adapter faults, and workflow regressions.
 ---
 
 # Setup Requirements

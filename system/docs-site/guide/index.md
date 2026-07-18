@@ -1,45 +1,41 @@
 # Getting Started
 
-Welcome to the **Antigravity Brain** — a file-based PM knowledge system powered by AI agents.
+Beats PM Kit is a local-first Markdown workspace for grounding product work in past meetings, transcripts, chats, decisions, and accepted tasks.
 
 ## Quick Setup
 
-1. Clone the repo and open it in your terminal
-2. Run `/setup` in your AI tool (Gemini CLI, Claude Code, or Antigravity)
-3. Edit `SETTINGS.md` with your personal info
-4. Start using slash commands: `/day`, `/task`, `/boss`, etc.
+1. Clone `https://github.com/officebeats/beats-pm-kit`.
+2. Open the repository in Codex, Claude Code, Gemini CLI, Antigravity, or another supported runtime.
+3. Run `python3 system/scripts/bootstrap.py --agent --non-interactive`.
+4. Run `/start` and optionally `/obsidian` to use the existing repository as a vault.
+
+Private profile details belong in ignored local files such as `SETTINGS.md`; never add them to the public template.
+
+## Core Workflow
+
+1. Capture or export evidence from Granola, Quill, Outlook, Teams, or Slack.
+2. Use `/find`, `/paste`, or `/transcript` to retrieve and normalize that evidence.
+3. Reconcile commitments through `/track` into the Markdown Task Master and task notes.
+4. Use `/day`, `/week`, `/plan`, and `/create` for delivery work grounded in those sources.
 
 ## Folder Structure
 
 | Folder | Purpose |
-|--------|---------|
-| `0. Incoming/` | Raw intake (screenshots, clipboard) |
-| `1. Company/` | Company profiles, strategy |
-| `2. Products/` | PRDs, initiatives, product bugs |
-| `3. Meetings/` | Daily briefs, meeting notes |
-| `4. People/` | Stakeholder directory |
-| `5. Trackers/` | Task Master, Bug Tracker, Boss Requests |
+|:---|:---|
+| `0. Incoming/` | Raw local intake and exports |
+| `1. Company/` | Company context and working agreements |
+| `2. Products/` | PRDs, initiatives, and product briefs |
+| `3. Meetings/` | Transcripts, summaries, and evidence archives |
+| `4. People/` | Local stakeholder context |
+| `5. Trackers/` | Task Master, workstreams, tasks, and follow-ups |
+| `6. SOPs/` | Local procedures and reusable runbooks |
 
-## Key Files
+The numbered workspace folders are ignored by default except for their public skeleton files.
 
-- **SETTINGS.md** — Your personal config
-- **GEMINI.md** — System operating instructions
-- **VERSION** — Current kit version
+## Optional Interfaces
 
-## Architecture
-
-The system uses a Three-Tier Architecture:
-
-1. **Identity Layer** (`.agent/agents/`) — AI personas (CPO, Staff PM, Tech Lead)
-2. **Orchestration Layer** (`.agent/workflows/`) — Slash commands that chain agents + skills
-3. **Capability Layer** (`.agent/skills/`) — Atomic domain expertise
-
-## Web UIs
-
-The kit includes three optional web frontends:
-
-| App | Location | Port | Command |
-|-----|----------|------|---------|
-| Live Dashboard | `system/dashboard/` | `:5173` | `npm run dev` |
-| PM Command Center | `system/pm-dashboard/` | `:5174` | `npm run dev` |
-| Docs Site | `system/docs-site/` | `:5175` | `npm run docs:dev` |
+| Interface | Location | Use |
+|:---|:---|:---|
+| Markdown and Obsidian | Repository root | Canonical task and knowledge workspace |
+| Read-only dashboard views | `system/dashboard/` | Optional browsing of supported task schemas |
+| Documentation catalog | `system/docs-site/` | Dependency-free Markdown guide generated from canonical registry data |

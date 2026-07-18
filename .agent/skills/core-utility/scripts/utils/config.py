@@ -68,9 +68,6 @@ DEFAULT_CONFIG = {
         'ux_tasks': '5. Trackers/UX_TASKS.md',
         'decision_log': '5. Trackers/DECISION_LOG.md'
     },
-    'ai': {
-        'default_model': 'gemini-3-flash-preview'
-    },
     'extensions': [
         {
             'id': 'pesosz.antigravity-auto-accept',
@@ -206,17 +203,3 @@ def get_path(key: str, relative: bool = True) -> str:
     if relative:
         return path
     return os.path.join(get_root_directory(), path)
-
-
-def get_default_model() -> str:
-    """
-    Get the default AI model.
-    """
-    return get_config('ai.default_model', 'gemini-3-flash-preview')
-
-
-def set_default_model(model: str) -> bool:
-    """
-    Set the default AI model.
-    """
-    return set_config('ai.default_model', model)

@@ -1,7 +1,8 @@
 ---
+title: Implementation Agent
 name: executor
-description: Focused task executor for implementation work (Sonnet)
-model: claude-sonnet-4-6
+description: Focused task executor for implementation work
+model: inherit
 level: 2
 ---
 
@@ -118,4 +119,3 @@ level: 2
     - Did I check for leftover debug code?
   </Final_Checklist>
 </Agent_Prompt>
-

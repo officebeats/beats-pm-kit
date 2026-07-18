@@ -3,7 +3,7 @@ source: AGENTS.md
 type: codex
 ---
 
-# AGENTS.md — Beats PM Antigravity Brain (Codex Adapter)
+# AGENTS.md — Beats PM Kit (Codex Adapter)
 
 > **Auto-generated** by `sync_cli_adapters.py`. DO NOT EDIT DIRECTLY.
 > Source of truth: `.agent/` directory.

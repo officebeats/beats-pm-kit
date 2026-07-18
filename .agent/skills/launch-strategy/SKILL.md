@@ -1,20 +1,19 @@
 ---
 name: launch-strategy
-description: Multi-agent system for product launch intelligence and strategy, analyzing markets and competitors.
+description: Build evidence-based launch strategy from positioning, readiness, channel, risk, and success-metric inputs.
 ---
 
-# Product Launch Intelligence Agent
+# Product Launch Strategy
 
-**Multi-agent system for product launch intelligence and strategy, analyzing markets and competitors.**
+Use the active runtime and inherited model. External research is read-only and only runs when the runtime reports the capability and the user authorizes the source scope.
 
-This skill leverages an advanced Python-based AI Agent or Multi-Agent Team located in the `scripts/` directory.
+## Workflow
 
-## Instructions
-1. Use this skill whenever the user triggers the associated playbook or asks for launch-strategy.
-2. Navigate to `scripts/` inside this skill's directory.
-3. Review the `requirements.txt` and python script to understand how to invoke the agent (e.g. via `streamlit run` or `python`).
-4. Execute the agent script to perform the requested tasks.
+1. Define the launch outcome, audience, positioning, scope, date or gate, and accountable owner.
+2. Retrieve relevant past decisions, meeting evidence, customer signals, dependencies, and unresolved risks.
+3. Distinguish verified evidence from assumptions and missing sources.
+4. Build the launch path across product readiness, enablement, communications, channels, support, measurement, and rollback criteria.
+5. Assign owners and dates only when supported; otherwise mark them explicitly as open.
+6. Produce a concise launch brief, risk register, decision gates, and success metrics with citations.
 
-## Protocol constraints
-- Do not hallucinate capabilities. Rely on the underlying python agent.
-- Keep output concise and delegate complex reasoning to the agent in `scripts/`.
+Do not request provider API keys, silently browse, or instantiate a separate model stack.

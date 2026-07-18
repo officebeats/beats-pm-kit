@@ -1,49 +1,41 @@
 # Architecture
 
-## Three-Tier Architecture
+Beats PM Kit keeps routing and private PM state deliberately separate.
 
-The Antigravity Kit follows a strict separation of concerns:
-
-```
-├── .agent/
-│   ├── agents/      ← Identity Layer (WHO does the work)
-│   ├── workflows/   ← Orchestration Layer (WHAT sequence is triggered)
-│   └── skills/      ← Capability Layer (HOW the work is done)
-```
-
-### 1. Identity Layer — Agents
-
-Persona instances that define decision logic, escalation paths, and capabilities.
-
-| Agent | Focus | Key Skills |
-|-------|-------|-----------|
-| Chief Product Officer | Strategy & Org | boss-tracker, vacuum-protocol |
-| Staff PM | Execution & Delivery | task-manager, prd-author, meeting-synth |
-| Product Strategist | Market & Vision | okr-manager, competitive-intel |
-| Program Manager | Governance & Releases | release-manager, retrospective |
-| Tech Lead | Feasibility & Eng | engineering-collab, code-simplifier |
-| Data Scientist | Quant Insights | data-analytics |
-| UX Researcher | Qual Insights | ux-researcher |
-| GTM Lead | Launch & Growth | product-marketer |
-
-### 2. Orchestration Layer — Workflows
-
-Lean `/slash` commands that chain agents and skills. They do NOT contain templates or execution logic — they solely define the sequence.
-
-### 3. Capability Layer — Skills
-
-Atomic verbs of the system. Each skill follows the mgechev standard:
-- `SKILL.md` — Instructions (< 500 lines)
-- `assets/` — Templates
-- `references/` — Schemas
-- `scripts/` — Tooling
-
-## Data Flow
-
-```
-User input → Workflow → Agent → Skill → Markdown output
-                                  ↓
-                          5. Trackers/ (persistent)
+```text
+Evidence from meetings, transcripts, chat, and mail
+                         |
+                         v
+              Retrieval and context guard
+                         |
+                         v
+        .agent/command-registry.json (routing)
+                         |
+                         v
+       workflow -> focused skills -> validation
+                         |
+                         v
+       local Markdown tasks, decisions, and notes
 ```
 
-All data is stored as Markdown in the standard folder structure (0-5).
+## Canonical Surfaces
+
+| Surface | Responsibility |
+|:---|:---|
+| `.agent/command-registry.json` | Commands, execution profiles, runtime policy, and adapter routing |
+| `.agent/workflows/` | Human-readable execution playbooks |
+| `.agent/skills/` | Focused product-management capabilities |
+| `system/scripts/` | Deterministic retrieval, migration, privacy, evaluation, and task tooling |
+| `5. Trackers/` | Ignored local task state and workstream detail |
+
+Generated manifests, routing tables, runtime adapters, and compatibility documentation are checked against the registry so they cannot drift silently.
+
+## Execution Profiles
+
+| Profile | Intended work |
+|:---|:---|
+| Fast | Retrieval, capture, help, and routine status |
+| Balanced | Task reconciliation, meetings, transcripts, weekly synthesis, and communication intake |
+| Deep | Strategy, consequential decisions, critical review, security, migration, and release work |
+
+Profiles inherit the active runtime's model. Local model promotions require sanitized evaluation evidence and never change providers silently.

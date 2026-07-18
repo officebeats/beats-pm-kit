@@ -213,7 +213,7 @@ def main() -> None:
     """Main entry point for core setup."""
     system = get_system()
     version = get_config('system.version', 'Unknown')
-    print_cyan(f"🧠 Hydrating Antigravity Brain v{version} ({system})...")
+    print_cyan(f"🧠 Hydrating Beats PM Kit v{version} ({system})...")
     
     # 1. Create directories
     create_directories()
