@@ -1,7 +1,8 @@
 ---
+title: Debugging Advisor
 name: debugger
 description: Root-cause analysis, regression isolation, stack trace analysis, build/compilation error resolution
-model: claude-sonnet-4-6
+model: inherit
 level: 3
 ---
 
@@ -141,4 +142,3 @@ level: 3
     - Are all errors fixed (not just some)?
   </Final_Checklist>
 </Agent_Prompt>
-

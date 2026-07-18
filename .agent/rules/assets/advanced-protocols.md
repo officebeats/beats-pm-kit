@@ -10,13 +10,13 @@
 2. **Session Windowing**: Use Antigravity KI system to persist cross-session learnings. Don't re-explain.
 3. **Index, Don't Inline**: SKILL.md files should be indexes pointing to `assets/`. Never inline templates.
 4. **Priority Loading**: Load P0 skills eagerly, P1/P2 only when triggered.
-5. **Single Source of Truth**: `ROUTING.md` for routing. `MANIFEST.json` for registry. No duplicates.
+5. **Single Source of Truth**: `.agent/command-registry.json` owns routing. `ROUTING.md` and `MANIFEST.json` are generated views.
 
-### Skill Archival Protocol
+### Skill Removal Protocol
 
-- Skills unused for 30+ days are candidates for archival via `/vacuum`.
-- Archived skills move to `.agent/archive/skills/` and are removed from active MANIFEST.json.
-- Reactivation: Move back to `.agent/skills/` and update MANIFEST.json.
+- Unused skills are reviewed with regression evidence before deletion.
+- Do not maintain a dormant tracked archive that expands search and context surfaces.
+- Restore intentionally removed skills from version control history when evidence supports reintroduction.
 
 ---
 

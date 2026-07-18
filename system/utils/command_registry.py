@@ -17,11 +17,8 @@ REGISTRY_PATH = CANONICAL_DIR / "command-registry.json"
 DESCRIPTION_RE = re.compile(r"^description:\s*(.+)$", re.MULTILINE)
 MULTILINE_MARKERS = {"|-", "|", ">-", ">", "|+", ">+"}
 
-DEFAULT_RUNTIME_PRIORITY = {
-    "primary": "antigravity",
-    "secondary": "codex",
-    "compatibility": ["claude", "gemini", "kilocode", "other-clis"],
-}
+SCHEMA_VERSION = 2
+PROFILE_NAMES = ("fast", "balanced", "deep")
 
 
 def get_root(root: Path | str | None = None) -> Path:
@@ -83,19 +80,73 @@ def get_workflow_descriptions(root: Path | str | None = None):
 
 
 def load_command_registry(root: Path | str | None = None):
-    """Load adapter metadata layered on top of workflow files."""
+    """Load the canonical routing registry."""
     path = get_registry_path(root)
     if not path.exists():
-        return {"schema_version": 1, "runtime_priority": DEFAULT_RUNTIME_PRIORITY, "commands": {}}
-    return json.loads(path.read_text(encoding="utf-8"))
+        raise FileNotFoundError(f"Canonical command registry is missing: {path}")
+    registry = json.loads(path.read_text(encoding="utf-8"))
+    if registry.get("schema_version") != SCHEMA_VERSION:
+        raise ValueError(
+            f"Unsupported command registry schema: {registry.get('schema_version')}; "
+            f"expected {SCHEMA_VERSION}"
+        )
+    return registry
 
 
-def get_runtime_priority(root: Path | str | None = None):
-    """Return configured runtime priority, with safe defaults."""
+def get_runtime_policy(root: Path | str | None = None):
+    """Return the capability-driven runtime policy."""
+    policy = load_command_registry(root).get("runtime_policy")
+    if not isinstance(policy, dict):
+        raise ValueError("Command registry is missing runtime_policy")
+    if policy.get("selection") != "active-runtime":
+        raise ValueError("runtime_policy.selection must be 'active-runtime'")
+    if policy.get("unknown_capabilities") != "deny":
+        raise ValueError("runtime_policy.unknown_capabilities must be 'deny'")
+    return policy
+
+
+def get_execution_profiles(root: Path | str | None = None):
+    """Return validated abstract execution profiles in escalation order."""
+    profiles = load_command_registry(root).get("execution_profiles")
+    if not isinstance(profiles, dict) or set(profiles) != set(PROFILE_NAMES):
+        raise ValueError("execution_profiles must define fast, balanced, and deep")
+    ranks = [profiles[name].get("rank") for name in PROFILE_NAMES]
+    if ranks != [1, 2, 3]:
+        raise ValueError("execution profile ranks must be fast=1, balanced=2, deep=3")
+    return profiles
+
+
+def get_escalation_signals(root: Path | str | None = None):
+    """Return the allowlisted automatic escalation signals."""
+    signals = load_command_registry(root).get("escalation_signals")
+    if not isinstance(signals, list) or not signals or not all(isinstance(item, str) for item in signals):
+        raise ValueError("escalation_signals must be a non-empty string list")
+    if len(signals) != len(set(signals)):
+        raise ValueError("escalation_signals cannot contain duplicates")
+    return tuple(signals)
+
+
+def get_command_profile_map(root: Path | str | None = None) -> dict[str, str]:
+    """Return command-to-profile assignments after strict coverage validation."""
     registry = load_command_registry(root)
-    priority = dict(DEFAULT_RUNTIME_PRIORITY)
-    priority.update(registry.get("runtime_priority", {}))
-    return priority
+    profiles = get_execution_profiles(root)
+    assignments = registry.get("command_profiles")
+    if not isinstance(assignments, dict) or set(assignments) != set(profiles):
+        raise ValueError("command_profiles must define fast, balanced, and deep")
+
+    owners: dict[str, str] = {}
+    duplicates: set[str] = set()
+    for profile in PROFILE_NAMES:
+        commands = assignments.get(profile)
+        if not isinstance(commands, list) or not all(isinstance(item, str) for item in commands):
+            raise ValueError(f"command_profiles.{profile} must be a string list")
+        for command in commands:
+            if command in owners:
+                duplicates.add(command)
+            owners[command] = profile
+    if duplicates:
+        raise ValueError("Commands have multiple execution profiles: " + ", ".join(sorted(duplicates)))
+    return owners
 
 
 def build_command_catalog(root: Path | str | None = None):
@@ -125,13 +176,26 @@ def build_command_catalog(root: Path | str | None = None):
 
     workflow_names = set(workflow_name_list)
     registry = load_command_registry(repo_root)
+    get_runtime_policy(repo_root)
+    get_escalation_signals(repo_root)
     command_meta = registry.get("commands", {})
+    profile_map = get_command_profile_map(repo_root)
 
     unknown_commands = sorted(set(command_meta) - workflow_names)
     if unknown_commands:
         raise ValueError(
             "Command registry references workflows that do not exist: "
             + ", ".join(unknown_commands)
+        )
+
+    missing_profiles = sorted(workflow_names - set(profile_map))
+    if missing_profiles:
+        raise ValueError("Commands are missing execution profiles: " + ", ".join(missing_profiles))
+    unknown_profile_commands = sorted(set(profile_map) - workflow_names)
+    if unknown_profile_commands:
+        raise ValueError(
+            "Execution profiles reference workflows that do not exist: "
+            + ", ".join(unknown_profile_commands)
         )
 
     alias_owners = {}
@@ -180,6 +244,7 @@ def build_command_catalog(root: Path | str | None = None):
                 "name": name,
                 "workflow": f".agent/workflows/{name}.md",
                 "description": description or "See workflow file",
+                "execution_profile": profile_map[name],
                 "aliases": aliases,
                 "dangerous": bool(override.get("dangerous", False)),
                 "note": override.get("note", ""),

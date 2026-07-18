@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import re
 import sys
 from dataclasses import asdict, dataclass
@@ -22,7 +23,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from system.scripts import task_display  # noqa: E402
+from system.scripts import task_display, task_store  # noqa: E402
 
 CONFIG_TEMPLATE = ROOT / "system" / "config" / "critical_intake.template.json"
 CONFIG_LOCAL = ROOT / "system" / "config" / "critical_intake.local.json"
@@ -129,21 +130,6 @@ def load_config(root: Path) -> dict[str, Any]:
     return deep_merge(defaults, local)
 
 
-def parse_settings_enabled(root: Path, tool_name: str) -> bool | None:
-    text = read_text(root / SETTINGS)
-    pattern = re.compile(
-        rf"^###\s+{re.escape(tool_name)}\s*(?P<body>.*?)(?=^###\s+|^##\s+|\Z)",
-        flags=re.MULTILINE | re.DOTALL | re.IGNORECASE,
-    )
-    match = pattern.search(text)
-    if not match:
-        return None
-    enabled = re.search(r"^\s*-\s+\*\*Enabled\*\*:\s*(yes|no|true|false)\s*$", match.group("body"), flags=re.MULTILINE | re.IGNORECASE)
-    if not enabled:
-        return None
-    return enabled.group(1).lower() in {"yes", "true"}
-
-
 def manifest_scopes(root: Path) -> dict[str, list[dict[str, Any]]]:
     manifest = read_json(root / CHAT_MANIFEST, {"scopes": {}})
     grouped: dict[str, list[dict[str, Any]]] = {}
@@ -168,22 +154,42 @@ def scope_summary(entries: list[dict[str, Any]]) -> str:
     return "; ".join(scopes[:3]) + f"; +{len(scopes) - 3} more"
 
 
-def quill_db_path() -> Path:
-    return Path.home() / "Library" / "Application Support" / "Quill" / "quill.db"
+def _env_path(name: str, *parts: str) -> Path | None:
+    base = os.environ.get(name)
+    return Path(base, *parts) if base else None
 
 
-def granola_paths() -> list[Path]:
+def quill_paths(root: Path) -> list[Path]:
     home = Path.home()
-    return [
+    candidates: list[Path | None] = [
+        root / "3. Meetings" / "transcripts" / "quill",
+        _env_path("APPDATA", "Quill", "quill.db"),
+        _env_path("LOCALAPPDATA", "Quill", "quill.db"),
+        home / "Library" / "Application Support" / "Quill" / "quill.db",
+    ]
+    return [path for path in candidates if path is not None]
+
+
+def granola_paths(root: Path) -> list[Path]:
+    home = Path.home()
+    candidates: list[Path | None] = [
+        root / "3. Meetings" / "transcripts" / "granola",
+        _env_path("APPDATA", "Granola"),
+        _env_path("LOCALAPPDATA", "Granola"),
         home / "Library" / "Application Support" / "Granola",
         home / "Library" / "Application Support" / "granola",
     ]
+    return [path for path in candidates if path is not None]
+
+
+def usable_source_path(path: Path) -> bool:
+    return path.is_file() or (path.is_dir() and any(item.is_file() for item in path.rglob("*")))
 
 
 def source_health(root: Path, source: str, source_config: dict[str, Any], grouped_scopes: dict[str, list[dict[str, Any]]]) -> SourceHealth:
     enabled = bool(source_config.get("enabled", True))
     risk = str(source_config.get("risk_if_skipped", "Coverage may be incomplete."))
-    read_only = source != "trello"
+    read_only = True
 
     if not enabled:
         return SourceHealth(
@@ -238,16 +244,18 @@ def source_health(root: Path, source: str, source_config: dict[str, Any], groupe
         return SourceHealth(source, "missing_config", "", "", risk, "Run /transcript once or provide a manual transcript packet.", True, True)
 
     if source == "quill":
-        path = quill_db_path()
-        if path.exists():
-            return SourceHealth(source, "healthy", "", str(path), risk, "Use read-only Quill import or packet fallback.", False, True)
-        return SourceHealth(source, "unavailable", "", str(path), risk, "Install/configure Quill export access, paste transcript text, or skip Quill once.", True, True)
+        paths = quill_paths(root)
+        existing = [path for path in paths if usable_source_path(path)]
+        if existing:
+            return SourceHealth(source, "healthy", "", str(existing[0]), risk, "Use read-only Quill import or packet fallback.", False, True)
+        return SourceHealth(source, "unavailable", "", "; ".join(str(path) for path in paths), risk, "Install/configure Quill export access, paste transcript text, or skip Quill once.", True, True)
 
     if source == "granola":
-        existing = [path for path in granola_paths() if path.exists()]
+        paths = granola_paths(root)
+        existing = [path for path in paths if usable_source_path(path)]
         if existing:
             return SourceHealth(source, "healthy", "", str(existing[0]), risk, "Use read-only Granola export or packet fallback.", False, True)
-        return SourceHealth(source, "unavailable", "", "; ".join(str(path) for path in granola_paths()), risk, "Configure Granola export access, paste transcript text, or skip Granola once.", True, True)
+        return SourceHealth(source, "unavailable", "", "; ".join(str(path) for path in paths), risk, "Configure Granola export access, paste transcript text, or skip Granola once.", True, True)
 
     if source == "obsidian":
         local_config = root / "system" / "config" / "obsidian.local.json"
@@ -266,15 +274,6 @@ def source_health(root: Path, source: str, source_config: dict[str, Any], groupe
         if artifact_manifest.exists():
             return SourceHealth(source, "healthy", "", "referenced artifacts manifest", risk, "Use referenced-only local artifacts and read-only fetches.", False, True)
         return SourceHealth(source, "degraded", "", "referenced-only", risk, "Fetch only Jira/Confluence links found in named source evidence, or skip Atlassian once.", True, True)
-
-    if source == "trello":
-        trello_enabled = parse_settings_enabled(root, "Trello")
-        config_path = root / "system" / "config" / "trello_config.json"
-        if trello_enabled is False and not config_path.exists():
-            return SourceHealth(source, "disabled", "", "Trello disabled in SETTINGS.md", risk, "Enable Trello config before named board sync.", False, False)
-        if config_path.exists():
-            return SourceHealth(source, "healthy", "", str(config_path), risk, "Run status and scoped dry-run before any apply.", False, False)
-        return SourceHealth(source, "missing_config", "", str(config_path), risk, "Copy trello_config.template.json locally and enable scoped apply.", True, False)
 
     return SourceHealth(source, "unavailable", "", "", risk, "Add a supported source health handler.", True, read_only)
 
@@ -393,26 +392,46 @@ def score_item(config: dict[str, Any], tier: str, ctype: str, gate: dt.date | No
     return score, ", ".join(reasons)
 
 
-def task_rows(root: Path) -> list[dict[str, str]]:
-    rows: list[dict[str, str]] = []
+def legacy_task_master_rows(root: Path) -> list[dict[str, str]]:
+    """Read pre-v11 Task Master rows without making the old ledger authoritative."""
+    items: list[dict[str, str]] = []
     for line in read_text(root / TASK_MASTER).splitlines():
         cells = table_cells(line)
-        if len(cells) < 5 or cells[0].lower() in {"id", "completed", "item"}:
+        if len(cells) < 5 or cells[0].lower() in {"id", "task"}:
             continue
         task_id = extract_task_id(cells[0])
         if not task_id:
             continue
-        rows.append(
+        link = re.search(r"\]\(([^)]+\.md)\)", cells[0])
+        items.append(
             {
                 "task_id": task_id,
                 "title": strip_markdown(cells[1]),
                 "owner": strip_markdown(cells[2]),
                 "due": strip_markdown(cells[3]),
                 "status": strip_markdown(cells[4]),
-                "source": "TASK_MASTER.md",
+                "source": "Legacy Task Master",
+                "path": (Path("5. Trackers") / link.group(1)).as_posix() if link else "",
             }
         )
-    return rows
+    return items
+
+
+def task_rows(root: Path) -> list[dict[str, str]]:
+    canonical = [
+        {
+            "task_id": task.task_id,
+            "title": task.title,
+            "owner": task.owner,
+            "due": task.due,
+            "status": task.status,
+            "source": "Markdown task note",
+            "path": task.path.relative_to(root).as_posix(),
+        }
+        for task in task_store.iter_tasks(root)
+    ]
+    known_ids = {item["task_id"] for item in canonical}
+    return canonical + [item for item in legacy_task_master_rows(root) if item["task_id"] not in known_ids]
 
 
 def boss_items(root: Path) -> list[dict[str, str]]:
@@ -445,8 +464,8 @@ def build_ranked_items(root: Path, mode: str) -> list[RankedItem]:
             score += 120
             reason += ", boss-mode boost"
         task_id = item.get("task_id", "")
-        task_path = root / "5. Trackers" / "tasks" / f"{task_id}.md" if task_id else Path()
-        if task_id and task_path.exists():
+        task_path = root / item["path"] if item.get("path") else None
+        if task_id and task_path is not None and task_path.is_file():
             provenance = task_display.build_provenance(task_path, fallback_title=item.get("title", ""), extra_refs=[task_id])
         else:
             provenance = task_display.provenance_from_title(
@@ -504,7 +523,6 @@ def build_plan(root: Path, mode: str) -> dict[str, Any]:
             ["slack", "outlook", "calendar", "teams"],
             ["transcripts", "quill", "granola"],
             ["obsidian", "agent_memory", "atlassian"],
-            ["trello"],
         ],
         "source_plan": source_plan,
         "user_prompts": [

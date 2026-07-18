@@ -23,6 +23,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from system.scripts import task_store
+
 
 DEFAULT_ROOT = Path(__file__).resolve().parents[2]
 CACHE_REL = Path(".agent/cache/task_index.json")
@@ -239,9 +241,9 @@ def markdown_fence(text: str) -> str:
 
 def relative_to_root(root: Path, path: Path) -> str:
     try:
-        return str(path.resolve().relative_to(root.resolve()))
+        return path.resolve().relative_to(root.resolve()).as_posix()
     except ValueError:
-        return str(path)
+        return path.as_posix()
 
 
 def rel_from_task(task_path: Path, target: Path) -> str:
@@ -249,30 +251,15 @@ def rel_from_task(task_path: Path, target: Path) -> str:
 
 
 def parse_task_master(root: Path) -> dict[str, TaskIndexEntry]:
-    task_master = root / TASK_MASTER_REL
     tasks: dict[str, TaskIndexEntry] = {}
-    for line in read_text(task_master).splitlines():
-        cells = table_cells(line)
-        if len(cells) < 5:
-            continue
-        task_id = extract_task_id(cells[0])
-        if not task_id:
-            continue
-        task_cell = strip_markdown(cells[1])
-        title = re.sub(r"\s+—\s+.*$", "", task_cell).strip()
-        link_match = re.search(r"\(([^)]+)\)", cells[0])
-        if link_match:
-            linked = link_match.group(1).replace("%20", " ")
-            path = str((root / "5. Trackers" / linked).resolve()) if linked.startswith("tasks/") else str((root / linked).resolve())
-        else:
-            path = str((root / TASKS_REL / f"{task_id}.md").resolve())
-        tasks[task_id] = TaskIndexEntry(
-            task_id=task_id,
-            title=title or task_id,
-            path=path,
-            owner=strip_markdown(cells[2]),
-            due=strip_markdown(cells[3]),
-            status=strip_markdown(cells[4]),
+    for task in task_store.iter_tasks(root):
+        tasks[task.task_id] = TaskIndexEntry(
+            task_id=task.task_id,
+            title=task.title,
+            path=str(task.path.resolve()),
+            owner=task.owner,
+            due=task.due,
+            status=task.status,
             keywords=[],
         )
     return tasks
@@ -367,15 +354,10 @@ def match_task(text: str, index: dict[str, Any], explicit_task_id: str = "") -> 
 
 def next_inbox_id(root: Path, prefix: str = "INBOX") -> str:
     existing: set[int] = set()
-    for source in [read_text(root / TASK_MASTER_REL)]:
-        for match in re.finditer(rf"\b{re.escape(prefix)}-(\d{{3,}})\b", source):
+    for task in task_store.iter_tasks(root):
+        match = re.fullmatch(rf"{re.escape(prefix)}-(\d{{3,}})", task.task_id)
+        if match:
             existing.add(int(match.group(1)))
-    tasks_dir = root / TASKS_REL
-    if tasks_dir.exists():
-        for path in tasks_dir.glob(f"{prefix}-*.md"):
-            match = re.search(rf"{re.escape(prefix)}-(\d{{3,}})", path.stem)
-            if match:
-                existing.add(int(match.group(1)))
     next_number = 1
     while next_number in existing:
         next_number += 1
@@ -396,8 +378,17 @@ def save_source_note(
     digest = hashlib.sha256(raw_text.encode("utf-8", errors="replace")).hexdigest()[:10]
     filename = f"{day}_{slugify(title)}_{digest}.md"
     path = root / RAW_REL / filename
+    yaml_title = title.replace("'", "''")
+    yaml_source = source.replace("'", "''")
     body = "\n".join(
         [
+            "---",
+            f"title: '{yaml_title}'",
+            "content_type: task-source",
+            f"captured: {captured_at.isoformat(timespec='seconds')}",
+            f"source: '{yaml_source}'",
+            "---",
+            "",
             f"# {title}",
             "",
             f"**Captured:** {captured_at.isoformat(timespec='seconds')}",
@@ -480,6 +471,15 @@ def append_subtask(text: str, next_action: str) -> str:
 
 def update_last_updated(text: str, captured_at: dt.datetime) -> str:
     date = captured_at.date().isoformat()
+    if text.startswith("---\n"):
+        end = text.find("\n---\n", 4)
+        if end >= 0:
+            raw = text[4:end]
+            if re.search(r"^updated:\s*.*$", raw, flags=re.MULTILINE):
+                raw = re.sub(r"^updated:\s*.*$", f"updated: {date}", raw, count=1, flags=re.MULTILINE)
+            else:
+                raw = raw.rstrip() + f"\nupdated: {date}"
+            return "---\n" + raw + text[end:]
     if "> **Last Updated:**" in text:
         return re.sub(r"^> \*\*Last Updated:\*\*.*$", f"> **Last Updated:** {date}", text, count=1, flags=re.MULTILINE)
     header_end = text.find("\n---")
@@ -487,6 +487,28 @@ def update_last_updated(text: str, captured_at: dt.datetime) -> str:
     if header_end != -1:
         return text[:header_end].rstrip() + "\n" + line + text[header_end:]
     return line + text
+
+
+def append_frontmatter_source(text: str, source_ref: str) -> str:
+    if not text.startswith("---\n"):
+        return text
+    end = text.find("\n---\n", 4)
+    if end < 0:
+        return text
+    raw = text[4:end]
+    escaped = source_ref.replace("'", "''")
+    if re.search(rf"^\s*-\s*['\"]?{re.escape(source_ref)}['\"]?\s*$", raw, flags=re.MULTILINE):
+        return text
+    lines = raw.splitlines()
+    source_index = next((index for index, line in enumerate(lines) if re.match(r"^source_refs:\s*$", line)), None)
+    if source_index is None:
+        lines.extend(["source_refs:", f"  - '{escaped}'"])
+    else:
+        insert_at = source_index + 1
+        while insert_at < len(lines) and re.match(r"^\s+-\s+", lines[insert_at]):
+            insert_at += 1
+        lines.insert(insert_at, f"  - '{escaped}'")
+    return "---\n" + "\n".join(lines) + text[end:]
 
 
 def update_task_file(
@@ -509,54 +531,43 @@ def update_task_file(
     text = append_reference(text, path, source_note, source_title)
     text = append_progress(text, summary, source, captured_at)
     text = append_subtask(text, next_action)
+    source_ref = relative_to_root(root, source_note)
+    if not text.startswith("---\n"):
+        text = re.sub(r"^#\s+.*$", f"# {entry.title}", text, count=1, flags=re.MULTILINE)
+        text = re.sub(
+            r"^>\s*\*\*(?:Internal ID|Status|Lane|Owner|Due|Created|Last Updated):\*\*.*\n?",
+            "",
+            text,
+            flags=re.MULTILINE | re.IGNORECASE,
+        )
+        yaml_title = entry.title.replace("'", "''")
+        yaml_status = entry.status.replace("'", "''")
+        yaml_owner = entry.owner.replace("'", "''")
+        yaml_due = entry.due.replace("'", "''")
+        yaml_source = source_ref.replace("'", "''")
+        metadata = "\n".join(
+            [
+                "---",
+                f"title: '{yaml_title}'",
+                f"task_id: {entry.task_id}",
+                f"status: '{yaml_status}'",
+                "lane: Triage",
+                f"owner: '{yaml_owner}'",
+                "workstream: ''",
+                f"due: '{yaml_due}'",
+                f"updated: {captured_at.date().isoformat()}",
+                "source_refs:",
+                f"  - '{yaml_source}'",
+                "inferred_fields:",
+                "---",
+                "",
+            ]
+        )
+        text = metadata + text.lstrip()
+    else:
+        text = append_frontmatter_source(text, source_ref)
     write_text(path, text)
     return path
-
-
-def update_task_master_status(root: Path, task_id: str, status: str) -> bool:
-    path = root / TASK_MASTER_REL
-    text = read_text(path)
-    lines = text.splitlines()
-    changed = False
-    for index, line in enumerate(lines):
-        cells = table_cells(line)
-        if len(cells) < 5 or extract_task_id(cells[0]) != task_id:
-            continue
-        cells[4] = escape_table(status)
-        lines[index] = "| " + " | ".join(cells) + " |"
-        changed = True
-        break
-    if changed:
-        write_text(path, "\n".join(lines))
-    return changed
-
-
-def append_fast_triage_row(root: Path, task_id: str, title: str, due: str, status: str) -> None:
-    path = root / TASK_MASTER_REL
-    text = read_text(path)
-    row = f"| [{task_id}](tasks/{task_id}.md) | **{escape_table(title)}** — Fast intake candidate | Owner | {due} | {escape_table(status)} |"
-    if row in text:
-        return
-    heading = "## Fast Intake Triage"
-    table = "\n".join(
-        [
-            heading,
-            "",
-            "| ID | Task | Owner | Due | Status |",
-            "|:---|:-----|:------|:----|:-------|",
-            row,
-        ]
-    )
-    if heading not in text:
-        write_text(path, text.rstrip() + "\n\n" + table)
-        return
-    pattern = re.compile(rf"(^{re.escape(heading)}\s*\n.*?)(?=^##\s+|\Z)", re.DOTALL | re.MULTILINE)
-    match = pattern.search(text)
-    if not match:
-        write_text(path, text.rstrip() + "\n\n" + table)
-        return
-    block = match.group(1).rstrip() + "\n" + row + "\n"
-    write_text(path, text[: match.start(1)] + block + text[match.end(1) :])
 
 
 def create_candidate_task(
@@ -570,54 +581,33 @@ def create_candidate_task(
     next_action: str,
     captured_at: dt.datetime,
 ) -> Path:
-    path = root / TASKS_REL / f"{task_id}.md"
-    rel = rel_from_task(path, source_note).replace(" ", "%20")
     date = captured_at.date().isoformat()
-    body = "\n".join(
-        [
-            f"# {title}",
-            "",
-            f"> **Internal ID:** {task_id}",
-            f"> **Status:** 🟡 Needs triage — {summary}",
-            "> **Lane:** Triage",
-            "> **Owner:** Owner",
-            "> **Due:** TBD",
-            f"> **Created:** {date}",
-            f"> **Last Updated:** {date}",
-            "",
-            "---",
-            "",
-            "## Card Summary",
-            "",
-            summary,
-            "",
-            "## Context & Background",
-            "",
-            "Created by fast task-manager intake from raw pasted evidence. This task may duplicate an existing lane; preserve it until a human or deep workflow merges, closes, or reroutes it.",
-            "",
-            "## 📎 References",
-            "",
-            "| Type | Source | Link |",
-            "|:-----|:-------|:-----|",
-            f"| Source Note | {escape_table(source_title)} | [{source_note.name}]({rel}) |",
-            "",
-            "## 📈 Progress Log",
-            "",
-            "| Date | Source | Update / Outcome | Status |",
-            "|:-----|:-------|:-----------------|:-------|",
-            f"| {date} | {escape_table(source)} | {escape_table(summary)} | 🟡 |",
-            "",
-            "## ✅ Subtasks",
-            "",
-            f"- [ ] {strip_markdown(next_action).rstrip('.')}.",
-            "",
-            "## Notes",
-            "",
-            "- Fast intake intentionally created this task even without high confidence to avoid losing the signal.",
-        ]
+    path = task_store.unique_task_path(root, title)
+    record = task_store.TaskRecord(
+        task_id=task_id,
+        title=title,
+        path=path,
+        status="needs-triage",
+        lane="Triage",
+        owner="Unassigned",
+        workstream="Unassigned",
+        created=date,
+        updated=date,
+        source_refs=[relative_to_root(root, source_note)],
+        inferred_fields=["owner", "due", "workstream"],
+    )
+    body = task_store.render_task(
+        record,
+        summary=summary,
+        context=(
+            "Created from raw task-manager evidence. Review for duplication, confirm the owner and due date, "
+            "then promote or close it."
+        ),
+        next_action=next_action,
+        source=source,
     )
     write_text(path, body)
-    append_fast_triage_row(root, task_id, title, "TBD", f"🟡 Needs triage — {summary}")
+    task_store.rebuild_task_master(root)
     return path
 
 
@@ -652,7 +642,7 @@ def run_intake(
 
     if match.task is not None and match.confidence >= min_confidence:
         task_path = update_task_file(root, match.task, source_note, title, summary, next_action, source, captured_at)
-        update_task_master_status(root, match.task.task_id, f"🟡 Updated — {summary}")
+        task_store.rebuild_task_master(root)
         mode = "updated_existing"
         task_id = match.task.task_id
     else:

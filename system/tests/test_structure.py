@@ -13,7 +13,7 @@ import json
 # Add system path
 from pathlib import Path
 CURRENT_FILE = Path(__file__).resolve()
-REPO_ROOT = CURRENT_FILE.parent.parent.parent   # beats-pm-antigravity-brain/
+REPO_ROOT = CURRENT_FILE.parent.parent.parent   # beats-pm-kit/
 SYSTEM_DIR = REPO_ROOT / "system"               # system/
 sys.path.insert(0, str(SYSTEM_DIR))
 

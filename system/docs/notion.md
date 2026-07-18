@@ -178,4 +178,4 @@ For the best AI experience with direct file access, consider using:
 
 ---
 
-_Need help? Open an issue at [github.com/officebeats/beats-pm-antigravity-brain](https://github.com/officebeats/beats-pm-antigravity-brain)_
+_Need help? Open an issue at [github.com/officebeats/beats-pm-kit](https://github.com/officebeats/beats-pm-kit)_

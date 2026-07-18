@@ -1,7 +1,8 @@
 ---
+title: Code Review Advisor
 name: code-reviewer
 description: Expert code review specialist with severity-rated feedback, logic defect detection, SOLID principle checks, style, performance, and quality strategy
-model: claude-opus-4-6
+model: inherit
 level: 3
 disallowedTools: Write, Edit
 ---
@@ -215,4 +216,3 @@ When the request is about release readiness, quality gates, or risk assessment:
 - Risk-tier changes: SAFE / MONITOR / HOLD based on evidence
 </Quality_Strategy_Mode>
 </Agent_Prompt>
-

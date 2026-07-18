@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Master Checklist Runner - Antigravity Kit
+Master Checklist Runner - Beats PM Kit
 ==========================================
 
 Orchestrates all validation scripts in priority order.
@@ -161,7 +161,7 @@ def print_summary(results: List[dict]):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Run Antigravity Kit validation checklist",
+        description="Run the Beats PM Kit validation checklist",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

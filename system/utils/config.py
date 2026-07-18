@@ -76,9 +76,6 @@ DEFAULT_CONFIG = {
         'eng_tasks': '5. Trackers/ENG_TASKS.md',
         'ux_tasks': '5. Trackers/UX_TASKS.md'
     },
-    'ai': {
-        'default_model': 'gemini-3-flash-preview',
-    },
     'extensions': [
         {
             'id': 'pesosz.antigravity-auto-accept',
@@ -271,29 +268,6 @@ def get_extensions() -> list:
         List of extension configurations
     """
     return get_config('extensions', [])
-
-
-def get_default_model() -> str:
-    """
-    Get the default AI model.
-    
-    Returns:
-        Default model name
-    """
-    return get_config('ai.default_model', 'gemini-3-flash-preview')
-
-
-def set_default_model(model: str) -> bool:
-    """
-    Set the default AI model.
-    
-    Args:
-        model: Model name to set
-    
-    Returns:
-        True if set was successful, False otherwise
-    """
-    return set_config('ai.default_model', model)
 
 
 def reset_config() -> bool:

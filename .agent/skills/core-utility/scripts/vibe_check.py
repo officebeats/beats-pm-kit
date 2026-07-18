@@ -18,7 +18,7 @@ from utils.ui import (
 from utils.platform import get_system, get_python_executable, get_npm_executable
 from utils.filesystem import file_exists, directory_exists, read_file, write_file
 from utils.subprocess_helper import check_command_exists, check_extension_installed
-from utils.config import get_default_model, get_config
+from utils.config import get_config
 
 
 def check_toolchain():

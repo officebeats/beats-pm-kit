@@ -8,6 +8,7 @@ import datetime as dt
 import hashlib
 import json
 import re
+import sqlite3
 import sys
 import time
 from pathlib import Path
@@ -18,12 +19,16 @@ ROOT = Path(__file__).resolve().parents[2]
 CACHE_DIR = ROOT / "system" / "cache" / "context-router"
 INDEX_PATH = CACHE_DIR / "index.json"
 WIKI_DIR = CACHE_DIR / "wiki"
+KNOWLEDGE_DB_REL = Path(".beats/knowledge.db")
 
 INDEX_VERSION = 1
 TEXT_SUFFIXES = {".md", ".txt", ".json", ".csv"}
 MAX_SUMMARY_CHARS = 700
 MAX_FILE_BYTES = 1_500_000
 SCAN_ROOTS = {
+    "incoming": Path("0. Incoming"),
+    "company": Path("1. Company"),
+    "products": Path("2. Products"),
     "tasks": Path("5. Trackers"),
     "reports": Path("3. Meetings") / "reports",
     "transcripts": Path("3. Meetings") / "transcripts",
@@ -94,11 +99,63 @@ def compact_space(text: str) -> str:
 
 
 def extract_title(path: Path, text: str) -> str:
+    if text.startswith("---\n"):
+        end = text.find("\n---", 4)
+        if end >= 0:
+            match = re.search(r"^title:\s*[\"']?(.+?)[\"']?\s*$", text[4:end], flags=re.MULTILINE | re.IGNORECASE)
+            if match:
+                return compact_space(match.group(1))
     for line in text.splitlines():
         stripped = line.strip()
         if stripped.startswith("# "):
             return compact_space(stripped.lstrip("# "))
     return path.stem.replace("-", " ").replace("_", " ").strip()
+
+
+def knowledge_db_path(root: Path) -> Path:
+    return root / KNOWLEDGE_DB_REL
+
+
+def sync_knowledge_db(root: Path, index: dict[str, Any], bodies: dict[str, str]) -> Path:
+    """Incrementally synchronize full Markdown bodies into a local FTS5 index."""
+    db_path = knowledge_db_path(root)
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    connection = sqlite3.connect(db_path)
+    try:
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS document_state (path TEXT PRIMARY KEY, sha256 TEXT NOT NULL)"
+        )
+        connection.execute(
+            "CREATE VIRTUAL TABLE IF NOT EXISTS documents_fts USING fts5("
+            "path UNINDEXED, title, body, kind UNINDEXED, tokenize='porter unicode61')"
+        )
+        existing = dict(connection.execute("SELECT path, sha256 FROM document_state"))
+        current_paths = {str(item["path"]) for item in index.get("files", [])}
+        for removed in sorted(set(existing) - current_paths):
+            connection.execute("DELETE FROM documents_fts WHERE path = ?", (removed,))
+            connection.execute("DELETE FROM document_state WHERE path = ?", (removed,))
+        for item in index.get("files", []):
+            path = str(item["path"])
+            digest = str(item["sha256"])
+            if existing.get(path) == digest:
+                continue
+            body = bodies.get(path)
+            if body is None:
+                body = read_text(root / path)
+            connection.execute("DELETE FROM documents_fts WHERE path = ?", (path,))
+            connection.execute(
+                "INSERT INTO documents_fts(path, title, body, kind) VALUES (?, ?, ?, ?)",
+                (path, str(item.get("title", "")), body, str(item.get("kind", "other"))),
+            )
+            connection.execute(
+                "INSERT INTO document_state(path, sha256) VALUES (?, ?) "
+                "ON CONFLICT(path) DO UPDATE SET sha256 = excluded.sha256",
+                (path, digest),
+            )
+        connection.commit()
+    finally:
+        connection.close()
+    return db_path
 
 
 def extract_headings(text: str, limit: int = 8) -> list[str]:
@@ -198,9 +255,13 @@ def index_is_current(index: dict[str, Any] | None, root: Path) -> bool:
 def build_index(root: Path = ROOT, *, force: bool = False, index_path: Path = INDEX_PATH) -> dict[str, Any]:
     cached = load_index(index_path)
     if not force and index_is_current(cached, root):
+        if not knowledge_db_path(root).exists():
+            bodies = {path.relative_to(root).as_posix(): read_text(path) for path in iter_candidate_files(root)}
+            sync_knowledge_db(root, cached, bodies)  # type: ignore[arg-type]
         return cached  # type: ignore[return-value]
 
     files: list[dict[str, Any]] = []
+    bodies: dict[str, str] = {}
     for path in iter_candidate_files(root):
         rel_path = path.relative_to(root)
         try:
@@ -212,6 +273,7 @@ def build_index(root: Path = ROOT, *, force: bool = False, index_path: Path = IN
         title = extract_title(path, text)
         summary = extract_summary(text)
         search_text = " ".join([rel_path.as_posix(), title, " ".join(headings), summary])
+        bodies[rel_path.as_posix()] = text
         files.append(
             {
                 **stats,
@@ -233,6 +295,7 @@ def build_index(root: Path = ROOT, *, force: bool = False, index_path: Path = IN
     }
     index_path.parent.mkdir(parents=True, exist_ok=True)
     index_path.write_text(json.dumps(index, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    sync_knowledge_db(root, index, bodies)
     return index
 
 
@@ -291,12 +354,79 @@ def suggested_commands_for(query: str) -> list[str]:
     if any(word in lowered for word in ["roadmap", "strategy", "plan"]):
         suggestions.append("/plan")
     if not suggestions:
-        suggestions.append("/context")
+        suggestions.append("/find")
     deduped: list[str] = []
     for suggestion in suggestions:
         if suggestion not in deduped:
             deduped.append(suggestion)
     return deduped
+
+
+def _fts_expression(query_tokens: list[str], operator: str) -> str:
+    return f" {operator} ".join(f'"{token}"*' for token in query_tokens)
+
+
+def _matching_line(path: Path, query_tokens: list[str]) -> int:
+    try:
+        for number, line in enumerate(read_text(path).splitlines(), start=1):
+            lowered = line.lower()
+            if any(token in lowered for token in query_tokens):
+                return number
+    except OSError:
+        return 0
+    return 0
+
+
+def query_knowledge_db(root: Path, query_tokens: list[str], limit: int) -> list[dict[str, Any]]:
+    if not query_tokens:
+        return []
+    db_path = knowledge_db_path(root)
+    if not db_path.exists():
+        return []
+    connection = sqlite3.connect(db_path)
+    connection.row_factory = sqlite3.Row
+    try:
+        rows: list[sqlite3.Row] = []
+        for operator in ("AND", "OR"):
+            rows = list(
+                connection.execute(
+                    "SELECT path, title, kind, "
+                    "snippet(documents_fts, 2, '', '', ' … ', 24) AS excerpt, "
+                    "bm25(documents_fts, 0.0, 8.0, 1.0, 0.0) AS relevance "
+                    "FROM documents_fts WHERE documents_fts MATCH ? "
+                    "ORDER BY relevance LIMIT ?",
+                    (_fts_expression(query_tokens, operator), limit),
+                )
+            )
+            if rows:
+                break
+    except sqlite3.DatabaseError:
+        return []
+    finally:
+        connection.close()
+
+    matches: list[dict[str, Any]] = []
+    for row in rows:
+        path = str(row["path"])
+        title = str(row["title"])
+        excerpt = compact_space(str(row["excerpt"] or ""))
+        searchable = f"{title} {path} {excerpt}".lower()
+        matched = [token for token in query_tokens if token in searchable]
+        confidence = min(1.0, 0.35 + (0.55 * len(matched) / max(len(query_tokens), 1)) + (0.1 if any(token in title.lower() for token in query_tokens) else 0))
+        matches.append(
+            {
+                "path": path,
+                "kind": str(row["kind"]),
+                "title": title,
+                "score": round(-float(row["relevance"]), 5),
+                "confidence": round(confidence, 3),
+                "freshness": dt.datetime.fromtimestamp((root / path).stat().st_mtime, tz=dt.timezone.utc).date().isoformat(),
+                "rationale": "Full-text match: " + ", ".join(matched[:6]),
+                "snippet": excerpt,
+                "line": _matching_line(root / path, query_tokens),
+            }
+        )
+    return matches
 
 
 def query_index(
@@ -309,35 +439,41 @@ def query_index(
     start = time.perf_counter()
     index = build_index(root, index_path=index_path)
     query_tokens = tokenize(query)
-    matches: list[dict[str, Any]] = []
-    for item in index.get("files", []):
-        score, reasons = score_file(query_tokens, item)
-        if score <= 0:
-            continue
-        max_score = max(len(query_tokens) * 10, 1)
-        confidence = min(1.0, score / max_score)
-        matches.append(
-            {
-                "path": item["path"],
-                "kind": item["kind"],
-                "title": item["title"],
-                "score": score,
-                "confidence": round(confidence, 3),
-                "freshness": dt.datetime.fromtimestamp(
-                    int(item["mtime_ns"]) / 1_000_000_000,
-                    tz=dt.timezone.utc,
-                ).date().isoformat(),
-                "rationale": "Matched " + ", ".join(reasons[:6]),
-            }
-        )
-    matches.sort(key=lambda item: (-int(item["score"]), str(item["path"])))
-    matches = matches[:limit]
+    matches = query_knowledge_db(root, query_tokens, limit)
+    search_mode = "fts5"
+    if not matches:
+        search_mode = "metadata-fallback"
+        for item in index.get("files", []):
+            score, reasons = score_file(query_tokens, item)
+            if score <= 0:
+                continue
+            max_score = max(len(query_tokens) * 10, 1)
+            confidence = min(1.0, score / max_score)
+            matches.append(
+                {
+                    "path": item["path"],
+                    "kind": item["kind"],
+                    "title": item["title"],
+                    "score": score,
+                    "confidence": round(confidence, 3),
+                    "freshness": dt.datetime.fromtimestamp(
+                        int(item["mtime_ns"]) / 1_000_000_000,
+                        tz=dt.timezone.utc,
+                    ).date().isoformat(),
+                    "rationale": "Metadata match: " + ", ".join(reasons[:6]),
+                    "snippet": item.get("summary", ""),
+                    "line": _matching_line(root / item["path"], query_tokens),
+                }
+            )
+        matches.sort(key=lambda item: (-float(item["score"]), str(item["path"])))
+        matches = matches[:limit]
     elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
     return {
         "query": query,
         "generated_at": utc_now(),
         "index_path": index_path.relative_to(root).as_posix() if index_path.is_relative_to(root) else str(index_path),
         "elapsed_ms": elapsed_ms,
+        "search_mode": search_mode,
         "matches": matches,
         "missing_scopes": missing_scopes_for(query, len(matches)),
         "suggested_commands": suggested_commands_for(query),
@@ -378,6 +514,11 @@ def build_parser() -> argparse.ArgumentParser:
     query.add_argument("--limit", type=int, default=8, help="Maximum matches to return")
     query.add_argument("--json", action="store_true", help="Emit machine-readable JSON")
 
+    find = subparsers.add_parser("find", help="Find full-text evidence in local PM history")
+    find.add_argument("topic", nargs="+", help="Words or phrases from a meeting, chat, decision, task, or document")
+    find.add_argument("--limit", type=int, default=8, help="Maximum matches to return")
+    find.add_argument("--json", action="store_true", help="Emit machine-readable JSON")
+
     stale = subparsers.add_parser("stale", help="Report whether the cache is stale")
     stale.add_argument("--quiet", action="store_true", help="Only use exit status")
     stale.add_argument("--json", action="store_true", help="Emit machine-readable JSON")
@@ -390,9 +531,12 @@ def emit(data: Any, *, as_json: bool) -> None:
         return
     if isinstance(data, dict) and "matches" in data:
         print(f"Context packet for: {data['query']}")
-        print(f"Elapsed: {data['elapsed_ms']} ms")
+        print(f"Elapsed: {data['elapsed_ms']} ms ({data.get('search_mode', 'local')})")
         for item in data["matches"]:
-            print(f"- {item['path']} ({item['kind']}, confidence {item['confidence']}): {item['title']}")
+            location = f":{item['line']}" if item.get("line") else ""
+            print(f"- {item['title']} — {item['path']}{location} ({item['kind']}, confidence {item['confidence']})")
+            if item.get("snippet"):
+                print(f"  {item['snippet']}")
         if data["missing_scopes"]:
             print("Missing scopes:")
             for scope in data["missing_scopes"]:
@@ -421,7 +565,7 @@ def main(argv: list[str] | None = None) -> int:
         emit(result, as_json=args.json)
         return 0
 
-    if args.command == "query":
+    if args.command in {"query", "find"}:
         topic = " ".join(args.topic)
         result = query_index(topic, root=root, limit=args.limit, index_path=index_path)
         emit(result, as_json=args.json)

@@ -28,7 +28,7 @@ def get_modified_files(directories, hours_ago):
     return recent_files
 
 def main():
-    parser = argparse.ArgumentParser(description="Memory Consolidator Script for Antigravity Brain")
+    parser = argparse.ArgumentParser(description="Memory Consolidator for Beats PM Kit")
     parser.add_argument("--hours", type=int, default=48, help="Number of hours to look back for modified files")
     parser.add_argument("--dirs", nargs='+', default=['2. Products', '3. Meetings', '1. Company', '0. Incoming'], help="Directories to scan")
     

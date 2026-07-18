@@ -1,65 +1,57 @@
-# ROUTING.md — Unified Agent & Skill Routing Table (SSOT)
+# Beats PM Kit Routing
 
-> **Source of Truth** for command → agent → skill mapping.
-> All agents (Gemini CLI, Antigravity, Claude Code, Codex) MUST respect this routing.
+> Generated from `.agent/command-registry.json` by `system/scripts/generate_registry_docs.py`.
+> Edit the registry, never this file.
 
----
+The registry is the only routing source of truth. Runtime adapters and this human-readable table are derived views.
 
-## 🚫 GLOBAL SKILL FILTER
+| Command | Profile | Aliases | Runtime adapter |
+| --- | --- | --- | --- |
+| `/accuracy` | Deep | — | Dispatch only |
+| `/archive` | Fast | — | Dispatch only |
+| `/beats-comms` | Balanced | — | Skill `beats-comms` |
+| `/beats-slack` | Balanced | — | Skill `beats-slack` |
+| `/beats-teams` | Balanced | — | Skill `beats-teams` |
+| `/boss` | Deep | — | Skill `beats-boss` |
+| `/build` | Balanced | — | Dispatch only |
+| `/challenge` | Deep | — | Dispatch only |
+| `/chat` | Fast | — | Dispatch only |
+| `/context` | Fast | — | Dispatch only |
+| `/create` | Deep | — | Skill `beats-create` |
+| `/day` | Fast | `/status`, `/morning`, `/brief`, `/now` | Skill `beats-day` |
+| `/deck` | Balanced | — | Skill `beats-deck` |
+| `/discover` | Deep | — | Dispatch only |
+| `/fan-out` | Deep | — | Dispatch only |
+| `/find` | Fast | — | Skill `beats-find` |
+| `/handoff` | Balanced | — | Dispatch only |
+| `/help` | Fast | — | Dispatch only |
+| `/improve-plan` | Deep | — | Dispatch only |
+| `/intel` | Balanced | — | Dispatch only |
+| `/interview` | Deep | — | Dispatch only |
+| `/maintain` | Balanced | — | Dispatch only |
+| `/meet` | Balanced | — | Skill `beats-meet` |
+| `/memory` | Balanced | `/reflect` | Skill `beats-memory` |
+| `/obsidian` | Fast | — | Skill `beats-obsidian` |
+| `/office-cli` | Fast | — | Skill `beats-office-cli` |
+| `/pack` | Fast | — | Skill `beats-pack` |
+| `/paste` | Fast | — | Skill `beats-paste` |
+| `/plan` | Deep | — | Skill `beats-plan` |
+| `/prep` | Balanced | — | Dispatch only |
+| `/prioritize` | Deep | — | Dispatch only |
+| `/regression` | Balanced | — | Dispatch only |
+| `/retro` | Balanced | — | Dispatch only |
+| `/review` | Deep | — | Skill `beats-review` |
+| `/sop` | Balanced | — | Skill `beats-sop` |
+| `/sprint` | Balanced | — | Dispatch only |
+| `/start` | Fast | — | Dispatch only |
+| `/team` | Deep | — | Dispatch only |
+| `/track` | Balanced | — | Skill `beats-track` |
+| `/transcript` | Balanced | — | Skill `beats-transcript` |
+| `/update` | Deep | — | Skill `beats-update` |
+| `/vacuum` | Deep | `/cleanup` | Skill `beats-vacuum` |
+| `/vibe` | Fast | — | Skill `beats-vibe` |
+| `/week` | Balanced | — | Skill `beats-week` |
 
-**CRITICAL RULE:** Only use skills related to **Software Development**, **Product Management**, or **Task Management**. 
-Disregard and ignore ALL scientific, medical, or other unrelated global skills (e.g., bioRxiv, PubChem, clinical-reports, etc.).
+## Escalation
 
-## 📥 IMPLICIT INPUT DEFAULTS
-
-Screenshots/images and transcripts are task-master management evidence unless the user explicitly states a different goal.
-
-- Screenshot/image input routes through `/paste` → `inbox-processor` → `task-manager`.
-- Transcript input routes through `/transcript` or `/meet` → `meeting-synth` → `task-manager`.
-- Default durable target is `5. Trackers/TASK_MASTER.md` plus `5. Trackers/tasks/` for detail updates.
-- Ask for confirmation only when the extracted tracker update is ambiguous, not just because the user supplied a screenshot or transcript.
-
----
-
-## 🏗️ P0 — Core PM Commands (Eager Load)
-
-| Command     | Agent      | Primary Skill      | Tier |
-|:------------|:-----------|:-------------------|:-----|
-| `/boss`     | `cpo`      | `boss-tracker`     | P0   |
-| `/day`      | `staff-pm` | `daily-synth`      | P0   |
-| `/track`    | `staff-pm` | `pm-decision-router` -> `task-manager` | P0   |
-| `/meet`     | `staff-pm` | `meeting-synth`    | P0   |
-| `/create`   | `staff-pm` | `pm-decision-router` -> `prd-author` | P0   |
-| `/plan`     | `staff-pm` | `pm-decision-router` -> `roadmapping-suite` / `product-strategy-suite` | P0   |
-| `/paste`    | `staff-pm` | `pm-decision-router` -> `inbox-processor` -> `task-manager` | P0   |
-| `/help`     | `orchestrator` | `core-utility` | P0   |
-
----
-
-## 🚀 P1 — Strategic & Execution Commands (On-Demand)
-
-| Command     | Agent      | Primary Skill      | Tier |
-|:------------|:-----------|:-------------------|:-----|
-| `/discover` | `strategist` | `pm-decision-router` -> `discovery-engine` | P1   |
-| `/prioritize` | `strategist` | `pm-decision-router` -> `roadmapping-suite` | P1   |
-| `/retro`    | `program-manager` | `retrospective` | P1   |
-| `/vacuum`   | `cpo`      | `vacuum-protocol`  | P1   |
-| `/review`   | `qa-engineer` | `test-scenarios`   | P1   |
-| `/beats-comms` | `staff-pm` | `pm-decision-router` -> `chat-transcript-archive` | P1 |
-| `/sop`      | `sop-librarian` | `sop-manager` | P1   |
-| `/vibe`     | `orchestrator` | `system-validation` | P1   |
-
----
-
-## 🛠️ P2 — Specialist Commands (Triggered)
-
-| Command       | Agent      | Primary Skill      | Tier |
-|:--------------|:-----------|:-------------------|:-----|
-| `/transcript` | `staff-pm` | `pm-decision-router` -> `meeting-synth` -> `task-manager` | P2   |
-| `/metrics`    | `data-scientist` | `metrics-finance-suite` | P2   |
-| `/growth`     | `gtm-lead` | `growth-engine`    | P2   |
-| `/coach`      | `career-coach` | `leadership-career-coach` | P2   |
-
----
-
-_Last Sync: 2026-03-29_
+Conflicting evidence, high-stakes decisions, external mutations, broad changes, and failed validation escalate to Deep. Runtime model defaults remain inherited; explicit promotions stay local and evidence-gated.

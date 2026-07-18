@@ -26,10 +26,69 @@ def write_workflow(root: Path, name: str) -> None:
 def write_registry(root: Path, commands: dict) -> None:
     path = root / ".agent" / "command-registry.json"
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps({"schema_version": 1, "commands": commands}, indent=2), encoding="utf-8")
+    names = sorted(item.stem for item in (root / ".agent" / "workflows").glob("*.md"))
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": 2,
+                "runtime_policy": {
+                    "selection": "active-runtime",
+                    "unknown_capabilities": "deny",
+                    "allow_cross_provider": False,
+                },
+                "execution_profiles": {
+                    "fast": {"rank": 1},
+                    "balanced": {"rank": 2},
+                    "deep": {"rank": 3},
+                },
+                "command_profiles": {"fast": names, "balanced": [], "deep": []},
+                "escalation_signals": ["conflicting_evidence"],
+                "commands": commands,
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
 
 
 class TestCommandIntegrity(unittest.TestCase):
+    def test_schema_v2_requires_every_workflow_in_exactly_one_profile(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            write_workflow(root, "day")
+            write_workflow(root, "week")
+            write_registry(root, {"day": {}, "week": {}})
+            registry_path = root / ".agent" / "command-registry.json"
+            registry = json.loads(registry_path.read_text(encoding="utf-8"))
+            registry["command_profiles"]["fast"] = ["day"]
+            registry_path.write_text(json.dumps(registry), encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "missing execution profiles: week"):
+                build_command_catalog(root)
+
+    def test_schema_v2_rejects_duplicate_profile_assignment(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            write_workflow(root, "day")
+            write_registry(root, {"day": {}})
+            registry_path = root / ".agent" / "command-registry.json"
+            registry = json.loads(registry_path.read_text(encoding="utf-8"))
+            registry["command_profiles"]["balanced"] = ["day"]
+            registry_path.write_text(json.dumps(registry), encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "multiple execution profiles: day"):
+                build_command_catalog(root)
+
+    def test_catalog_exposes_registry_execution_profile(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            write_workflow(root, "day")
+            write_registry(root, {"day": {}})
+
+            entry = build_command_catalog(root)[0]
+
+            self.assertEqual(entry["execution_profile"], "fast")
+
     def test_alias_cannot_collide_with_canonical_workflow(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
