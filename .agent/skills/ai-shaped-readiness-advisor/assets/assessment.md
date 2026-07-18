@@ -1,3 +1,5 @@
+# AI-Shaped Product Readiness Assessment
+
 ## Application
 
 This interactive skill uses **adaptive questioning** to assess your maturity across 5 competencies, then recommends which to prioritize.
@@ -675,4 +677,3 @@ Would you like me to create a progress tracker for your AI-shaped transformation
 - Week 4: Pilot with 3 teams, gather feedback
 
 **Outcome:** Team-AI Facilitation → Level 3. Creates foundation for Context Design and Agent Orchestration next.
-

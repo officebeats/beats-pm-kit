@@ -59,7 +59,7 @@ This installs thin local Codex skill adapters for the promoted commands:
 
 The design intent is deliberate:
 
-- **Antigravity stays canonical** for command semantics and orchestration.
+- **The command registry stays canonical** for routing, profiles, escalation, and runtime policy.
 - **Codex gets native-feeling skills** only for the commands you are likely to run constantly.
 - **State-changing commands stay guarded** in Codex: `/update` and `/vacuum` are native-feeling, but the generated skills explicitly inspect risk before execution.
 - **Everything else stays dispatch-only** through [CODEX_COMMANDS.md](../../CODEX_COMMANDS.md) so behavior does not drift.

@@ -6,7 +6,7 @@ imported_at: 2026-04-25T21:29:42.778Z
 ai_context_version: 0.9.2
 ---
 
-> **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 # /office-cli — OfficeCLI Setup & Status
 

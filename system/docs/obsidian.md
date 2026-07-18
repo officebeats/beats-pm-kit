@@ -1,24 +1,64 @@
-# Using Beats PM Kit Directly With Obsidian
+# Using Beats PM Kit With Obsidian
 
-This setup uses the existing `beats-pm-kit` folder as the Obsidian vault. It does not copy or mirror working files into a separate vault.
+Obsidian is an optional visual layer over the same local Markdown files used by Antigravity, Codex, Claude Code, Gemini CLI, and KiloCode. It is not a second task database.
+
+## Start With `/obsidian`
+
+Run this in a supported agent:
+
+```text
+/obsidian
+```
+
+The workflow runs the local guide and reports exact machine-specific paths:
+
+- `kit_folder` - choose this in Obsidian's **Open folder as vault** picker.
+- `task_folder` - the canonical `5. Trackers/` task workspace.
+- `task_folder` - the canonical `5. Trackers/tasks/` note folder.
+- `task_master` - the generated `5. Trackers/TASK_MASTER.md` navigation view.
+- `obsidian_task_folder` - the task folder displayed by the active Obsidian mode.
+- `obsidian_task_master` - the Task Master path opened by `/obsidian tasks`.
+- `guide` - this file.
+
+Useful actions:
+
+```text
+/obsidian setup
+/obsidian tasks
+/obsidian status
+```
 
 ## Direct Vault Setup
 
-1. Open Obsidian.
-2. Choose **Open folder as vault**.
-3. Select:
+1. Run `/obsidian setup`. This configures the existing repo as a direct vault and creates local graph settings.
+2. Open Obsidian.
+3. Choose **Open folder as vault** and select the exact `kit_folder` reported by `/obsidian`:
 
 ```text
 <path-to-your-beats-pm-kit-folder>
 ```
 
-4. Run the local setup helper from the kit root:
+4. Run `/obsidian tasks` to open the generated Task Master and follow links into canonical task notes.
+
+Terminal equivalent:
 
 ```bash
-python3 system/scripts/obsidian_vault_setup.py --apply
+python3 system/scripts/obsidian_bridge.py configure --mode kit-vault
+python3 system/scripts/obsidian_bridge.py open tracker
 ```
 
-The helper creates local `.obsidian/` settings and `6. Resources/obsidian/Obsidian Graph Index.md`. These files are for local navigation and graphing over the raw kit files.
+The bridge uses the existing `obsidian_vault_setup.py` implementation to create local `.obsidian/` settings and `6. Resources/obsidian/Obsidian Graph Index.md`.
+
+## How Tasks Work
+
+- `5. Trackers/WORKSTREAMS.md` is the human-facing workstream rollup.
+- `5. Trackers/tasks/` contains the canonical individual task notes.
+- `5. Trackers/TASK_MASTER.md` is generated linked navigation over those notes.
+- `5. Trackers/tasks/` contains task detail, evidence, subtasks, and progress.
+- `/track` updates the Markdown source of truth.
+- `/obsidian tasks` opens that same Task Master in Obsidian.
+
+After a full `/track` run, the agent may offer this Obsidian view when it is not configured. The prompt is optional and never blocks task capture or triage.
 
 ## What This Does
 
@@ -46,7 +86,14 @@ python3 system/scripts/obsidian_mcp_health.py --pretty
 
 If the MCP endpoint or API key is unavailable, agents must fall back to repo-local `rg` searches.
 
-## Useful Commands
+## Terminal Commands
+
+Show exact task and setup paths without writing:
+
+```bash
+python3 system/scripts/obsidian_bridge.py guide
+python3 system/scripts/obsidian_bridge.py guide --json
+```
 
 Preview changes:
 
@@ -57,13 +104,13 @@ python3 system/scripts/obsidian_vault_setup.py --dry-run
 Apply local vault settings:
 
 ```bash
-python3 system/scripts/obsidian_vault_setup.py --apply
+python3 system/scripts/obsidian_bridge.py configure --mode kit-vault
 ```
 
 Apply settings and open the graph index in Obsidian:
 
 ```bash
-python3 system/scripts/obsidian_vault_setup.py --apply --open
+python3 system/scripts/obsidian_bridge.py open tracker
 ```
 
 ## Graph Tips
@@ -74,6 +121,8 @@ python3 system/scripts/obsidian_vault_setup.py --apply --open
 - Use graph search `path:"3. Meetings"` for meeting notes, transcripts, and evidence.
 - Use graph search `path:"7. Partners" OR path:"8. Clients"` for external relationship context.
 
-## Mirror Mode
+## External-Vault Sync
 
-`system/scripts/obsidian_sync.py` still exists for a separate mirrored-vault workflow. Do not use it when the goal is to graph the raw kit folder in place.
+Direct-vault mode is the default even when Obsidian already knows about other vaults. Use `sync` mode only when you explicitly want a managed copy inside an existing external vault. Preview with `obsidian_bridge.py sync --dry-run` before applying. Managed cleanup never removes human-created notes.
+
+In external sync mode, `guide --json` keeps prompting until the synced Task Master exists. `/obsidian tasks` opens the synced `Trackers/TASK_MASTER.md`; the local notes under `5. Trackers/tasks/` remain canonical.

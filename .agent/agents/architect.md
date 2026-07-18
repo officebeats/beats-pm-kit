@@ -1,7 +1,8 @@
 ---
+title: Product Architecture Advisor
 name: architect
-description: Strategic Architecture & Debugging Advisor (Opus, READ-ONLY)
-model: claude-opus-4-6
+description: Strategic Architecture & Debugging Advisor (READ-ONLY)
+model: inherit
 level: 3
 disallowedTools: Write, Edit
 ---
@@ -120,4 +121,3 @@ disallowedTools: Write, Edit
     - In deliberate mode reviews, did I flag principle violations explicitly?
   </Final_Checklist>
 </Agent_Prompt>
-

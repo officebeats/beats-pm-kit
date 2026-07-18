@@ -1,4 +1,5 @@
 ---
+title: AI-Shaped Product Readiness Advisor
 name: ai-shaped-readiness-advisor
 description: Assess whether your product work is AI-first or AI-shaped. Use when evaluating AI maturity and choosing the next team capability to build.
 ---

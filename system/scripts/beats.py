@@ -28,6 +28,7 @@ SCRIPT_COMMANDS = {
     "route": ["python3", "system/scripts/pm_decision_router.py"],
     "obsidian": ["python3", "system/scripts/obsidian_bridge.py"],
     "obsidian-mcp": ["python3", "system/scripts/obsidian_mcp_health.py"],
+    "pack": ["python3", "system/scripts/pack_manager.py"],
     "root-cleaner": ["python3", "system/scripts/root_cleaner.py"],
     "real-use-tests": ["python3", "system/scripts/run_real_usecase_tests.py"],
     "task-triage": ["python3", "system/scripts/task_master_triage.py"],
@@ -133,10 +134,11 @@ def main():
             return run_cmd(command_config + extra_args)
         return run_cmd(command_config + ["prepare"] + extra_args)
 
-    if args.command == "obsidian":
+    if args.command in {"obsidian", "pack"}:
         command_config = SCRIPT_COMMANDS[args.command]
         extra_args = collect_extra_args(args)
-        return run_cmd(command_config + (extra_args or ["status"]))
+        default_args = ["status"] if args.command == "obsidian" else ["list"]
+        return run_cmd(command_config + (extra_args or default_args))
 
     if args.command in WORKFLOW_HINTS:
         print_workflow_hint(args.command)

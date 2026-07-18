@@ -8,6 +8,7 @@ Protects the Codex-specific adapter layer:
 """
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from argparse import Namespace
@@ -17,7 +18,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 SYSTEM_DIR = ROOT_DIR / "system"
 sys.path.insert(0, str(SYSTEM_DIR))
 
-from scripts import beats, sync_cli_adapters
+from scripts import beats, codex_doctor, sync_cli_adapters
 
 
 class TestCodexAdapter(unittest.TestCase):
@@ -78,18 +79,63 @@ class TestCodexAdapter(unittest.TestCase):
 
     def test_codex_command_index_keeps_update_dispatch_only(self):
         """Dangerous workflows should be available as guarded Codex skills."""
-        self.assertIn("| `/update` | `.agent/workflows/update.md` | Guarded skill `beats-update` |", self.command_index)
-        self.assertIn("| `/vacuum` | `.agent/workflows/vacuum.md` | Guarded skill `beats-vacuum` |", self.command_index)
+        self.assertIn("| `/update` | `.agent/workflows/update.md` | Deep | Guarded skill `beats-update` |", self.command_index)
+        self.assertIn("| `/vacuum` | `.agent/workflows/vacuum.md` | Deep | Guarded skill `beats-vacuum` |", self.command_index)
 
     def test_agents_md_enforces_slash_command_dispatch(self):
         """AGENTS.md should tell Codex to treat leading /commands as workflow dispatch."""
-        self.assertIn("## Runtime Priority", self.agents_md)
-        self.assertIn("**Antigravity first**", self.agents_md)
-        self.assertIn("**Codex second**", self.agents_md)
+        self.assertIn("## Runtime Selection", self.agents_md)
+        self.assertIn("active runtime", self.agents_md)
+        self.assertNotIn("Antigravity first", self.agents_md)
+        self.assertNotIn("Codex second", self.agents_md)
         self.assertIn("## Slash Command Dispatch", self.agents_md)
         self.assertIn("If the user's message starts with `/command`:", self.agents_md)
         self.assertIn("Resolve it using `CODEX_COMMANDS.md`", self.agents_md)
         self.assertIn("If the command does not exist", self.agents_md)
+
+    def test_agents_md_lists_every_promoted_command_from_the_registry(self):
+        """The startup adapter must not drift from registry-backed native skills."""
+        promoted = [
+            item["name"]
+            for item in self.command_catalog
+            if item["codex_promotion"] == "skill"
+        ]
+        rendered = sync_cli_adapters.render_agents_md()
+        for command in promoted:
+            with self.subTest(command=command):
+                self.assertIn(f"`/{command}`", rendered)
+
+    def test_claude_obsidian_skill_is_generated_as_a_native_project_skill(self):
+        """Claude Code should receive /obsidian as a lazy project skill, not only a command shim."""
+        command = next(item for item in self.command_catalog if item["name"] == "obsidian")
+        content = sync_cli_adapters.render_claude_skill(command)
+
+        self.assertIn("name: obsidian", content)
+        self.assertIn(".agent/workflows/obsidian.md", content)
+        self.assertIn("$ARGUMENTS", content)
+        self.assertIn("5. Trackers/TASK_MASTER.md", content)
+
+    def test_claude_skill_cleanup_removes_only_stale_generated_entrypoints(self):
+        """Adapter sync should remove stale generated skills without deleting user-authored skills or assets."""
+        with tempfile.TemporaryDirectory() as tmp:
+            skills_dir = Path(tmp)
+            stale = skills_dir / "stale"
+            stale.mkdir()
+            (stale / "SKILL.md").write_text(
+                "Generated locally by `system/scripts/sync_cli_adapters.py`.\n",
+                encoding="utf-8",
+            )
+            (stale / "notes.md").write_text("keep me\n", encoding="utf-8")
+            custom = skills_dir / "custom"
+            custom.mkdir()
+            (custom / "SKILL.md").write_text("# User-authored skill\n", encoding="utf-8")
+
+            removed = sync_cli_adapters.prune_stale_claude_skills(skills_dir, {"obsidian"})
+
+            self.assertEqual(removed, ["stale"])
+            self.assertFalse((stale / "SKILL.md").exists())
+            self.assertTrue((stale / "notes.md").exists())
+            self.assertTrue((custom / "SKILL.md").exists())
 
     def test_codex_rules_enforce_slash_command_dispatch(self):
         """The Codex runtime notes must preserve explicit command routing."""
@@ -137,6 +183,18 @@ class TestCodexAdapter(unittest.TestCase):
         self.assertIn("system/scripts/context_router.py", beats.SCRIPT_COMMANDS["context-router"])
         self.assertIn("system/scripts/command_integrity.py", beats.SCRIPT_COMMANDS["command-integrity"])
         self.assertIn("system/scripts/obsidian_mcp_health.py", beats.SCRIPT_COMMANDS["obsidian-mcp"])
+
+    def test_codex_doctor_uses_the_current_feature_inventory_contract(self):
+        """Codex health checks should consume the same registry-backed inventory as release checks."""
+        inventory = codex_doctor.collect_inventory(ROOT_DIR)
+        visibility = codex_doctor._skill_visibility()
+
+        self.assertNotIn("CODEX_PROMPT.md", codex_doctor.GENERATED_FILES)
+        self.assertEqual(
+            visibility["expected_count"],
+            inventory["codex"]["promoted_skill_commands_count"],
+        )
+        self.assertEqual(visibility["temp_generation_count"], visibility["expected_count"])
 
 
 if __name__ == "__main__":

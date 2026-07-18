@@ -2,7 +2,7 @@
 description: The User Manual. Lists commands and explains the system.
 ---
 
-> **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 
 
@@ -30,19 +30,20 @@ _For deeper execution cycles._
 
 | Command         | Purpose                                             |
 | :-------------- | :-------------------------------------------------- |
-| **`/context`** | Query local files and return the smallest useful context packet for a topic. |
+| **`/find`** | Search full meeting, chat, decision, workstream, and task text and return source-backed context. |
 | **`/transcript`** | **Quill Integration**. Pulls meetings from last 10 days. |
 | **`/beats-comms`** | Read-only scoped Slack, Teams, Outlook, and Calendar intake through MCP/connectors. |
 | **`/discover`**  | Product discovery with OST and Assumption Mapping.   |
 | **`/prioritize`** | Score and rank backlogs with RICE/ICE.               |
 | **`/fan-out`**   | Parallel multi-agent task orchestration.            |
 | **`/maintain`**  | Refresh local indexes, validate adapters, run triage, and report health. |
+| **`/obsidian`**  | Set up or open the optional direct-vault task and knowledge view. |
 | **`/vacuum`**    | System optimization, task archiving, and cleanup.   |
 | **`/update`**    | Pull latest kit version from GitHub.                |
 
 ## How to Start (The Loop)
 
 1.  **Clear the Deck**: Run `/day` to see what kills you today.
-2.  **Process Chaos**: Copy Slack/Email -> Run `/paste` -> Inbox Zero.
+2.  **Triangulate the day**: Bring in Granola, Quill, Outlook, Teams, and Slack evidence, then run `/track`.
 3.  **Deep Work**: Run `/create` to draft that missing spec.
 4.  **Optimization**: Run `/vacuum` to keep the brain lean and fast.

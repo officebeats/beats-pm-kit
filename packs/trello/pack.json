@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "id": "trello",
+  "title": "Trello Task Board",
+  "description": "Optional synchronization between canonical Markdown tasks and a Trello board.",
+  "version": "1.0.0",
+  "entrypoint": "PACK.md",
+  "runner": "system/scripts/trello_bridge.py",
+  "triggers": [
+    "trello",
+    "board sync",
+    "card sync"
+  ],
+  "capabilities": [
+    "status",
+    "dry-run",
+    "sync"
+  ]
+}

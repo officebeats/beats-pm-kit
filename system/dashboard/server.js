@@ -3,7 +3,7 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { parseTaskMasterFile, writeTaskMasterFile } from './lib/taskmaster.js';
+import { canWriteTaskMaster, parseTaskMasterFile, writeTaskMasterFile } from './lib/taskmaster.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,6 +17,12 @@ app.use(express.json());
 // ── TaskMaster: uses shared lib (tested) ──────────────────────────
 function parseTaskMaster() { return parseTaskMasterFile(TASK_FILE); }
 function writeTaskMaster(active, archive, descriptions) { writeTaskMasterFile(TASK_FILE, active, archive, descriptions); }
+function sendTaskMasterReadOnly(res, data) {
+  return res.status(409).json({
+    error: 'Task Master is read-only unless it uses the legacy dashboard schema. Use /track for canonical task updates.',
+    schema: data.schema || 'unknown',
+  });
+}
 
 // ── Generic Tracker Parser ────────────────────────────────────────
 
@@ -62,6 +68,7 @@ app.patch('/api/tasks/:id/status', (req, res) => {
   const { status } = req.body;
   if (!status || typeof status !== 'string') return res.status(400).json({ error: 'Status required' });
   const data = parseTaskMaster();
+  if (!canWriteTaskMaster(data)) return sendTaskMasterReadOnly(res, data);
   const task = data.active.find(t => t.id === req.params.id);
   if (!task) return res.status(404).json({ error: 'Task not found' });
   task.status = status;
@@ -72,6 +79,7 @@ app.patch('/api/tasks/:id/status', (req, res) => {
 app.patch('/api/tasks/:id', (req, res) => {
   const updates = req.body;
   const data = parseTaskMaster();
+  if (!canWriteTaskMaster(data)) return sendTaskMasterReadOnly(res, data);
   const task = data.active.find(t => t.id === req.params.id);
   if (!task) return res.status(404).json({ error: 'Task not found' });
   if (updates.task) task.task = updates.task;
@@ -89,6 +97,7 @@ app.patch('/api/tasks/:id', (req, res) => {
 
 app.post('/api/tasks/:id/archive', (req, res) => {
   const data = parseTaskMaster();
+  if (!canWriteTaskMaster(data)) return sendTaskMasterReadOnly(res, data);
   const idx = data.active.findIndex(t => t.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Task not found' });
   const [task] = data.active.splice(idx, 1);
@@ -100,6 +109,7 @@ app.post('/api/tasks/:id/archive', (req, res) => {
 
 app.post('/api/tasks/:id/unarchive', (req, res) => {
   const data = parseTaskMaster();
+  if (!canWriteTaskMaster(data)) return sendTaskMasterReadOnly(res, data);
   const idx = data.archive.findIndex(t => t.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Task not found' });
   const [task] = data.archive.splice(idx, 1);
@@ -113,6 +123,7 @@ app.post('/api/tasks', (req, res) => {
   const { task, product, project, priority, owner, due, tags, description } = req.body;
   if (!task) return res.status(400).json({ error: 'Task text required' });
   const data = parseTaskMaster();
+  if (!canWriteTaskMaster(data)) return sendTaskMasterReadOnly(res, data);
   const maxId = [...data.active, ...data.archive].map(t => parseInt((t.id || '').replace('T-', ''))).filter(n => !isNaN(n)).reduce((a, b) => Math.max(a, b), 0);
   const newTask = { id: `T-${String(maxId + 1).padStart(3, '0')}`, priority: priority || 'Normal', task, product: product || '', project: project || '', status: 'Now', owner: owner || '@me', due: due || '', tags: tags || [] };
   data.active.push(newTask);

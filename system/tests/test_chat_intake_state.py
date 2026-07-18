@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import contextlib
+import datetime as dt
 import io
 import json
 import sys
@@ -92,19 +93,23 @@ class TestChatIntakeState(unittest.TestCase):
     def test_command_run_checkpoint_shortens_backward_window(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
+            completed_at = dt.datetime.now(dt.timezone.utc)
+            processed_at = completed_at - dt.timedelta(minutes=5)
+            completed_at_text = chat_intake_state.isoformat_utc(completed_at)
+            processed_at_text = chat_intake_state.isoformat_utc(processed_at)
             command_run_state.record_run(
                 root,
                 command="week",
                 mode="week",
                 run_id="run-1",
-                completed_at="2026-06-27T12:00:00Z",
+                completed_at=completed_at_text,
                 sources=[
                     {
                         "source": "slack",
                         "platform": "slack",
                         "scope": "demo scope",
                         "status": "completed",
-                        "processed_through_at": "2026-06-27T11:59:00Z",
+                        "processed_through_at": processed_at_text,
                     }
                 ],
             )
@@ -114,7 +119,7 @@ class TestChatIntakeState(unittest.TestCase):
             self.assertEqual(return_code, 0)
             self.assertTrue(result["ok"])
             self.assertEqual(result["window_source"], "command_run_last_successful_processed_at")
-            self.assertEqual(result["effective_start_at"], "2026-06-27T11:59:00Z")
+            self.assertEqual(result["effective_start_at"], processed_at_text)
 
     def test_failed_command_run_checkpoint_does_not_shorten_window(self):
         with tempfile.TemporaryDirectory() as tmpdir:

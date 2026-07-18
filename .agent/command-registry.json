@@ -1,14 +1,109 @@
 {
-  "schema_version": 1,
-  "runtime_priority": {
-    "primary": "antigravity",
-    "secondary": "codex",
-    "compatibility": [
+  "schema_version": 2,
+  "runtime_policy": {
+    "selection": "active-runtime",
+    "supported": [
+      "antigravity",
+      "codex",
       "claude",
       "gemini",
-      "kilocode",
-      "other-clis"
+      "kilocode"
+    ],
+    "unknown_capabilities": "deny",
+    "allow_cross_provider": false,
+    "model_updates": "tested-opt-in",
+    "default_model": "inherit",
+    "adapters": {
+      "antigravity": ".agent/rules/GEMINI.md",
+      "codex": "AGENTS.md",
+      "claude": "CLAUDE.md",
+      "gemini": "GEMINI.md",
+      "kilocode": ".kilocode/rules.md"
+    }
+  },
+  "execution_profiles": {
+    "fast": {
+      "rank": 1,
+      "title": "Fast",
+      "purpose": "Retrieval, capture, help, and routine daily status with the minimum sufficient evidence.",
+      "model": "inherit"
+    },
+    "balanced": {
+      "rank": 2,
+      "title": "Balanced",
+      "purpose": "Task reconciliation, meetings, transcripts, weekly synthesis, and communication intake.",
+      "model": "inherit"
+    },
+    "deep": {
+      "rank": 3,
+      "title": "Deep",
+      "purpose": "Strategy, PRDs, consequential decisions, critical review, security, and release work.",
+      "model": "inherit"
+    }
+  },
+  "command_profiles": {
+    "fast": [
+      "archive",
+      "chat",
+      "context",
+      "day",
+      "find",
+      "help",
+      "obsidian",
+      "office-cli",
+      "pack",
+      "paste",
+      "start",
+      "vibe"
+    ],
+    "balanced": [
+      "beats-comms",
+      "beats-slack",
+      "beats-teams",
+      "build",
+      "deck",
+      "handoff",
+      "intel",
+      "maintain",
+      "meet",
+      "memory",
+      "prep",
+      "regression",
+      "retro",
+      "sop",
+      "sprint",
+      "track",
+      "transcript",
+      "week"
+    ],
+    "deep": [
+      "accuracy",
+      "boss",
+      "challenge",
+      "create",
+      "discover",
+      "fan-out",
+      "improve-plan",
+      "interview",
+      "plan",
+      "prioritize",
+      "review",
+      "team",
+      "update",
+      "vacuum"
     ]
+  },
+  "escalation_signals": [
+    "conflicting_evidence",
+    "high_stakes_decision",
+    "external_mutation",
+    "broad_change",
+    "validation_failure"
+  ],
+  "compatibility": {
+    "legacy_entrypoints": "shim",
+    "local_model_policy": ".beats/model-policy.json",
+    "live_evaluation_output": ".beats/evals/"
   },
   "commands": {
     "boss": {
@@ -65,6 +160,10 @@
           "system/scripts/pm_decision_router.py",
           "system/scripts/critical_commitment_refresh.py",
           ".agent/skills/task-manager/SKILL.md",
+          "system/scripts/task_store.py",
+          "system/scripts/upgrade_compat.py",
+          "system/scripts/obsidian_bridge.py",
+          "system/docs/obsidian.md",
           "5. Trackers/TASK_MASTER.md",
           "5. Trackers/critical/boss-requests.md"
         ],
@@ -72,6 +171,13 @@
           "5. Trackers/bugs/bugs-master.md",
           "5. Trackers/WORKSTREAMS.md",
           "5. Trackers/workstreams"
+        ],
+        "execution_contract": [
+          "Treat human-readable Markdown notes under `5. Trackers/tasks/` as canonical and rebuild Task Master as navigation after task-note changes.",
+          "For existing kits, run the v11 compatibility check before changing legacy task or workstream Markdown; do not rename legacy files automatically.",
+          "Use Granola, Quill, Outlook, Teams, Slack, and local transcript evidence as the default read-only triangulation loop before creating duplicate workstreams or tasks.",
+          "Do not run Trello or another optional task-board integration from `/track`; optional integrations execute only through an explicitly enabled `/pack` workflow.",
+          "When the user wants a non-blocking Obsidian handoff, run `python3 system/scripts/obsidian_bridge.py guide --json` and use the returned exact kit, tracker, Task Master, and guide paths; do not block tracker work on Obsidian setup."
         ]
       }
     },
@@ -114,6 +220,31 @@
           "Run the PM decision router before drafting; continue when it returns `create_doc` or the user explicitly invoked /create.",
           "If the router returns discovery, prioritize, decision_log, or scope_challenge, route through the matching kit workflow instead of forcing a PRD/spec.",
           "Carry outcome metric, owner, due/gate date, scope boundary, evidence strength, dependency, and next decision gate into the document or open questions."
+        ]
+      }
+    },
+    "find": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-find",
+        "supporting_files": [
+          ".agent/workflows/find.md",
+          "system/scripts/context_router.py"
+        ],
+        "optional_files": [
+          ".beats/knowledge.db",
+          "0. Incoming",
+          "1. Company",
+          "2. Products",
+          "3. Meetings",
+          "4. People",
+          "5. Trackers",
+          "6. Resources"
+        ],
+        "execution_contract": [
+          "Search full local PM history before relying on model memory.",
+          "Return readable titles, excerpts, exact paths and lines, content type, and confidence; read full files only for the selected top matches.",
+          "Treat the SQLite index as disposable and Markdown as canonical."
         ]
       }
     },
@@ -491,8 +622,13 @@
           ".agent/workflows/obsidian.md",
           "system/scripts/obsidian_bridge.py",
           "system/scripts/obsidian_sync.py",
+          "system/scripts/obsidian_vault_setup.py",
+          "system/scripts/obsidian_mcp_health.py",
           "system/docs/obsidian.md",
-          "OBSIDIAN.md"
+          "OBSIDIAN.md",
+          "5. Trackers/TASK_MASTER.md",
+          "5. Trackers/WORKSTREAMS.md",
+          "5. Trackers/workstreams"
         ],
         "optional_files": [
           "system/config/obsidian.local.json",
@@ -500,11 +636,32 @@
         ],
         "execution_contract": [
           "Run `python3 system/scripts/obsidian_bridge.py status` before configuring or syncing Obsidian.",
+          "When task handoff or readiness is unclear, run `python3 system/scripts/obsidian_bridge.py guide --json` and return the exact kit, tracker, Task Master, and guide paths, plus readiness, prompt decision, and setup/open commands.",
+          "In kit-vault mode, use `/obsidian configure` as the single local setup path and let it apply the direct-vault defaults from `system/scripts/obsidian_vault_setup.py` unless the user explicitly opts out.",
           "Prefer local filesystem, Obsidian URI, and Obsidian CLI behavior before optional MCP.",
           "Store vault paths and REST API keys only in ignored local config files.",
           "Use `sync --dry-run` before `sync --apply` when syncing into an external vault.",
           "Do not delete human-created Obsidian notes; `--clean` may remove only Beats-managed files with managed frontmatter.",
           "Generate MCP config only as placeholders unless the user provides local secrets in ignored config or environment variables."
+        ]
+      }
+    },
+    "pack": {
+      "codex": {
+        "promotion": "skill",
+        "skill_name": "beats-pack",
+        "supporting_files": [
+          ".agent/workflows/pack.md",
+          "system/scripts/pack_manager.py",
+          "packs"
+        ],
+        "optional_files": [
+          ".beats/packs.json"
+        ],
+        "execution_contract": [
+          "Keep disabled packs out of normal workflow routing and load only the selected pack entrypoint when it is enabled or explicitly inspected.",
+          "Enabling or disabling a pack changes ignored local configuration only; it must not copy files, download repositories, or mutate external services.",
+          "Treat pack-provided external mutations as opt-in and require the same explicit current-turn authorization as their underlying integration."
         ]
       }
     },

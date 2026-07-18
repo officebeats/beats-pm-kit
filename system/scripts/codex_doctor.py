@@ -18,7 +18,8 @@ sys.path.insert(0, str(SCRIPT_DIR))
 
 import detect_runtime
 import sync_codex_skill_adapters
-from system.scripts.feature_inventory import build_inventory
+from system.scripts.feature_inventory import collect_inventory
+from system.utils.command_registry import get_promoted_codex_commands
 from system.utils.stdio import force_utf8_stdio
 
 force_utf8_stdio()
@@ -27,7 +28,6 @@ force_utf8_stdio()
 GENERATED_FILES = [
     "AGENTS.md",
     "CODEX_COMMANDS.md",
-    "CODEX_PROMPT.md",
     ".codex/rules.md",
 ]
 
@@ -47,8 +47,10 @@ def _status_state() -> dict:
 
 
 def _skill_visibility() -> dict:
-    inventory = build_inventory(ROOT)
-    expected = set(inventory["codex"]["promoted_skill_names"])
+    expected = {
+        command["codex_skill_name"]
+        for command in get_promoted_codex_commands(ROOT)
+    }
     project_dir = ROOT / ".codex" / "skills"
     project = {
         path.name
@@ -69,7 +71,7 @@ def _skill_visibility() -> dict:
 
 def run_checks() -> dict:
     runtime = detect_runtime.detect_runtime()
-    inventory = build_inventory(ROOT)
+    inventory = collect_inventory(ROOT)
     status = _status_state()
     skills = _skill_visibility()
     generated_present = _generated_files_present()
@@ -84,7 +86,7 @@ def run_checks() -> dict:
         "utf8_stdout": (sys.stdout.encoding or "").lower() == "utf-8",
     }
     checks["ok"] = (
-        runtime["primary"] == "codex_cli"
+        runtime["primary"] == "codex"
         and not checks["missing_generated_files"]
         and skills["temp_generation_count"] == skills["expected_count"]
         and checks["utf8_stdout"]

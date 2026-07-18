@@ -8,10 +8,10 @@
 
 ### Local-first product operations for AI-forward product managers
 
-<p><strong>Beats PM Kit is an open-source AI product management toolkit for turning meetings, Slack and Teams threads, Outlook context, product documents, screenshots, stakeholder asks, and local files into tasks, briefs, PRDs, decisions, roadmaps, and follow-ups.</strong></p>
+<p><strong>Beats PM Kit helps product managers find what was said, decided, and committed across past meetings and conversations—then turn that evidence into current tasks, decisions, plans, and follow-ups.</strong></p>
 
 <p>
-  <img src="https://img.shields.io/badge/Primary_Runtime-Antigravity-00A651?style=for-the-badge&logo=google&logoColor=white&labelColor=1a1a2e" alt="Antigravity primary runtime"/>
+  <img src="https://img.shields.io/badge/Runtime-Capability_Driven-00A651?style=for-the-badge&labelColor=1a1a2e" alt="Capability-driven runtime selection"/>
   &nbsp;
   <a href="https://github.com/officebeats/beats-pm-kit/stargazers"><img src="https://img.shields.io/github/stars/officebeats/beats-pm-kit?style=for-the-badge&logo=github&labelColor=1a1a2e&color=E6B422" alt="GitHub Stars"/></a>
   &nbsp;
@@ -23,7 +23,7 @@
    -
   <img src="https://img.shields.io/badge/Storage-Local_First-00A651?style=flat-square" alt="Local-first storage"/>
    -
-  <img src="https://img.shields.io/badge/Runtime-Codex_And_Antigravity-00A651?style=flat-square" alt="Codex and Antigravity support"/>
+  <img src="https://img.shields.io/badge/Models-Inherit_By_Default-00A651?style=flat-square" alt="Model-neutral inherited runtime defaults"/>
    -
   <img src="https://img.shields.io/badge/Knowledge-Markdown_And_Obsidian-00A651?style=flat-square" alt="Markdown and optional Obsidian knowledge graph"/>
 </p>
@@ -40,7 +40,7 @@
 
 ## AI Product Management Workflows
 
-Product managers lose time because product context is scattered across meetings, Slack threads, Teams chats, Outlook, Jira links, Confluence pages, spreadsheets, screenshots, and half-finished docs. Beats PM Kit gives that context a local operating system.
+Product managers lose time because product context is scattered across Granola and Quill meetings, Slack threads, Teams chats, Outlook, product documents, screenshots, and half-finished notes. Beats PM Kit archives that evidence locally, makes the full text searchable, and triangulates it into current workstreams and tasks.
 
 The kit is designed for product managers, product leaders, founders, and AI-native operators who want a fast way to manage PM work with AI while keeping source documents, task state, and workflow outputs organized on their own machine. It supports daily product operations like meeting notes to tasks, PM task management from local documents, stakeholder follow-up, product discovery, PRD writing, roadmap planning, launch preparation, bug triage, and executive-ready status updates.
 
@@ -56,11 +56,11 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 | Capability | What the kit supports |
 |:---|:---|
 | AI PM operating system | A structured workspace for product strategy, product execution, stakeholder context, meeting notes, task ledgers, PRDs, roadmaps, and reusable product workflows. |
-| Local-first PM task management | `TASK_MASTER.md`, task detail files, boss requests, bugs, weekly plans, task triage, Trello mirroring, and durable local reports. |
+| Local-first PM task management | Human-readable task notes, evidence links, generated task/workstream indexes, daily triage, and durable local reports. |
 | Meeting notes to tasks | Transcript and chat-intake workflows that extract action items, blockers, owners, dates, decisions, and follow-up questions into local artifacts. |
 | Context-aware task routing | PM Decision Router, task-manager workflows, and bounded communication intake for Slack, Teams, Outlook, Calendar, Jira, and Confluence context. |
-| Codex product management workflow | `AGENTS.md`, `CODEX_COMMANDS.md`, promoted Codex skills, and thin generated adapters so Codex can load the right workflow without carrying the whole kit in context. |
-| Antigravity product management kit | Antigravity-first orchestration with parallel-friendly workflows, `.agent/` as the canonical source, and runtime-neutral fallbacks for other AI coding agents. |
+| Cross-runtime product management workflow | Runtime adapters generated from one schema-v2 command registry so each active runtime loads the same workflow and execution profile. |
+| Future-proof model adaptation | Runtime defaults are inherited, explicit model promotions stay local and evaluation-gated, and unknown capabilities fail closed without silent provider switching. |
 | Product documentation and PRDs | `/create`, `/plan`, `/sop`, `/deck`, `/review`, and related skills for PRDs, one-pagers, runbooks, launch materials, and decision docs. |
 | Local document reference | Folder conventions, manifests, transcript archives, context artifacts, resource docs, and markdown links help agents cite local files instead of relying on memory. |
 | Markdown and optional Obsidian graph | The kit works as plain Markdown first. Obsidian can be used as an optional direct vault for graph navigation without duplicating files. |
@@ -70,29 +70,32 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 
 Beats PM Kit treats the local workspace as the source of truth. Tasks live in `5. Trackers/`, communication evidence is archived in `3. Meetings/`, stakeholder context lives in `4. People/`, and reusable product context can live in `6. Resources/`, `7. Partners/`, and `8. Clients/`.
 
-The default task-management flow is intentionally conservative:
+The default task-management flow is Markdown-first:
 
-1. Capture or reference the smallest relevant evidence.
-2. Search local trackers before creating new work.
-3. Update local task files first.
-4. Surface stale, overdue, blocked, unclear, duplicated, or possibly complete work as explicit questions.
-5. Mirror to Trello only when local state is accepted and the live board is healthy.
+1. Archive evidence from Granola, Quill, Outlook, Teams, Slack, or local transcripts.
+2. Triangulate that evidence against existing tasks and workstreams.
+3. Update one human-readable Markdown task note as the source of truth.
+4. Regenerate Task Master and workstream navigation from those task notes.
+5. Surface stale, overdue, blocked, unclear, duplicated, or possibly complete work as explicit questions.
+6. Optionally open the same Markdown files in Obsidian or send accepted state to an enabled pack.
+
+`5. Trackers/tasks/` is canonical. Each task has a descriptive filename, readable title/H1, stable internal ID in frontmatter, evidence, progress, and decisions. `TASK_MASTER.md` and `WORKSTREAMS.md` are generated navigation; Obsidian and optional board packs do not replace or duplicate task state.
 
 This makes the kit useful for fast PM triage without letting automation silently rewrite your priorities.
 
-## Codex And Antigravity Support
+## Runtime-Neutral Support
 
-The kit is optimized for both Codex and Antigravity while keeping `.agent/` as the canonical workflow layer.
+The kit uses whichever supported runtime is actively running and chooses behavior by positively detected capabilities, not a permanent provider hierarchy. Routing lives only in `.agent/command-registry.json`; adapters, manifests, architecture counts, and compatibility documentation are generated from it.
 
-| Runtime | Role in the kit | How it works |
+| Runtime | Adapter | How it works |
 |:---|:---|:---|
-| Google Antigravity | Primary power-user runtime | Uses the canonical `.agent/` workflows, parallel-friendly orchestration, runtime rules, and generated local adapters. |
-| OpenAI Codex | First-class local coding-agent runtime | Uses `AGENTS.md` as the startup adapter and `CODEX_COMMANDS.md` for slash-command routing into `.agent/workflows/`. |
-| Gemini CLI | Compatibility runtime | Uses generated adapters from the same `.agent/` source of truth. |
-| Claude Code | Compatibility runtime | Uses generated command pointers and the shared workflow definitions. |
-| KiloCode | Compatibility runtime | Uses generated local rules, skills, agents, and workflows. |
+| Google Antigravity | `.agent/rules/GEMINI.md` | Uses canonical workflows and reported native capabilities. |
+| OpenAI Codex | `AGENTS.md` | Uses a thin startup adapter and the generated command/profile index. |
+| Gemini CLI | `GEMINI.md` | Uses generated local adapters from the same registry. |
+| Claude Code | `CLAUDE.md` | Uses generated project skills and command pointers. |
+| KiloCode | `.kilocode/rules.md` | Uses generated local rules, skills, agents, and workflows. |
 
-Codex works best when it is given a clear map rather than a giant instruction file, so the root `AGENTS.md` stays thin. It points Codex to the specific workflow or skill it needs, which keeps PM task management, context reference, and README/product-doc work faster and more reliable.
+See the generated [runtime and model compatibility table](system/docs/runtime-compatibility.md). Runtime-specific root files stay thin so a model receives only the active workflow, relevant evidence, and required skill guidance.
 
 ## Context Engineering For Product Managers
 
@@ -125,7 +128,25 @@ The agent should clone or open the repo, then run the canonical bootstrap:
 python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url https://github.com/officebeats/beats-pm-kit
 ```
 
-Bootstrap creates the ignored local workspace, seeds templates, syncs runtime adapters, installs hooks when possible, runs privacy and adapter health checks, suggests Obsidian setup, and prints the next useful commands.
+Bootstrap creates the ignored local workspace, seeds templates, syncs runtime adapters, installs hooks when possible, runs privacy and adapter health checks, and prints the exact kit folder to open when it offers optional Obsidian setup.
+
+### Existing-kit upgrade safety
+
+Before bootstrap or update changes an existing workspace, Beats PM Kit runs a compatibility gate:
+
+```bash
+python3 system/scripts/upgrade_compat.py --json
+```
+
+The check inventories legacy Markdown titles, task IDs, Task Master links, workstream notes, Granola/Quill/Outlook/Teams/Slack evidence setup, and legacy local model pins. It does not rename files or write anything.
+
+If the report contains only safe title additions, apply them through the reversible migration:
+
+```bash
+python3 system/scripts/upgrade_compat.py --apply
+```
+
+Every changed file is backed up under `.beats/backups/`, written atomically, and left at its existing path so older links keep working. Legacy model choices move into ignored `.beats/model-policy.json`; newer evaluated choices win, preview or unavailable-looking pins generate warnings, and conflicting pins block the upgrade. Ambiguous titles, duplicate task IDs, and broken task links also block the upgrade. New notes use descriptive filenames; legacy filenames are renamed only through a later explicit backlink-aware operation.
 
 This same URL-only flow is supported for Codex, Gemini CLI, Claude Code, and KiloCode. Start the CLI in a safe parent folder, paste the repo URL as the first request, and let the agent run the bootstrap command from the cloned repo root.
 
@@ -151,7 +172,7 @@ Open the `beats-pm-kit` folder in your preferred AI coding or agent runtime.
 | [Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview) | `claude` | Agentic file work and command dispatch through generated adapters. |
 | [KiloCode](https://kilocode.ai/) | `kilo` | Additional local agent compatibility. |
 
-If you have Antigravity, use it for the fastest workflow. If you live in Codex, the kit is still first-class: start from the repo root, let Codex read `AGENTS.md`, and use `/day`, `/track`, `/paste`, `/transcript`, `/plan`, or `/create` as explicit workflow triggers.
+Start the runtime you already use from the repo root. The active-runtime probe will retain its inherited model defaults and route `/day`, `/track`, `/paste`, `/transcript`, `/plan`, or `/create` through the same canonical profile-aware workflows.
 
 ### 3. Run First-Time Setup
 
@@ -167,8 +188,11 @@ Type `/help` anytime to see the workflow catalog.
 
 | Workflow | Use it when you need to |
 |:---|:---|
+| `/find` | Find past meeting, transcript, chat, decision, task, and product evidence by full text. |
 | `/paste` | Turn copied text, screenshots, files, or visible work signals into local task-management evidence. |
 | `/track` | Manage tasks, bugs, boss asks, follow-ups, and local task detail files. |
+| `/obsidian` | Set up the existing kit folder as an optional vault, show exact task paths, or open Task Master. |
+| `/pack` | List, enable, disable, or run optional capabilities stored dormant in this repository. |
 | `/day` | Generate a daily PM briefing with triage questions and top priorities. |
 | `/week` | Produce a weekly tactical plan and focus areas. |
 | `/meet` | Convert meeting notes or transcripts into structured notes and action items. |
@@ -180,10 +204,13 @@ Type `/help` anytime to see the workflow catalog.
 | `/sop` | Create privacy-safe runbooks and standard operating procedures. |
 | `/deck` | Prepare deck briefs and presentation-ready content. |
 | `/review` | Review plans, docs, code, specs, and product artifacts for risk and quality. |
-| `/trello` | Mirror accepted local task state into Trello when configured. |
 | `/vacuum` | Clean, archive, and optimize the local kit workspace. |
 
 Natural language still works. Slash commands exist when you want deterministic routing.
+
+### Optional packs without extra repositories
+
+Optional integrations stay under `packs/` in this repository and are dormant by default. `/pack enable <name>` records the choice only in ignored `.beats/packs.json`; it does not copy files, download another repository, or add the pack to normal task routing. Trello is shipped this way and remains downstream from accepted Markdown task state.
 
 ## Architecture At A Glance
 
@@ -258,14 +285,31 @@ The cleaner moves unknown local root files into ignored `0. Incoming/root-cleanu
 
 Obsidian is optional. Beats PM Kit works as a plain Markdown repo first.
 
-If you use Obsidian, open the existing `beats-pm-kit` folder directly as the vault. Do not create a mirrored copy. The helper script can configure local-only Obsidian settings and create a graph index under `6. Resources/obsidian/`:
+Start from the same slash command in Antigravity, Codex, or Claude Code:
 
-```bash
-python3 system/scripts/obsidian_vault_setup.py --dry-run
-python3 system/scripts/obsidian_vault_setup.py --apply
+```text
+/obsidian
 ```
 
-This gives product managers a local knowledge graph over tasks, meetings, people, partners, clients, SOPs, and reference documents while preserving the same files Codex and Antigravity already read.
+The command reports the exact local paths for the kit folder, `5. Trackers/`, `TASK_MASTER.md`, and the detailed guide. Its common actions are:
+
+```text
+/obsidian setup   Configure this existing repo folder as the vault
+/obsidian tasks   Open the generated Task Master over canonical task notes
+/obsidian status  Inspect the app, vault, and optional MCP health
+```
+
+Open the existing `beats-pm-kit` folder directly as the vault. Do not create a mirrored copy unless you explicitly want external-vault sync. Terminal equivalents remain available for automation:
+
+```bash
+python3 system/scripts/obsidian_bridge.py guide
+python3 system/scripts/obsidian_bridge.py configure --mode kit-vault
+python3 system/scripts/obsidian_bridge.py open tracker
+```
+
+Setup creates local-only Obsidian settings and a graph index under `6. Resources/obsidian/`. This gives product managers a local knowledge graph over tasks, meetings, people, partners, clients, SOPs, and reference documents while preserving the same files every supported agent reads.
+
+See the [full Obsidian task-workspace guide](system/docs/obsidian.md) for path meanings, graph tips, MCP boundaries, and explicit external-vault sync.
 
 Optional MCP read/search/open checks:
 
@@ -273,7 +317,7 @@ Optional MCP read/search/open checks:
 python3 system/scripts/obsidian_mcp_health.py --pretty
 ```
 
-If Obsidian MCP is unavailable, agents use repo-local `rg` search. Obsidian MCP is not a write path for kit workflows.
+If Obsidian MCP is unavailable, agents use repo-local `rg` search. Obsidian MCP is read/search/open-only; task writes continue through the canonical local Markdown workflow.
 
 ## Privacy-Aware Local Workspace
 
@@ -294,16 +338,26 @@ Important caveat: this repo does not sync your private PM files to a kit cloud s
 
 ## Runtime Compatibility
 
-| Capability | Antigravity | Codex | Gemini CLI | Claude Code | KiloCode |
-|:---|:---:|:---:|:---:|:---:|:---:|
-| `.agent/` workflows | Yes | Yes | Yes | Yes | Yes |
-| Slash-command routing | Yes | Yes | Yes | Yes | Yes |
-| PM skills and agents | Yes | Yes | Yes | Yes | Yes |
-| Local file reference | Yes | Yes | Yes | Yes | Yes |
-| Clipboard and drop-zone intake | Native plus scripts | Scripts | Scripts | Scripts | Scripts |
-| Parallel fan-out | Native | Runtime-dependent | Runtime-dependent | Runtime-dependent | Runtime-dependent |
-| Generated local adapters | Yes | Yes | Yes | Yes | Yes |
-| Privacy guardrails | Yes | Yes | Yes | Yes | Yes |
+The generated [runtime and model compatibility table](system/docs/runtime-compatibility.md) is derived from the command registry and cannot drift independently.
+
+Check the current machine and resolve a workflow without changing providers:
+
+```bash
+python3 system/scripts/model_policy.py status --json
+python3 system/scripts/model_policy.py resolve track --signal conflicting_evidence --json
+```
+
+## Model Adaptation And Evaluation
+
+Fast, Balanced, and Deep are workflow profiles, not provider-specific model names. Normal resolution uses `model: inherit`, so runtime improvements benefit the kit without a release. Conflicting evidence, high-stakes decisions, external mutations, broad changes, and validation failures escalate to Deep. If Deep support is not reported, the kit keeps the active runtime's inherited model and emits a visible warning.
+
+Offline CI uses eight sanitized deterministic scenarios. Live comparisons are local-only, require `--allow-live`, run exactly three times per scenario, and store raw outputs only under ignored `.beats/evals/`. A candidate is promotable only after all safety gates pass and it meets the quality or latency threshold without a silent provider change.
+
+```bash
+python3 system/scripts/model_eval.py run --mode offline --json
+```
+
+Use `/maintain` for model status, live comparison, promotion, backup, and reset guidance. Skills and providers are never rewritten automatically.
 
 ## Power User Tools
 
@@ -339,7 +393,8 @@ The kit operates from `.agent/` as the canonical system. Runtime-specific root f
 |:---|:---|
 | `.agent/rules/GEMINI.md` | System constitution, Context Guard, agent and skill loading protocol, privacy directives, and architecture overview. |
 | `AGENTS.md` | Codex startup and slash-command adapter. |
-| `CODEX_COMMANDS.md` | Codex command index generated from `.agent/workflows/`. |
+| `.agent/command-registry.json` | Only routing, profile, escalation, and runtime-policy source of truth. |
+| `CODEX_COMMANDS.md` | Codex command index generated from the command registry. |
 | `CLAUDE.md` | Claude Code adapter. |
 | `GEMINI.md` | Antigravity and Gemini adapter. |
 

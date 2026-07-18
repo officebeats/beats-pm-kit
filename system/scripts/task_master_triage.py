@@ -20,9 +20,10 @@ from pathlib import Path
 from urllib.parse import quote
 
 try:  # pragma: no cover - import path differs for script vs package execution.
-    from . import task_display
+    from . import task_display, task_store
 except ImportError:  # pragma: no cover
     import task_display
+    import task_store
 
 
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -37,7 +38,7 @@ TASK_END = "<!-- TASK_TRIAGE:END -->"
 DEFAULT_STALE_BUSINESS_DAYS = 10
 
 DATE_PATTERN = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\b")
-PROGRESS_HEADER_PATTERN = re.compile(r"^##\s+(?:📈\s+)?Progress Log\s*$")
+PROGRESS_HEADER_PATTERN = re.compile(r"^##\s+(?:(?:📈\s+)?Progress Log|Progress)\s*$")
 
 
 @dataclass
@@ -47,6 +48,8 @@ class TaskRecord:
     task_master_due: str
     task_master_status: str
     path: Path
+    updated: str = ""
+    source_refs: list[str] | None = None
 
 
 @dataclass
@@ -174,7 +177,7 @@ def parse_headline_title(text: str) -> str:
 
 def parse_context_summary(text: str) -> str:
     match = re.search(
-        r"## Context & Background\s*(.*?)(?=\n## )",
+        r"## (?:Summary|Context & Background|Context)\s*(.*?)(?=\n## )",
         text,
         flags=re.DOTALL,
     )
@@ -217,14 +220,14 @@ def parse_progress_entries(text: str) -> list[ProgressEntry]:
         if not stripped.startswith("|"):
             continue
         parts = [part.strip() for part in stripped.strip("|").split("|")]
-        if len(parts) < 4 or parts[0].lower() == "date" or not parts[0].startswith("20"):
+        if len(parts) < 3 or parts[0].lower() == "date" or not parts[0].startswith("20"):
             continue
         entries.append(
             ProgressEntry(
                 date=parts[0],
                 source=strip_markdown(parts[1]),
                 update=strip_markdown(parts[2]),
-                status=strip_markdown(parts[3]),
+                status=strip_markdown(parts[3]) if len(parts) > 3 else "",
             )
         )
     return entries
@@ -325,30 +328,16 @@ def select_relevant_links(task_path: Path, refs: list[ReferenceLink]) -> list[st
 
 def parse_task_master() -> list[TaskRecord]:
     tasks: list[TaskRecord] = []
-    for line in read_text(TASK_MASTER_PATH).splitlines():
-        if not line.strip().startswith("|"):
-            continue
-        parts = [part.strip() for part in line.strip().strip("|").split("|")]
-        if len(parts) < 5 or parts[0].lower() in {"id", ":---", "completed", "item"}:
-            continue
-        cell = parts[0]
-        match = re.search(r"\[([A-Z][A-Z0-9-]+)\]\(([^)]+)\)", cell)
-        if match:
-            task_id = match.group(1).strip()
-            target = match.group(2).strip()
-            path = (TASKS_DIR.parent / target).resolve()
-        else:
-            task_id = strip_markdown(cell)
-            if not re.match(r"^[A-Z][A-Z0-9-]+[a-z]?$", task_id):
-                continue
-            path = TASKS_DIR / f"{task_id}.md"
+    for task in task_store.iter_tasks(BASE_DIR):
         tasks.append(
             TaskRecord(
-                task_id=task_id,
-                title=strip_markdown(parts[1]),
-                task_master_due=strip_markdown(parts[3]),
-                task_master_status=strip_markdown(parts[4]),
-                path=path,
+                task_id=task.task_id,
+                title=task.title,
+                task_master_due=task.due,
+                task_master_status=task.status,
+                path=task.path,
+                updated=task.updated,
+                source_refs=task.source_refs,
             )
         )
     deduped: dict[str, TaskRecord] = {}
@@ -408,7 +397,7 @@ def parse_subtasks(text: str) -> tuple[int, int]:
     in_subtasks = False
     for line in text.splitlines():
         stripped = line.strip()
-        if stripped.startswith("## ✅ Subtasks"):
+        if stripped.startswith("## ✅ Subtasks") or stripped.startswith("## Next actions"):
             in_subtasks = True
             continue
         if in_subtasks and stripped.startswith("## "):
@@ -587,9 +576,9 @@ def collect_triage() -> tuple[list[TriageItem], dict[str, list[TriageItem]]]:
         combined_status = f"{status} {record.task_master_status}"
         if is_done(combined_status) or is_snoozed(combined_status):
             continue
-        due_text = task_header_value(text, "Due") or record.task_master_due
+        due_text = record.task_master_due or task_header_value(text, "Due")
         due_date = parse_iso_date(due_text)
-        last_updated_text = task_header_value(text, "Last Updated")
+        last_updated_text = record.updated or task_header_value(text, "Last Updated")
         last_updated_date = parse_iso_date(last_updated_text)
         display_title = scrub(parse_headline_title(text) or record.title)
         summary = scrub(parse_context_summary(text) or display_title)
@@ -606,7 +595,13 @@ def collect_triage() -> tuple[list[TriageItem], dict[str, list[TriageItem]]]:
         else:
             last_activity = "No structured recent activity found in the task file."
         comms_signal = scrub(infer_comms_signal(latest_entry))
-        relevant_links = select_relevant_links(record.path, parse_reference_links(text, record.path.parent))
+        reference_links = parse_reference_links(text, record.path.parent)
+        if not reference_links:
+            reference_links = [
+                ReferenceLink("Evidence", Path(ref).name, str((BASE_DIR / ref).resolve()))
+                for ref in (record.source_refs or [])
+            ]
+        relevant_links = select_relevant_links(record.path, reference_links)
         subtasks_done, subtasks_total = parse_subtasks(text)
 
         task_items: list[TriageItem] = []
@@ -717,7 +712,10 @@ def apply_updates(
 
     for task_path in TASKS_DIR.glob("*.md"):
         task_text = read_text(task_path)
-        task_id = task_path.stem
+        parsed = task_store.parse_task(task_path)
+        if parsed is None:
+            continue
+        task_id = parsed.task_id
         if touched_tasks is not None and task_id not in touched_tasks:
             continue
         task_items = by_task.get(task_id, [])

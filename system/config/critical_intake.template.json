@@ -78,11 +78,6 @@
       "enabled": true,
       "scope_source": "referenced_only",
       "risk_if_skipped": "Misses Jira or Confluence context linked from accepted evidence."
-    },
-    "trello": {
-      "enabled": false,
-      "scope_source": "local_config",
-      "risk_if_skipped": "Trello board may lag accepted local tracker state."
     }
   },
   "ranking": {

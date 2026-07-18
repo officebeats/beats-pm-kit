@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Dependency Manager for Beats PM Antigravity Kit
+Dependency Manager for Beats PM Kit
 
 Validates and installs required Python dependencies automatically.
 Run this before any system scripts that depend on external packages.
