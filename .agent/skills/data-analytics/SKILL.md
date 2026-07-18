@@ -3,7 +3,7 @@ name: data-analytics
 description: Execute SQL, analyze funnels, and define success metrics.
 ---
 
-> **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 
 # Data Analytics Skill

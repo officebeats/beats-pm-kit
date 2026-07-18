@@ -1,6 +1,6 @@
 # 📂 The Data Vault (Examples)
 
-Welcome to the **Antigravity Brain Demo Library**.
+Welcome to the **Beats PM Kit Demo Library**.
 
 This folder contains high-fidelity examples of what the system produces when fully operational. Browse these files to understand the "Standard of Excellence" for documentation in this ecosystem.
 

@@ -1,8 +1,42 @@
 // ── TaskMaster Parser/Writer — shared between server and tests ────
 import fs from 'fs';
 
+const LEGACY_DASHBOARD_HEADERS = ['id', 'priority', 'task', 'product', 'project', 'status', 'owner', 'due', 'tags'];
+const CANONICAL_HEADERS = ['task', 'owner', 'due', 'status'];
+const LEGACY_CANONICAL_HEADERS = ['id', 'task', 'owner', 'due', 'status'];
+
+function normalizeHeaders(line = '') {
+  return line
+    .split('|')
+    .slice(1, -1)
+    .map(header => header.trim().toLowerCase());
+}
+
+function detectTaskMasterSchema(content) {
+  const tableHeaderLine = (content || '').split(/\r?\n/).find(line => line.trim().startsWith('|'));
+  if (!tableHeaderLine) return 'legacy-dashboard';
+
+  const headers = normalizeHeaders(tableHeaderLine);
+  if (headers.length === LEGACY_DASHBOARD_HEADERS.length && headers.every((header, index) => header === LEGACY_DASHBOARD_HEADERS[index])) {
+    return 'legacy-dashboard';
+  }
+  if (
+    (headers.length === CANONICAL_HEADERS.length && headers.every((header, index) => header === CANONICAL_HEADERS[index]))
+    || (headers.length === LEGACY_CANONICAL_HEADERS.length && headers.every((header, index) => header === LEGACY_CANONICAL_HEADERS[index]))
+  ) {
+    return 'canonical';
+  }
+  return 'unknown';
+}
+
+export function canWriteTaskMaster(data) {
+  return (data?.schema || 'legacy-dashboard') === 'legacy-dashboard';
+}
+
 export function parseTaskMaster(content) {
-  if (!content) return { active: [], archive: [], descriptions: {} };
+  if (!content) return { active: [], archive: [], descriptions: {}, schema: 'legacy-dashboard' };
+
+  const schema = detectTaskMasterSchema(content);
 
   const descStart = content.indexOf('## Descriptions');
   const archiveStart = content.indexOf('## Archive');
@@ -22,6 +56,11 @@ export function parseTaskMaster(content) {
       obj.tags = (obj.tags || '').split(',').map(t => t.trim()).filter(Boolean);
       obj.priority = (obj.priority || '').replace(/\*\*/g, '');
       obj.task = (obj.task || '').replace(/\*\*/g, '');
+      const taskLink = obj.task.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+      if (taskLink) {
+        obj.task = taskLink[1];
+        obj.id = obj.id || taskLink[2];
+      }
       return obj;
     });
   };
@@ -35,7 +74,7 @@ export function parseTaskMaster(content) {
     if (id) descriptions[id] = text;
   }
 
-  return { active: parseRows(activeSection), archive: parseRows(archiveSection), descriptions };
+  return { active: parseRows(activeSection), archive: parseRows(archiveSection), descriptions, schema };
 }
 
 export function writeTaskMaster(active, archive, descriptions) {
@@ -69,7 +108,7 @@ export function writeTaskMaster(active, archive, descriptions) {
 }
 
 export function parseTaskMasterFile(filepath) {
-  if (!fs.existsSync(filepath)) return { active: [], archive: [], descriptions: {} };
+  if (!fs.existsSync(filepath)) return { active: [], archive: [], descriptions: {}, schema: 'legacy-dashboard' };
   return parseTaskMaster(fs.readFileSync(filepath, 'utf-8'));
 }
 

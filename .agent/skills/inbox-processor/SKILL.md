@@ -3,7 +3,7 @@ name: inbox-processor
 description: The "Black Hole" for chaos. Aggressively extracts tasks from raw input, screenshots, and transcripts, then routes them to the ledger.
 ---
 
-> **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 > **Cloud Safe**: Use run_command for file operations to bypass iCloud sync-locks.
 
 

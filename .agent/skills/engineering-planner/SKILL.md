@@ -1,4 +1,5 @@
 ---
+title: Engineering Delivery Planner
 name: engineering-planner
 description: Strategic planning with optional interview workflow
 ---

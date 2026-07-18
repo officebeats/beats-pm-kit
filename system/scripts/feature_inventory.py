@@ -50,15 +50,9 @@ def _load_command_registry() -> dict[str, Any]:
 
 
 def _runtime_names(registry: dict[str, Any]) -> list[str]:
-    priority = registry.get("runtime_priority", {})
-    raw: list[str] = []
-    for key in ("primary", "secondary"):
-        value = priority.get(key)
-        if isinstance(value, str):
-            raw.append(value)
-    compatibility = priority.get("compatibility", [])
-    if isinstance(compatibility, list):
-        raw.extend(item for item in compatibility if isinstance(item, str))
+    policy = registry.get("runtime_policy", {})
+    supported = policy.get("supported", []) if isinstance(policy, dict) else []
+    raw = [item for item in supported if isinstance(item, str)]
 
     seen: set[str] = set()
     runtimes: list[str] = []
@@ -114,6 +108,7 @@ def collect_inventory(root_dir: Path = ROOT_DIR) -> dict[str, Any]:
             "promoted_skill_commands_count": len(promoted_codex_commands),
             "promoted_skill_commands": promoted_codex_commands,
         },
+        "execution_profiles": registry.get("command_profiles", {}),
     }
 
 

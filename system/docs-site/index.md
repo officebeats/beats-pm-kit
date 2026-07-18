@@ -1,28 +1,24 @@
----
-layout: home
-hero:
-  name: Antigravity Brain
-  text: The PM Knowledge System
-  tagline: File-based product management powered by AI agents. 100% local. Free forever.
-  actions:
-    - theme: brand
-      text: Get Started
-      link: /guide/
-    - theme: alt
-      text: Browse Skills
-      link: /skills/
+# Beats PM Kit Documentation
 
-features:
-  - icon: ⚡
-    title: Slash Commands
-    details: 20+ workflows triggered by /day, /task, /boss, /sprint, /create, and more.
-  - icon: 🤖
-    title: Virtual PM Team
-    details: 8 specialized AI agents — CPO, Staff PM, Strategist, Tech Lead, and more.
-  - icon: 📁
-    title: File-Based
-    details: All data stored in Markdown. No database. Fully portable, fully yours.
-  - icon: 🔒
-    title: 100% Local
-    details: Private by default. Folders 1-5 never leave your machine.
----
+Beats PM Kit is a local-first Markdown workspace for turning meetings, transcripts, chats, decisions, and product documents into grounded tasks and delivery artifacts.
+
+## Start Here
+
+- [Getting Started](guide/index.md)
+- [Commands Reference](guide/commands.md)
+- [Active Skills](skills/index.md)
+- [Workflow Catalog](workflows/index.md)
+- [Architecture](architecture/index.md)
+
+## Design Principles
+
+- **Registry-backed:** 44 commands are routed through one canonical command registry.
+- **Runtime-neutral:** workflows inherit improvements from the user's active supported runtime.
+- **Markdown-first:** local notes and tasks remain readable without a dashboard or database.
+- **Private by default:** PM source folders are ignored and release checks reject PII, secrets, transcripts, local paths, and runtime state.
+
+Regenerate the catalog without installing dependencies:
+
+```bash
+node system/docs-site/scripts/generate-docs.js
+```

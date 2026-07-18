@@ -37,7 +37,7 @@ Do not continue with degraded source coverage until the user explicitly chooses 
 - Backward source windows default to the last 5 business days and may shorten only when the chat/source manifest or command-run manifest shows a successful prior run for the same source/window. Calendar includes the last 5 business days of changes plus forward lookahead for upcoming active-workstream gates.
 - Treat third-party systems as read-only. Never send, draft, reply, react, schedule, create, assign, transition, comment, upload, patch, delete, or move third-party state unless the user explicitly confirms that exact mutation in the current turn.
 - Use parallel agents for independent source reads and synthesis passes when the runtime supports them.
-- Keep shared writes serialized: tracker updates, manifests, Trello apply, and final consolidation.
+- Keep shared writes serialized: Markdown task updates, source manifests, generated indexes, and final consolidation.
 - Stay within the 90-second wall-clock budget where possible. Prefer visible partial source gaps over silent skips.
 
 ## Synthesis Rules
@@ -47,7 +47,7 @@ Do not continue with degraded source coverage until the user explicitly chooses 
 - Completed outcomes stay visible with completion date/source.
 - Implied completions become confirmation questions.
 - Group output by workstream title first, never by Task Master ID.
-- User-facing task and workstream descriptions must use `display_title` plus source provenance, not hard IDs. Keep Task Master IDs, Jira IDs, Trello IDs, and source IDs only in local links, metadata, or an `Agent refs` line.
+- User-facing task and workstream descriptions must use `display_title` plus source provenance, not hard IDs. Keep internal and source IDs only in local links, metadata, or an `Agent refs` line.
 - Evidence lines use this shape: `[Task/workstream title]; started from [initial source label] on [date]; latest progress from [latest source label] on [date].`
 
 ## Output Shape

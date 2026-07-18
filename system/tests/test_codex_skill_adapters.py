@@ -1,7 +1,7 @@
 """
 Codex skill adapter generation tests
 ====================================
-Protects the Antigravity-first / Codex-second command promotion model.
+Protects capability-driven, registry-backed Codex skill promotion.
 """
 
 import sys
@@ -52,6 +52,8 @@ class TestCodexSkillAdapters(unittest.TestCase):
             self.assertIn("<repo>/5. Trackers/bugs/bugs-master.md", content)
             self.assertIn("<repo>/5. Trackers/WORKSTREAMS.md", content)
             self.assertIn("<repo>/5. Trackers/workstreams", content)
+            self.assertIn("Execution profile: **Fast**", content)
+            self.assertIn("system/scripts/model_policy.py", content)
 
     def test_generated_week_skill_mentions_workstream_context(self):
         """The /week adapter should carry optional workstream context."""
@@ -97,6 +99,19 @@ class TestCodexSkillAdapters(unittest.TestCase):
             ]:
                 with self.subTest(skill_name=skill_name):
                     self.assertTrue((Path(tmpdir) / skill_name / "SKILL.md").exists())
+
+    def test_generated_obsidian_skill_guides_task_manager_handoff(self):
+        """The /obsidian adapter should own setup and point users to canonical tasks."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sync_codex_skill_adapters.sync_promoted_skills(output_dir=tmpdir, root=ROOT_DIR)
+            skill_md = Path(tmpdir) / "beats-obsidian" / "SKILL.md"
+            content = skill_md.read_text(encoding="utf-8")
+
+            self.assertIn("system/scripts/obsidian_vault_setup.py", content)
+            self.assertIn("system/scripts/obsidian_mcp_health.py", content)
+            self.assertIn("5. Trackers/TASK_MASTER.md", content)
+            self.assertIn("obsidian_bridge.py guide --json", content)
+            self.assertIn("exact kit, tracker, Task Master, and guide paths", content)
 
     def test_guarded_update_skill_mentions_safety_block(self):
         """Guarded native skills should include an explicit Codex safety section."""

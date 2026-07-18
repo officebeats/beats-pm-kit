@@ -10,7 +10,7 @@
 
 1. Open **Cursor**
 2. Go to **File → Open Folder**
-3. Select your `beats-pm-antigravity-brain` folder
+3. Select your `beats-pm-kit` folder
 
 ### Step 2: Open the Chat Panel
 
@@ -21,7 +21,7 @@ Press `Cmd+L` (Mac) or `Ctrl+L` (Windows) to open Cursor's AI chat
 In the chat, type:
 
 ```
-I'm using the Beats PM Antigravity Brain system.
+I'm using Beats PM Kit.
 Please read the _AGENTS folder to understand the available agents,
 and read SETTINGS.md for my configuration. Help me get started.
 ```
@@ -57,7 +57,7 @@ Use `@` to reference specific files in your prompts:
 Create a `.cursorrules` file in your PM brain folder to auto-load context:
 
 ```
-You are helping me manage my PM work using the Beats PM Antigravity Brain system.
+You are helping me manage my PM work using Beats PM Kit.
 
 Key files to be aware of:
 - .agent/skills/ contains AI skill prompts for different PM functions
@@ -113,4 +113,4 @@ Read all the files in system/agents/ and then:
 
 ---
 
-_Need help? Open an issue at [github.com/officebeats/beats-pm-antigravity-brain](https://github.com/officebeats/beats-pm-antigravity-brain)_
+_Need help? Open an issue at [github.com/officebeats/beats-pm-kit](https://github.com/officebeats/beats-pm-kit)_

@@ -61,23 +61,27 @@ Ask for only the profile fields needed for useful local artifacts:
 1. Name for local task ownership.
 2. Direct manager for boss-request routing.
 3. Product or initiative focus.
-4. Whether Trello should remain disabled, connect to an existing board, or provision a new board.
+4. Named read-only source windows for Outlook, Teams, and Slack.
+5. Whether Granola and Quill evidence will come from local access, exports, or pasted transcripts.
 
 Write profile answers to `SETTINGS.md` and local stakeholder/task files only. Keep all profile output in ignored workspace paths.
 
-If Trello is enabled, use `system/scripts/trello_bridge.py` and keep Trello downstream from accepted local task state.
+These five evidence sources are the default daily triangulation loop. Optional board tools are enabled later through `/pack` and never replace Markdown task notes.
 
 ---
 
 ## Step 4: Obsidian Suggestion
 
-Tell the user Obsidian is optional:
+Run `python3 system/scripts/obsidian_bridge.py guide --json`, then tell the user Obsidian is optional and show the exact returned paths:
 
-- Open the existing kit folder directly as the vault.
-- Do not create a mirrored copy.
-- Use `python3 system/scripts/obsidian_vault_setup.py --apply` for local graph settings.
-- Use `python3 system/scripts/obsidian_mcp_health.py --pretty` to check optional read/search/open MCP.
-- If MCP is unavailable, agents fall back to `rg` over the repo.
+- `kit_folder` is the folder to choose in Obsidian's **Open folder as vault** picker.
+- `task_folder` contains the local task system.
+- `task_folder` is the canonical `5. Trackers/tasks/` note folder; `task_master` is its generated navigation view.
+- `guide` is the setup and usage guide.
+
+Offer `/obsidian setup` to configure the existing kit folder directly as the vault. Do not create a mirrored copy unless the user explicitly asks for external-vault sync. Use `/obsidian tasks` to open the task ledger after setup.
+
+Use `python3 system/scripts/obsidian_mcp_health.py --pretty` only for optional read/search/open MCP. If MCP is unavailable, agents fall back to `rg` over the repo.
 
 Obsidian MCP is read/search/open only in v1. Do not use write, delete, patch, or arbitrary command tools.
 
@@ -93,6 +97,7 @@ Start here:
   /paste       Process messy PM input into routed tasks, questions, or docs
   /day         See current priorities and triage questions
   /track       Manage local task state
+  /obsidian    Set up or open the optional visual task workspace
   /transcript  Prepare and validate meeting transcripts
   /create      Draft PRDs, specs, and one-pagers
   /plan        Build roadmaps, OKRs, and strategic plans

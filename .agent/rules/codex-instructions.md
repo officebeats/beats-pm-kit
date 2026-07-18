@@ -1,4 +1,5 @@
 ---
+title: Codex Runtime Configuration
 source: .codex\config.toml
 type: codex
 ---

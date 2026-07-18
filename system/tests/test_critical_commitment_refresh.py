@@ -47,6 +47,17 @@ class TestCriticalCommitmentRefresh(unittest.TestCase):
         self.assertTrue(plan["should_pause_for_user"])
         self.assertTrue(any(item["source"] == "teams" and item["what_failed"] == "missing_scope" for item in plan["user_prompts"]))
 
+    def test_local_quill_export_satisfies_core_source_health(self):
+        root = self.make_root()
+        export = root / "3. Meetings" / "transcripts" / "quill"
+        export.mkdir(parents=True)
+        (export / "product-review.md").write_text("# Product review\n", encoding="utf-8")
+
+        health = ccr.source_health(root, "quill", {"enabled": True}, {})
+
+        self.assertEqual(health.status, "healthy")
+        self.assertFalse(health.requires_user_decision)
+
     def test_boss_callout_ranks_above_ordinary_stale_work(self):
         root = self.make_root()
         (root / "5. Trackers" / "TASK_MASTER.md").write_text(

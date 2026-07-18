@@ -38,6 +38,11 @@ DEFAULT_DASHBOARD = "OBSIDIAN.md"
 DEFAULT_REST_HOST = "127.0.0.1"
 DEFAULT_REST_PORT = 27124
 
+if str(KIT_ROOT) not in sys.path:
+    sys.path.insert(0, str(KIT_ROOT))
+
+from system.scripts import obsidian_vault_setup
+
 SYNC_MAP = {
     "0. Incoming": "Incoming",
     "1. Company": "Company",
@@ -352,35 +357,41 @@ def choose_default_config(
     target_folder: str = DEFAULT_TARGET_FOLDER,
 ) -> dict[str, Any]:
     root = root.resolve()
+    root_vault_id = None
     for vault in detection.get("valid_vaults", []):
         vault_path = as_path(vault.get("path"))
         if vault_path and vault_path.resolve() == root:
-            return {
-                "mode": "kit-vault",
-                "vault_path": str(root),
-                "vault_id": vault.get("id"),
-                "target_folder": "",
-                "dashboard_note": DEFAULT_DASHBOARD,
-            }
-
-    valid_vaults = detection.get("valid_vaults", [])
-    if valid_vaults:
-        vault = valid_vaults[0]
-        return {
-            "mode": "sync",
-            "vault_path": vault["path"],
-            "vault_id": vault.get("id"),
-            "target_folder": target_folder,
-            "dashboard_note": DEFAULT_DASHBOARD,
-        }
+            root_vault_id = vault.get("id")
 
     return {
         "mode": "kit-vault",
         "vault_path": str(root),
-        "vault_id": None,
+        "vault_id": root_vault_id,
         "target_folder": "",
         "dashboard_note": DEFAULT_DASHBOARD,
     }
+
+
+def choose_sync_config(
+    detection: dict[str, Any],
+    root: Path = KIT_ROOT,
+    target_folder: str = DEFAULT_TARGET_FOLDER,
+) -> dict[str, Any] | None:
+    root = root.resolve()
+    for vault in detection.get("valid_vaults", []):
+        vault_path = as_path(vault.get("path"))
+        if vault_path is None:
+            continue
+        if vault_path.resolve() == root:
+            continue
+        return {
+            "mode": "sync",
+            "vault_path": str(vault_path),
+            "vault_id": vault.get("id"),
+            "target_folder": target_folder,
+            "dashboard_note": DEFAULT_DASHBOARD,
+        }
+    return None
 
 
 def load_local_config(root: Path = KIT_ROOT) -> dict[str, Any]:
@@ -435,6 +446,71 @@ def configured_target(config: dict[str, Any]) -> Path:
         return vault_path
     target = config.get("target_folder") or DEFAULT_TARGET_FOLDER
     return vault_path / target
+
+
+def obsidian_task_master_path(config: dict[str, Any]) -> Path:
+    tracker_folder = "5. Trackers" if config.get("mode") == "kit-vault" else SYNC_MAP["5. Trackers"]
+    return configured_target(config) / tracker_folder / "TASK_MASTER.md"
+
+
+def build_task_guide(
+    root: Path = KIT_ROOT,
+    detection: dict[str, Any] | None = None,
+    config: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    root = root.resolve()
+    detection = detection or detect_obsidian()
+    config = normalize_config(config or active_config(root, detection), root)
+
+    tracker_folder = root / "5. Trackers"
+    task_folder = tracker_folder / "tasks"
+    task_master = tracker_folder / "TASK_MASTER.md"
+    guide_path = root / "system" / "docs" / "obsidian.md"
+    obsidian_dir = root / ".obsidian"
+    direct_vault_ready = obsidian_dir.is_dir()
+    obsidian_task_master = obsidian_task_master_path(config)
+    installed = bool(detection.get("installed"))
+    if config.get("mode") == "sync":
+        ready = installed and obsidian_task_master.is_file()
+    else:
+        ready = installed and direct_vault_ready
+    should_prompt = not ready
+    prompt_reason = ""
+    if not installed:
+        prompt_reason = "Obsidian is not installed locally yet."
+    elif config.get("mode") == "sync" and not Path(config["vault_path"]).expanduser().is_dir():
+        prompt_reason = "The configured external Obsidian vault is missing."
+    elif config.get("mode") == "sync" and not obsidian_task_master.is_file():
+        prompt_reason = "The Beats PM Kit task workspace has not been synced into the external vault yet."
+    elif not direct_vault_ready:
+        prompt_reason = "The kit vault has not been configured with local .obsidian settings yet."
+
+    setup_command = "python3 system/scripts/obsidian_bridge.py configure --mode kit-vault"
+    open_command = "python3 system/scripts/obsidian_bridge.py open tracker"
+    if config.get("mode") == "sync":
+        target_folder = config.get("target_folder") or DEFAULT_TARGET_FOLDER
+        setup_command = (
+            "python3 system/scripts/obsidian_bridge.py configure --mode sync "
+            f"--vault {json.dumps(str(Path(config['vault_path']).expanduser()))} "
+            f"--target-folder {json.dumps(target_folder)}"
+        )
+
+    return {
+        "kit_folder": str(root),
+        "tracker_folder": str(tracker_folder),
+        "task_folder": str(task_folder),
+        "task_master": str(task_master),
+        "obsidian_task_folder": str(obsidian_task_master.parent / "tasks"),
+        "obsidian_task_master": str(obsidian_task_master),
+        "guide": str(guide_path),
+        "mode": config.get("mode"),
+        "vault_path": config.get("vault_path"),
+        "ready": ready,
+        "should_prompt": should_prompt,
+        "prompt_reason": prompt_reason,
+        "setup_command": setup_command,
+        "open_command": open_command,
+    }
 
 
 def yaml_quote(value: Any) -> str:
@@ -774,7 +850,7 @@ def open_target(config: dict[str, Any], target: str, query: str | None = None, f
     elif target == "daily":
         uri = build_uri("daily", vault_param(config))
     elif target == "tracker":
-        uri = build_uri("open", {"path": str(configured_target(config) / "5. Trackers" / "TASK_MASTER.md")})
+        uri = build_uri("open", {"path": str(obsidian_task_master_path(config))})
     elif target == "search":
         if not query:
             raise ValueError("open search requires --query")
@@ -827,6 +903,9 @@ def command_configure(args: argparse.Namespace) -> int:
     if args.vault:
         vault_path = Path(args.vault).expanduser()
         mode = args.mode if args.mode != "auto" else ("kit-vault" if vault_path.resolve() == KIT_ROOT.resolve() else "sync")
+        if mode == "sync" and vault_path.resolve() == KIT_ROOT.resolve():
+            print("Error: explicit sync mode requires an external Obsidian vault path.", file=sys.stderr)
+            return 1
         config = {
             "mode": mode,
             "vault_path": str(vault_path),
@@ -834,22 +913,38 @@ def command_configure(args: argparse.Namespace) -> int:
             "dashboard_note": DEFAULT_DASHBOARD,
         }
     else:
-        config = choose_default_config(detection, KIT_ROOT, args.target_folder)
-        if args.mode != "auto":
-            config["mode"] = args.mode
+        if args.mode == "sync":
+            config = choose_sync_config(detection, KIT_ROOT, args.target_folder)
+            if config is None:
+                print(
+                    "Error: explicit sync mode requires an existing external Obsidian vault. "
+                    "Pass --vault <path> or create/open the external vault first.",
+                    file=sys.stderr,
+                )
+                return 1
+        else:
+            config = choose_default_config(detection, KIT_ROOT, args.target_folder)
             if args.mode == "kit-vault":
+                config["mode"] = "kit-vault"
                 config["vault_path"] = str(KIT_ROOT)
                 config["target_folder"] = ""
     path = save_config(config, KIT_ROOT)
     normalized = active_config(KIT_ROOT, detection)
+    setup_changes: list[str] = []
+    if normalized["mode"] == "kit-vault" and not args.skip_vault_setup:
+        setup_changes = obsidian_vault_setup.configure_vault(KIT_ROOT, dry_run=False)
     if not args.no_dashboard:
         ensure_dashboard(configured_target(normalized), dry_run=False)
     if args.json:
-        print(json.dumps({"config_path": str(path), "config": normalized}, indent=2))
+        print(json.dumps({"config_path": str(path), "config": normalized, "vault_setup_changes": setup_changes}, indent=2))
     else:
         print(f"Wrote {path}")
         print(f"Mode: {normalized['mode']}")
         print(f"Vault: {normalized['vault_path']}")
+        if setup_changes:
+            print("Vault setup:")
+            for change in setup_changes:
+                print(f"  - {change}")
     return 0
 
 
@@ -897,6 +992,29 @@ def command_mcp_template(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_guide(args: argparse.Namespace) -> int:
+    detection = detect_obsidian()
+    config = active_config(KIT_ROOT, detection)
+    guide = build_task_guide(KIT_ROOT, detection, config)
+    if args.json:
+        print(json.dumps(guide, indent=2))
+    else:
+        print("Obsidian task guide")
+        print(f"  Kit folder: {guide['kit_folder']}")
+        print(f"  Tracker folder: {guide['tracker_folder']}")
+        print(f"  Canonical task notes: {guide['task_folder']}")
+        print(f"  Task Master: {guide['task_master']}")
+        print(f"  Obsidian task view: {guide['obsidian_task_master']}")
+        print(f"  Guide: {guide['guide']}")
+        print(f"  Ready: {'yes' if guide['ready'] else 'no'}")
+        print(f"  Should prompt: {'yes' if guide['should_prompt'] else 'no'}")
+        if guide["prompt_reason"]:
+            print(f"  Prompt reason: {guide['prompt_reason']}")
+        print(f"  Setup command: {guide['setup_command']}")
+        print(f"  Open command: {guide['open_command']}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Beats PM Kit Obsidian bridge")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -910,6 +1028,7 @@ def build_parser() -> argparse.ArgumentParser:
     configure.add_argument("--mode", choices=["auto", "kit-vault", "sync"], default="auto")
     configure.add_argument("--target-folder", default=DEFAULT_TARGET_FOLDER)
     configure.add_argument("--no-dashboard", action="store_true")
+    configure.add_argument("--skip-vault-setup", action="store_true")
     configure.add_argument("--json", action="store_true")
     configure.set_defaults(func=command_configure)
 
@@ -937,6 +1056,10 @@ def build_parser() -> argparse.ArgumentParser:
     mcp.add_argument("--output", help="Output path; defaults to system/config/mcp.obsidian.local.json")
     mcp.add_argument("--json", action="store_true")
     mcp.set_defaults(func=command_mcp_template)
+
+    guide = subparsers.add_parser("guide", help="Show the canonical Obsidian task handoff paths and commands")
+    guide.add_argument("--json", action="store_true")
+    guide.set_defaults(func=command_guide)
     return parser
 
 

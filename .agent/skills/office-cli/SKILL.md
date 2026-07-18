@@ -3,7 +3,7 @@ name: office-cli
 description: Create, read, and edit Word (.docx), Excel (.xlsx), and PowerPoint (.pptx) files using OfficeCLI. Use when user requests Office documents, presentations, spreadsheets, or exports to Office formats.
 ---
 
-> **Compatibility Directive**: This component is optimized primarily for the Google Antigravity runtime, but gracefully degrades to support Gemini CLI, Claude Code, and Kilocode CLI.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 # OfficeCLI Skill
 

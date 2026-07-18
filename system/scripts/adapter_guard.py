@@ -24,6 +24,10 @@ GENERATED_REPO_FILES = [
     "CLAUDE.md",
     "GEMINI.md",
     "CODEX_COMMANDS.md",
+    ".agent/MANIFEST.json",
+    ".agent/ARCHITECTURE.md",
+    ".agent/rules/ROUTING.md",
+    "system/docs/runtime-compatibility.md",
 ]
 FORBIDDEN_TRACKED_PREFIXES = list(generated_or_local_prefixes())
 PY_COMPILE_FILES = [
@@ -35,6 +39,10 @@ PY_COMPILE_FILES = [
     "system/scripts/codex_doctor.py",
     "system/scripts/codex_setup.py",
     "system/scripts/feature_inventory.py",
+    "system/scripts/generate_registry_docs.py",
+    "system/scripts/detect_runtime.py",
+    "system/scripts/model_policy.py",
+    "system/scripts/model_eval.py",
     "system/scripts/obsidian_bridge.py",
     "system/scripts/root_cleaner.py",
     "system/scripts/sync_cli_adapters.py",
@@ -42,8 +50,11 @@ PY_COMPILE_FILES = [
     "system/scripts/command_integrity.py",
     "system/scripts/context_router.py",
     "system/scripts/critical_commitment_refresh.py",
+    "system/scripts/markdown_title_guard.py",
     "system/scripts/agent_memory_health.py",
-    "system/scripts/trello_bridge.py",
+    "system/scripts/pack_manager.py",
+    "system/scripts/task_store.py",
+    "system/scripts/upgrade_compat.py",
     "system/scripts/run_real_usecase_tests.py",
     "system/scripts/adapter_guard.py",
     "system/scripts/privacy_guard.py",
@@ -53,8 +64,17 @@ PY_COMPILE_FILES = [
     "system/tests/test_codex_adapter.py",
     "system/tests/test_codex_skill_adapters.py",
     "system/tests/test_critical_commitment_refresh.py",
+    "system/tests/test_markdown_title_guard.py",
+    "system/tests/test_registry_docs.py",
+    "system/tests/test_runtime_detection.py",
+    "system/tests/test_model_policy.py",
+    "system/tests/test_model_eval.py",
+    "system/tests/test_model_neutrality.py",
+    "system/tests/test_legacy_cli.py",
     "system/tests/test_obsidian_bridge.py",
-    "system/tests/test_trello_bridge.py",
+    "system/tests/test_pack_manager.py",
+    "system/tests/test_task_store.py",
+    "system/tests/test_upgrade_compat.py",
 ]
 TEST_MODULES = [
     "system.tests.test_adapter_guard",
@@ -62,8 +82,17 @@ TEST_MODULES = [
     "system.tests.test_codex_adapter",
     "system.tests.test_codex_skill_adapters",
     "system.tests.test_critical_commitment_refresh",
+    "system.tests.test_markdown_title_guard",
+    "system.tests.test_registry_docs",
+    "system.tests.test_runtime_detection",
+    "system.tests.test_model_policy",
+    "system.tests.test_model_eval",
+    "system.tests.test_model_neutrality",
+    "system.tests.test_legacy_cli",
     "system.tests.test_obsidian_bridge",
-    "system.tests.test_trello_bridge",
+    "system.tests.test_pack_manager",
+    "system.tests.test_task_store",
+    "system.tests.test_upgrade_compat",
 ]
 
 
@@ -77,13 +106,15 @@ def run(cmd: list[str], *, quiet: bool = False):
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             text=True,
+            encoding="utf-8",
+            errors="replace",
         )
         if result.returncode != 0:
             raise subprocess.CalledProcessError(result.returncode, cmd)
         return result
 
     print(f"$ {' '.join(cmd)}")
-    return subprocess.run(cmd, cwd=ROOT, check=True, text=True)
+    return subprocess.run(cmd, cwd=ROOT, check=True, text=True, encoding="utf-8", errors="replace")
 
 
 def run_capture(cmd: list[str]) -> subprocess.CompletedProcess[str]:
@@ -94,6 +125,8 @@ def run_capture(cmd: list[str]) -> subprocess.CompletedProcess[str]:
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
+        encoding="utf-8",
+        errors="replace",
     )
 
 
@@ -125,6 +158,21 @@ def run_command_integrity(codex_output_dir: str | None = None):
     if codex_output_dir:
         cmd.extend(["--codex-skills-dir", codex_output_dir])
     run(cmd)
+
+
+def run_registry_docs_check():
+    """Fail if any tracked registry-derived surface drifted."""
+    run([sys.executable, "system/scripts/generate_registry_docs.py", "--check"])
+
+
+def run_public_docs_check():
+    """Fail if the dependency-free public Markdown catalog drifted."""
+    run(["node", "system/docs-site/scripts/generate-docs.js", "--check"])
+
+
+def run_offline_model_eval():
+    """Run only the deterministic sanitized evaluation; never a live provider."""
+    run([sys.executable, "system/scripts/model_eval.py", "run", "--mode", "offline", "--json"])
 
 
 def run_tests():
@@ -220,7 +268,10 @@ def main():
 
     sync_codex_skill_adapters(codex_output_dir, quiet=quiet_codex_sync)
     run_command_integrity(codex_output_dir)
+    run_registry_docs_check()
+    run_public_docs_check()
     compile_sources()
+    run_offline_model_eval()
 
     if not args.skip_tests:
         run_tests()

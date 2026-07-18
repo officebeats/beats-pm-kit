@@ -64,7 +64,28 @@ class TestContextRouter(unittest.TestCase):
             self.assertEqual(result["query"], "developer portal pricing")
             self.assertGreater(result["matches"][0]["confidence"], 0)
             self.assertEqual(result["matches"][0]["path"], "5. Trackers/tasks/PARU-009.md")
-            self.assertIn("/context", result["suggested_commands"])
+            self.assertIn("/find", result["suggested_commands"])
+            self.assertEqual(result["search_mode"], "fts5")
+
+    def test_find_retrieves_evidence_buried_late_in_a_transcript(self):
+        with self.make_root() as tmpdir:
+            root = Path(tmpdir)
+            transcript = root / "3. Meetings" / "transcripts" / "2026-07-18-product-council.md"
+            transcript.parent.mkdir(parents=True, exist_ok=True)
+            filler = "General roadmap discussion.\n" * 120
+            transcript.write_text(
+                "---\ntitle: Product Council — July 18, 2026\n---\n\n# Product Council — July 18, 2026\n\n"
+                + filler
+                + "The explicit decision was to delay the search beta until telemetry is ready.\n",
+                encoding="utf-8",
+            )
+            index_path = root / "system" / "cache" / "context-router" / "index.json"
+
+            result = context_router.query_index("delay search beta telemetry", root=root, index_path=index_path)
+
+            self.assertEqual(result["matches"][0]["path"], "3. Meetings/transcripts/2026-07-18-product-council.md")
+            self.assertIn("delay", result["matches"][0]["snippet"].lower())
+            self.assertGreater(result["matches"][0]["line"], 100)
 
     def test_cache_invalidates_when_file_changes(self):
         with self.make_root() as tmpdir:

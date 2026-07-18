@@ -2,7 +2,7 @@
 description: Process scoped Slack messages into local Beats PM workstreams and tasks without sending or mutating Slack.
 ---
 
-> **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same read-only Slack intake and durable output contract. Prefer the runtime Slack MCP/connector read capability described in `.agent/rules/MCP_COMMUNICATION_INTAKE.md`.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 # Workflow: `/beats-slack`
 

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { parseTaskMaster, writeTaskMaster, parseTaskMasterFile, writeTaskMasterFile } from '../lib/taskmaster.js';
+import { canWriteTaskMaster, parseTaskMaster, writeTaskMaster, parseTaskMasterFile, writeTaskMasterFile } from '../lib/taskmaster.js';
 
 // ═══════════════════════════════════════════════════════════════════
 // TaskMaster 2-Way Sync — Regression & Unit Tests
@@ -32,6 +32,13 @@ Build the React dashboard with glassmorphism UI.
 | ID | Priority | Task | Product | Project | Status | Owner | Due | Tags |
 | :- | :------- | :--- | :------ | :------ | :----- | :---- | :-- | :--- |
 | T-000 | Low | Initial test task | Test | Legacy | Done | @bot | 2026-01-01 | test |
+`;
+
+const CANONICAL_MD = `# Task Master
+
+| Task | Owner | Due | Status |
+| --- | --- | --- | --- |
+| [Prepare launch brief](tasks/prepare-launch-brief.md) | Alex | 2026-08-01 | Next |
 `;
 
 // ── Parser Unit Tests ─────────────────────────────────────────────
@@ -121,6 +128,28 @@ describe('parseTaskMaster', () => {
     expect(active[0].task).toContain('"login"');
     expect(active[0].product).toBe('My App (v2)');
     expect(active[0].project).toBe('Phase 1/2');
+  });
+
+  it('recognizes the generated canonical task index as read-only', () => {
+    const result = parseTaskMaster(CANONICAL_MD);
+    expect(result.active).toHaveLength(1);
+    expect(result.active[0].task).toBe('Prepare launch brief');
+    expect(result.active[0].id).toBe('tasks/prepare-launch-brief.md');
+    expect(result.schema).toBe('canonical');
+    expect(canWriteTaskMaster(result)).toBe(false);
+  });
+
+  it('keeps the legacy dashboard schema writable for backward compatibility', () => {
+    const result = parseTaskMaster(SAMPLE_MD);
+    expect(result.schema).toBe('legacy-dashboard');
+    expect(canWriteTaskMaster(result)).toBe(true);
+  });
+
+  it('treats unrecognized table schemas as read-only', () => {
+    const unknown = CANONICAL_MD.replace('| Task | Owner | Due | Status |', '| Task | Owner | Due | Status | Source |');
+    const result = parseTaskMaster(unknown);
+    expect(result.schema).toBe('unknown');
+    expect(canWriteTaskMaster(result)).toBe(false);
   });
 });
 

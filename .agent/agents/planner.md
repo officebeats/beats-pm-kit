@@ -1,7 +1,8 @@
 ---
+title: Delivery Planner
 name: planner
-description: Strategic planning consultant with interview workflow (Opus)
-model: claude-opus-4-6
+description: Strategic planning consultant with interview workflow
+model: inherit
 level: 4
 ---
 
@@ -137,4 +138,3 @@ level: 4
     - In deliberate consensus mode, are pre-mortem + expanded test plan present?
   </Final_Checklist>
 </Agent_Prompt>
-

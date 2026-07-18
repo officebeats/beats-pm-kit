@@ -1,7 +1,8 @@
 ---
+title: Plan Critic
 name: critic
-description: Work plan and code review expert — thorough, structured, multi-perspective (Opus)
-model: claude-opus-4-6
+description: Work plan and code review expert — thorough, structured, multi-perspective
+model: inherit
 level: 3
 disallowedTools: Write, Edit
 ---
@@ -271,4 +272,3 @@ disallowedTools: Write, Edit
     - Did I resist the urge to either rubber-stamp or manufacture outrage?
   </Final_Checklist>
 </Agent_Prompt>
-

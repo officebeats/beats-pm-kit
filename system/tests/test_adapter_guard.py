@@ -46,6 +46,12 @@ class TestAdapterGuardConfig(unittest.TestCase):
         for prefix in [".codex/", ".gemini/", ".claude/", ".kilocode/", ".context/"]:
             self.assertIn(prefix, guarded)
 
+    def test_adapter_guard_checks_public_docs_catalog_drift(self):
+        """Registry-backed public Markdown docs must be part of the release guard."""
+        from scripts import adapter_guard
+
+        self.assertTrue(callable(adapter_guard.run_public_docs_check))
+
     def test_kilocode_agent_tools_are_normalized_to_record_form(self):
         """KiloCode rejects comma-delimited tools strings in generated agent frontmatter."""
         from scripts import sync_cli_adapters

@@ -2,7 +2,7 @@
 description: Process recent or provided transcripts as task-master evidence and route durable updates.
 ---
 
-> **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same repo-local pipeline and durable output contract.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 # Workflow: `/transcript`
 
@@ -117,7 +117,7 @@ Every transcript pass must triangulate against the workstream list:
 - Use plain-English workstream titles of 9 words or fewer.
 - Keep Task Master IDs, card IDs, Jira IDs, and source IDs in internal refs only; do not expose them in visible task/workstream descriptions, evidence prose, or owner questions.
 - Check off completed items only when the transcript or user confirms completion.
-- Preserve completion date/source in workstream, task, boss tracker, and Trello-managed checklist history.
+- Preserve completion date/source in the workstream, canonical task note, and boss tracker.
 - Report source gaps if Quill, Granola, Outlook, Teams, or Slack access was requested but unavailable.
 
 Every summary must include a `Routed Updates` section that lists the exact files updated or says `No durable update required`.

@@ -117,7 +117,7 @@ def run_vibe_check():
 def main():
     """Main entry point for core setup."""
     system = get_system()
-    print_cyan(f"🧠 Hydrating Antigravity Brain v2.6.3 ({system})...")
+    print_cyan(f"🧠 Hydrating Beats PM Kit ({system})...")
     
     # 1. Create directories
     create_directories()

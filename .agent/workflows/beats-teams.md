@@ -2,7 +2,7 @@
 description: Process scoped Microsoft Teams chats or channels into local Beats PM workstreams, tasks, and searchable chat transcripts without sending or mutating Teams.
 ---
 
-> **Compatibility Directive**: Antigravity is canonical. Codex, Claude Code, Claude Desktop, Gemini CLI, and other CLIs must follow the same read-only Teams intake and durable output contract. Prefer the runtime MS365 MCP/connector read capability described in `.agent/rules/MCP_COMMUNICATION_INTAKE.md`.
+> **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
 
 # Workflow: `/beats-teams`
 

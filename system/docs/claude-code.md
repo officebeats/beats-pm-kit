@@ -9,7 +9,7 @@
 ### Step 1: Open Your PM Brain Folder
 
 ```bash
-cd /path/to/your/beats-pm-antigravity-brain
+cd /path/to/your/beats-pm-kit
 claude
 ```
 
@@ -18,7 +18,7 @@ claude
 When Claude Code starts, tell it about your PM brain:
 
 ```
-I'm using the Beats PM Antigravity Brain system.
+I'm using Beats PM Kit.
 Please read the _AGENTS folder to understand the available agents,
 and read SETTINGS.md for my configuration.
 ```
@@ -98,4 +98,4 @@ then show me all critical items I need to follow up on today
 
 ---
 
-_Need help? Open an issue at [github.com/officebeats/beats-pm-antigravity-brain](https://github.com/officebeats/beats-pm-antigravity-brain)_
+_Need help? Open an issue at [github.com/officebeats/beats-pm-kit](https://github.com/officebeats/beats-pm-kit)_
