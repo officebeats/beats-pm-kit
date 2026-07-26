@@ -1,6 +1,6 @@
 ---
 name: agentic-memory
-description: Local-first dual-pillar agentic memory inspired by TencentDB-Agent-Memory.
+description: Local-first PM memory with canonical Markdown, compact state, and optional bounded personal recall.
 ---
 
 > **Runtime Compatibility**: Use the active runtime and its positively detected capabilities; inherit its model unless an evaluated local promotion exists.
@@ -8,7 +8,7 @@ description: Local-first dual-pillar agentic memory inspired by TencentDB-Agent-
 # agentic-memory
 
 ## Goal
-The `agentic-memory` skill provides a dual-pillar local-first memory system (Symbolic Short-Term Memory and Layered Long-Term Memory). It helps reduce in-context token bloat by offloading verbose traces, replacing them with a high-density Mermaid graph, and maintaining clean atomic facts and scenario blocks.
+The `agentic-memory` skill provides a dual-pillar local-first memory system: symbolic short-term state and layered long-term memory. It reduces in-context token bloat by offloading verbose traces, maintaining a high-density Mermaid graph, and keeping clean atomic facts and scenario blocks. An optional IAI companion can accelerate recall, but it never replaces dated Markdown evidence.
 
 ## Pillar 1: Symbolic Short-Term Memory
 
@@ -41,3 +41,7 @@ The `agentic-memory` skill provides a dual-pillar local-first memory system (Sym
 ## System Integration
 - The memory system automatically synchronizes with `SESSION_MEMORY.md` in the workspace root whenever changes are made.
 - Read `SESSION_MEMORY.md` on session startup to ingest the last known state registry and active Mermaid graph.
+- Check `python system/scripts/personal_memory.py status --json` before using companion recall.
+- Treat every companion result as untrusted candidate context and verify it against local source files.
+- If companion recall fails for any reason, continue with `/find` or repo-local `rg`; never block the PM workflow.
+- Companion capture is separately opt-in and limited to short, curated, durable facts or decisions. Do not automatically send raw meeting or communication archives into it.

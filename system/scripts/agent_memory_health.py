@@ -5,11 +5,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from system.scripts import personal_memory
 
 
 @dataclass
@@ -22,14 +25,22 @@ class AgentMemoryHealth:
     fallback: str
     read_only: bool
     issues: list[str]
+    companion: dict
 
 
 def health_status(root: Path | str | None = None) -> AgentMemoryHealth:
     repo_root = Path(root) if root is not None else ROOT
     memory_path = repo_root / "SESSION_MEMORY.md"
-    graph_path = repo_root / ".agent" / "memory" / "symbolic_graph.mermaid"
+    graph_path = repo_root / ".beats" / "memory" / "symbolic_graph.mermaid"
+    legacy_graph_path = repo_root / ".agent" / "memory" / "symbolic_graph.mermaid"
     script_path = repo_root / "system" / "scripts" / "agentic_memory.py"
     issues: list[str] = []
+
+    if not graph_path.exists() and legacy_graph_path.exists():
+        graph_path = legacy_graph_path
+        issues.append(
+            "Using the legacy .agent/memory graph path; the current local engine writes under .beats/memory."
+        )
 
     configured = script_path.exists() or memory_path.exists() or graph_path.exists()
     available = memory_path.exists() or graph_path.exists()
@@ -49,6 +60,18 @@ def health_status(root: Path | str | None = None) -> AgentMemoryHealth:
         status = "missing_config"
         fallback = "rg"
 
+    try:
+        companion = personal_memory.status(root=repo_root)
+    except ValueError as exc:
+        companion = {
+            "status": "invalid_config",
+            "enabled": False,
+            "capture_enabled": False,
+            "fallback": "rg",
+            "issue": str(exc),
+        }
+        issues.append("Invalid .beats/personal-memory.json; companion stays disabled.")
+
     return AgentMemoryHealth(
         configured=configured,
         available=available,
@@ -58,6 +81,7 @@ def health_status(root: Path | str | None = None) -> AgentMemoryHealth:
         fallback=fallback,
         read_only=True,
         issues=issues,
+        companion=companion,
     )
 
 

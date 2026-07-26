@@ -13,7 +13,7 @@ Each skill is a focused capability. The active index is regenerated from `.agent
 | Skill | Description |
 |:---|:---|
 | `ab-test-analysis` | Analyze A/B test results with statistical significance, sample size validation, confidence intervals, and ship/extend/stop recommendations. Use when evaluating experiment results, checking if a test reached significance, interpreting split test data, or deciding whether to ship a variant. |
-| `agentic-memory` | Local-first dual-pillar agentic memory inspired by TencentDB-Agent-Memory. |
+| `agentic-memory` | Local-first PM memory with canonical Markdown, compact state, and optional bounded personal recall. |
 | `agile-story-crafter` | End-to-end agile story engine. Generates user stories, splits large epics, and builds full user story maps. |
 | `ai-shaped-readiness-advisor` | Assess whether your product work is AI-first or AI-shaped. Use when evaluating AI maturity and choosing the next team capability to build. |
 | `api-design` | Design RESTful APIs following best practices. Use when Designing new API endpoints, Restructuring existing APIs, or Planning API versioning strategy |

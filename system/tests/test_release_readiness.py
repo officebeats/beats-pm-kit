@@ -321,8 +321,22 @@ class TestReadmeTruth(unittest.TestCase):
         self.assertGreaterEqual(self.inventory["agents"]["count"], 8)
         self.assertGreaterEqual(self.inventory["skills"]["count"], 50)
         self.assertGreaterEqual(self.inventory["workflows"]["count"], 15)
+        count_phrases = [
+            f"{self.inventory['agents']['count']} canonical agents",
+            f"{self.inventory['skills']['count']} focused skills",
+            f"{self.inventory['workflows']['count']} workflows",
+            f"{self.inventory['codex']['promoted_skill_commands_count']} promoted Codex skills",
+            f"{self.inventory['runtimes']['count']} supported runtimes",
+            f"{len(self.inventory['execution_profiles'])} execution profiles",
+        ]
+        for phrase in count_phrases:
+            self.assertIn(phrase, self.readme)
         for phrase in ["agents", "skills", "workflow", "local-first"]:
             self.assertIn(phrase, self.readme.lower())
+
+    def test_readme_covers_every_registered_workflow(self):
+        for command in self.inventory["workflows"]["names"]:
+            self.assertIn(f"`/{command}`", self.readme)
 
     def test_readme_runtime_claims_match_registry(self):
         for runtime in ["Antigravity", "Codex", "Gemini CLI", "Claude Code", "KiloCode"]:

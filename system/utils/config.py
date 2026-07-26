@@ -1,7 +1,7 @@
 """
 Configuration Utilities Module
 
-Provides centralized configuration management for the Beats PM System.
+Provides centralized configuration management for Beats PM Kit.
 """
 
 import json
@@ -12,8 +12,8 @@ from pathlib import Path
 # Default configuration values
 DEFAULT_CONFIG = {
     'system': {
-        'version': '10.10.0',
-        'name': 'Beats PM System'
+        'version': '11.1.0',
+        'name': 'Beats PM Kit'
     },
     'paths': {
         'root': None,  # Will be auto-detected
@@ -25,8 +25,8 @@ DEFAULT_CONFIG = {
         'company': '1. Company',
         'products': '2. Products',
         'templates': '.agent/templates',
-        'scripts': 'Beats-PM-System/system/scripts',
-        'utils': 'Beats-PM-System/system/utils'
+        'scripts': 'system/scripts',
+        'utils': 'system/utils'
     },
     'files': {
         'kernel': 'KERNEL.md',
@@ -198,7 +198,7 @@ def set_config(key_path: str, value: Any) -> bool:
 
 
 def get_root_directory() -> str:
-    """Get the root directory of the Beats PM System."""
+    """Get the root directory of Beats PM Kit."""
     root = get_config('paths.root')
     
     if root is None:

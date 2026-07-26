@@ -19,6 +19,7 @@ sys.path.insert(0, str(SCRIPT_DIR))
 import detect_runtime
 import sync_codex_skill_adapters
 from system.scripts.feature_inventory import collect_inventory
+from system.scripts import personal_memory
 from system.utils.command_registry import get_promoted_codex_commands
 from system.utils.stdio import force_utf8_stdio
 
@@ -75,6 +76,16 @@ def run_checks() -> dict:
     status = _status_state()
     skills = _skill_visibility()
     generated_present = _generated_files_present()
+    try:
+        memory = personal_memory.status(root=ROOT)
+    except ValueError as exc:
+        memory = {
+            "status": "invalid_config",
+            "enabled": False,
+            "capture_enabled": False,
+            "fallback": "rg",
+            "issue": str(exc),
+        }
 
     checks = {
         "runtime": runtime,
@@ -83,6 +94,7 @@ def run_checks() -> dict:
         "missing_generated_files": sorted(set(GENERATED_FILES) - set(generated_present)),
         "status": status,
         "skills": skills,
+        "personal_memory": memory,
         "utf8_stdout": (sys.stdout.encoding or "").lower() == "utf-8",
     }
     checks["ok"] = (
@@ -103,6 +115,11 @@ def print_human(result: dict) -> None:
     print(f"  Promoted Codex commands: {result['inventory']['codex']['promoted_skill_commands_count']}")
     print(f"  Generated files present: {len(result['generated_files_present'])}/{len(GENERATED_FILES)}")
     print(f"  Status file usable: {result['status']['usable']}")
+    print(
+        "  Personal memory: "
+        f"{result['personal_memory']['status']} "
+        f"(fallback={result['personal_memory'].get('fallback', 'rg')})"
+    )
     print(f"  UTF-8 stdout: {result['utf8_stdout']}")
     if result["skills"]["missing_project_skills"]:
         print("  Project skill adapters missing; run `python system/scripts/beats.py codex-setup`.")
