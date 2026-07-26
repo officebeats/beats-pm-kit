@@ -179,10 +179,12 @@ class TestCodexAdapter(unittest.TestCase):
         self.assertIn("codex-setup", beats.SCRIPT_COMMANDS)
         self.assertIn("obsidian", beats.SCRIPT_COMMANDS)
         self.assertIn("obsidian-mcp", beats.SCRIPT_COMMANDS)
+        self.assertIn("personal-memory", beats.SCRIPT_COMMANDS)
         self.assertIn("system/scripts/pm_decision_router.py", beats.SCRIPT_COMMANDS["route"])
         self.assertIn("system/scripts/context_router.py", beats.SCRIPT_COMMANDS["context-router"])
         self.assertIn("system/scripts/command_integrity.py", beats.SCRIPT_COMMANDS["command-integrity"])
         self.assertIn("system/scripts/obsidian_mcp_health.py", beats.SCRIPT_COMMANDS["obsidian-mcp"])
+        self.assertIn("system/scripts/personal_memory.py", beats.SCRIPT_COMMANDS["personal-memory"])
 
     def test_codex_doctor_uses_the_current_feature_inventory_contract(self):
         """Codex health checks should consume the same registry-backed inventory as release checks."""
@@ -190,6 +192,7 @@ class TestCodexAdapter(unittest.TestCase):
         visibility = codex_doctor._skill_visibility()
 
         self.assertNotIn("CODEX_PROMPT.md", codex_doctor.GENERATED_FILES)
+        self.assertIn("personal_memory", codex_doctor.run_checks())
         self.assertEqual(
             visibility["expected_count"],
             inventory["codex"]["promoted_skill_commands_count"],

@@ -56,6 +56,7 @@ Granola, Quill, Outlook, Teams, Slack, local transcripts, and existing Markdown 
 - Consolidate repeated signals from multiple sources under one workstream.
 - Record both the initial source and latest confirming source.
 - Treat explicit completion evidence as completion; treat implied completion as a confirmation question.
+- When historical context is missing or contradictory, run one bounded `/find` query. Its optional semantic recall is only a lead; link the dated Markdown evidence that confirms the task change.
 - `/day`, `/week`, and `/boss` use `critical_commitment_refresh.py` to refresh configured sources before ranking work.
 - If a source fails, label the gap and use cached local evidence for that source while retaining fresh results from successful sources.
 

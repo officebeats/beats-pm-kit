@@ -63,6 +63,7 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 | Future-proof model adaptation | Runtime defaults are inherited, explicit model promotions stay local and evaluation-gated, and unknown capabilities fail closed without silent provider switching. |
 | Product documentation and PRDs | `/create`, `/plan`, `/sop`, `/deck`, `/review`, and related skills for PRDs, one-pagers, runbooks, launch materials, and decision docs. |
 | Local document reference | Folder conventions, manifests, transcript archives, context artifacts, resource docs, and markdown links help agents cite local files instead of relying on memory. |
+| Optional semantic memory recall | `/memory` can use an explicitly enabled local IAI companion for bounded recall, then verify important claims against dated Markdown evidence. |
 | Markdown and optional Obsidian graph | The kit works as plain Markdown first. Obsidian can be used as an optional direct vault for graph navigation without duplicating files. |
 | Privacy-aware automation | Private workspace folders are gitignored, generated runtime folders stay local, and privacy checks guard against publishing personal files, secrets, transcripts, or adapter bloat. |
 
@@ -138,7 +139,7 @@ Before bootstrap or update changes an existing workspace, Beats PM Kit runs a co
 python3 system/scripts/upgrade_compat.py --json
 ```
 
-The check inventories legacy Markdown titles, task IDs, Task Master links, workstream notes, Granola/Quill/Outlook/Teams/Slack evidence setup, and legacy local model pins. It does not rename files or write anything.
+The check inventories legacy Markdown titles, task IDs, Task Master links, workstream notes, Granola/Quill/Outlook/Teams/Slack evidence setup, legacy local model pins, and any ignored personal-memory companion config. It does not rename files or write anything.
 
 If the report contains only safe title additions, apply them through the reversible migration:
 
@@ -146,7 +147,7 @@ If the report contains only safe title additions, apply them through the reversi
 python3 system/scripts/upgrade_compat.py --apply
 ```
 
-Every changed file is backed up under `.beats/backups/`, written atomically, and left at its existing path so older links keep working. Legacy model choices move into ignored `.beats/model-policy.json`; newer evaluated choices win, preview or unavailable-looking pins generate warnings, and conflicting pins block the upgrade. Ambiguous titles, duplicate task IDs, and broken task links also block the upgrade. New notes use descriptive filenames; legacy filenames are renamed only through a later explicit backlink-aware operation.
+Every changed file is backed up under `.beats/backups/`, written atomically, and left at its existing path so older links keep working. Legacy model choices move into ignored `.beats/model-policy.json`; newer evaluated choices win, preview or unavailable-looking pins generate warnings, and conflicting pins block the upgrade. Valid personal-memory choices are preserved without touching the external store; malformed or unknown config schemas block the upgrade. Ambiguous titles, duplicate task IDs, and broken task links also block the upgrade. New notes use descriptive filenames; legacy filenames are renamed only through a later explicit backlink-aware operation.
 
 This same URL-only flow is supported for Codex, Gemini CLI, Claude Code, and KiloCode. Start the CLI in a safe parent folder, paste the repo URL as the first request, and let the agent run the bootstrap command from the cloned repo root.
 
@@ -189,6 +190,7 @@ Type `/help` anytime to see the workflow catalog.
 | Workflow | Use it when you need to |
 |:---|:---|
 | `/find` | Find past meeting, transcript, chat, decision, task, and product evidence by full text. |
+| `/memory` | Recall candidate context, verify it against dated local evidence, and consolidate durable facts and decisions. |
 | `/paste` | Turn copied text, screenshots, files, or visible work signals into local task-management evidence. |
 | `/track` | Manage tasks, bugs, boss asks, follow-ups, and local task detail files. |
 | `/obsidian` | Set up the existing kit folder as an optional vault, show exact task paths, or open Task Master. |
@@ -318,6 +320,20 @@ python3 system/scripts/obsidian_mcp_health.py --pretty
 ```
 
 If Obsidian MCP is unavailable, agents use repo-local `rg` search. Obsidian MCP is read/search/open-only; task writes continue through the canonical local Markdown workflow.
+
+## Optional Personal Memory Companion
+
+Beats PM Kit can use [IAI Personal Memory Engine](https://github.com/CodeAbra/iai-personal-memory-engine) as a local semantic-recall accelerator. The integration is disabled by default, dependency-free inside this repo, and fail-open: when IAI is missing, slow, or unhealthy, `/memory` and `/find` continue with canonical local Markdown and `rg`.
+
+Beats PM Kit never installs IAI, starts its daemon, enables ambient hooks, uploads files, or changes its external store. Recall results are treated as untrusted leads and checked against dated meeting, decision, task, or product files before consequential action. Capture has a separate explicit opt-in and is limited to short curated memories.
+
+```bash
+python3 system/scripts/personal_memory.py status --json
+python3 system/scripts/personal_memory.py configure --enable --json
+python3 system/scripts/personal_memory.py recall "What did we decide about launch timing?" --limit 5 --json
+```
+
+See the [Personal Memory Companion guide](system/docs/personal-memory.md) for privacy boundaries, dedicated-store setup, curated capture, reset, and upgrade behavior.
 
 ## Privacy-Aware Local Workspace
 

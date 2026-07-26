@@ -124,7 +124,12 @@ def upgrade_compatibility(root: Path, phases: list[Phase], *, apply: bool) -> No
             f"migrated={result['changed']}; backup={result['backup']}",
         )
         return
-    add_phase(phases, "upgrade_compatibility", "ok", "existing Markdown is v11-compatible")
+    add_phase(
+        phases,
+        "upgrade_compatibility",
+        "ok",
+        "existing Markdown and local personal-memory settings are compatible",
+    )
 
 
 def create_workspace(root: Path, phases: list[Phase]) -> None:

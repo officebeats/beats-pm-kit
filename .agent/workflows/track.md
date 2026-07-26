@@ -26,6 +26,7 @@ description: Capture, triangulate, and manage product work in canonical human-re
 
 4. **Triangulate before creating work**
    - Search existing task notes and workstreams first.
+   - When past context is missing or conflicting, run `/find <specific question>` once and verify any semantic-memory lead against dated Markdown.
    - Merge repeated signals from meetings, chats, and email under the same task or workstream.
    - Record the first source, latest source, decision changes, blockers, and completion evidence.
    - If one source fails, label the gap and use cached evidence only for that source.
