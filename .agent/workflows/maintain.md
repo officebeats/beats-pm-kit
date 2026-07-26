@@ -29,7 +29,13 @@ python3 system/scripts/context_router.py build --write-wiki --json
 python3 system/scripts/model_policy.py status --json
 ```
 
-3. Regenerate every registry-derived surface and runtime adapter, then validate integrity:
+3. Inspect local kit memory and the optional personal-memory companion. This single read-only check does not capture content:
+
+```bash
+python3 system/scripts/agent_memory_health.py --pretty
+```
+
+4. Regenerate every registry-derived surface and runtime adapter, then validate integrity:
 
 ```bash
 python3 system/scripts/sync_cli_adapters.py
@@ -39,31 +45,32 @@ python3 system/scripts/sync_cli_adapters.py
 python3 system/scripts/command_integrity.py --require-generated
 ```
 
-4. Run the deterministic sanitized model evaluation used by CI:
+5. Run the deterministic sanitized model evaluation used by CI:
 
 ```bash
 python3 system/scripts/model_eval.py run --mode offline --json
 ```
 
-5. Run local task triage:
+6. Run local task triage:
 
 ```bash
 python3 system/scripts/task_master_triage.py --apply
 ```
 
-6. Run context health:
+7. Run context health:
 
 ```bash
 python3 system/scripts/context_health.py
 ```
 
-7. Summarize:
+8. Summarize:
    - context index status and file count
    - command integrity status
    - task triage report path and top questions
    - health warnings
    - any skipped live-source reads
    - active runtime, version, capabilities, and model-policy warnings
+   - local memory health, personal-memory opt-in state, and active fallback
    - offline evaluation quality and safety-gate status
 
 ## Opt-In Live Model Comparison

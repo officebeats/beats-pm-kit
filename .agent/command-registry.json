@@ -229,7 +229,9 @@
         "skill_name": "beats-find",
         "supporting_files": [
           ".agent/workflows/find.md",
-          "system/scripts/context_router.py"
+          "system/scripts/context_router.py",
+          "system/scripts/personal_memory.py",
+          "system/docs/personal-memory.md"
         ],
         "optional_files": [
           ".beats/knowledge.db",
@@ -607,6 +609,9 @@
         "supporting_files": [
           ".agent/skills/agentic-memory/SKILL.md",
           "system/scripts/agentic_memory.py",
+          "system/scripts/agent_memory_health.py",
+          "system/scripts/personal_memory.py",
+          "system/docs/personal-memory.md",
           "SESSION_MEMORY.md"
         ],
         "optional_files": [

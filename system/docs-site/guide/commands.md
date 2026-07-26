@@ -27,7 +27,7 @@ This command list is generated from `.agent/command-registry.json`, the routing 
 | `/interview` | Deep | Run a Socratic deep interview to clarify ambiguous requirements before planning. |
 | `/maintain` | Balanced | Refresh local indexes, validate adapters, run local task triage, and report kit health without mutating source systems. |
 | `/meet` | Balanced | Synthesize meeting transcripts into task-master updates, action items, decisions, and summaries. |
-| `/memory` | Balanced | Perform memory reflection, consolidate facts and scenarios, update the Mermaid state graph, and clear trace logs. |
+| `/memory` | Balanced | Recall past PM context, verify it against local evidence, and consolidate durable facts, scenarios, and decisions. |
 | `/obsidian` | Fast | Detect, configure, open, sync, and optionally expose the Beats PM Kit through Obsidian. |
 | `/office-cli` | Fast | Check if OfficeCLI is installed and install it if not. Creates, reads, and edits Word, Excel, and PowerPoint files. |
 | `/pack` | Fast | List, enable, disable, or run optional Beats PM capabilities kept dormant in this repository. |

@@ -265,7 +265,11 @@ def source_health(root: Path, source: str, source_config: dict[str, Any], groupe
         return SourceHealth(source, "missing_config", "", "", risk, "Run /obsidian status and configure the kit as a direct vault or MCP read-only source.", True, True)
 
     if source == "agent_memory":
-        if (root / "SESSION_MEMORY.md").exists() or (root / ".agent" / "memory" / "symbolic_graph.mermaid").exists():
+        if (
+            (root / "SESSION_MEMORY.md").exists()
+            or (root / ".beats" / "memory" / "symbolic_graph.mermaid").exists()
+            or (root / ".agent" / "memory" / "symbolic_graph.mermaid").exists()
+        ):
             return SourceHealth(source, "healthy", "", "local graph/session memory", risk, "Use read-only graph/session context.", False, True)
         return SourceHealth(source, "degraded", "", "", risk, "Run agent memory setup or use repo-local rg fallback after user approval.", True, True)
 
