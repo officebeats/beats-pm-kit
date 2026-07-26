@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""
-TencentDB-Agent-Memory engine for Beats PM Kit.
-Implements Symbolic Short-Term Memory (Mermaid Graph state) and
-Layered Long-Term Memory (L0 Traces, L1 Facts, L2 Scenarios).
+"""Dependency-free local state memory for Beats PM Kit.
+
+Implements symbolic short-term state (a Mermaid graph) and layered long-term
+memory (L0 traces, L1 facts, and L2 scenarios). Optional semantic recall lives
+behind ``personal_memory.py`` so this canonical store remains portable.
 """
 
 import sys
@@ -267,7 +268,7 @@ def sync_session_memory():
     
     lines = [
         "# Session Memory",
-        "> Last Known State registry (TencentDB-Agent-Memory).",
+        "> Last known state registry for the local Beats PM Kit memory.",
         "",
         "## 📊 Symbolic Short-Term State (Mermaid Graph)",
         "```mermaid",
@@ -351,7 +352,7 @@ def shutil_move_safe(src: Path, dst: Path):
         print(f"Failed to move {src.name} to archive: {e}")
 
 def main():
-    parser = argparse.ArgumentParser(description="TencentDB-Agent-Memory CLI")
+    parser = argparse.ArgumentParser(description="Beats PM Kit local memory CLI")
     subparsers = parser.add_subparsers(dest="command", required=True)
     
     # init

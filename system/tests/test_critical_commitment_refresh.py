@@ -58,6 +58,17 @@ class TestCriticalCommitmentRefresh(unittest.TestCase):
         self.assertEqual(health.status, "healthy")
         self.assertFalse(health.requires_user_decision)
 
+    def test_current_local_memory_graph_path_is_healthy(self):
+        root = self.make_root()
+        graph = root / ".beats" / "memory" / "symbolic_graph.mermaid"
+        graph.parent.mkdir(parents=True)
+        graph.write_text("graph TD\n", encoding="utf-8")
+
+        health = ccr.source_health(root, "agent_memory", {"enabled": True}, {})
+
+        self.assertEqual(health.status, "healthy")
+        self.assertFalse(health.requires_user_decision)
+
     def test_boss_callout_ranks_above_ordinary_stale_work(self):
         root = self.make_root()
         (root / "5. Trackers" / "TASK_MASTER.md").write_text(

@@ -52,6 +52,7 @@ PY_COMPILE_FILES = [
     "system/scripts/critical_commitment_refresh.py",
     "system/scripts/markdown_title_guard.py",
     "system/scripts/agent_memory_health.py",
+    "system/scripts/personal_memory.py",
     "system/scripts/pack_manager.py",
     "system/scripts/task_store.py",
     "system/scripts/upgrade_compat.py",
@@ -73,6 +74,7 @@ PY_COMPILE_FILES = [
     "system/tests/test_legacy_cli.py",
     "system/tests/test_obsidian_bridge.py",
     "system/tests/test_pack_manager.py",
+    "system/tests/test_personal_memory.py",
     "system/tests/test_task_store.py",
     "system/tests/test_upgrade_compat.py",
 ]
@@ -91,6 +93,7 @@ TEST_MODULES = [
     "system.tests.test_legacy_cli",
     "system.tests.test_obsidian_bridge",
     "system.tests.test_pack_manager",
+    "system.tests.test_personal_memory",
     "system.tests.test_task_store",
     "system.tests.test_upgrade_compat",
 ]

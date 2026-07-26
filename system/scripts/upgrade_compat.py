@@ -10,13 +10,16 @@ import json
 import os
 import re
 import shutil
+import sys
 import tempfile
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
-
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from system.scripts import personal_memory
 TARGET_VERSION = "11.0.0"
 CONTENT_ROOTS = (
     "0. Incoming",
@@ -77,6 +80,7 @@ class Report:
     model_pins: list[LegacyModelPin] = field(default_factory=list)
     findings: list[Finding] = field(default_factory=list)
     core_sources: dict[str, str] = field(default_factory=dict)
+    personal_memory: dict[str, Any] = field(default_factory=dict)
     ready: bool = False
 
     @property
@@ -446,6 +450,38 @@ def inspect(root: Path = ROOT) -> Report:
                     f"Conflicting {runtime}/{profile} model choices must be resolved explicitly: {', '.join(sorted(models))}",
                 )
             )
+
+    try:
+        memory_config = personal_memory.load_config(root)
+        report.personal_memory = {
+            "config": personal_memory.CONFIG_PATH.as_posix(),
+            "config_exists": personal_memory.config_path(root).exists(),
+            "schema_version": memory_config["schema_version"],
+            "enabled": memory_config["enabled"],
+            "capture_enabled": memory_config["capture_enabled"],
+            "migration": (
+                "preserved"
+                if personal_memory.config_path(root).exists()
+                else "not-configured"
+            ),
+        }
+    except ValueError as exc:
+        report.personal_memory = {
+            "config": personal_memory.CONFIG_PATH.as_posix(),
+            "config_exists": personal_memory.config_path(root).exists(),
+            "migration": "blocked",
+        }
+        report.findings.append(
+            Finding(
+                "blocker",
+                "invalid-personal-memory-config",
+                personal_memory.CONFIG_PATH.as_posix(),
+                (
+                    "The local personal-memory choice cannot be preserved safely: "
+                    f"{exc}"
+                ),
+            )
+        )
 
     task_master = root / "5. Trackers" / "TASK_MASTER.md"
     if task_master.exists():
