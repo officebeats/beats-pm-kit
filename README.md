@@ -11,6 +11,8 @@
 <p><strong>Beats PM Kit helps product managers find what was said, decided, and committed across past meetings and conversations—then turn that evidence into current tasks, decisions, plans, and follow-ups.</strong></p>
 
 <p>
+  <img src="https://img.shields.io/badge/Release-v11.1.0-E6B422?style=for-the-badge&labelColor=1a1a2e" alt="Latest release v11.1.0"/>
+  &nbsp;
   <img src="https://img.shields.io/badge/Runtime-Capability_Driven-00A651?style=for-the-badge&labelColor=1a1a2e" alt="Capability-driven runtime selection"/>
   &nbsp;
   <a href="https://github.com/officebeats/beats-pm-kit/stargazers"><img src="https://img.shields.io/github/stars/officebeats/beats-pm-kit?style=for-the-badge&logo=github&labelColor=1a1a2e&color=E6B422" alt="GitHub Stars"/></a>
@@ -66,6 +68,12 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 | Optional semantic memory recall | `/memory` can use an explicitly enabled local IAI companion for bounded recall, then verify important claims against dated Markdown evidence. |
 | Markdown and optional Obsidian graph | The kit works as plain Markdown first. Obsidian can be used as an optional direct vault for graph navigation without duplicating files. |
 | Privacy-aware automation | Private workspace folders are gitignored, generated runtime folders stay local, and privacy checks guard against publishing personal files, secrets, transcripts, or adapter bloat. |
+
+## Current Release Surface
+
+Release `v11.1.0` exposes 22 canonical agents, 66 focused skills, 44 workflows, 23 promoted Codex skills, 5 supported runtimes, and 3 execution profiles. These counts come from the canonical `.agent/` source rather than a hand-maintained marketing list.
+
+Run `python system/scripts/feature_inventory.py --json` for the current machine-readable inventory. See [Codex Commands](CODEX_COMMANDS.md) for generated command-to-workflow routing and the [workflow catalog](system/docs-site/workflows/index.md) for the human-readable reference.
 
 ## Local-First PM Task Management
 
@@ -159,7 +167,7 @@ cd beats-pm-kit
 ./install.sh
 ```
 
-Requires Python 3.8+. Optional runtime integrations may use their own CLIs or desktop apps.
+Python 3.11+ is recommended and tested in CI. Optional runtime integrations may use their own CLIs, desktop apps, or additional version requirements.
 
 ### 2. Launch Your AI Runtime
 
@@ -189,7 +197,7 @@ Type `/help` anytime to see the workflow catalog.
 
 | Workflow | Use it when you need to |
 |:---|:---|
-| `/find` | Find past meeting, transcript, chat, decision, task, and product evidence by full text. |
+| `/find` | Search past meeting, transcript, chat, decision, task, and product evidence in parallel; optional semantic leads are verified against local Markdown. |
 | `/memory` | Recall candidate context, verify it against dated local evidence, and consolidate durable facts and decisions. |
 | `/paste` | Turn copied text, screenshots, files, or visible work signals into local task-management evidence. |
 | `/track` | Manage tasks, bugs, boss asks, follow-ups, and local task detail files. |
@@ -209,6 +217,17 @@ Type `/help` anytime to see the workflow catalog.
 | `/vacuum` | Clean, archive, and optimize the local kit workspace. |
 
 Natural language still works. Slash commands exist when you want deterministic routing.
+
+### Complete Workflow Surface
+
+All 44 workflows remain available even when a runtime promotes only the most common commands as native skills:
+
+- **Evidence, communication, and tasks:** `/find`, `/memory`, `/paste`, `/track`, `/transcript`, `/meet`, `/beats-comms`, `/beats-slack`, `/beats-teams`, `/chat`, `/context`
+- **Daily planning and delivery:** `/day`, `/week`, `/boss`, `/prep`, `/deck`, `/create`, `/plan`, `/sop`, `/sprint`, `/retro`, `/handoff`
+- **Discovery and quality:** `/discover`, `/interview`, `/intel`, `/prioritize`, `/challenge`, `/improve-plan`, `/review`, `/accuracy`, `/regression`, `/build`
+- **Setup, maintenance, and orchestration:** `/start`, `/help`, `/obsidian`, `/pack`, `/office-cli`, `/maintain`, `/update`, `/vacuum`, `/archive`, `/vibe`, `/team`, `/fan-out`
+
+The generated [Codex command table](CODEX_COMMANDS.md) is the concise source for each workflow's execution profile, canonical file, and promotion status. Runtime adapters are generated from `.agent/command-registry.json`, so this command set cannot silently diverge by provider.
 
 ### Optional packs without extra repositories
 
@@ -268,6 +287,25 @@ Verify the public feature inventory with:
 ```bash
 python system/scripts/feature_inventory.py --json
 ```
+
+### Deterministic Local Utilities
+
+The agent workflows delegate repeatable work to small local utilities:
+
+| Utility | Responsibility |
+|:---|:---|
+| `context_router.py` | Indexed full-text retrieval across the local PM evidence folders. |
+| `personal_memory.py` | Optional, bounded IAI semantic recall and separately opted-in curated capture. |
+| `task_intake_fast.py` | Fast intake of one work signal without scanning the whole workspace. |
+| `task_store.py` | Canonical Markdown task-note writes and generated Task Master/workstream rebuilds. |
+| `critical_commitment_refresh.py` | Bounded source-health checks and commitment triage. |
+| `transcript_pipeline.py` | Prepare, validate, and process recent meeting transcripts. |
+| `chat_intake_state.py` | Persist bounded Slack, Teams, Outlook, and Calendar intake windows locally. |
+| `obsidian_bridge.py` | Configure or open the existing kit folder as a direct Obsidian vault. |
+| `pack_manager.py` | Enable dormant in-repo capabilities without creating another repository. |
+| `model_policy.py` and `model_eval.py` | Resolve inherited execution profiles and evaluate explicit local model promotions. |
+| `upgrade_compat.py` | Preflight and reversibly migrate legacy kit configurations. |
+| `privacy_guard.py` and `adapter_guard.py` | Block private workspace leakage and generated-adapter drift before release. |
 
 Preview local root cleanup with:
 
