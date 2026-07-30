@@ -192,7 +192,8 @@ def write_generated_files(root: Path = ROOT) -> list[str]:
         if path.exists() and path.read_text(encoding="utf-8") == content:
             continue
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content, encoding="utf-8", newline="\n")
+        with path.open("w", encoding="utf-8", newline="\n") as handle:
+            handle.write(content)
         changed.append(path.relative_to(root).as_posix())
     return changed
 
