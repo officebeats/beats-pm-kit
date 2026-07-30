@@ -255,6 +255,25 @@ Generated locally by `system/scripts/sync_cli_adapters.py`.
 """
 
 
+def render_kilocode_rules() -> str:
+    return """# Kilocode Runtime Notes
+
+Generated locally by `system/scripts/sync_cli_adapters.py`.
+
+## Slash Command Dispatch
+
+- If the user's first non-whitespace token is `/command`: resolve it to `.agent/workflows/<command>.md` and execute that workflow with the remaining input.
+- If no workflow exists, report an unknown command and suggest `/help`.
+
+## Runtime Notes
+
+- Treat `.agent/` as canonical. The synced copies under `.kilocode/` (agents, rules, skills, templates, workflows) exist only for runtime discovery.
+- Detailed operating rules live in `.kilocode/rules/` (synced from `.agent/rules/`). Load `GEMINI.md` there first for the agent contract.
+- Agent frontmatter in `.kilocode/agents/` is normalized to Kilocode's tool-map format during sync.
+- Do not commit generated runtime adapter directories.
+"""
+
+
 def render_claude_runtime() -> str:
     return """# Claude Code Adapter
 
@@ -583,6 +602,7 @@ def main() -> int:
         ROOT / "GEMINI.md": render_gemini_md(),
         ROOT / "CODEX_COMMANDS.md": render_codex_commands(),
         ROOT / ".codex" / "rules.md": render_codex_rules(),
+        ROOT / ".kilocode" / "rules.md": render_kilocode_rules(),
         ROOT / ".claude" / "CLAUDE.md": render_claude_runtime(),
         ROOT / ".gemini" / "GEMINI.md": render_gemini_md(),
     }
