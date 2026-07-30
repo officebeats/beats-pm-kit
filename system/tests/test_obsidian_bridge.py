@@ -139,11 +139,11 @@ class TestObsidianTaskGuide(unittest.TestCase):
             guide = obsidian_bridge.build_task_guide(root, detection, config)
 
             self.assertTrue(guide["should_prompt"])
-            self.assertEqual(Path(guide["kit_folder"]), root)
-            self.assertEqual(Path(guide["tracker_folder"]), tracker_folder)
-            self.assertEqual(Path(guide["task_folder"]), tracker_folder / "tasks")
-            self.assertEqual(Path(guide["task_master"]), tracker_folder / "TASK_MASTER.md")
-            self.assertEqual(Path(guide["guide"]), root / "system" / "docs" / "obsidian.md")
+            self.assertEqual(Path(guide["kit_folder"]), root.resolve())
+            self.assertEqual(Path(guide["tracker_folder"]), tracker_folder.resolve())
+            self.assertEqual(Path(guide["task_folder"]), tracker_folder.resolve() / "tasks")
+            self.assertEqual(Path(guide["task_master"]), tracker_folder.resolve() / "TASK_MASTER.md")
+            self.assertEqual(Path(guide["guide"]), root.resolve() / "system" / "docs" / "obsidian.md")
             self.assertIn("obsidian_bridge.py configure --mode kit-vault", guide["setup_command"])
 
             (root / ".obsidian").mkdir()
