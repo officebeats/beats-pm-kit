@@ -1,6 +1,6 @@
 # GEMINI.md - Maestro Configuration
 
-**Version 10.11.0** - BeatsPM Product OS
+**BeatsPM Product OS** (version tracked in root `VERSION`)
 
 This file defines the Operating System for the Product Management Brain.
 
@@ -54,4 +54,4 @@ Silently run `system/scripts/context_health.py`.
 
 ---
 
-_End of System Config — v10.11.0_
+_End of System Config_
