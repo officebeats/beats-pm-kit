@@ -1,3 +1,5 @@
+# Epic Hypothesis Guide
+
 ## Application
 
 Use `template.md` for the full fill-in structure.

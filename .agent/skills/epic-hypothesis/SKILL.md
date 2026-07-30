@@ -4,6 +4,7 @@ description: Frame an epic as a testable hypothesis with target user, expected o
 intent: >-
   Frame epics as testable hypotheses using an if/then structure that articulates the action or solution, the target beneficiary, the expected outcome, and how you'll validate success. Use this to manage uncertainty in product development by making assumptions explicit, defining lightweight experiments ("tiny acts of discovery"), and establishing measurable success criteria before committing to full build-out.
 type: component
+title: Epic Hypothesis Framing
 ---
 
 
