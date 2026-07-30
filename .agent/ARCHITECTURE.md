@@ -7,7 +7,7 @@
 | Surface | Count | Canonical location |
 | --- | ---: | --- |
 | Agents | 22 | `.agent/agents/` |
-| Skills | 66 | `.agent/skills/` |
+| Skills | 74 | `.agent/skills/` |
 | Workflows | 44 | `.agent/workflows/` |
 | Runtime adapters | 5 | Generated from the registry |
 
