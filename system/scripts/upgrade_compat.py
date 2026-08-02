@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compatibility gate and reversible Markdown-title migration for v11 upgrades."""
+"""Compatibility gate and reversible Markdown-title migration for current upgrades."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from system.scripts import personal_memory
-TARGET_VERSION = "11.2.0"
+TARGET_VERSION = "12.0.0"
 CONTENT_ROOTS = (
     "0. Incoming",
     "1. Company",
