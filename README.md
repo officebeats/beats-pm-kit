@@ -4,11 +4,11 @@
 
 <br/>
 
-# Beats PM Kit: AI Product Management Operating System
+# Beats Agentic PM Harness
 
 ### Local-first product operations for AI-forward product managers
 
-<p><strong>Beats PM Kit helps product managers find what was said, decided, and committed across past meetings and conversations—then turn that evidence into current tasks, decisions, plans, and follow-ups.</strong></p>
+<p><strong>A local-first, cross-runtime harness for evidence-backed product-management workflows.</strong></p>
 
 <p>
   <img src="https://img.shields.io/badge/Release-v11.2.0-E6B422?style=for-the-badge&labelColor=1a1a2e" alt="Latest release v11.2.0"/>
@@ -46,7 +46,9 @@ Product managers lose time because product context is scattered across Granola a
 
 The kit is designed for product managers, product leaders, founders, and AI-native operators who want a fast way to manage PM work with AI while keeping source documents, task state, and workflow outputs organized on their own machine. It supports daily product operations like meeting notes to tasks, PM task management from local documents, stakeholder follow-up, product discovery, PRD writing, roadmap planning, launch preparation, bug triage, and executive-ready status updates.
 
-It is not a generic prompt pack. It is a local-first product management workspace with agents, skills, slash-command workflows, task ledgers, privacy guardrails, and runtime adapters for tools such as Google Antigravity and OpenAI Codex.
+It is not a generic prompt pack. It is an agentic harness: a local-first product management workspace with routing, bounded context, tool execution, durable state, approval gates, retry/recovery rules, evaluation, observability, and generated runtime adapters for Antigravity, Codex, and Claude.
+
+The core claim is intentionally bounded. Beats does not host or train models, replace a general-purpose agent runtime, publish autonomously, provide a universal second-brain UI, or hand-maintain an adapter for every AI client. Gemini CLI and KiloCode remain compatibility outputs; generic skills stay out of primary routing until they have a concrete PM use case.
 
 ## Built And Used Daily By An AI-Forward PM
 
@@ -61,7 +63,9 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 | Local-first PM task management | Human-readable task notes, evidence links, generated task/workstream indexes, daily triage, and durable local reports. |
 | Meeting notes to tasks | Transcript and chat-intake workflows that extract action items, blockers, owners, dates, decisions, and follow-up questions into local artifacts. |
 | Context-aware task routing | PM Decision Router, task-manager workflows, and bounded communication intake for Slack, Teams, Outlook, Calendar, Jira, and Confluence context. |
-| Cross-runtime product management workflow | Runtime adapters generated from one schema-v2 command registry so each active runtime loads the same workflow and execution profile. |
+| Cross-runtime agentic harness | Runtime adapters generated from one schema-v3 harness registry so Antigravity, Codex, and Claude load the same workflow, boundaries, context budget, completion criteria, and response profile. |
+| Loss-aware context management | Full payloads remain local and hash-addressable while compact views, bounded retrieval, and phase checkpoints reduce repeated context without replacing raw evidence. |
+| Evaluation and observability | Per-workflow token, cache, turn, retry, compaction, source, latency, quality, runtime, model, and cost telemetry supports paired, human-approved optimization. |
 | Future-proof model adaptation | Runtime defaults are inherited, explicit model promotions stay local and evaluation-gated, and unknown capabilities fail closed without silent provider switching. |
 | Product documentation and PRDs | `/create`, `/plan`, `/sop`, `/deck`, `/review`, and related skills for PRDs, one-pagers, runbooks, launch materials, and decision docs. |
 | Local document reference | Folder conventions, manifests, transcript archives, context artifacts, resource docs, and markdown links help agents cite local files instead of relying on memory. |
@@ -71,7 +75,7 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 
 ## Current Release Surface
 
-Release `v11.2.0` exposes 22 canonical agents, 74 focused skills, 44 workflows, 23 promoted Codex skills, 5 supported runtimes, and 3 execution profiles. These counts come from the canonical `.agent/` source rather than a hand-maintained marketing list.
+Release `v11.2.0` plus this harness refactor exposes 22 canonical agents, 75 focused skills, 44 workflows, 23 promoted Codex skills, 5 supported runtimes, and 3 execution profiles. These counts come from the canonical `.agent/` source rather than a hand-maintained marketing list.
 
 Run `python system/scripts/feature_inventory.py --json` for the current machine-readable inventory. See [Codex Commands](CODEX_COMMANDS.md) for generated command-to-workflow routing and the [workflow catalog](system/docs-site/workflows/index.md) for the human-readable reference.
 
@@ -94,7 +98,7 @@ This makes the kit useful for fast PM triage without letting automation silently
 
 ## Runtime-Neutral Support
 
-The kit uses whichever supported runtime is actively running and chooses behavior by positively detected capabilities, not a permanent provider hierarchy. Routing lives only in `.agent/command-registry.json`; adapters, manifests, architecture counts, and compatibility documentation are generated from it.
+The harness uses whichever supported runtime is actively running and chooses behavior by positively detected capabilities, not a permanent provider hierarchy. Routing and harness policy live only in `.agent/command-registry.json`; adapters, manifests, architecture counts, and compatibility documentation are generated from it.
 
 | Runtime | Adapter | How it works |
 |:---|:---|:---|
@@ -110,12 +114,15 @@ See the generated [runtime and model compatibility table](system/docs/runtime-co
 
 The kit is built around context engineering: retrieve the right source material at the right time instead of stuffing every meeting, PRD, and chat transcript into every prompt.
 
-The practical patterns are:
+The execution loop is `route → load bounded context → act with tools → checkpoint → verify → persist artifact and trace → hand off`. The practical patterns are:
 
 - `AGENTS.md` and runtime adapters act as routers.
+- The compact discovery registry contains every command, alias, and skill ID; selection opens one workflow or skill directly, with no nested routing layer.
 - `.agent/workflows/` define repeatable PM playbooks.
 - `.agent/skills/` provide focused capabilities such as task management, meeting synthesis, PRD authoring, risk review, documentation, product strategy, Socratic deep interviews with ambiguity gating (`/interview`), bug lifecycle tracking, epic hypothesis framing, market positioning, and job-story requirements translation.
 - Local manifests track bounded communication intake windows.
+- Initial retrieval is capped at five compiled sources and one direct raw-evidence hop.
+- Execution narration uses `compact_operator`; final deliverables use `artifact` or `verbatim` according to workflow intent.
 - Task triage scripts identify stale or risky work without guessing closure.
 - Optional Obsidian setup turns the existing kit folder into a direct Markdown vault without creating a mirrored copy.
 
@@ -295,6 +302,8 @@ The agent workflows delegate repeatable work to small local utilities:
 | Utility | Responsibility |
 |:---|:---|
 | `context_router.py` | Indexed full-text retrieval across the local PM evidence folders. |
+| `context_store.py` and `context_checkpoint.py` | Preserve full hash-addressed payloads while returning compact views and phase-boundary checkpoints. |
+| `knowledge_compiler.py` | Maintain raw, compiled, digest, and state layers with raw-source hashes. |
 | `personal_memory.py` | Optional, bounded IAI semantic recall and separately opted-in curated capture. |
 | `task_intake_fast.py` | Fast intake of one work signal without scanning the whole workspace. |
 | `task_store.py` | Canonical Markdown task-note writes and generated Task Master/workstream rebuilds. |
@@ -304,6 +313,8 @@ The agent workflows delegate repeatable work to small local utilities:
 | `obsidian_bridge.py` | Configure or open the existing kit folder as a direct Obsidian vault. |
 | `pack_manager.py` | Enable dormant in-repo capabilities without creating another repository. |
 | `model_policy.py` and `model_eval.py` | Resolve inherited execution profiles and evaluate explicit local model promotions. |
+| `harness_telemetry.py` and `harness_optimizer.py` | Measure complete trajectories and evaluate one bounded, held-out optimization at a time; promotion always remains human-approved. |
+| `twg_health.py` | Report sanitized health for optional, read-only Atlassian Teamwork Graph enrichment. |
 | `upgrade_compat.py` | Preflight and reversibly migrate legacy kit configurations. |
 | `privacy_guard.py` and `adapter_guard.py` | Block private workspace leakage and generated-adapter drift before release. |
 
@@ -320,6 +331,8 @@ python3 system/scripts/root_cleaner.py --apply
 ```
 
 The cleaner moves unknown local root files into ignored `0. Incoming/root-cleanup/` instead of deleting user work.
+
+TWG is optional and bounded by `.agent/rules/TWG_READ_ONLY.md`. Rovo/native Atlassian reads remain primary for exact Jira and Confluence evidence; unavailable TWG never widens a source window or blocks work with sufficient accepted evidence.
 
 ## Optional Obsidian And Markdown Knowledge Graph
 

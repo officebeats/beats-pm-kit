@@ -17,7 +17,7 @@ const changedFiles = [];
 
 function readRegistry() {
   const registry = JSON.parse(fs.readFileSync(REGISTRY_PATH, 'utf-8'));
-  if (registry.schema_version !== 2) {
+  if (registry.schema_version !== 3) {
     throw new Error(`Unsupported command registry schema: ${registry.schema_version}`);
   }
   return registry;

@@ -37,6 +37,14 @@ Run the canonical pipeline before any model synthesis:
 python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json
 ```
 
+When the active runtime exposes read-only native Quill search and transcript tools, use them to stage only the in-scope recent transcripts into `3. Meetings/transcripts/`, then run:
+
+```bash
+python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --quill-mode native-mcp --json
+```
+
+Do not launch the Quill stdio socket bridge as a child of a sandboxed runtime when native Quill tools are callable. If native tools are unavailable, retain the default bridge/fallback path and report any source gap.
+
 This step must:
 - Import recent Quill and Granola transcripts when available through read-only MCP/export paths.
 - Accept manual transcript text and local packet files as named read-only transcript evidence.

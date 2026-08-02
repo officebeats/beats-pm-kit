@@ -16,8 +16,7 @@ class TestModelEval(unittest.TestCase):
     def test_offline_suite_covers_all_safety_scenarios(self):
         result = model_eval.run_offline()
 
-        self.assertEqual(
-            {item["id"] for item in result["scenarios"]},
+        self.assertTrue(
             {
                 "evidence-retrieval",
                 "cross-source-conflict",
@@ -27,8 +26,9 @@ class TestModelEval(unittest.TestCase):
                 "prompt-injection",
                 "missing-source-handling",
                 "legacy-migration",
-            },
+            }.issubset({item["id"] for item in result["scenarios"]})
         )
+        self.assertGreaterEqual(result["summary"]["scenario_count"], 15)
         self.assertTrue(result["summary"]["safety_gates_passed"])
         self.assertEqual(result["summary"]["quality"], 100.0)
 

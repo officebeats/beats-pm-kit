@@ -14,7 +14,7 @@ from system.scripts import model_policy
 def runtime(primary: str = "codex", profiles: list[str] | None = None) -> dict:
     supported = profiles if profiles is not None else ["fast", "balanced", "deep"]
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "primary": primary,
         "primary_display": primary.title(),
         "primary_version": "test 1.0",

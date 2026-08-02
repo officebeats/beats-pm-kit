@@ -49,6 +49,10 @@ class TestContextRouter(unittest.TestCase):
             self.assertIn("3. Meetings/reports/day/2026-05-26-task-triage.md", paths)
             self.assertIn("6. Resources/planning/calculator-scope.md", paths)
             self.assertTrue(index_path.exists())
+            self.assertEqual(index["schema_version"], 2)
+            task = next(item for item in index["files"] if item["path"].endswith("PLAN-009.md"))
+            for field in ["authority", "freshness", "topic", "source_type", "stakeholder", "workflow"]:
+                self.assertIn(field, task)
 
     def test_query_returns_context_packet_with_confidence_and_suggestions(self):
         with self.make_root() as tmpdir:
@@ -66,6 +70,16 @@ class TestContextRouter(unittest.TestCase):
             self.assertEqual(result["matches"][0]["path"], "5. Trackers/tasks/PLAN-009.md")
             self.assertIn("/find", result["suggested_commands"])
             self.assertEqual(result["search_mode"], "fts5")
+            self.assertEqual(result["retrieval_policy"]["maximum_initial_sources"], 5)
+            self.assertEqual(result["retrieval_policy"]["maximum_reference_hops"], 1)
+            self.assertTrue(result["retrieval_policy"]["compiled_sources_are_navigation_only"])
+
+    def test_initial_retrieval_is_capped_at_five_sources(self):
+        with self.make_root() as tmpdir:
+            root = Path(tmpdir)
+            index_path = root / "system" / "cache" / "context-router" / "index.json"
+            with self.assertRaisesRegex(ValueError, "between 1 and 5"):
+                context_router.query_index("developer portal", root=root, limit=6, index_path=index_path)
 
     def test_find_retrieves_evidence_buried_late_in_a_transcript(self):
         with self.make_root() as tmpdir:

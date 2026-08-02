@@ -37,7 +37,12 @@ class TestRegistryDocs(unittest.TestCase):
     def test_manifest_counts_match_canonical_files(self):
         manifest = json.loads((ROOT / ".agent" / "MANIFEST.json").read_text(encoding="utf-8"))
 
-        self.assertEqual(manifest["schema_version"], 2)
+        self.assertEqual(manifest["schema_version"], 3)
+        self.assertEqual(manifest["harness"]["routing"]["strategy"], "one-level")
+        self.assertEqual(
+            manifest["harness"]["primary_runtimes"],
+            ["antigravity", "codex", "claude"],
+        )
         self.assertEqual(manifest["agents"]["count"], len(list((ROOT / ".agent" / "agents").glob("*.md"))))
         self.assertEqual(manifest["workflows"]["count"], len(build_command_catalog(ROOT)))
         self.assertEqual(

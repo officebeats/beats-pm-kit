@@ -99,6 +99,112 @@
     }
   },
   "generated_by": "system/scripts/generate_registry_docs.py",
+  "harness": {
+    "cache_policy": {
+      "append_dynamic_context_after_prefix": true,
+      "deterministic_tool_order": true,
+      "measure_cold_and_warm_separately": true,
+      "stable_prefix": [
+        "product_identity",
+        "safety_boundaries",
+        "routing_contract"
+      ]
+    },
+    "checkpoint_policy": {
+      "context_threshold_percent": 65,
+      "phase_boundaries": [
+        "discovery",
+        "planning",
+        "creation",
+        "verification"
+      ],
+      "preserve_recent_complete_turn": true,
+      "preserve_tool_pairs": true,
+      "raw_retrieval_required_for": [
+        "quotations",
+        "customer_commitments",
+        "legal_language",
+        "security_findings",
+        "final_citations"
+      ]
+    },
+    "compatibility_runtimes": [
+      "gemini",
+      "kilocode"
+    ],
+    "context_budgets": {
+      "initial_command_tokens": 6000,
+      "registry_tokens": 2500,
+      "runtime_bootstrap_tokens": 1500,
+      "skill_entrypoint_tokens": 2500
+    },
+    "description": "A local-first, cross-runtime harness for evidence-backed product-management workflows.",
+    "execution_loop": [
+      "route",
+      "load_bounded_context",
+      "act_with_tools",
+      "checkpoint",
+      "verify",
+      "persist_artifact_and_trace",
+      "handoff"
+    ],
+    "knowledge": {
+      "compiled_is_navigation_only": true,
+      "layers": [
+        "raw",
+        "compiled",
+        "digest",
+        "state"
+      ],
+      "raw_evidence_is_authoritative": true
+    },
+    "name": "Beats Agentic PM Harness",
+    "optimizer": {
+      "allowed_surfaces": [
+        "routing_description",
+        "context_selection",
+        "top_k",
+        "response_profile",
+        "deterministic_output_filter",
+        "checkpoint_threshold",
+        "prompt_wording",
+        "prompt_ordering"
+      ],
+      "held_out_required": true,
+      "one_change_per_trial": true,
+      "promotion": "human-approved",
+      "quality_regression_allowed": false
+    },
+    "primary_runtimes": [
+      "antigravity",
+      "codex",
+      "claude"
+    ],
+    "response_profiles": {
+      "available": [
+        "compact_operator",
+        "artifact",
+        "verbatim"
+      ],
+      "final_default": "artifact",
+      "operator_default": "compact_operator",
+      "selection": {
+        "artifact": "complete polished deliverable using the workflow contract",
+        "compact_operator": "execution commentary and routine status",
+        "verbatim": "exact transcript, requirement, commitment, or source quotation wording"
+      }
+    },
+    "routing": {
+      "maximum_initial_sources": 5,
+      "maximum_reference_hops": 1,
+      "strategy": "one-level",
+      "unreferenced_skill_policy": "discoverable-on-demand"
+    },
+    "telemetry": {
+      "report_processed_and_billable_separately": true,
+      "storage": ".beats/harness/telemetry.jsonl"
+    }
+  },
   "name": "beats-pm-kit",
   "routing_source": ".agent/command-registry.json",
   "runtimes": {
@@ -112,9 +218,9 @@
       "kilocode"
     ]
   },
-  "schema_version": 2,
+  "schema_version": 3,
   "skills": {
-    "count": 74,
+    "count": 75,
     "directory": ".agent/skills/",
     "names": [
       "ab-test-analysis",
@@ -190,6 +296,7 @@
       "ux-research-suite",
       "vacuum-protocol",
       "weekly-synth",
+      "workshop-facilitation",
       "wwas"
     ]
   },

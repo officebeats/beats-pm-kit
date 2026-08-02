@@ -1,4 +1,4 @@
-# AGENTS.md - Beats PM Kit Codex Adapter
+# AGENTS.md - Beats Agentic PM Harness Codex Adapter
 
 > Thin runtime adapter. Source of truth: `.agent/`.
 
@@ -15,10 +15,12 @@ On a new Codex session:
 1. If the user provides only the GitHub repo URL, clone/open the repo and run `python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>` from the repo root.
 2. Read `SETTINGS.md` and `STATUS.md` first when they are relevant to the task.
 3. Treat `.agent/` as the source of truth.
-4. When the user invokes `/command`, resolve it through `CODEX_COMMANDS.md`.
-5. Load only the minimum `.agent/workflows/` and `.agent/skills/` files needed for the current task.
-6. Translate unsupported primitives only when the active runtime reports the required capability.
-7. Write durable outputs back into the standard repo folders so runtime switching stays lossless.
+4. Resolve a command or skill with `python3 system/scripts/harness_registry.py resolve <target>`.
+5. Read the selected workflow or skill, then load no more than five directly relevant candidate sources. Never load a candidate list wholesale or invoke a second router.
+6. Keep identity, safety, and routing as a stable prefix; append dynamic evidence afterward and preserve deterministic tool order for cache reuse.
+7. Use `compact_operator` narration during execution and the resolved final profile for the deliverable.
+8. Translate unsupported primitives only when the active runtime reports the required capability.
+9. Write durable outputs and verification traces into the standard local paths so runtime switching stays lossless.
 
 ## Codex Browser First
 
@@ -49,7 +51,7 @@ After bootstrap, route the user's first real PM input through `system/scripts/pm
 If the user's message starts with `/command`:
 
 1. Treat it as an explicit workflow invocation, not general conversation.
-2. Resolve it using `CODEX_COMMANDS.md` or `.agent/workflows/<command>.md`.
+2. Resolve it with `system/scripts/harness_registry.py`; `CODEX_COMMANDS.md` is the human-readable index.
 3. Read that workflow before doing deeper work.
 4. Use the rest of the user's message as workflow input.
 5. Follow the workflow even if a natural-language interpretation also seems possible.

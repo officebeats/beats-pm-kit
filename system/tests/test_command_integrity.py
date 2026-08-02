@@ -30,11 +30,41 @@ def write_registry(root: Path, commands: dict) -> None:
     path.write_text(
         json.dumps(
             {
-                "schema_version": 2,
+                "schema_version": 3,
                 "runtime_policy": {
                     "selection": "active-runtime",
                     "unknown_capabilities": "deny",
                     "allow_cross_provider": False,
+                },
+                "harness": {
+                    "primary_runtimes": ["antigravity", "codex", "claude"],
+                    "routing": {
+                        "strategy": "one-level",
+                        "maximum_initial_sources": 5,
+                        "maximum_reference_hops": 1,
+                    },
+                    "context_budgets": {
+                        "runtime_bootstrap_tokens": 1500,
+                        "registry_tokens": 2500,
+                        "skill_entrypoint_tokens": 2500,
+                        "initial_command_tokens": 6000,
+                    },
+                    "cache_policy": {
+                        "stable_prefix": ["identity", "safety", "routing"],
+                        "append_dynamic_context_after_prefix": True,
+                        "deterministic_tool_order": True,
+                    },
+                    "response_profiles": {
+                        "operator_default": "compact_operator",
+                        "final_default": "artifact",
+                        "available": ["compact_operator", "artifact", "verbatim"],
+                        "selection": {
+                            "compact_operator": "execution",
+                            "artifact": "deliverable",
+                            "verbatim": "exact wording",
+                        },
+                    },
+                    "optimizer": {"promotion": "human-approved"},
                 },
                 "execution_profiles": {
                     "fast": {"rank": 1},
@@ -52,7 +82,7 @@ def write_registry(root: Path, commands: dict) -> None:
 
 
 class TestCommandIntegrity(unittest.TestCase):
-    def test_schema_v2_requires_every_workflow_in_exactly_one_profile(self):
+    def test_schema_v3_requires_every_workflow_in_exactly_one_profile(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             write_workflow(root, "day")
@@ -66,7 +96,7 @@ class TestCommandIntegrity(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "missing execution profiles: week"):
                 build_command_catalog(root)
 
-    def test_schema_v2_rejects_duplicate_profile_assignment(self):
+    def test_schema_v3_rejects_duplicate_profile_assignment(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             write_workflow(root, "day")

@@ -15,7 +15,7 @@ Each skill is a focused capability. The active index is regenerated from `.agent
 | `ab-test-analysis` | Analyze A/B test results with statistical significance, sample size validation, confidence intervals, and ship/extend/stop recommendations. Use when evaluating experiment results, checking if a test reached significance, interpreting split test data, or deciding whether to ship a variant. |
 | `agentic-memory` | Local-first PM memory with canonical Markdown, compact state, and optional bounded personal recall. |
 | `agile-story-crafter` | End-to-end agile story engine. Generates user stories, splits large epics, and builds full user story maps. |
-| `ai-shaped-readiness-advisor` | Assess whether your product work is AI-first or AI-shaped. Use when evaluating AI maturity and choosing the next team capability to build. |
+| `ai-shaped-readiness-advisor` | Assess whether a product team is ready to use AI through evidence, bounded workflows, human judgment, and measurable operating loops. |
 | `api-design` | Design RESTful APIs following best practices. Use when Designing new API endpoints, Restructuring existing APIs, or Planning API versioning strategy |
 | `apply_patch` | Apply AI-generated code edits from a response file to the local codebase. |
 | `assumption-mapper` | Holistic risk management engine. Identifies underlying assumptions, maps them by Impact x Risk, and prioritizes experimental validation. |
@@ -32,7 +32,7 @@ Each skill is a focused capability. The active index is regenerated from `.agent
 | `commit-message` | Generate commit messages that follow conventional commits and repository scope conventions. Use when Creating git commits after code changes, Writing commit messages for staged changes, or Following conventional commit format for the project |
 | `comms-crafter-suite` | Generates high-quality written assets: Press Releases, Release Notes, NDAs, EOL messages, Tutorials, and executive memos. |
 | `company-profiler` | Conducts deep-dive research to create a strategic dossier on a target company. |
-| `context-engineering-advisor` | Diagnose context stuffing vs. context engineering. Use when an AI workflow feels bloated, brittle, or hard to steer reliably. |
+| `context-engineering-advisor` | Diagnose and redesign bloated AI context using bounded retrieval, explicit context ownership, and phase-aware compaction. |
 | `context-retriever` | The 'Recall Engine'. Fetches history, decisions, and tasks related to a person or topic. |
 | `core-utility` | System health and diagnostics. |
 | `cross-model-bridge` | Claude-Codex-Gemini tri-model orchestration via /ask codex + /ask gemini, then Claude synthesizes results |
@@ -40,13 +40,13 @@ Each skill is a focused capability. The active index is regenerated from `.agent
 | `daily-synth` | Daily briefing and planning with critical commitment preflight. |
 | `data-analytics` | Execute SQL, analyze funnels, and define success metrics. |
 | `deck-builder` | Build brand-agnostic MBB-style PPTX/PDF/static web presentation decks from source briefs, notes, and optional templates. Use for `/deck` or when a user wants a polished presentation package without company-specific private branding baked into the kit. |
-| `deep-interview` | Socratic deep interview with mathematical ambiguity gating before autonomous execution |
+| `deep-interview` | Run a structured, ambiguity-gated interview that turns an underspecified request into a decision-complete brief. |
 | `dependency-tracker` | Map, score, and visualize cross-team dependencies for programs and releases. |
 | `diagram-designer` | Editorial-quality architecture, flow, and strategy diagrams. Self-contained HTML + SVG. |
 | `discovery-engine` | Holistic product discovery framework covering problem framing, opportunity solution trees, and experiment design. |
 | `document-exporter` | Convert Markdown documents into PDF, DOCX, PPTX, or XLSX formats. Routes Office formats to OfficeCLI, PDF via Chrome. |
 | `documentation` | Generate and update technical documentation. Use when Documenting new features or APIs, Updating docs for code changes, or Creating README or getting started guides |
-| `engineering-planner` | Strategic planning with optional interview workflow |
+| `engineering-planner` | Convert a validated request into a decision-complete, testable implementation plan grounded in the actual repository. |
 | `epic-breakdown-advisor` | Complete Epic advisory suite. Frame epics as hypotheses, break them down via Humanizing Work patterns, and decompose features into implementable tasks. |
 | `epic-hypothesis` | Frame an epic as a testable hypothesis with target user, expected outcome, and validation method. Use when defining a major initiative before roadmap, discovery, or delivery planning. |
 | `fix_plans_dropdown` | Diagnose and fix stale or missing plan entries in the Switchboard plans dropdown. |
@@ -78,12 +78,13 @@ Each skill is a focused capability. The active index is regenerated from `.agent
 | `stakeholder-management-suite` | Organizational toolset to handle cross-functional maps, meeting synthesis, task delegation, and workshop facilitation. |
 | `summarize-interview` | Summarize a customer interview transcript into a structured template with JTBD, satisfaction signals, and action items. Use when processing interview recordings or transcripts, synthesizing discovery interviews, or creating interview summaries. |
 | `task-manager` | Turn daily product evidence into readable Markdown tasks and generated workstream views. |
-| `team-orchestrator` | N coordinated agents on shared task list using Claude Code native teams |
+| `team-orchestrator` | Coordinate bounded specialist work with explicit ownership, minimal handoffs, shared evidence, and a single accountable synthesis. |
 | `teams-task-intake` | Extract local Beats PM tasks from scoped Microsoft Teams chats or channels using read-only Teams access. Use with /beats-teams when Teams is connected and the user wants Teams-only task/status compilation. |
 | `test-scenarios` | Create comprehensive test scenarios from user stories with test objectives, starting conditions, user roles, step-by-step actions, and expected outcomes. Use when writing QA test cases, creating test plans, defining acceptance tests, or preparing for feature validation. |
 | `ui-ux-designer` | Review product interfaces for visual hierarchy, usability, accessibility, and delivery-ready improvements. |
 | `ux-research-suite` | Comprehensive qualitative research toolset to map user journeys, extract proto-personas, and analyze user feedback at scale. |
 | `vacuum-protocol` | Execute the full Centrifuge Protocol to keep the brain lean, private, and organized. Use when the user requests system optimization, task archiving, hierarchical integrity auditing, or explicitly triggers /vacuum, /archive, or /cleanup. Do NOT use to archive active code or configurations. |
 | `weekly-synth` | Weekly rollup and planning with critical commitment preflight. |
+| `workshop-facilitation` | Facilitate an interactive assessment with clear setup, one-question turns, visible progress, and resumable decisions. |
 | `wwas` | Create product backlog items in Why-What-Acceptance format — independent, valuable, testable items with strategic context. Use when writing structured backlog items, breaking features into work items, or using the WWA format. |
 <!-- GENERATED:SKILLS:END -->

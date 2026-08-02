@@ -1,4 +1,169 @@
-# AI-Shaped Product Readiness Assessment
+---
+title: AI-Shaped Product Readiness Advisor
+name: ai-shaped-readiness-advisor
+description: Assess whether your product work is AI-first or AI-shaped. Use when evaluating AI maturity and choosing the next team capability to build.
+---
+
+## Purpose
+
+Assess whether your product work is **"AI-first"** (using AI to automate existing tasks faster) or **"AI-shaped"** (fundamentally redesigning how product teams operate around AI capabilities). Use this to evaluate your readiness across **5 essential PM competencies for 2026**, identify gaps, and get concrete recommendations on which capability to build first.
+
+**Key Distinction:** AI-first is cute (using Copilot to write PRDs faster). AI-shaped is survival (building a durable "reality layer" that both humans and AI trust, orchestrating AI workflows, compressing learning cycles).
+
+This is not about AI tools—it's about **organizational redesign around AI as co-intelligence**. The interactive skill guides you through a maturity assessment, then recommends your next move.
+
+## Key Concepts
+
+### AI-First vs. AI-Shaped
+
+| Dimension | AI-First (Cute) | AI-Shaped (Survival) |
+|-----------|-----------------|----------------------|
+| **Mindset** | Automate existing tasks | Redesign how work gets done |
+| **Goal** | Speed up artifact creation | Compress learning cycles |
+| **AI Role** | Task assistant | Strategic co-intelligence |
+| **Advantage** | Temporary efficiency gains | Defensible competitive moat |
+| **Example** | "Copilot writes PRDs 2x faster" | "AI agent validates hypotheses in 48 hours instead of 3 weeks" |
+
+**Critical Insight:** If a competitor can replicate your AI usage by throwing bodies at it, it's not differentiation—it's just efficiency (which becomes table stakes within months).
+
+---
+
+### The 5 Essential PM Competencies (2026)
+
+These competencies define AI-shaped product work. You'll assess your maturity on each.
+
+#### 1. **Context Design**
+Building a durable **"reality layer"** that both humans and AI can trust—treating AI attention as a scarce resource and allocating it deliberately.
+
+**What it includes:**
+- Documenting what's true vs. assumed
+- Immutable constraints (technical, regulatory, strategic)
+- Operational glossary (shared definitions)
+- Evidence standards (what counts as validation)
+- **Context boundaries** (what to persist vs. retrieve)
+- **Memory architecture** (short-term conversational + long-term persistent)
+- **Retrieval strategies** (semantic search, contextual retrieval)
+
+**Key Principle:** *"If you can't point to evidence, constraints, and definitions, you don't have context. You have vibes."*
+
+**Critical Distinction: Context Stuffing vs. Context Engineering**
+- **Context Stuffing (AI-first):** Jamming volume without intent ("paste entire PRD")
+- **Context Engineering (AI-shaped):** Shaping structure for attention (bounded domains, retrieve with intent)
+
+**The 5 Diagnostic Questions:**
+1. What specific decision does this support?
+2. Can retrieval replace persistence?
+3. Who owns the context boundary?
+4. What fails if we exclude this?
+5. Are we fixing structure or avoiding it?
+
+**AI-first version:** Pasting PRDs into ChatGPT; no context boundaries; "more is better" mentality
+**AI-shaped version:** CLAUDE.md files, evidence databases, constraint registries AI agents reference; two-layer memory architecture; Research→Plan→Reset→Implement cycle to prevent context rot
+
+**Deep Dive:** See [`context-engineering-advisor`](../../context-engineering-advisor/SKILL.md) for detailed guidance on diagnosing context stuffing and implementing memory architecture.
+
+---
+
+#### 2. **Agent Orchestration**
+Creating repeatable, traceable AI workflows (not one-off prompts).
+
+**What it includes:**
+- Defined workflow loops: research → synthesis → critique → decision → log rationale
+- Each step shows its work (traceable reasoning)
+- Workflows run consistently (same inputs = predictable process)
+- Version-controlled prompts and agents
+
+**Key Principle:** One-off prompts are tactical. Orchestrated workflows are strategic.
+
+**AI-first version:** "Ask ChatGPT to analyze this user feedback"
+**AI-shaped version:** Automated workflow that ingests feedback, tags themes, generates hypotheses, flags contradictions, logs decisions
+
+---
+
+#### 3. **Outcome Acceleration**
+Using AI to compress **learning cycles** (not just speed up tasks).
+
+**What it includes:**
+- Eliminate validation lag (PoL probes run in days, not weeks)
+- Remove approval delays (AI pre-validates against constraints)
+- Cut meeting overhead (async AI synthesis replaces status meetings)
+
+**Key Principle:** Do less, purposefully. AI removes bottlenecks, not generates more work.
+
+**AI-first version:** "AI writes user stories faster"
+**AI-shaped version:** "AI runs feasibility checks overnight, eliminating 2 weeks of technical discovery"
+
+---
+
+#### 4. **Team-AI Facilitation**
+Redesigning team systems so AI operates as **co-intelligence**, not an accountability shield.
+
+**What it includes:**
+- Review norms (who checks AI outputs, when, how)
+- Evidence standards (AI must cite sources, not hallucinate)
+- Decision authority (AI recommends, humans decide—clear boundaries)
+- Psychological safety (team can challenge AI without feeling "dumb")
+
+**Key Principle:** AI amplifies judgment, doesn't replace accountability.
+
+**AI-first version:** "I used AI" as excuse for bad outputs
+**AI-shaped version:** Clear review protocols; AI outputs treated as drafts requiring human validation
+
+---
+
+#### 5. **Strategic Differentiation**
+Moving beyond efficiency to create **defensible competitive advantages**.
+
+**What it includes:**
+- New customer capabilities (what can users do now that they couldn't before?)
+- Workflow rewiring (processes competitors can't replicate without full redesign)
+- Economics competitors can't match (10x cost advantage through AI)
+
+**Key Principle:** *"If a competitor can copy it by throwing bodies at it, it's not differentiation."*
+
+**AI-first version:** "We use AI to write better docs"
+**AI-shaped version:** "We validate product hypotheses in 2 days vs. industry standard 3 weeks—ship 6x more validated features per quarter"
+
+---
+
+### Anti-Patterns (What This Is NOT)
+
+- **Not about AI tools:** Using Claude vs. ChatGPT doesn't matter. Redesigning workflows matters.
+- **Not about speed:** Writing PRDs 2x faster isn't strategic if PRDs weren't the bottleneck.
+- **Not about automation:** Automating bad processes just scales the bad.
+- **Not about replacing humans:** AI-shaped orgs augment judgment, not eliminate it.
+
+---
+
+### When to Use This Skill
+
+✅ **Use this when:**
+- You're using AI tools but not seeing strategic advantage
+- You suspect you're "AI-first" (efficiency) but want to be "AI-shaped" (transformation)
+- You need to prioritize which AI capability to build next
+- Leadership asks "How are we using AI?" and you're not sure how to answer strategically
+- You want to assess team readiness for AI-powered product work
+
+❌ **Don't use this when:**
+- You haven't started using AI at all (start with basic tools first)
+- You're looking for tool recommendations (this is about organizational design, not tooling)
+- You need tactical "how to write a prompt" guidance (use skills for that)
+
+---
+
+### Facilitation Source of Truth
+
+Use [`workshop-facilitation`](../../workshop-facilitation/SKILL.md) as the default interaction protocol for this skill.
+
+It defines:
+- session heads-up + entry mode (Guided, Context dump, Best guess)
+- one-question turns with plain-language prompts
+- progress labels (for example, Context Qx/8 and Scoring Qx/5)
+- interruption handling and pause/resume behavior
+- numbered recommendations at decision points
+- quick-select numbered response options for regular questions (include `Other (specify)` when useful)
+
+This file defines the domain-specific assessment content. If there is a conflict, follow this file's domain logic.
 
 ## Application
 
@@ -114,7 +279,7 @@ Let's assess your **Context Design** capability—how well you've built a "reali
 
 **Select your level:** [1, 2, 3, or 4]
 
-**Note:** If you selected Level 1-2 and struggle with context stuffing, consider using [`context-engineering-advisor`](../context-engineering-advisor/SKILL.md) to diagnose and fix Context Hoarding Disorder before proceeding.
+**Note:** If you selected Level 1-2 and struggle with context stuffing, consider using [`context-engineering-advisor`](../../context-engineering-advisor/SKILL.md) to diagnose and fix Context Hoarding Disorder before proceeding.
 
 **User response:** [Selection]
 
@@ -350,7 +515,7 @@ Based on your profile, I recommend focusing on **[Competency Name]** first becau
 
 **Pre-Phase: Diagnose Context Stuffing (If Needed)**
 If you're at Level 1-2, first diagnose context stuffing symptoms:
-1. Run through the 5 diagnostic questions (see [`context-engineering-advisor`](../context-engineering-advisor/SKILL.md))
+1. Run through the 5 diagnostic questions (see [`context-engineering-advisor`](../../context-engineering-advisor/SKILL.md))
 2. Identify what you're persisting that should be retrieved
 3. Assign context boundary owner
 4. Create Context Manifest (what's always-needed vs. episodic)
@@ -410,7 +575,7 @@ If you're at Level 1-2, first diagnose context stuffing symptoms:
 - ✅ Output consistency up (fewer retries)
 
 **Related Skills:**
-- **[`context-engineering-advisor`](../context-engineering-advisor/SKILL.md)** (Interactive) — Deep dive on diagnosing context stuffing and implementing memory architecture
+- **[`context-engineering-advisor`](../../context-engineering-advisor/SKILL.md)** (Interactive) — Deep dive on diagnosing context stuffing and implementing memory architecture
 - `problem-statement.md` — Define constraints before framing problems
 - `epic-hypothesis.md` — Evidence-based hypothesis writing
 
@@ -677,3 +842,67 @@ Would you like me to create a progress tracker for your AI-shaped transformation
 - Week 4: Pilot with 3 teams, gather feedback
 
 **Outcome:** Team-AI Facilitation → Level 3. Creates foundation for Context Design and Agent Orchestration next.
+
+---
+
+## Common Pitfalls
+
+### 1. **Mistaking Efficiency for Differentiation**
+**Failure Mode:** "We use AI to write PRDs 2x faster—we're AI-shaped!"
+
+**Consequence:** Competitors copy within 3 months; no lasting advantage.
+
+**Fix:** Ask: "If a competitor threw 2x more people at this, could they match us?" If yes, it's efficiency (table stakes), not differentiation.
+
+---
+
+### 2. **Skipping Context Design**
+**Failure Mode:** Building Agent Orchestration workflows without durable context.
+
+**Consequence:** AI workflows are fragile (context changes break everything).
+
+**Fix:** Context Design is foundational. Don't skip it. Build constraints registry, glossary, evidence standards first.
+
+---
+
+### 3. **Individual Usage, Not Team Transformation**
+**Failure Mode:** "I'm AI-shaped, but my team isn't."
+
+**Consequence:** Can't scale; workflows die when you're on vacation.
+
+**Fix:** Prioritize Team-AI Facilitation. Shared norms > individual productivity.
+
+---
+
+### 4. **Focusing on Tools, Not Workflows**
+**Failure Mode:** "Should we use Claude or ChatGPT?"
+
+**Consequence:** Tool debates distract from organizational redesign.
+
+**Fix:** Tools don't matter. Workflows matter. Focus on redesigning how work gets done, not which AI you use.
+
+---
+
+### 5. **Speed Over Learning**
+**Failure Mode:** "AI helps us ship faster!"
+
+**Consequence:** Ship the wrong thing faster (if you're not compressing learning cycles).
+
+**Fix:** Outcome Acceleration is about learning faster, not building faster. Validate hypotheses in days, not weeks.
+
+---
+
+## References
+
+### Related Skills
+- **[context-engineering-advisor](../../context-engineering-advisor/SKILL.md)** (Interactive) — **Deep dive on Context Design competency:** Diagnose context stuffing, implement memory architecture, use Research→Plan→Reset→Implement cycle
+- **[epic-hypothesis](../../epic-hypothesis/SKILL.md)** (Component) — Testable hypotheses with evidence standards
+
+### External Frameworks
+- **Dean Peters** — [*AI-First Is Cute. AI-Shaped Is Survival.*](https://deanpeters.substack.com/p/ai-first-is-cute-ai-shaped-is-survival) (Dean Peters' Substack, 2026)
+- **Dean Peters** — [*Context Stuffing Is Not Context Engineering*](https://deanpeters.substack.com/p/context-stuffing-is-not-context-engineering) (Dean Peters' Substack, 2026) — Deep dive on Competency #1 (Context Design)
+
+### Further Reading
+- **Ethan Mollick** — *Co-Intelligence* (on AI as co-intelligence, not replacement)
+- **Shreyas Doshi** — Twitter threads on PM judgment augmentation with AI
+- **Lenny Rachitsky** — Newsletter interviews with AI-forward PMs

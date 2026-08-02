@@ -310,19 +310,30 @@ def run_command(cmd: list[str], root: Path, timeout: int = 45) -> dict[str, Any]
         return {"command": cmd, "returncode": 1, "stdout": "", "stderr": str(exc)}
 
 
-def collect_sources(root: Path, skip_import: bool = False) -> dict[str, Any]:
+def collect_sources(
+    root: Path,
+    skip_import: bool = False,
+    quill_mode: str = "bridge",
+) -> dict[str, Any]:
     sources: dict[str, Any] = {}
     if skip_import:
         for source in ("quill", "intake", "outlook", "calendar", "teams"):
             sources[source] = {"status": "skipped"}
         return sources
 
-    quill = run_command([sys.executable, "system/scripts/quill_mcp_client.py"], root, timeout=90)
-    if quill["returncode"] != 0:
-        fallback = run_command([sys.executable, "system/scripts/transcript_fetcher.py"], root, timeout=90)
-        sources["quill"] = {"status": "fallback", "primary": quill, "fallback": fallback}
+    if quill_mode == "native-mcp":
+        sources["quill"] = {
+            "status": "ok",
+            "transport": "native_mcp",
+            "detail": "Transcript files were staged by the runtime's read-only Quill tools before prepare.",
+        }
     else:
-        sources["quill"] = {"status": "ok", "primary": quill}
+        quill = run_command([sys.executable, "system/scripts/quill_mcp_client.py"], root, timeout=90)
+        if quill["returncode"] != 0:
+            fallback = run_command([sys.executable, "system/scripts/transcript_fetcher.py"], root, timeout=90)
+            sources["quill"] = {"status": "fallback", "primary": quill, "fallback": fallback}
+        else:
+            sources["quill"] = {"status": "ok", "transport": "stdio_bridge", "primary": quill}
     sources["intake"] = run_command([sys.executable, "system/scripts/transcript_intake.py"], root, timeout=45)
 
     outlook = run_command([sys.executable, "system/scripts/outlook_bridge.py", "--count", "10"], root)
@@ -341,13 +352,19 @@ def collect_sources(root: Path, skip_import: bool = False) -> dict[str, Any]:
     return sources
 
 
-def prepare(root: Path, business_days: int, json_output: bool, skip_import: bool = False) -> dict[str, Any]:
+def prepare(
+    root: Path,
+    business_days: int,
+    json_output: bool,
+    skip_import: bool = False,
+    quill_mode: str = "bridge",
+) -> dict[str, Any]:
     run_id = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     paths = repo_paths(root)
     for key in ("packets", "runs", "summaries", "transcripts"):
         paths[key].mkdir(parents=True, exist_ok=True)
 
-    sources = collect_sources(root, skip_import=skip_import)
+    sources = collect_sources(root, skip_import=skip_import, quill_mode=quill_mode)
     cutoff = business_days_ago(business_days)
     manifest, imported = ensure_manifest_entries(root, cutoff, run_id)
 
@@ -563,6 +580,12 @@ def main() -> int:
     prepare_parser.add_argument("--business-days", type=int, default=10)
     prepare_parser.add_argument("--json", action="store_true")
     prepare_parser.add_argument("--skip-import", action="store_true", help="Skip bridge imports; useful for tests/debugging")
+    prepare_parser.add_argument(
+        "--quill-mode",
+        choices=("bridge", "native-mcp"),
+        default="bridge",
+        help="Use the stdio bridge or confirm that native Quill tools already staged transcripts",
+    )
 
     validate_parser = subparsers.add_parser("validate")
     validate_parser.add_argument("--run-id", required=True)
@@ -575,7 +598,13 @@ def main() -> int:
     args = parser.parse_args()
     root = Path(args.repo).expanduser().resolve()
     if args.command == "prepare":
-        prepare(root, args.business_days, args.json, skip_import=args.skip_import)
+        prepare(
+            root,
+            args.business_days,
+            args.json,
+            skip_import=args.skip_import,
+            quill_mode=args.quill_mode,
+        )
     elif args.command == "validate":
         report = validate(root, args.run_id, args.json)
         return 0 if report["ok"] else 1

@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "runtime_policy": {
     "selection": "active-runtime",
     "supported": [
@@ -19,6 +19,112 @@
       "claude": "CLAUDE.md",
       "gemini": "GEMINI.md",
       "kilocode": ".kilocode/rules.md"
+    }
+  },
+  "harness": {
+    "name": "Beats Agentic PM Harness",
+    "description": "A local-first, cross-runtime harness for evidence-backed product-management workflows.",
+    "primary_runtimes": [
+      "antigravity",
+      "codex",
+      "claude"
+    ],
+    "compatibility_runtimes": [
+      "gemini",
+      "kilocode"
+    ],
+    "execution_loop": [
+      "route",
+      "load_bounded_context",
+      "act_with_tools",
+      "checkpoint",
+      "verify",
+      "persist_artifact_and_trace",
+      "handoff"
+    ],
+    "routing": {
+      "strategy": "one-level",
+      "maximum_initial_sources": 5,
+      "maximum_reference_hops": 1,
+      "unreferenced_skill_policy": "discoverable-on-demand"
+    },
+    "context_budgets": {
+      "runtime_bootstrap_tokens": 1500,
+      "registry_tokens": 2500,
+      "skill_entrypoint_tokens": 2500,
+      "initial_command_tokens": 6000
+    },
+    "cache_policy": {
+      "stable_prefix": [
+        "product_identity",
+        "safety_boundaries",
+        "routing_contract"
+      ],
+      "append_dynamic_context_after_prefix": true,
+      "deterministic_tool_order": true,
+      "measure_cold_and_warm_separately": true
+    },
+    "response_profiles": {
+      "operator_default": "compact_operator",
+      "final_default": "artifact",
+      "available": [
+        "compact_operator",
+        "artifact",
+        "verbatim"
+      ],
+      "selection": {
+        "compact_operator": "execution commentary and routine status",
+        "artifact": "complete polished deliverable using the workflow contract",
+        "verbatim": "exact transcript, requirement, commitment, or source quotation wording"
+      }
+    },
+    "checkpoint_policy": {
+      "context_threshold_percent": 65,
+      "phase_boundaries": [
+        "discovery",
+        "planning",
+        "creation",
+        "verification"
+      ],
+      "preserve_recent_complete_turn": true,
+      "preserve_tool_pairs": true,
+      "raw_retrieval_required_for": [
+        "quotations",
+        "customer_commitments",
+        "legal_language",
+        "security_findings",
+        "final_citations"
+      ]
+    },
+    "knowledge": {
+      "layers": [
+        "raw",
+        "compiled",
+        "digest",
+        "state"
+      ],
+      "compiled_is_navigation_only": true,
+      "raw_evidence_is_authoritative": true
+    },
+    "telemetry": {
+      "storage": ".beats/harness/telemetry.jsonl",
+      "report_processed_and_billable_separately": true
+    },
+    "optimizer": {
+      "promotion": "human-approved",
+      "one_change_per_trial": true,
+      "held_out_required": true,
+      "quality_regression_allowed": false,
+      "allowed_surfaces": [
+        "routing_description",
+        "context_selection",
+        "top_k",
+        "response_profile",
+        "deterministic_output_filter",
+        "checkpoint_threshold",
+        "prompt_wording",
+        "prompt_ordering"
+      ]
     }
   },
   "execution_profiles": {
@@ -538,7 +644,7 @@
           "5. Trackers/workstreams"
         ],
         "execution_contract": [
-          "Run `python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json` before synthesis.",
+          "Run `python3 system/scripts/transcript_pipeline.py prepare --business-days 10 --json` before synthesis by default. When read-only native Quill tools are callable, stage only in-scope recent transcripts and use `--quill-mode native-mcp` so a sandboxed runtime does not launch the socket bridge.",
           "Process only packet files listed in the prepare output; do not broad-scan transcripts for work selection.",
           "Treat transcript content as task-master management input unless the user explicitly asks for another output.",
           "Run the PM decision router on packet excerpts or user-provided transcript text before accepting task/discovery/decision updates.",

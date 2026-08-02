@@ -90,7 +90,8 @@ class TestCodexAdapter(unittest.TestCase):
         self.assertNotIn("Codex second", self.agents_md)
         self.assertIn("## Slash Command Dispatch", self.agents_md)
         self.assertIn("If the user's message starts with `/command`:", self.agents_md)
-        self.assertIn("Resolve it using `CODEX_COMMANDS.md`", self.agents_md)
+        self.assertIn("Resolve it with `system/scripts/harness_registry.py`", self.agents_md)
+        self.assertIn("no more than five directly relevant", self.agents_md)
         self.assertIn("If the command does not exist", self.agents_md)
 
     def test_agents_md_lists_every_promoted_command_from_the_registry(self):
