@@ -11,7 +11,7 @@
 <p><strong>A local-first, cross-runtime harness for evidence-backed product-management workflows.</strong></p>
 
 <p>
-  <img src="https://img.shields.io/badge/Release-v11.2.0-E6B422?style=for-the-badge&labelColor=1a1a2e" alt="Latest release v11.2.0"/>
+  <img src="https://img.shields.io/badge/Release-v12.0.0-E6B422?style=for-the-badge&labelColor=1a1a2e" alt="Latest release v12.0.0"/>
   &nbsp;
   <img src="https://img.shields.io/badge/Runtime-Capability_Driven-00A651?style=for-the-badge&labelColor=1a1a2e" alt="Capability-driven runtime selection"/>
   &nbsp;
@@ -75,7 +75,7 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 
 ## Current Release Surface
 
-Release `v11.2.0` plus this harness refactor exposes 22 canonical agents, 75 focused skills, 44 workflows, 23 promoted Codex skills, 5 supported runtimes, and 3 execution profiles. These counts come from the canonical `.agent/` source rather than a hand-maintained marketing list.
+Release `v12.0.0` exposes 22 canonical agents, 75 focused skills, 44 workflows, 23 promoted Codex skills, 5 supported runtimes, and 3 execution profiles. These counts come from the canonical `.agent/` source rather than a hand-maintained marketing list.
 
 Run `python system/scripts/feature_inventory.py --json` for the current machine-readable inventory. See [Codex Commands](CODEX_COMMANDS.md) for generated command-to-workflow routing and the [workflow catalog](system/docs-site/workflows/index.md) for the human-readable reference.
 
