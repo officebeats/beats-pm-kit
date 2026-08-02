@@ -83,6 +83,7 @@ When preparing manager-facing updates, treat "outcomes" as a succinct list of ex
 - If a completion is implied but not confirmed, ask for confirmation instead of checking it off.
 - Triangulate Outlook, Teams, Slack, Calendar, manual transcripts, Quill, Granola, and local transcript packets against the current workstream list before creating new visible workstreams.
 - Use Obsidian, agent memory, and graph integrations only as read-only context accelerators when locally detected.
+- If TWG is enabled and healthy, follow `.agent/rules/TWG_READ_ONLY.md` for one bounded status or relationship pass; passive viewing, mentions, or graph proximity do not prove ownership or authority.
 - Treat third-party systems as read-only unless the user explicitly confirms the exact mutation in the current turn.
 
 Manager-facing shape:

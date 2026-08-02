@@ -1,3 +1,169 @@
+---
+name: context-engineering-advisor
+description: Diagnose context stuffing vs. context engineering. Use when an AI workflow feels bloated, brittle, or hard to steer reliably.
+---
+
+## Purpose
+
+Guide product managers through diagnosing whether they're doing **context stuffing** (jamming volume without intent) or **context engineering** (shaping structure for attention). Use this to identify context boundaries, fix "Context Hoarding Disorder," and implement tactical practices like bounded domains, episodic retrieval, and the Research→Plan→Reset→Implement cycle.
+
+**Key Distinction:** Context stuffing assumes volume = quality ("paste the entire PRD"). Context engineering treats AI attention as a scarce resource and allocates it deliberately.
+
+This is not about prompt writing—it's about **designing the information architecture** that grounds AI in reality without overwhelming it with noise.
+
+## Key Concepts
+
+### The Paradigm Shift: Parametric → Contextual Intelligence
+
+**The Fundamental Problem:**
+- LLMs have **parametric knowledge** (encoded during training) = static, outdated, non-attributable
+- When asked about proprietary data, real-time info, or user preferences → forced to hallucinate or admit ignorance
+- **Context engineering** bridges the gap between static training and dynamic reality
+
+**PM's Role Shift:** From feature builder → **architect of informational ecosystems** that ground AI in reality
+
+---
+
+### Context Stuffing vs. Context Engineering
+
+| Dimension | Context Stuffing | Context Engineering |
+|-----------|------------------|---------------------|
+| **Mindset** | Volume = quality | Structure = quality |
+| **Approach** | "Add everything just in case" | "What decision am I making?" |
+| **Persistence** | Persist all context | Retrieve with intent |
+| **Agent Chains** | Share everything between agents | Bounded context per agent |
+| **Failure Response** | Retry until it works | Fix the structure |
+| **Economic Model** | Context as storage | Context as attention (scarce resource) |
+
+**Critical Metaphor:** Context stuffing is like bringing your entire file cabinet to a meeting. Context engineering is bringing only the 3 documents relevant to today's decision.
+
+---
+
+### The Anti-Pattern: Context Stuffing
+
+**Five Markers of Context Stuffing:**
+1. **Reflexively expanding context windows** — "Just add more tokens!"
+2. **Persisting everything "just in case"** — No clear retention criteria
+3. **Chaining agents without boundaries** — Agent A passes everything to Agent B to Agent C
+4. **Adding evaluations to mask inconsistency** — "We'll just retry until it's right"
+5. **Normalized retries** — "It works if you run it 3 times" becomes acceptable
+
+**Why It Fails:**
+- **Reasoning Noise:** Thousands of irrelevant files compete for attention, degrading multi-hop logic
+- **Context Rot:** Dead ends, past errors, irrelevant data accumulate → goal drift
+- **Lost in the Middle:** Models prioritize beginning (primacy) and end (recency), ignore middle
+- **Economic Waste:** Every query becomes expensive without accuracy gains
+- **Quantitative Degradation:** Accuracy drops below 20% when context exceeds ~32k tokens
+
+**The Hidden Costs:**
+- Escalating token consumption
+- Diluted attention across irrelevant material
+- Reduced output confidence
+- Cascading retries that waste time and money
+
+---
+
+### Real Context Engineering: Core Principles
+
+**Five Foundational Principles:**
+1. **Context without shape becomes noise**
+2. **Structure > Volume**
+3. **Retrieve with intent, not completeness**
+4. **Small working contexts** (like short-term memory)
+5. **Context Compaction:** Maximize density of relevant information per token
+
+**Quantitative Framework:**
+```
+Efficiency = (Accuracy × Coherence) / (Tokens × Latency)
+```
+
+**Key Finding:** Using RAG with 25% of available tokens preserves 95% accuracy while significantly reducing latency and cost.
+
+---
+
+### The 5 Diagnostic Questions (Detect Context Hoarding Disorder)
+
+Ask these to identify context stuffing:
+
+1. **What specific decision does this support?** — If you can't answer, you don't need it
+2. **Can retrieval replace persistence?** — Just-in-time beats always-available
+3. **Who owns the context boundary?** — If no one, it'll grow forever
+4. **What fails if we exclude this?** — If nothing breaks, delete it
+5. **Are we fixing structure or avoiding it?** — Stuffing context often masks bad information architecture
+
+---
+
+### Memory Architecture: Two-Layer System
+
+**Short-Term (Conversational) Memory:**
+- Immediate interaction history for follow-up questions
+- Challenge: Space management → older parts summarized or truncated
+- Lifespan: Single session
+
+**Long-Term (Persistent) Memory:**
+- User preferences, key facts across sessions → deep personalization
+- Implemented via vector database (semantic retrieval)
+- Two types:
+  - **Declarative Memory:** Facts ("I'm vegan")
+  - **Procedural Memory:** Behavioral patterns ("I debug by checking logs first")
+- Lifespan: Persistent across sessions
+
+**LLM-Powered ETL:** Models generate their own memories by identifying signals, consolidating with existing data, updating database automatically.
+
+---
+
+### The Research → Plan → Reset → Implement Cycle
+
+**The Context Rot Solution:**
+
+1. **Research:** Agent gathers data → large, chaotic context window (noise + dead ends)
+2. **Plan:** Agent synthesizes into high-density SPEC.md or PLAN.md (Source of Truth)
+3. **Reset:** **Clear entire context window** (prevents context rot)
+4. **Implement:** Fresh session using **only** the high-density plan as context
+
+**Why This Works:** Context rot is eliminated; agent starts clean with compressed, high-signal context.
+
+---
+
+### Anti-Patterns (What This Is NOT)
+
+- **Not about choosing AI tools** — Claude vs. ChatGPT doesn't matter; architecture matters
+- **Not about writing better prompts** — This is systems design, not copywriting
+- **Not about adding more tokens** — "Infinite context" narratives are marketing, not engineering reality
+- **Not about replacing human judgment** — Context engineering amplifies judgment, doesn't eliminate it
+
+---
+
+### When to Use This Skill
+
+✅ **Use this when:**
+- You're pasting entire PRDs/codebases into AI and getting vague responses
+- AI outputs are inconsistent ("works sometimes, not others")
+- You're burning tokens without seeing accuracy improvements
+- You suspect you're "context stuffing" but don't know how to fix it
+- You need to design context architecture for an AI product feature
+
+❌ **Don't use this when:**
+- You're just getting started with AI (start with basic prompts first)
+- You're looking for tool recommendations (this is about architecture, not tooling)
+- Your AI usage is working well (if it ain't broke, don't fix it)
+
+---
+
+### Facilitation Source of Truth
+
+Use [`workshop-facilitation`](../../workshop-facilitation/SKILL.md) as the default interaction protocol for this skill.
+
+It defines:
+- session heads-up + entry mode (Guided, Context dump, Best guess)
+- one-question turns with plain-language prompts
+- progress labels (for example, Context Qx/8 and Scoring Qx/5)
+- interruption handling and pause/resume behavior
+- numbered recommendations at decision points
+- quick-select numbered response options for regular questions (include `Other (specify)` when useful)
+
+This file defines the domain-specific assessment content. If there is a conflict, follow this file's domain logic.
+
 ## Application
 
 This interactive skill uses **adaptive questioning** to diagnose context stuffing, identify boundaries, and provide tactical implementation guidance.
@@ -515,3 +681,69 @@ Would you like me to:
 **Outcome:** Accuracy up 35% (from Anthropic benchmark), latency down 60%, token usage down 80%.
 
 ---
+
+## Common Pitfalls
+
+### 1. **"Infinite Context" Marketing vs. Engineering Reality**
+**Failure Mode:** Believing "1 million token context windows" means you should use all of them.
+
+**Consequence:** Reasoning Noise degrades performance; accuracy drops below 20% past ~32k tokens.
+
+**Fix:** Context windows are not free. Treat tokens as scarce; optimize for density, not volume.
+
+---
+
+### 2. **Retrying Instead of Restructuring**
+**Failure Mode:** "It works if I run it 3 times" → normalizing retries instead of fixing structure.
+
+**Consequence:** Wastes time and money; masks deeper context rot issues.
+
+**Fix:** If retries are common, your context structure is broken. Apply Q5 (fix structure, don't add volume).
+
+---
+
+### 3. **No Context Boundary Owner**
+**Failure Mode:** Ad-hoc, implicit context decisions → unbounded growth.
+
+**Consequence:** Six months later, every query stuffs 100k tokens per interaction.
+
+**Fix:** Assign explicit ownership; create Context Manifest; schedule quarterly audits.
+
+---
+
+### 4. **Mixing Always-Needed with Episodic**
+**Failure Mode:** Persisting historical data that should be retrieved on-demand.
+
+**Consequence:** Context window crowded with irrelevant information; attention diluted.
+
+**Fix:** Apply Q2 test: persist only what's needed in 80%+ of interactions; retrieve the rest.
+
+---
+
+### 5. **Skipping the Reset Phase**
+**Failure Mode:** Never clearing context window during Research→Plan→Implement cycle.
+
+**Consequence:** Context rot accumulates; goal drift; dead ends poison implementation.
+
+**Fix:** Mandatory Reset phase after Plan; start implementation with only high-density plan as context.
+
+---
+
+## References
+
+### Related Skills
+- **[ai-shaped-readiness-advisor](../../ai-shaped-readiness-advisor/SKILL.md)** (Interactive) — Context Design is Competency #1 of AI-shaped work
+- **[epic-hypothesis](../../epic-hypothesis/SKILL.md)** (Component) — Testable hypotheses depend on clear constraints (part of context)
+
+### External Frameworks
+- **Dean Peters** — [*Context Stuffing Is Not Context Engineering*](https://deanpeters.substack.com/p/context-stuffing-is-not-context-engineering) (Dean Peters' Substack, 2026)
+- **Teresa Torres** — *Continuous Discovery Habits* (Context Engineering as one of 5 new AI PM disciplines)
+- **Marty Cagan** — *Empowered* (Feasibility risk in AI era includes understanding "physics of AI")
+- **Anthropic** — [Contextual Retrieval whitepaper](https://www.anthropic.com/news/contextual-retrieval) (35% failure rate reduction)
+- **Google** — Context engineering whitepaper on LLM-powered memory systems
+
+### Technical References
+- **RAG (Retrieval-Augmented Generation)** — Standard technique for episodic context retrieval
+- **Vector Databases** — Semantic search for long-term memory (Pinecone, Weaviate, Chroma)
+- **Contextual Retrieval (Anthropic)** — Prepend explanatory context to chunks before embedding
+- **LLM-as-Judge** — Automated evaluation of context quality

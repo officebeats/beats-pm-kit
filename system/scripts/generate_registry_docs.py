@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate routing, manifest, architecture, and compatibility docs from registry v2."""
+"""Generate routing, manifest, architecture, and compatibility docs from registry v3."""
 
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ from system.utils.command_registry import (
     PROFILE_NAMES,
     build_command_catalog,
     get_execution_profiles,
+    get_harness_policy,
     get_runtime_policy,
     load_command_registry,
 )
@@ -32,12 +33,13 @@ def render_manifest(root: Path) -> str:
     registry = load_command_registry(root)
     profiles = get_execution_profiles(root)
     manifest: dict[str, Any] = {
-        "schema_version": 2,
+        "schema_version": 3,
         "name": "beats-pm-kit",
         "version": _version(root),
         "description": "Generated index of canonical agents, skills, workflows, runtimes, and execution profiles.",
         "generated_by": "system/scripts/generate_registry_docs.py",
         "routing_source": ".agent/command-registry.json",
+        "harness": get_harness_policy(root),
         "agents": {
             "count": inventory["agents"]["count"],
             "directory": ".agent/agents/",
@@ -107,6 +109,7 @@ def render_routing(root: Path) -> str:
 def render_architecture(root: Path) -> str:
     inventory = collect_inventory(root)
     profiles = get_execution_profiles(root)
+    harness = get_harness_policy(root)
     return f"""# Beats PM Kit Architecture
 
 > Generated from `.agent/command-registry.json` and the canonical `.agent/` tree.
@@ -122,7 +125,7 @@ def render_architecture(root: Path) -> str:
 
 ## Source Boundaries
 
-- `.agent/command-registry.json` owns routing, aliases, execution profiles, escalation signals, and runtime policy.
+- `.agent/command-registry.json` owns the schema-v3 harness contract, routing, aliases, execution profiles, escalation signals, and runtime policy.
 - `.agent/workflows/` owns workflow behavior.
 - `.agent/skills/` owns reusable PM methods.
 - `MANIFEST.json`, `rules/ROUTING.md`, `CODEX_COMMANDS.md`, runtime adapters, and compatibility documentation are generated views.
@@ -141,14 +144,24 @@ def render_architecture(root: Path) -> str:
 ```text
 User request
   -> command registry
-  -> workflow and execution profile
-  -> minimum required skills and evidence
+  -> one workflow and execution profile
+  -> at most {harness['routing']['maximum_initial_sources']} directly relevant sources
   -> active runtime capability probe
   -> inherited model or explicit local promotion
   -> validation and durable Markdown output
 ```
 
 Unknown capabilities are denied. The kit does not silently switch providers, rewrite skills, or persist model output outside ignored local evaluation storage.
+
+## Harness Contract
+
+- Product name: **{harness['name']}**
+- Primary runtimes: Antigravity, Codex, and Claude
+- Compatibility runtimes: Gemini CLI and KiloCode
+- Response profiles: `compact_operator`, `artifact`, and `verbatim`
+- Context checkpoint: completed phase boundary at {harness['checkpoint_policy']['context_threshold_percent']}% context, or before the next phase will not fit
+- Evidence rule: compacted context remains addressable; raw evidence is authoritative
+- Optimizer rule: one change per held-out trial and human approval before promotion
 """
 
 

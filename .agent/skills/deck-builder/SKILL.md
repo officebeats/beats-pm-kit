@@ -45,13 +45,14 @@ Default scratch workspace: `${TMPDIR:-/tmp}/codex-presentations/<thread-or-manua
    - If no template exists, use a restrained consulting system: white field, one primary color, one accent color, gray rules, Arial/system sans, precise grids.
    - Avoid generic card spam; vary proof objects across diagrams, tables, timelines, equations, matrices, and checklists.
 
-4. **Build with artifact-tool**
-   - Use the bundled presentation runtime when available.
+4. **Build with a validated PPTX writer**
+   - Prefer `python-pptx` when native PowerPoint compatibility is required; use another bundled writer only when its OpenXML output is validated.
    - Generate editable PPTX first, then render previews.
    - Build the website from the same slide spine so PDF and web stay consistent.
    - Use `100svh`, locked 16:9 frames, keyboard navigation, hash links, and print CSS.
 
 5. **Verify**
+   - Confirm the `.pptx` opens without XML corruption errors in PowerPoint or LibreOffice.
    - Render every slide to PNG and create a contact sheet.
    - Validate the PPTX as a zip/package.
    - Verify the PDF page count.

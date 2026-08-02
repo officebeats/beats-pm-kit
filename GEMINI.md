@@ -1,4 +1,4 @@
-# GEMINI.md - Beats PM Kit Runtime Adapter
+# GEMINI.md - Beats Agentic PM Harness Adapter
 
 This file is a thin compatibility entrypoint for Gemini CLI and Antigravity.
 

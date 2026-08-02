@@ -21,7 +21,8 @@ INDEX_PATH = CACHE_DIR / "index.json"
 WIKI_DIR = CACHE_DIR / "wiki"
 KNOWLEDGE_DB_REL = Path(".beats/knowledge.db")
 
-INDEX_VERSION = 1
+INDEX_VERSION = 2
+MAX_INITIAL_SOURCES = 5
 TEXT_SUFFIXES = {".md", ".txt", ".json", ".csv"}
 MAX_SUMMARY_CHARS = 700
 MAX_FILE_BYTES = 1_500_000
@@ -183,6 +184,50 @@ def extract_summary(text: str) -> str:
     return compact_space(" ".join(lines))[:MAX_SUMMARY_CHARS]
 
 
+def frontmatter_value(text: str, key: str) -> str | None:
+    if not text.startswith("---\n"):
+        return None
+    end = text.find("\n---", 4)
+    if end < 0:
+        return None
+    match = re.search(
+        rf"^{re.escape(key)}:\s*[\"']?(.+?)[\"']?\s*$",
+        text[4:end],
+        flags=re.MULTILINE | re.IGNORECASE,
+    )
+    return compact_space(match.group(1)) if match else None
+
+
+def context_metadata(relative_path: Path, text: str, title: str, kind: str, mtime_ns: int) -> dict[str, Any]:
+    """Infer compact routing metadata without changing source authority."""
+    normalized = relative_path.as_posix().lower()
+    if "/compiled/" in normalized or "/knowledge/compiled/" in normalized:
+        authority = "navigation"
+        layer = "compiled"
+    elif "/digest" in normalized or "/reports/day/" in normalized or "/reports/week/" in normalized:
+        authority = "summary"
+        layer = "digest"
+    elif kind in {"tasks"} or relative_path.name in {"STATUS.md", "TASK_MASTER.md", "WORKSTREAMS.md"}:
+        authority = "operational-state"
+        layer = "state"
+    else:
+        authority = "raw-evidence"
+        layer = "raw"
+    topic = frontmatter_value(text, "topic") or title
+    return {
+        "authority": authority,
+        "layer": layer,
+        "freshness": dt.datetime.fromtimestamp(
+            mtime_ns / 1_000_000_000,
+            tz=dt.timezone.utc,
+        ).date().isoformat(),
+        "topic": topic[:160],
+        "source_type": frontmatter_value(text, "source_type") or kind,
+        "stakeholder": frontmatter_value(text, "stakeholder"),
+        "workflow": frontmatter_value(text, "workflow"),
+    }
+
+
 def classify_path(relative_path: Path) -> str:
     for kind, root in SCAN_ROOTS.items():
         try:
@@ -274,15 +319,17 @@ def build_index(root: Path = ROOT, *, force: bool = False, index_path: Path = IN
         summary = extract_summary(text)
         search_text = " ".join([rel_path.as_posix(), title, " ".join(headings), summary])
         bodies[rel_path.as_posix()] = text
+        kind = classify_path(rel_path)
         files.append(
             {
                 **stats,
                 "sha256": sha256_text(text),
-                "kind": classify_path(rel_path),
+                "kind": kind,
                 "title": title,
                 "headings": headings,
                 "summary": summary,
                 "tokens": sorted(set(tokenize(search_text))),
+                **context_metadata(rel_path, text, title, kind, int(stats["mtime_ns"])),
             }
         )
 
@@ -433,13 +480,20 @@ def query_index(
     query: str,
     *,
     root: Path = ROOT,
-    limit: int = 8,
+    limit: int = MAX_INITIAL_SOURCES,
     index_path: Path = INDEX_PATH,
 ) -> dict[str, Any]:
+    if not 1 <= limit <= MAX_INITIAL_SOURCES:
+        raise ValueError(f"limit must be between 1 and {MAX_INITIAL_SOURCES}")
     start = time.perf_counter()
     index = build_index(root, index_path=index_path)
     query_tokens = tokenize(query)
     matches = query_knowledge_db(root, query_tokens, limit)
+    index_by_path = {str(item["path"]): item for item in index.get("files", [])}
+    for match in matches:
+        metadata = index_by_path.get(str(match["path"]), {})
+        for field in ["authority", "layer", "topic", "source_type", "stakeholder", "workflow", "sha256"]:
+            match[field] = metadata.get(field)
     search_mode = "fts5"
     if not matches:
         search_mode = "metadata-fallback"
@@ -463,18 +517,38 @@ def query_index(
                     "rationale": "Metadata match: " + ", ".join(reasons[:6]),
                     "snippet": item.get("summary", ""),
                     "line": _matching_line(root / item["path"], query_tokens),
+                    "authority": item.get("authority"),
+                    "layer": item.get("layer"),
+                    "topic": item.get("topic"),
+                    "source_type": item.get("source_type"),
+                    "stakeholder": item.get("stakeholder"),
+                    "workflow": item.get("workflow"),
+                    "sha256": item.get("sha256"),
                 }
             )
         matches.sort(key=lambda item: (-float(item["score"]), str(item["path"])))
         matches = matches[:limit]
     elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
     return {
+        "schema_version": 2,
         "query": query,
         "generated_at": utc_now(),
         "index_path": index_path.relative_to(root).as_posix() if index_path.is_relative_to(root) else str(index_path),
         "elapsed_ms": elapsed_ms,
         "search_mode": search_mode,
         "matches": matches,
+        "retrieval_policy": {
+            "maximum_initial_sources": MAX_INITIAL_SOURCES,
+            "maximum_reference_hops": 1,
+            "compiled_sources_are_navigation_only": True,
+            "raw_source_required_for": [
+                "quotation",
+                "customer-commitment",
+                "legal-language",
+                "security-finding",
+                "final-citation",
+            ],
+        },
         "missing_scopes": missing_scopes_for(query, len(matches)),
         "suggested_commands": suggested_commands_for(query),
     }
@@ -511,12 +585,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     query = subparsers.add_parser("query", help="Return a compact source packet for a topic")
     query.add_argument("topic", nargs="+", help="Topic, task name, product area, or source hint")
-    query.add_argument("--limit", type=int, default=8, help="Maximum matches to return")
+    query.add_argument("--limit", type=int, default=MAX_INITIAL_SOURCES, help="Maximum matches to return (1-5)")
     query.add_argument("--json", action="store_true", help="Emit machine-readable JSON")
 
     find = subparsers.add_parser("find", help="Find full-text evidence in local PM history")
     find.add_argument("topic", nargs="+", help="Words or phrases from a meeting, chat, decision, task, or document")
-    find.add_argument("--limit", type=int, default=8, help="Maximum matches to return")
+    find.add_argument("--limit", type=int, default=MAX_INITIAL_SOURCES, help="Maximum matches to return (1-5)")
     find.add_argument("--json", action="store_true", help="Emit machine-readable JSON")
 
     stale = subparsers.add_parser("stale", help="Report whether the cache is stale")
@@ -567,7 +641,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command in {"query", "find"}:
         topic = " ".join(args.topic)
-        result = query_index(topic, root=root, limit=args.limit, index_path=index_path)
+        try:
+            result = query_index(topic, root=root, limit=args.limit, index_path=index_path)
+        except ValueError as exc:
+            parser.error(str(exc))
         emit(result, as_json=args.json)
         return 0
 

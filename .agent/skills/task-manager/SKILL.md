@@ -58,6 +58,7 @@ Granola, Quill, Outlook, Teams, Slack, local transcripts, and existing Markdown 
 - Treat explicit completion evidence as completion; treat implied completion as a confirmation question.
 - When historical context is missing or contradictory, run one bounded `/find` query. Its optional semantic recall is only a lead; link the dated Markdown evidence that confirms the task change.
 - `/day`, `/week`, and `/boss` use `critical_commitment_refresh.py` to refresh configured sources before ranking work.
+- TWG is optional enrichment for an explicitly requested live refresh, never no-context snapshot input. If enabled and healthy, use it only under `.agent/rules/TWG_READ_ONLY.md`; exact Jira/Confluence evidence stays Rovo/native-first.
 - If a source fails, label the gap and use cached local evidence for that source while retaining fresh results from successful sources.
 
 ## Task note format

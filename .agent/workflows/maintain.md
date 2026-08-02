@@ -23,19 +23,26 @@ Use this workflow when the user asks to refresh, validate, optimize, or maintain
 python3 system/scripts/context_router.py build --write-wiki --json
 ```
 
-2. Inspect the active runtime, supported capabilities, execution profiles, and local model overrides:
+2. Refresh the knowledge-layer manifest after the context index detects source changes, then verify compiler-owned pages against raw hashes:
+
+```bash
+python3 system/scripts/knowledge_compiler.py manifest
+python3 system/scripts/knowledge_compiler.py verify
+```
+
+3. Inspect the active runtime, supported capabilities, execution profiles, and local model overrides:
 
 ```bash
 python3 system/scripts/model_policy.py status --json
 ```
 
-3. Inspect local kit memory and the optional personal-memory companion. This single read-only check does not capture content:
+4. Inspect local kit memory and the optional personal-memory companion. This single read-only check does not capture content:
 
 ```bash
 python3 system/scripts/agent_memory_health.py --pretty
 ```
 
-4. Regenerate every registry-derived surface and runtime adapter, then validate integrity:
+5. Regenerate every registry-derived surface and runtime adapter, then validate integrity:
 
 ```bash
 python3 system/scripts/sync_cli_adapters.py
@@ -45,26 +52,27 @@ python3 system/scripts/sync_cli_adapters.py
 python3 system/scripts/command_integrity.py --require-generated
 ```
 
-5. Run the deterministic sanitized model evaluation used by CI:
+6. Run the deterministic sanitized model evaluation used by CI:
 
 ```bash
 python3 system/scripts/model_eval.py run --mode offline --json
 ```
 
-6. Run local task triage:
+7. Run local task triage:
 
 ```bash
 python3 system/scripts/task_master_triage.py --apply
 ```
 
-7. Run context health:
+8. Run context health:
 
 ```bash
 python3 system/scripts/context_health.py
 ```
 
-8. Summarize:
+9. Summarize:
    - context index status and file count
+   - knowledge manifest and raw-hash verification status
    - command integrity status
    - task triage report path and top questions
    - health warnings

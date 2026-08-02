@@ -127,6 +127,17 @@
 - **Quill intake**: [Local/export/paste or disabled]
 - **Default behavior**: read-only, archive locally, then triangulate tasks and workstreams
 
+### Atlassian Teamwork Graph CLI
+
+- **Enabled**: no
+- **Mode**: optional_read_only_accelerator
+- **Primary exact Jira/Confluence provider**: runtime Atlassian/Rovo connector
+- **Health check**: `python3 system/scripts/twg_health.py --pretty`
+- **Include passive viewed activity**: no
+- **Source-system mutation**: prohibited
+- **Background upkeep**: no
+- **Bitbucket**: no
+
 Optional task boards such as Trello are configured through `/pack`, not as core task storage.
 
 ### Other

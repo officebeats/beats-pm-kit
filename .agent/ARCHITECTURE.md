@@ -7,13 +7,13 @@
 | Surface | Count | Canonical location |
 | --- | ---: | --- |
 | Agents | 22 | `.agent/agents/` |
-| Skills | 74 | `.agent/skills/` |
+| Skills | 75 | `.agent/skills/` |
 | Workflows | 44 | `.agent/workflows/` |
 | Runtime adapters | 5 | Generated from the registry |
 
 ## Source Boundaries
 
-- `.agent/command-registry.json` owns routing, aliases, execution profiles, escalation signals, and runtime policy.
+- `.agent/command-registry.json` owns the schema-v3 harness contract, routing, aliases, execution profiles, escalation signals, and runtime policy.
 - `.agent/workflows/` owns workflow behavior.
 - `.agent/skills/` owns reusable PM methods.
 - `MANIFEST.json`, `rules/ROUTING.md`, `CODEX_COMMANDS.md`, runtime adapters, and compatibility documentation are generated views.
@@ -32,11 +32,21 @@
 ```text
 User request
   -> command registry
-  -> workflow and execution profile
-  -> minimum required skills and evidence
+  -> one workflow and execution profile
+  -> at most 5 directly relevant sources
   -> active runtime capability probe
   -> inherited model or explicit local promotion
   -> validation and durable Markdown output
 ```
 
 Unknown capabilities are denied. The kit does not silently switch providers, rewrite skills, or persist model output outside ignored local evaluation storage.
+
+## Harness Contract
+
+- Product name: **Beats Agentic PM Harness**
+- Primary runtimes: Antigravity, Codex, and Claude
+- Compatibility runtimes: Gemini CLI and KiloCode
+- Response profiles: `compact_operator`, `artifact`, and `verbatim`
+- Context checkpoint: completed phase boundary at 65% context, or before the next phase will not fit
+- Evidence rule: compacted context remains addressable; raw evidence is authoritative
+- Optimizer rule: one change per held-out trial and human approval before promotion

@@ -1,6 +1,6 @@
-# CLAUDE.md - Beats PM Kit Claude Adapter
+# CLAUDE.md - Beats Agentic PM Harness Claude Adapter
 
-This file is a thin compatibility entrypoint for Claude Code.
+Claude Code is a primary harness runtime. This file is its thin entrypoint.
 
 The canonical agent contract, workflows, skills, and rules live in `.agent/`.
 Run `python system/scripts/sync_cli_adapters.py` to regenerate local Claude command adapters under `.claude/`.
@@ -12,4 +12,4 @@ If the user provides only the GitHub repo URL, clone/open the repo and run:
 python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>
 ```
 
-Then route the first real PM input through the PM decision router or the matching workflow.
+Then resolve the first real PM input with `system/scripts/harness_registry.py` and load only the selected bounded workflow context.

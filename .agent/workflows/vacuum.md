@@ -22,3 +22,12 @@ python system/scripts/enforce_structure.py
 ```bash
 python system/scripts/context_health.py
 ```
+
+4. Refresh the local knowledge manifest and verify every compiler-owned page against its raw source hash:
+
+```bash
+python3 system/scripts/knowledge_compiler.py manifest
+python3 system/scripts/knowledge_compiler.py verify
+```
+
+This is the authorized maintenance path for compiled knowledge. Keep raw captures immutable, treat compiled and digest pages as navigation aids, and never add a cloud scheduler. Run compilation only during `/vacuum`, explicit maintenance, or after detected source changes.

@@ -17,8 +17,9 @@ REGISTRY_PATH = CANONICAL_DIR / "command-registry.json"
 DESCRIPTION_RE = re.compile(r"^description:\s*(.+)$", re.MULTILINE)
 MULTILINE_MARKERS = {"|-", "|", ">-", ">", "|+", ">+"}
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 PROFILE_NAMES = ("fast", "balanced", "deep")
+RESPONSE_PROFILES = ("compact_operator", "artifact", "verbatim")
 
 
 def get_root(root: Path | str | None = None) -> Path:
@@ -105,6 +106,44 @@ def get_runtime_policy(root: Path | str | None = None):
     return policy
 
 
+def get_harness_policy(root: Path | str | None = None):
+    """Return the validated runtime-neutral agentic harness contract."""
+    policy = load_command_registry(root).get("harness")
+    if not isinstance(policy, dict):
+        raise ValueError("Command registry is missing harness policy")
+    if policy.get("routing", {}).get("strategy") != "one-level":
+        raise ValueError("harness.routing.strategy must be 'one-level'")
+    if policy.get("primary_runtimes") != ["antigravity", "codex", "claude"]:
+        raise ValueError("harness.primary_runtimes must be antigravity, codex, and claude")
+    budgets = policy.get("context_budgets")
+    required = {
+        "runtime_bootstrap_tokens",
+        "registry_tokens",
+        "skill_entrypoint_tokens",
+        "initial_command_tokens",
+    }
+    if not isinstance(budgets, dict) or not required.issubset(budgets):
+        raise ValueError("harness.context_budgets is incomplete")
+    if any(not isinstance(budgets[name], int) or budgets[name] <= 0 for name in required):
+        raise ValueError("harness context budgets must be positive integers")
+    cache_policy = policy.get("cache_policy")
+    if not isinstance(cache_policy, dict) or cache_policy.get("deterministic_tool_order") is not True:
+        raise ValueError("harness cache policy must require deterministic tool ordering")
+    if cache_policy.get("append_dynamic_context_after_prefix") is not True:
+        raise ValueError("harness cache policy must keep dynamic context after the stable prefix")
+    available = policy.get("response_profiles", {}).get("available")
+    if available != list(RESPONSE_PROFILES):
+        raise ValueError(
+            "harness response profiles must define compact_operator, artifact, and verbatim"
+        )
+    selection = policy.get("response_profiles", {}).get("selection")
+    if not isinstance(selection, dict) or set(selection) != set(RESPONSE_PROFILES):
+        raise ValueError("harness response profile selection rules are incomplete")
+    if policy.get("optimizer", {}).get("promotion") != "human-approved":
+        raise ValueError("harness optimizer promotion must remain human-approved")
+    return policy
+
+
 def get_execution_profiles(root: Path | str | None = None):
     """Return validated abstract execution profiles in escalation order."""
     profiles = load_command_registry(root).get("execution_profiles")
@@ -177,6 +216,7 @@ def build_command_catalog(root: Path | str | None = None):
     workflow_names = set(workflow_name_list)
     registry = load_command_registry(repo_root)
     get_runtime_policy(repo_root)
+    harness = get_harness_policy(repo_root)
     get_escalation_signals(repo_root)
     command_meta = registry.get("commands", {})
     profile_map = get_command_profile_map(repo_root)
@@ -253,6 +293,16 @@ def build_command_catalog(root: Path | str | None = None):
                 "codex_supporting_files": codex.get("supporting_files", []),
                 "codex_optional_files": codex.get("optional_files", []),
                 "codex_execution_contract": codex.get("execution_contract", []),
+                "operator_response_profile": harness["response_profiles"]["operator_default"],
+                "final_response_profile": override.get(
+                    "final_response_profile",
+                    harness["response_profiles"]["final_default"],
+                ),
+                "context_budget_tokens": harness["context_budgets"]["initial_command_tokens"],
+                "maximum_initial_sources": harness["routing"]["maximum_initial_sources"],
+                "maximum_reference_hops": harness["routing"]["maximum_reference_hops"],
+                "supported_runtimes": harness["primary_runtimes"],
+                "cache_policy": harness["cache_policy"],
             }
         )
 

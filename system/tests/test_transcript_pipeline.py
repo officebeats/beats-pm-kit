@@ -99,6 +99,24 @@ class TestTranscriptPipeline(unittest.TestCase):
             self.assertEqual(sources["teams"]["status"], "unavailable")
             self.assertIn("remediation", sources["teams"])
 
+    def test_native_mcp_quill_mode_does_not_launch_sandboxed_bridge(self):
+        commands = []
+
+        def fake_run(cmd, root, timeout=45):
+            commands.append(cmd)
+            return {"command": cmd, "returncode": 0, "stdout": "ok", "stderr": ""}
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = self.make_repo(tmpdir)
+            with patch.object(transcript_pipeline, "run_command", side_effect=fake_run):
+                sources = transcript_pipeline.collect_sources(root, quill_mode="native-mcp")
+
+        flattened = [part for command in commands for part in command]
+        self.assertEqual(sources["quill"]["status"], "ok")
+        self.assertEqual(sources["quill"]["transport"], "native_mcp")
+        self.assertNotIn("system/scripts/quill_mcp_client.py", flattened)
+        self.assertNotIn("system/scripts/transcript_fetcher.py", flattened)
+
     def test_validate_rejects_missing_required_summary_markers(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = self.make_repo(tmpdir)

@@ -95,7 +95,7 @@ def run_checks() -> dict:
         "status": status,
         "skills": skills,
         "personal_memory": memory,
-        "utf8_stdout": (sys.stdout.encoding or "").lower() == "utf-8",
+        "utf8_stdout": (getattr(sys.stdout, "encoding", None) or "").lower() == "utf-8",
     }
     checks["ok"] = (
         runtime["primary"] == "codex"
