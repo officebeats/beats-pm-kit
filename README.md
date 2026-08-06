@@ -11,7 +11,7 @@
 <p><strong>A local-first, cross-runtime harness for evidence-backed product-management workflows.</strong></p>
 
 <p>
-  <img src="https://img.shields.io/badge/Release-v12.0.0-E6B422?style=for-the-badge&labelColor=1a1a2e" alt="Latest release v12.0.0"/>
+  <img src="https://img.shields.io/badge/Release-v12.1.0-E6B422?style=for-the-badge&labelColor=1a1a2e" alt="Latest release v12.1.0"/>
   &nbsp;
   <img src="https://img.shields.io/badge/Runtime-Capability_Driven-00A651?style=for-the-badge&labelColor=1a1a2e" alt="Capability-driven runtime selection"/>
   &nbsp;
@@ -63,6 +63,7 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 | Local-first PM task management | Human-readable task notes, evidence links, generated task/workstream indexes, daily triage, and durable local reports. |
 | Meeting notes to tasks | Transcript and chat-intake workflows that extract action items, blockers, owners, dates, decisions, and follow-up questions into local artifacts. |
 | Context-aware task routing | PM Decision Router, task-manager workflows, and bounded communication intake for Slack, Teams, Outlook, Calendar, Jira, and Confluence context. |
+| Token-efficient Markdown intake | Microsoft MarkItDown converts supported PDF, Office, Outlook, HTML, and structured-text files into local Markdown before downstream analysis while preserving the source. |
 | Cross-runtime agentic harness | Runtime adapters generated from one schema-v3 harness registry so Antigravity, Codex, and Claude load the same workflow, boundaries, context budget, completion criteria, and response profile. |
 | Loss-aware context management | Full payloads remain local and hash-addressable while compact views, bounded retrieval, and phase checkpoints reduce repeated context without replacing raw evidence. |
 | Evaluation and observability | Per-workflow token, cache, turn, retry, compaction, source, latency, quality, runtime, model, and cost telemetry supports paired, human-approved optimization. |
@@ -75,7 +76,7 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 
 ## Current Release Surface
 
-Release `v12.0.0` exposes 22 canonical agents, 75 focused skills, 44 workflows, 23 promoted Codex skills, 5 supported runtimes, and 3 execution profiles. These counts come from the canonical `.agent/` source rather than a hand-maintained marketing list.
+Release `v12.1.0` exposes 22 canonical agents, 76 focused skills, 44 workflows, 23 promoted Codex skills, 5 supported runtimes, and 3 execution profiles. These counts come from the canonical `.agent/` source rather than a hand-maintained marketing list.
 
 Run `python system/scripts/feature_inventory.py --json` for the current machine-readable inventory. See [Codex Commands](CODEX_COMMANDS.md) for generated command-to-workflow routing and the [workflow catalog](system/docs-site/workflows/index.md) for the human-readable reference.
 
@@ -459,6 +460,7 @@ The kit operates from `.agent/` as the canonical system. Runtime-specific root f
 | File | Purpose |
 |:---|:---|
 | `.agent/rules/GEMINI.md` | System constitution, Context Guard, agent and skill loading protocol, privacy directives, and architecture overview. |
+| `.agent/rules/ACTION_FIRST_OUTPUT.md` | Default action-first presentation policy for user-facing responses across runtimes. |
 | `AGENTS.md` | Codex startup and slash-command adapter. |
 | `.agent/command-registry.json` | Only routing, profile, escalation, and runtime-policy source of truth. |
 | `CODEX_COMMANDS.md` | Codex command index generated from the command registry. |
@@ -472,6 +474,21 @@ The Context Guard is the operating discipline behind most workflows:
 3. Load only the workflow and skills needed for the task.
 4. Prefer local source files over memory when exact context matters.
 5. Keep durable outputs in standard kit folders so runtime switching stays lossless.
+
+User-facing answers are action-first by default: the result or next action comes
+first, sequential work is numbered, tangents are suppressed, and open work ends
+with one concrete next action. Safety rules, explicit user requests, resolved
+response profiles, workflow contracts, artifact schemas, and machine-readable
+formats still take precedence. This independently worded policy is inspired by
+the MIT-licensed [`i-have-adhd`](https://github.com/ayghri/i-have-adhd) project;
+no upstream plugin or hook code is bundled.
+
+Supported non-Markdown files entering `0. Incoming/staging/` use the local
+[`markitdown`](.agent/skills/markitdown/SKILL.md) skill and wrapper before
+classification. Install the optional converter with Python 3.10 or newer using
+`python3 -m pip install -r system/requirements-markitdown.txt`. Original files
+are preserved; screenshots keep the visual-extraction path, and cloud/OCR
+plugins are never enabled automatically.
 
 ## Who This Is For
 
