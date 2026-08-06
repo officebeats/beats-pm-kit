@@ -1,0 +1,2 @@
+# Microsoft MarkItDown requires Python 3.10 or newer.
+markitdown[docx,outlook,pdf,pptx,xls,xlsx]==0.1.7

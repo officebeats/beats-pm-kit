@@ -18,6 +18,8 @@
 - `/beats-comms` uses named, read-only Slack, Teams, Outlook, and Calendar windows under `MCP_COMMUNICATION_INTAKE.md`.
 - Screenshots and transcripts default to task/workstream evidence unless the user states another intent. Route ambiguous durable work through `pm-decision-router`.
 - Obsidian and TWG are optional read-only accelerators. Exact sources and accepted local state remain authoritative.
+- Follow `.agent/rules/ACTION_FIRST_OUTPUT.md` for user-facing response shape. Safety, explicit user instructions, resolved response profiles, workflow contracts, artifact schemas, and exact structured output take precedence.
+- When a user requests file-to-Markdown conversion, or a supported non-Markdown file enters intake staging, load `.agent/skills/markitdown/SKILL.md` and use `system/scripts/markdown_intake.py`. Preserve the source, keep screenshots on the visual path, and require explicit approval for networked or billable conversion.
 
 ## Execution
 

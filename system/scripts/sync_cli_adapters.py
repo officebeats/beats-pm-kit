@@ -150,6 +150,21 @@ On a new Codex session:
 8. Translate unsupported primitives only when the active runtime reports the required capability.
 9. Write durable outputs and verification traces into the standard local paths so runtime switching stays lossless.
 
+## Action-First Responses
+
+Load and follow `.agent/rules/ACTION_FIRST_OUTPUT.md` for every user-facing
+response. Apply it to conversational presentation only. Safety requirements,
+explicit user instructions, resolved response profiles, workflow contracts,
+artifact schemas, and exact structured-output formats take precedence.
+
+## Markdown Intake
+
+When the user asks to convert a local file to Markdown, or a supported file
+enters the intake staging lane, load `.agent/skills/markitdown/SKILL.md` and use
+`system/scripts/markdown_intake.py`. Preserve the source file. Keep screenshots
+on the existing visual path, and require explicit approval before networked or
+billable conversion.
+
 ## Codex Browser First
 
 When a task needs a browser for local apps, rendered UI checks, localhost demos, screenshots, click-through validation, or page inspection:
@@ -202,7 +217,9 @@ def render_gemini_md() -> str:
 This file is a thin compatibility entrypoint for Gemini CLI and Antigravity.
 
 The canonical agent contract, workflows, skills, and rules live in `.agent/`.
-Load `.agent/rules/GEMINI.md` first, then resolve workflows from `.agent/workflows/`.
+Load `.agent/rules/GEMINI.md` and `.agent/rules/ACTION_FIRST_OUTPUT.md` first,
+then resolve workflows from `.agent/workflows/`.
+For file-to-Markdown conversion, load `.agent/skills/markitdown/SKILL.md`.
 Generated local adapter directories are intentionally ignored by Git.
 
 If the user provides only the GitHub repo URL, clone/open the repo and run:
@@ -221,6 +238,8 @@ def render_claude_md() -> str:
 Claude Code is a primary harness runtime. This file is its thin entrypoint.
 
 The canonical agent contract, workflows, skills, and rules live in `.agent/`.
+Load `.agent/rules/ACTION_FIRST_OUTPUT.md` for every user-facing response.
+For file-to-Markdown conversion, load `.agent/skills/markitdown/SKILL.md`.
 Run `python system/scripts/sync_cli_adapters.py` to regenerate local Claude command adapters under `.claude/`.
 Generated local adapter directories are intentionally ignored by Git.
 
@@ -248,6 +267,8 @@ Generated locally by `system/scripts/sync_cli_adapters.py`.
 ## Runtime Notes
 
 - Treat `.agent/` as canonical.
+- Load `.agent/rules/ACTION_FIRST_OUTPUT.md` for user-facing responses; the resolved response profile and higher-priority contracts remain authoritative.
+- Load `.agent/skills/markitdown/SKILL.md` for local file-to-Markdown conversion and supported staged-file intake; preserve the source and keep networked or billable conversion opt-in.
 - Resolve slash commands through root `CODEX_COMMANDS.md`.
 - Prefer promoted Codex skills when present.
 - Use the Codex in-app Browser first for local apps, rendered UI checks, localhost demos, screenshots, click-through validation, and page inspection.
@@ -271,6 +292,7 @@ Generated locally by `system/scripts/sync_cli_adapters.py`.
 
 - Treat `.agent/` as canonical. The synced copies under `.kilocode/` (agents, rules, skills, templates, workflows) exist only for runtime discovery.
 - Detailed operating rules live in `.kilocode/rules/` (synced from `.agent/rules/`). Load `GEMINI.md` there first for the agent contract.
+- Load `.kilocode/rules/ACTION_FIRST_OUTPUT.md` for user-facing responses and `.kilocode/skills/markitdown/SKILL.md` for file-to-Markdown conversion.
 - Agent frontmatter in `.kilocode/agents/` is normalized to Kilocode's tool-map format during sync.
 - Do not commit generated runtime adapter directories.
 """
@@ -284,6 +306,8 @@ Generated locally by `system/scripts/sync_cli_adapters.py`.
 Use `.agent/` as the source of truth. Claude command files under `.claude/commands/`
 should only point back to `.agent/workflows/`. Promoted project skills live under
 `.claude/skills/`.
+Load `.agent/rules/ACTION_FIRST_OUTPUT.md` for every user-facing response and
+`.agent/skills/markitdown/SKILL.md` for file-to-Markdown conversion.
 """
 
 
@@ -348,6 +372,7 @@ Generated locally by `system/scripts/sync_cli_adapters.py`.
 Use this skill when the user invokes {", ".join(triggers)} or asks for the matching Beats PM workflow.
 
 Execution profile: **{str(command['execution_profile']).title()}**. Resolve escalation and model inheritance through `system/scripts/model_policy.py`.
+Follow `.agent/rules/ACTION_FIRST_OUTPUT.md`; the manifest's resolved response profile remains authoritative.
 
 ## Workflow
 
