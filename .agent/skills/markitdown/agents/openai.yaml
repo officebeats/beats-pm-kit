@@ -1,0 +1,4 @@
+interface:
+  display_name: "MarkItDown Intake"
+  short_description: "Convert common files into local Markdown"
+  default_prompt: "Use $markitdown to convert this file into Markdown for local intake."

@@ -220,7 +220,7 @@
   },
   "schema_version": 3,
   "skills": {
-    "count": 75,
+    "count": 76,
     "directory": ".agent/skills/",
     "names": [
       "ab-test-analysis",
@@ -267,6 +267,7 @@
       "inbox-processor",
       "launch-strategy",
       "leadership-career-coach",
+      "markitdown",
       "meeting-synth",
       "memory-consolidator",
       "metrics-finance-suite",
@@ -300,7 +301,7 @@
       "wwas"
     ]
   },
-  "version": "12.0.0",
+  "version": "12.1.0",
   "workflows": {
     "commands": [
       "/accuracy",

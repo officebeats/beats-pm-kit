@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from system.scripts import personal_memory
-TARGET_VERSION = "12.0.0"
+TARGET_VERSION = "12.1.0"
 CONTENT_ROOTS = (
     "0. Incoming",
     "1. Company",
