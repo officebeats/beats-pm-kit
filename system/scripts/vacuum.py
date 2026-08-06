@@ -19,8 +19,8 @@ BRAIN_ROOT = SYSTEM_ROOT.parent           # brain root/
 sys.path.insert(0, str(BRAIN_ROOT))
 
 # Centralized Config
-from system.scripts import sys_config
-from system.scripts.root_cleaner import clean_root
+from system.scripts import context_router, markdown_humanizer, sys_config, task_intake_fast
+from system.scripts.root_cleaner import apply_actions, clean_root
 
 # Configuration
 TRACKERS_DIR = BRAIN_ROOT / "5. Trackers"
@@ -175,31 +175,72 @@ def clean_skeleton():
 
 def clean_repo_structure():
     """
-    Apply shared root cleanup and regenerate generated local indices.
+    Apply only known-safe cleanup and regenerate supported local indexes.
     """
     print("\n--- 🏗️  Repo Structure Cleanup ---")
 
-    actions = clean_root(BRAIN_ROOT, apply=True)
-    for action in actions:
+    actions = clean_root(BRAIN_ROOT, apply=False)
+    safe_actions, deferred_actions = partition_root_actions(actions)
+    apply_actions(BRAIN_ROOT, safe_actions)
+    for action in safe_actions:
         if action.destination:
             print(f"  moved: {action.path} -> {action.destination}")
         else:
             print(f"  {action.action}: {action.path}")
+    for action in deferred_actions:
+        print(f"  deferred user-work candidate: {action.path} ({action.reason})")
 
-    # Regenerate content_index.json for Antigravity when the optional indexer exists.
     try:
-        from system.scripts import gps_indexer
-        gps_indexer.scan_files()
-        print(f"  🔄 Regenerated: content_index.json")
+        indexes = regenerate_local_indexes(BRAIN_ROOT)
+        print(f"  🔄 Regenerated local context index ({indexes['context_files']} files)")
+        print(f"  🔄 Regenerated task index ({indexes['tasks']} tasks)")
     except Exception as e:
-        print(f"  ⚠️  Failed to regenerate content_index.json: {e}")
+        print(f"  ⚠️  Failed to regenerate local indexes: {e}")
     
-    if actions:
-        print(f"  ✅ Applied {len(actions)} root cleanup action(s)")
+    if safe_actions:
+        print(f"  ✅ Applied {len(safe_actions)} known-safe root cleanup action(s)")
     else:
-        print("  ✅ Repo structure already clean")
+        print("  ✅ No known-safe root cleanup needed")
+    if deferred_actions:
+        print(f"  ⚠️ Deferred {len(deferred_actions)} item(s) that may contain active user work")
     
-    return len(actions)
+    return len(safe_actions)
+
+
+def partition_root_actions(actions):
+    """Keep unfamiliar local work out of automatic cleanup."""
+    deferred_reasons = {"unknown-root-dir", "local-root-file"}
+    safe = [action for action in actions if action.reason not in deferred_reasons]
+    deferred = [action for action in actions if action.reason in deferred_reasons]
+    return safe, deferred
+
+
+def regenerate_local_indexes(root: Path):
+    """Refresh the two current local indexes used by retrieval and intake."""
+    root = Path(root).resolve()
+    context_path = root / "system" / "cache" / "context-router" / "index.json"
+    context_index = context_router.build_index(root, force=True, index_path=context_path)
+    task_index = task_intake_fast.build_task_index(root)
+    task_path = task_intake_fast.write_task_index(root, task_index)
+    return {
+        "context_path": str(context_path),
+        "context_files": len(context_index.get("files", [])),
+        "task_path": str(task_path),
+        "tasks": len(task_index.get("tasks", [])),
+    }
+
+
+def humanize_markdown_labels():
+    """Apply readable local note labels and rebuild the Obsidian map."""
+    print("\n--- 🗺️ Human-Readable Markdown & Obsidian Map ---")
+    result = markdown_humanizer.run_humanizer(BRAIN_ROOT, apply=True)
+    print(f"  ✅ Scanned {result.scanned} local Markdown files")
+    print(f"  ✅ Updated {result.task_headings_updated} task headings")
+    print(f"  ✅ Updated {result.references_updated} ID-only references")
+    print(f"  ✅ Human map: {result.label_map}")
+    if result.needs_review:
+        print(f"  ⚠️ {result.needs_review} notes need a stronger human label")
+    return result
 
 def check_system_access():
     """
@@ -379,7 +420,13 @@ def main():
     # 5. Repo Structure Cleanup
     clean_repo_structure()
 
-    # 6. Deep Memory Consolidation
+    # 6. Human-readable Markdown and Obsidian navigation
+    try:
+        humanize_markdown_labels()
+    except Exception as e:
+        print(f"  ⚠️ Human-readable Markdown pass failed: {e}")
+
+    # 7. Deep Memory Consolidation
     print("\n--- 🧠 Deep Memory Consolidation ---")
     try:
         subprocess.run([sys.executable, str(BRAIN_ROOT / ".agent" / "skills" / "memory-consolidator" / "scripts" / "consolidate.py"), "--hours", "168"], check=True, env=dict(os.environ, PYTHONUTF8="1"))

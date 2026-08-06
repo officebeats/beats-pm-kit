@@ -11,7 +11,7 @@
 <p><strong>A local-first, cross-runtime harness for evidence-backed product-management workflows.</strong></p>
 
 <p>
-  <img src="https://img.shields.io/badge/Release-v12.1.0-E6B422?style=for-the-badge&labelColor=1a1a2e" alt="Latest release v12.1.0"/>
+  <img src="https://img.shields.io/badge/Release-v12.2.0-E6B422?style=for-the-badge&labelColor=1a1a2e" alt="Latest release v12.2.0"/>
   &nbsp;
   <img src="https://img.shields.io/badge/Runtime-Capability_Driven-00A651?style=for-the-badge&labelColor=1a1a2e" alt="Capability-driven runtime selection"/>
   &nbsp;
@@ -64,6 +64,7 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 | Meeting notes to tasks | Transcript and chat-intake workflows that extract action items, blockers, owners, dates, decisions, and follow-up questions into local artifacts. |
 | Context-aware task routing | PM Decision Router, task-manager workflows, and bounded communication intake for Slack, Teams, Outlook, Calendar, Jira, and Confluence context. |
 | Token-efficient Markdown intake | Microsoft MarkItDown converts supported PDF, Office, Outlook, HTML, and structured-text files into local Markdown before downstream analysis while preserving the source. |
+| Human-readable Markdown by default | Generated task and tracker notes use content-backed labels of ten words or fewer, preserve stable IDs and filenames, and expose an Obsidian-friendly local map. |
 | Cross-runtime agentic harness | Runtime adapters generated from one schema-v3 harness registry so Antigravity, Codex, and Claude load the same workflow, boundaries, context budget, completion criteria, and response profile. |
 | Loss-aware context management | Full payloads remain local and hash-addressable while compact views, bounded retrieval, and phase checkpoints reduce repeated context without replacing raw evidence. |
 | Evaluation and observability | Per-workflow token, cache, turn, retry, compaction, source, latency, quality, runtime, model, and cost telemetry supports paired, human-approved optimization. |
@@ -76,7 +77,7 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 
 ## Current Release Surface
 
-Release `v12.1.0` exposes 22 canonical agents, 76 focused skills, 44 workflows, 23 promoted Codex skills, 5 supported runtimes, and 3 execution profiles. These counts come from the canonical `.agent/` source rather than a hand-maintained marketing list.
+Release `v12.2.0` exposes 22 canonical agents, 76 focused skills, 44 workflows, 23 promoted Codex skills, 5 supported runtimes, and 3 execution profiles. These counts come from the canonical `.agent/` source rather than a hand-maintained marketing list.
 
 Run `python system/scripts/feature_inventory.py --json` for the current machine-readable inventory. See [Codex Commands](CODEX_COMMANDS.md) for generated command-to-workflow routing and the [workflow catalog](system/docs-site/workflows/index.md) for the human-readable reference.
 
@@ -94,6 +95,12 @@ The default task-management flow is Markdown-first:
 6. Optionally open the same Markdown files in Obsidian or send accepted state to an enabled pack.
 
 `5. Trackers/tasks/` is canonical. Each task has a descriptive filename, readable title/H1, stable internal ID in frontmatter, evidence, progress, and decisions. `TASK_MASTER.md` and `WORKSTREAMS.md` are generated navigation; Obsidian and optional board packs do not replace or duplicate task state.
+
+Markdown humanization happens deterministically when the kit writes a task or
+tracker note. It adds no LLM call, prompt payload, or full-workspace scan to a
+normal query. `/vacuum` provides the reversible full-workspace repair pass,
+preserves raw evidence and stable references, and rebuilds the local Obsidian
+map while excluding dependency and build directories.
 
 This makes the kit useful for fast PM triage without letting automation silently rewrite your priorities.
 

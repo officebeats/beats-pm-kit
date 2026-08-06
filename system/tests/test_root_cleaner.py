@@ -10,9 +10,10 @@ class TestRootCleanerRealUse(unittest.TestCase):
     def test_moves_unknown_root_content_without_touching_public_files(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            for name in ["AGENTS.md", "README.md", "VERSION", "install.sh"]:
+            for name in ["AGENTS.md", "OBSIDIAN.md", "README.md", "VERSION", "install.sh"]:
                 (root / name).write_text(f"{name}\n", encoding="utf-8")
             (root / ".agent").mkdir()
+            (root / "packs").mkdir()
             (root / "system").mkdir()
             (root / "0. Incoming").mkdir()
             (root / "scratch-notes.md").write_text("local planning notes\n", encoding="utf-8")
@@ -32,6 +33,8 @@ class TestRootCleanerRealUse(unittest.TestCase):
             self.assertIn("outputs", action_paths)
             self.assertIn("system/context_cache.json", action_paths)
             self.assertTrue((root / "AGENTS.md").exists())
+            self.assertTrue((root / "OBSIDIAN.md").exists())
+            self.assertTrue((root / "packs").exists())
             self.assertFalse((root / "scratch-notes.md").exists())
             self.assertTrue(
                 (root / "0. Incoming" / "root-cleanup" / "20260101-000000" / "scratch-notes.md").exists()

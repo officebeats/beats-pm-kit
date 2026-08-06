@@ -120,7 +120,8 @@ class TestVacuum(unittest.TestCase):
             # Verify archive exists
              archive_files = os.listdir(vacuum.ARCHIVE_DIR)
              self.assertTrue(len(archive_files) > 0)
-             archive_content = open(os.path.join(vacuum.ARCHIVE_DIR, archive_files[0]), encoding='utf-8').read()
+             with open(os.path.join(vacuum.ARCHIVE_DIR, archive_files[0]), encoding='utf-8') as archive_handle:
+                 archive_content = archive_handle.read()
              self.assertIn("- [x] Completed task 1", archive_content)
 
     def test_archive_transcripts(self):
@@ -165,6 +166,39 @@ class TestVacuum(unittest.TestCase):
             
             # new.md should still be in transcripts
             self.assertTrue(os.path.exists(new_file))
+
+    def test_unknown_root_work_is_deferred(self):
+        actions = [
+            types.SimpleNamespace(path="tools", reason="unknown-root-dir"),
+            types.SimpleNamespace(path="notes.txt", reason="local-root-file"),
+            types.SimpleNamespace(path=".DS_Store", reason="local-cache"),
+        ]
+
+        safe, deferred = vacuum.partition_root_actions(actions)
+
+        self.assertEqual([item.path for item in safe], [".DS_Store"])
+        self.assertEqual([item.path for item in deferred], ["tools", "notes.txt"])
+
+    def test_regenerate_local_indexes_uses_current_indexers(self):
+        root = Path(self.test_dir).resolve()
+        context = {"files": [{"path": "5. Trackers/tasks/example.md"}]}
+        tasks = {"tasks": [{"task_id": "BPM-0001"}]}
+        task_path = root / "system" / "cache" / "task_index.json"
+
+        with patch.object(vacuum.context_router, "build_index", return_value=context) as context_build, \
+             patch.object(vacuum.task_intake_fast, "build_task_index", return_value=tasks) as task_build, \
+             patch.object(vacuum.task_intake_fast, "write_task_index", return_value=task_path) as task_write:
+            result = vacuum.regenerate_local_indexes(root)
+
+        self.assertEqual(result["context_files"], 1)
+        self.assertEqual(result["tasks"], 1)
+        context_build.assert_called_once_with(
+            root,
+            force=True,
+            index_path=root / "system" / "cache" / "context-router" / "index.json",
+        )
+        task_build.assert_called_once_with(root)
+        task_write.assert_called_once_with(root, tasks)
 
 if __name__ == '__main__':
     unittest.main()

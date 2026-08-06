@@ -27,6 +27,7 @@ The task note is the source of truth. `TASK_MASTER.md`, workstream summaries, da
 - Preserve evidence links, decisions, progress, completed checklist items, dates, and source provenance.
 - Treat `5. Trackers/TASK_MASTER.md` as generated navigation. Do not edit its managed task table as primary state.
 - Rebuild it with `python3 system/scripts/task_store.py rebuild` after task-note changes.
+- Route generated Markdown through `system/scripts/markdown_humanizer.py`; the local formatter adds no model call or full-workspace scan during normal task writes.
 - Do not read or synchronize optional packs during normal task management. Packs run only through an explicit `/pack` request.
 
 ## Fast capture

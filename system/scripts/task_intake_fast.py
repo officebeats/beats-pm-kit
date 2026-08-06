@@ -23,11 +23,15 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from system.scripts import task_store
-
-
 DEFAULT_ROOT = Path(__file__).resolve().parents[2]
+if str(DEFAULT_ROOT) not in sys.path:
+    sys.path.insert(0, str(DEFAULT_ROOT))
+
+from system.scripts import markdown_humanizer, task_store
+
+
 CACHE_REL = Path(".agent/cache/task_index.json")
+FALLBACK_CACHE_REL = Path("system/cache/task_index.json")
 TASK_MASTER_REL = Path("5. Trackers/TASK_MASTER.md")
 TASKS_REL = Path("5. Trackers/tasks")
 RAW_REL = Path("0. Incoming/raw")
@@ -137,8 +141,7 @@ def read_text(path: Path) -> str:
 
 
 def write_text(path: Path, text: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text.rstrip() + "\n", encoding="utf-8")
+    markdown_humanizer.write_generated_markdown(path, text)
 
 
 def strip_markdown(value: str) -> str:
@@ -292,19 +295,32 @@ def build_task_index(root: Path) -> dict[str, Any]:
 
 
 def write_task_index(root: Path, index: dict[str, Any]) -> Path:
-    cache_path = root / CACHE_REL
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    cache_path.write_text(json.dumps(index, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    return cache_path
+    rendered = json.dumps(index, indent=2, sort_keys=True) + "\n"
+    primary = root / CACHE_REL
+    fallback = root / FALLBACK_CACHE_REL
+    for cache_path in (primary, fallback):
+        try:
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            cache_path.write_text(rendered, encoding="utf-8")
+            return cache_path
+        except OSError:
+            continue
+    raise OSError(f"Unable to write task index to {primary} or {fallback}")
 
 
 def load_or_build_index(root: Path, rebuild: bool = False) -> dict[str, Any]:
-    cache_path = root / CACHE_REL
-    if not rebuild and cache_path.exists():
-        try:
-            return json.loads(cache_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            pass
+    cache_paths = [root / CACHE_REL, root / FALLBACK_CACHE_REL]
+    if not rebuild:
+        existing = sorted(
+            (path for path in cache_paths if path.exists()),
+            key=lambda path: path.stat().st_mtime_ns,
+            reverse=True,
+        )
+        for cache_path in existing:
+            try:
+                return json.loads(cache_path.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError):
+                continue
     index = build_task_index(root)
     write_task_index(root, index)
     return index
@@ -680,7 +696,7 @@ def main() -> int:
     parser.add_argument("--source", default="User-pasted task-manager intake", help="Source label for the note")
     parser.add_argument("--task-id", default="", help="Force update of an existing task id")
     parser.add_argument("--title", default="", help="Override source note or candidate task title")
-    parser.add_argument("--rebuild-index", action="store_true", help="Rebuild .agent/cache/task_index.json before matching")
+    parser.add_argument("--rebuild-index", action="store_true", help="Rebuild the local task index before matching")
     parser.add_argument("--min-confidence", type=float, default=0.42, help="Minimum match confidence before updating an existing task")
     parser.add_argument("--json", action="store_true", help="Print JSON output")
     args = parser.parse_args()

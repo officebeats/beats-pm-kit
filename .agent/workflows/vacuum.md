@@ -5,25 +5,36 @@ description: Execute the full Centrifuge Protocol to keep the brain lean, privat
 
 // turbo-all
 
-1. Run the vacuum script:
+1. Run the vacuum script. It refreshes the supported context and task indexes,
+   keeps unfamiliar root work in place, humanizes legacy task headings and
+   ID-only links, and rebuilds `5. Trackers/MARKDOWN_LABELS.md`:
 
 ```bash
 python system/scripts/vacuum.py
 ```
 
-2. Run structure enforcement:
+Raw evidence, transcripts, chat archives, historical backups, integration IDs,
+and filenames remain unchanged. Dependency/build trees are excluded.
+
+2. Confirm the Markdown pass is idempotent:
+
+```bash
+python system/scripts/markdown_humanizer.py --json
+```
+
+3. Run structure enforcement:
 
 ```bash
 python system/scripts/enforce_structure.py
 ```
 
-3. Run a final health check:
+4. Run a final health check:
 
 ```bash
 python system/scripts/context_health.py
 ```
 
-4. Refresh the local knowledge manifest and verify every compiler-owned page against its raw source hash:
+5. Refresh the local knowledge manifest and verify every compiler-owned page against its raw source hash:
 
 ```bash
 python3 system/scripts/knowledge_compiler.py manifest

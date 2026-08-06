@@ -28,6 +28,11 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+try:  # pragma: no cover - import path differs for script vs package execution.
+    from system.scripts import markdown_humanizer
+except ModuleNotFoundError:  # pragma: no cover
+    import markdown_humanizer
+
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 CONFIG_PATH = BASE_DIR / "system" / "config" / "trello_config.json"
@@ -293,8 +298,7 @@ def read_text(path: Path) -> str:
 
 
 def write_text(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content.rstrip() + "\n", encoding="utf-8")
+    markdown_humanizer.write_generated_markdown(path, content)
 
 
 class TrelloAPI:
