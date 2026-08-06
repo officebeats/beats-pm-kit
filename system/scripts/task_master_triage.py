@@ -20,8 +20,9 @@ from pathlib import Path
 from urllib.parse import quote
 
 try:  # pragma: no cover - import path differs for script vs package execution.
-    from . import task_display, task_store
+    from . import markdown_humanizer, task_display, task_store
 except ImportError:  # pragma: no cover
+    import markdown_humanizer
     import task_display
     import task_store
 
@@ -125,8 +126,7 @@ def read_text(path: Path) -> str:
 
 
 def write_text(path: Path, text: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text.rstrip() + "\n", encoding="utf-8")
+    markdown_humanizer.write_generated_markdown(path, text)
 
 
 def replace_block(text: str, begin: str, end: str, block: str) -> str:

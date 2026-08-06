@@ -11,12 +11,18 @@ import argparse
 import datetime as dt
 import json
 import re
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable
 
-
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from system.scripts import markdown_humanizer
+
+
 TASKS_REL = Path("5. Trackers/tasks")
 TASK_MASTER_REL = Path("5. Trackers/TASK_MASTER.md")
 MANAGED_START = "<!-- beats-task-index:start -->"
@@ -48,8 +54,7 @@ def _read(path: Path) -> str:
 
 
 def _write(path: Path, text: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text.rstrip() + "\n", encoding="utf-8")
+    markdown_humanizer.write_generated_markdown(path, text)
 
 
 def human_slug(value: str, fallback: str = "task") -> str:
