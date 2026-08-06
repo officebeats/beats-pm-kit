@@ -49,30 +49,31 @@ def render_skill_md(command, repo_root: Path) -> str:
 
     workflow_steps = [
         "1. Resolve the repo path first and use that same path for every file read below.",
-        f"2. Read `<repo>/.agent/workflows/{command['name']}.md`.",
-        f"3. Resolve the bounded manifest with `python3 <repo>/system/scripts/harness_registry.py --root <repo> resolve /{command['name']}`.",
-        "4. Treat these as candidate context. Load only directly relevant files, never the list wholesale, and load no more than five initially:",
+        "2. Read `<repo>/.agent/rules/ACTION_FIRST_OUTPUT.md`.",
+        f"3. Read `<repo>/.agent/workflows/{command['name']}.md`.",
+        f"4. Resolve the bounded manifest with `python3 <repo>/system/scripts/harness_registry.py --root <repo> resolve /{command['name']}`.",
+        "5. Treat these as candidate context. Load only directly relevant files, never the list wholesale, and load no more than five initially:",
         supporting_lines,
     ]
     if optional_lines:
         workflow_steps.extend(
             [
-                "5. Read optional candidates only when they exist and the selected workflow needs them:",
+                "6. Read optional candidates only when they exist and the selected workflow needs them:",
                 optional_lines,
-                "6. If an optional file is missing, continue without it and note that briefly.",
-                f"7. If the user typed `/{command['name']}` or one of its aliases, treat the remaining text as workflow input.",
-                "8. Use compact_operator narration during execution, then the manifest's final response profile.",
-                "9. Follow the repo workflow instead of inventing a parallel Codex-only process.",
-                "10. Keep durable output inside the repo so all runtimes share the same state.",
+                "7. If an optional file is missing, continue without it and note that briefly.",
+                f"8. If the user typed `/{command['name']}` or one of its aliases, treat the remaining text as workflow input.",
+                "9. Use compact_operator narration during execution, then the manifest's final response profile.",
+                "10. Follow the repo workflow instead of inventing a parallel Codex-only process.",
+                "11. Keep durable output inside the repo so all runtimes share the same state.",
             ]
         )
     else:
         workflow_steps.extend(
             [
-                f"5. If the user typed `/{command['name']}` or one of its aliases, treat the remaining text as workflow input.",
-                "6. Use compact_operator narration during execution, then the manifest's final response profile.",
-                "7. Follow the repo workflow instead of inventing a parallel Codex-only process.",
-                "8. Keep durable output inside the repo so all runtimes share the same state.",
+                f"6. If the user typed `/{command['name']}` or one of its aliases, treat the remaining text as workflow input.",
+                "7. Use compact_operator narration during execution, then the manifest's final response profile.",
+                "8. Follow the repo workflow instead of inventing a parallel Codex-only process.",
+                "9. Keep durable output inside the repo so all runtimes share the same state.",
             ]
         )
 

@@ -22,6 +22,21 @@ On a new Codex session:
 8. Translate unsupported primitives only when the active runtime reports the required capability.
 9. Write durable outputs and verification traces into the standard local paths so runtime switching stays lossless.
 
+## Action-First Responses
+
+Load and follow `.agent/rules/ACTION_FIRST_OUTPUT.md` for every user-facing
+response. Apply it to conversational presentation only. Safety requirements,
+explicit user instructions, resolved response profiles, workflow contracts,
+artifact schemas, and exact structured-output formats take precedence.
+
+## Markdown Intake
+
+When the user asks to convert a local file to Markdown, or a supported file
+enters the intake staging lane, load `.agent/skills/markitdown/SKILL.md` and use
+`system/scripts/markdown_intake.py`. Preserve the source file. Keep screenshots
+on the existing visual path, and require explicit approval before networked or
+billable conversion.
+
 ## Codex Browser First
 
 When a task needs a browser for local apps, rendered UI checks, localhost demos, screenshots, click-through validation, or page inspection:

@@ -82,7 +82,7 @@ Get-ChildItem -Path "0. Incoming/" -Recurse | Where-Object { $_.PSIsContainer -e
 ## ⚡ Step 2: Intake & Classification
     - **Option A (Text)**: Append to `0. Incoming/raw/YYYY-MM-DD_clipboard.md`.
     - **Option B (Image/Screenshot)**: Save to `0. Incoming/staging/`, extract visible text/context, then treat as task-master evidence by default.
-    - **Option C (File)**: Move to `0. Incoming/staging/`.
+    - **Option C (File)**: Move to `0. Incoming/staging/`. For a supported non-Markdown file, load `.agent/skills/markitdown/SKILL.md`, run `python3 system/scripts/markdown_intake.py "<staged-file>" --automatic`, preserve the original, and use the sibling `.md` file for extraction and routing.
     - **Option D (Teams Context - if `--teams` flag used)**: Run `python3 system/scripts/beats.py teams --args "--json"` to ingest Teams chat.
     - Use Antigravity clipboard ingest for text/images/files.
     - Proceed directly to task classification via `inbox-processor` plus `task-manager`.
@@ -100,6 +100,8 @@ Get-ChildItem -Path "0. Incoming/" -Recurse | Where-Object { $_.PSIsContainer -e
 
 7.  **Content Detection Priority**:
     - **Files** (copied from file manager) → Saved to `0. Incoming/staging/`
+      - PDF, DOCX, PPTX, XLS/XLSX, MSG, HTML, CSV, JSON, XML, and EPUB files are converted locally to a sibling Markdown intake file before classification.
+      - Screenshots/images stay on the existing visual-extraction path; ZIP and audio conversion remain explicit-only.
     - **Image** (screenshot to clipboard) → Saved to `0. Incoming/staging/`, then extracted for `TASK_MASTER.md` updates by default
     - **Text** (copied text) → Saved to `0. Incoming/raw/`; transcript-like text is routed as task-master evidence by default
     - **Teams** (if `--teams` used) → Fetch via Teams API/Bridge and route to `inbox-processor`.
@@ -127,7 +129,7 @@ Get-ChildItem -Path "0. Incoming/" -Recurse | Where-Object { $_.PSIsContainer -e
 | :-------- | :------------------ | :--------------- | :--------------------- |
 | **Text**  | ✅ PowerShell       | ✅ `pbpaste`     | `0. Incoming/raw/`     |
 | **Image** | ✅ PIL.ImageGrab    | ✅ PIL.ImageGrab | `0. Incoming/staging/` |
-| **Files** | ✅ PowerShell + PIL | ✅ AppleScript   | `0. Incoming/staging/` |
+| **Files** | ✅ PowerShell + PIL | ✅ AppleScript   | `0. Incoming/staging/` + supported sibling `.md` |
 
 ## Example Usage
 

@@ -56,6 +56,7 @@ Each skill is a focused capability. The active index is regenerated from `.agent
 | `inbox-processor` | The "Black Hole" for chaos. Aggressively extracts tasks from raw input, screenshots, and transcripts, then routes them to the ledger. |
 | `launch-strategy` | Build evidence-based launch strategy from positioning, readiness, channel, risk, and success-metric inputs. |
 | `leadership-career-coach` | Executive coaching and career advancement suite tailored for the PM transitioning to Director, VP, and CPO roles. |
+| `markitdown` | Convert local files into token-efficient Markdown with Microsoft MarkItDown. Use when the user asks to convert, extract, normalize, read, or ingest PDF, Word, PowerPoint, Excel, Outlook, HTML, CSV, JSON, XML, EPUB, ZIP, image, or audio content as Markdown, and by default when supported non-Markdown files enter the Beats PM intake staging lane. |
 | `meeting-synth` | Synthesize a single meeting transcript into TASK_MASTER updates, structured action items, decisions, follow-ups, and stakeholder profiles. Use when processing a meeting recording, cleaning up transcript notes, or extracting commitments from a conversation. |
 | `memory-consolidator` | Consolidates memories and generates cross-cutting strategic insights from disparate files. |
 | `metrics-finance-suite` | Expert system for SaaS unit economics, North Star metric definition, KPI dashboards, and financial modeling. |
