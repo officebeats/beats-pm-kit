@@ -65,7 +65,14 @@ def write_file(path: Union[str, Path], content: str, encoding: str = 'utf-8') ->
     try:
         p = Path(path)
         ensure_file_directory(p)
-        p.write_text(content, encoding=encoding)
+        if encoding.lower().replace('-', '') == 'utf8' and p.suffix.lower() in {'.md', '.markdown'}:
+            try:
+                from system.scripts.markdown_humanizer import humanize_generated_content
+            except ModuleNotFoundError:  # pragma: no cover - legacy system/ path
+                from scripts.markdown_humanizer import humanize_generated_content
+            p.write_text(humanize_generated_content(p, content), encoding=encoding)
+        else:
+            p.write_text(content, encoding=encoding)
         return True
     except IOError as e:
         from .ui import print_error

@@ -19,6 +19,11 @@ from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
+try:  # pragma: no cover - import path differs for script vs package execution.
+    from system.scripts import markdown_humanizer
+except ModuleNotFoundError:  # pragma: no cover
+    import markdown_humanizer
+
 
 CURRENT_FILE = Path(__file__).resolve()
 SYSTEM_ROOT = CURRENT_FILE.parent.parent
@@ -477,7 +482,7 @@ def command_record(args: argparse.Namespace) -> int:
     artifact_path = artifact_path_for(args, root, fetched_at)
     artifact_path.parent.mkdir(parents=True, exist_ok=True)
     artifact_text = render_artifact(args, fetched_at, source_content, digest)
-    artifact_path.write_text(artifact_text, encoding="utf-8")
+    markdown_humanizer.write_generated_markdown(artifact_path, artifact_text)
 
     entry = {
         "reference_type": reference_type,

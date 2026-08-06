@@ -2,6 +2,7 @@ import datetime as dt
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from system.scripts import task_intake_fast
 
@@ -152,6 +153,25 @@ class TestTaskIntakeFast(unittest.TestCase):
         self.assertIn("updated: 2026-06-23", frontmatter)
         self.assertEqual(frontmatter.count("0. Incoming/raw/"), 2)
         self.assertNotIn("> **Last Updated:**", text)
+
+    def test_task_index_falls_back_when_agent_cache_is_read_only(self):
+        root = self.make_repo()
+        index = task_intake_fast.build_task_index(root)
+        primary = root / task_intake_fast.CACHE_REL
+        fallback = root / task_intake_fast.FALLBACK_CACHE_REL
+        original_write_text = Path.write_text
+
+        def guarded_write(path, data, *args, **kwargs):
+            if path == primary:
+                raise PermissionError("agent cache is read-only")
+            return original_write_text(path, data, *args, **kwargs)
+
+        with patch.object(Path, "write_text", new=guarded_write):
+            written = task_intake_fast.write_task_index(root, index)
+
+        self.assertEqual(written, fallback)
+        self.assertTrue(fallback.exists())
+        self.assertEqual(task_intake_fast.load_or_build_index(root)["tasks"], index["tasks"])
 
 
 if __name__ == "__main__":
