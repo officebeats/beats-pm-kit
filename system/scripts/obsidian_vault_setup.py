@@ -74,6 +74,8 @@ USER_IGNORE_FILTERS = [
     "test_logs/",
     "artifacts/",
     "scratch/",
+    "5. Trackers/MARKDOWN_LABELS.md",
+    "Trackers/MARKDOWN_LABELS.md",
 ]
 
 GRAPH_COLOR_GROUPS = [
@@ -181,6 +183,13 @@ def index_content() -> str:
 - [[5. Trackers/WEEKLY_PLAN|Weekly Plan]]
 - [[5. Trackers/DECISION_LOG|Decision Log]]
 - [[5. Trackers/STRATEGIC_INSIGHTS|Strategic Insights]]
+
+## Human-readable Hubs
+
+- [[5. Trackers/graph-hubs/Human-readable Hubs|Human-readable Hubs]]
+- [[5. Trackers/graph-hubs/Workstream Hubs|Workstream Hubs]]
+- [[5. Trackers/graph-hubs/Partner and the product Tasks|Partner and the product Tasks]]
+- [[5. Trackers/graph-hubs/Meeting Evidence|Meeting Evidence]]
 
 ## Operating Areas
 

@@ -64,8 +64,8 @@ After a full `/track` run, the agent may offer this Obsidian view when it is not
 
 - Enables Obsidian core plugins for graph view, backlinks, outgoing links, tags, canvas, properties, bases, templates, and daily notes.
 - Adds graph color groups for Trackers, Meetings, People, Products, Partners, Clients, SOPs, and Resources.
-- Excludes noisy implementation/runtime folders from Obsidian search and graph, including `.git`, generated runtime adapters, caches, tests, scratch files, and outputs.
-- Creates a graph index note that links to Task Master, weekly planning, decision logs, people, meetings, clients, partners, SOPs, and evidence lanes.
+- Excludes noisy implementation/runtime folders and the generated `MARKDOWN_LABELS.md` reference catalog from Obsidian search and graph.
+- Creates a graph index note that links to generated human-readable workstream, task, meeting, and operating-area hubs.
 
 ## What This Does Not Do
 
@@ -115,7 +115,8 @@ python3 system/scripts/obsidian_bridge.py open tracker
 
 ## Graph Tips
 
-- Start at `6. Resources/obsidian/Obsidian Graph Index.md`.
+- Start at `5. Trackers/graph-hubs/Human-readable Hubs.md` or `6. Resources/obsidian/Obsidian Graph Index.md`.
+- `5. Trackers/MARKDOWN_LABELS.md` remains a complete reference catalog, but is intentionally not the graph center.
 - Use graph search `path:"5. Trackers"` for active task state.
 - Use graph search `path:"4. People"` for stakeholder context.
 - Use graph search `path:"3. Meetings"` for meeting notes, transcripts, and evidence.

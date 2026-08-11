@@ -72,12 +72,21 @@ class TestMarkdownHumanizer(unittest.TestCase):
         self.assertIsNotNone(result.backup)
         self.assertTrue((root / str(result.backup) / "5. Trackers" / "tasks" / "TASK-012.md").exists())
         self.assertIn("# Human-Readable Markdown Map", (root / markdown_humanizer.LABEL_MAP).read_text(encoding="utf-8"))
+        label_map = (root / markdown_humanizer.LABEL_MAP).read_text(encoding="utf-8")
+        self.assertNotIn("[Partner integration walkthrough](tasks/TASK-012.md)", label_map)
+        hub_index = root / markdown_humanizer.HUB_INDEX
+        self.assertTrue(hub_index.exists())
+        workstream_hub = root / markdown_humanizer.GENERATED_HUB_PREFIX / "Workstream Hubs.md"
+        self.assertIn("[Partner integration]", workstream_hub.read_text(encoding="utf-8"))
+        task_hub = root / markdown_humanizer.GENERATED_HUB_PREFIX / "Other Active Tasks.md"
+        self.assertIn("[Partner integration walkthrough]", task_hub.read_text(encoding="utf-8"))
         manifest = json.loads((root / markdown_humanizer.MANIFEST).read_text(encoding="utf-8"))
         self.assertTrue(all(len(item["label"].split()) <= 10 for item in manifest["notes"]))
         map_before = (root / markdown_humanizer.LABEL_MAP).read_bytes()
         manifest_before = (root / markdown_humanizer.MANIFEST).read_bytes()
 
         second = markdown_humanizer.run_humanizer(root, apply=True)
+        self.assertEqual(second.scanned, 3)
         self.assertEqual(second.files_updated, 0)
         self.assertIsNone(second.backup)
         self.assertEqual((root / markdown_humanizer.LABEL_MAP).read_bytes(), map_before)
