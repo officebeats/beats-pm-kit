@@ -678,7 +678,9 @@ tags:
 - [[SETTINGS]]
 - [[0. Incoming]]
 - [[3. Meetings]]
-- [[5. Trackers]]
+- [[5. Trackers/graph-hubs/Human-readable Hubs|Human-readable Hubs]]
+- [[5. Trackers/graph-hubs/Workstream Hubs|Workstream Hubs]]
+- [[5. Trackers/graph-hubs/Partner and Synapse Tasks|Partner and Synapse Tasks]]
 
 ## Core Workflows
 
