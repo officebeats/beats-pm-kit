@@ -44,6 +44,7 @@ class TestObsidianVaultSetup(unittest.TestCase):
 
             index = (root / "6. Resources" / "obsidian" / "Obsidian Graph Index.md").read_text(encoding="utf-8")
             self.assertIn("[[5. Trackers/TASK_MASTER|Task Master]]", index)
+            self.assertIn("[[5. Trackers/graph-hubs/Human-readable Hubs|Human-readable Hubs]]", index)
             self.assertNotIn("Ernest0/Work", index)
 
     def test_existing_app_config_is_preserved_and_ignore_filters_are_deduped(self):
@@ -69,6 +70,8 @@ class TestObsidianVaultSetup(unittest.TestCase):
             self.assertTrue(app_config["spellcheck"])
             self.assertEqual(app_config["userIgnoreFilters"].count(".git/"), 1)
             self.assertIn("outputs/", app_config["userIgnoreFilters"])
+            self.assertIn("5. Trackers/MARKDOWN_LABELS.md", app_config["userIgnoreFilters"])
+            self.assertIn("Trackers/MARKDOWN_LABELS.md", app_config["userIgnoreFilters"])
 
     def test_existing_graph_groups_are_preserved(self):
         with tempfile.TemporaryDirectory() as tmpdir:

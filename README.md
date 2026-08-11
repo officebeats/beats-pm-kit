@@ -11,7 +11,7 @@
 <p><strong>A local-first, cross-runtime harness for evidence-backed product-management workflows.</strong></p>
 
 <p>
-  <img src="https://img.shields.io/badge/Release-v12.2.0-E6B422?style=for-the-badge&labelColor=1a1a2e" alt="Latest release v12.2.0"/>
+  <img src="https://img.shields.io/badge/Release-v12.3.0-E6B422?style=for-the-badge&labelColor=1a1a2e" alt="Latest release v12.3.0"/>
   &nbsp;
   <img src="https://img.shields.io/badge/Runtime-Capability_Driven-00A651?style=for-the-badge&labelColor=1a1a2e" alt="Capability-driven runtime selection"/>
   &nbsp;
@@ -77,7 +77,7 @@ The result is both a working toolkit and a portfolio of AI-forward product manag
 
 ## Current Release Surface
 
-Release `v12.2.0` exposes 22 canonical agents, 76 focused skills, 44 workflows, 23 promoted Codex skills, 5 supported runtimes, and 3 execution profiles. These counts come from the canonical `.agent/` source rather than a hand-maintained marketing list.
+Release `v12.3.0` adds generated human-readable Obsidian hubs while preserving the current surface: 22 canonical agents, 76 focused skills, 44 workflows, 23 promoted Codex skills, 5 supported runtimes, and 3 execution profiles. Inventory counts come from the canonical `.agent/` source rather than a hand-maintained marketing list.
 
 Run `python system/scripts/feature_inventory.py --json` for the current machine-readable inventory. See [Codex Commands](CODEX_COMMANDS.md) for generated command-to-workflow routing and the [workflow catalog](system/docs-site/workflows/index.md) for the human-readable reference.
 
@@ -100,7 +100,7 @@ Markdown humanization happens deterministically when the kit writes a task or
 tracker note. It adds no LLM call, prompt payload, or full-workspace scan to a
 normal query. `/vacuum` provides the reversible full-workspace repair pass,
 preserves raw evidence and stable references, and rebuilds the local Obsidian
-map while excluding dependency and build directories.
+map as bounded human-readable hubs while excluding dependency and build directories. The complete `MARKDOWN_LABELS.md` catalog stays available for lookup but is hidden from Obsidian's graph defaults so it cannot become one oversized graph node.
 
 This makes the kit useful for fast PM triage without letting automation silently rewrite your priorities.
 
@@ -368,7 +368,7 @@ python3 system/scripts/obsidian_bridge.py configure --mode kit-vault
 python3 system/scripts/obsidian_bridge.py open tracker
 ```
 
-Setup creates local-only Obsidian settings and a graph index under `6. Resources/obsidian/`. This gives product managers a local knowledge graph over tasks, meetings, people, partners, clients, SOPs, and reference documents while preserving the same files every supported agent reads.
+Setup creates local-only Obsidian settings, a graph index under `6. Resources/obsidian/`, and generated human-readable hubs under `5. Trackers/graph-hubs/`. This gives product managers a local knowledge graph over tasks, workstreams, meetings, people, partners, clients, SOPs, and reference documents without concentrating every link in `MARKDOWN_LABELS.md`.
 
 See the [full Obsidian task-workspace guide](system/docs/obsidian.md) for path meanings, graph tips, MCP boundaries, and explicit external-vault sync.
 
