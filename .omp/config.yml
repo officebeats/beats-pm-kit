@@ -1,0 +1,17 @@
+# omp project settings for beats-pm-kit
+# Generated locally by `system/scripts/sync_cli_adapters.py`.
+#
+# Skills: `.claude/skills/` may hold generated thin aliases of the codex
+# `beats-*` skills. Disabling the Claude project skill source removes the
+# duplicates; the rich versions come from ~/.codex/skills and .agent/skills,
+# and remaining .claude entries are mirrored in .opencode/skills.
+skills:
+  enableClaudeProject: false
+
+# Discovery: gemini/cursor adapter dirs are sync-generated mirrors of .agent/
+# and contribute nothing unique to omp sessions. Keep claude (dotcontext MCP,
+# slash commands) and codex (beats-* skills, personal guardrails) enabled.
+# This only affects omp; Antigravity/Cursor still read their own adapter dirs.
+disabledProviders:
+  - gemini
+  - cursor

@@ -23,26 +23,6 @@ from utils.command_registry import (
 )
 from scripts import generate_registry_docs
 
-CORE_ADAPTER_DIRS = {
-    ".codex": {
-        "agents": AGENT_DIR / "agents",
-        "templates": AGENT_DIR / "templates",
-        "workflows": AGENT_DIR / "workflows",
-    },
-    ".gemini": {
-        "agents": AGENT_DIR / "agents",
-        "skills": AGENT_DIR / "skills",
-        "templates": AGENT_DIR / "templates",
-        "workflows": AGENT_DIR / "workflows",
-    },
-    ".kilocode": {
-        "agents": AGENT_DIR / "agents",
-        "rules": AGENT_DIR / "rules",
-        "skills": AGENT_DIR / "skills",
-        "templates": AGENT_DIR / "templates",
-        "workflows": AGENT_DIR / "workflows",
-    },
-}
 
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
@@ -253,143 +233,55 @@ Then resolve the first real PM input with `system/scripts/harness_registry.py` a
 """
 
 
-def render_codex_rules() -> str:
-    return """# Codex Runtime Notes
+def render_omp_config() -> str:
+    return """# omp project settings for beats-pm-kit
+# Generated locally by `system/scripts/sync_cli_adapters.py`.
+#
+# Skills: `.claude/skills/` may hold generated thin aliases of the codex
+# `beats-*` skills. Disabling the Claude project skill source removes the
+# duplicates; the rich versions come from ~/.codex/skills and .agent/skills,
+# and remaining .claude entries are mirrored in .opencode/skills.
+skills:
+  enableClaudeProject: false
 
-Generated locally by `system/scripts/sync_cli_adapters.py`.
-
-## Slash Command Dispatch
-
-- If the user's first non-whitespace token is `/command`: follow the explicit dispatch rule in `CODEX_COMMANDS.md`.
-- Resolve the command to `.agent/workflows/<command>.md` before applying general conversation behavior.
-- If no workflow exists, report an unknown command and suggest `/help`.
-
-## Runtime Notes
-
-- Treat `.agent/` as canonical.
-- Load `.agent/rules/ACTION_FIRST_OUTPUT.md` for user-facing responses; the resolved response profile and higher-priority contracts remain authoritative.
-- Load `.agent/skills/markitdown/SKILL.md` for local file-to-Markdown conversion and supported staged-file intake; preserve the source and keep networked or billable conversion opt-in.
-- Resolve slash commands through root `CODEX_COMMANDS.md`.
-- Prefer promoted Codex skills when present.
-- Use the Codex in-app Browser first for local apps, rendered UI checks, localhost demos, screenshots, click-through validation, and page inspection.
-- Use an external browser only for a concrete reason: explicit user request, required user profile/cookies/extensions/SSO, browser-specific reproduction, Codex Browser unavailable/unable to reach the target after a reasonable attempt, or permissions/downloads/OS integration the Codex Browser cannot provide.
-- When using an external browser, state the reason briefly and keep the action scoped to that need.
-- Do not commit generated runtime adapter directories.
+# Discovery: gemini/cursor adapter dirs are sync-generated mirrors of .agent/
+# and contribute nothing unique to omp sessions. Keep claude (dotcontext MCP,
+# slash commands) and codex (beats-* skills, personal guardrails) enabled.
+# This only affects omp; Antigravity/Cursor still read their own adapter dirs.
+disabledProviders:
+  - gemini
+  - cursor
 """
 
 
-def render_kilocode_rules() -> str:
-    return """# Kilocode Runtime Notes
-
-Generated locally by `system/scripts/sync_cli_adapters.py`.
-
-## Slash Command Dispatch
-
-- If the user's first non-whitespace token is `/command`: resolve it to `.agent/workflows/<command>.md` and execute that workflow with the remaining input.
-- If no workflow exists, report an unknown command and suggest `/help`.
-
-## Runtime Notes
-
-- Treat `.agent/` as canonical. The synced copies under `.kilocode/` (agents, rules, skills, templates, workflows) exist only for runtime discovery.
-- Detailed operating rules live in `.kilocode/rules/` (synced from `.agent/rules/`). Load `GEMINI.md` there first for the agent contract.
-- Load `.kilocode/rules/ACTION_FIRST_OUTPUT.md` for user-facing responses and `.kilocode/skills/markitdown/SKILL.md` for file-to-Markdown conversion.
-- Agent frontmatter in `.kilocode/agents/` is normalized to Kilocode's tool-map format during sync.
-- Do not commit generated runtime adapter directories.
-"""
+IGNORE_MANIFEST = AGENT_DIR / "ignore-manifest.txt"
 
 
-def render_claude_runtime() -> str:
-    return """# Claude Code Adapter
-
-Generated locally by `system/scripts/sync_cli_adapters.py`.
-
-Use `.agent/` as the source of truth. Claude command files under `.claude/commands/`
-should only point back to `.agent/workflows/`. Promoted project skills live under
-`.claude/skills/`.
-Load `.agent/rules/ACTION_FIRST_OUTPUT.md` for every user-facing response and
-`.agent/skills/markitdown/SKILL.md` for file-to-Markdown conversion.
-"""
+def load_ignore_patterns() -> list[str]:
+    patterns = []
+    for line in read_text(IGNORE_MANIFEST).splitlines():
+        line = line.strip()
+        if line and not line.startswith("#"):
+            patterns.append(line)
+    return patterns
 
 
-def render_claude_command(workflow: Path) -> str:
-    name = workflow.stem
-    return f"""---
-description: Run the Beats PM Kit `{name}` workflow.
-argument-hint: "[workflow input]"
----
-
-Load `.agent/workflows/{name}.md` and execute it using the user's remaining input:
-
-`$ARGUMENTS`
-"""
-
-
-def render_claude_skill(command: dict[str, str | bool | list[str]]) -> str:
-    triggers = [f"`/{command['name']}`"] + [f"`/{alias}`" for alias in command["aliases"]]
-    supporting_lines = "\n".join(
-        f"- `{path}`" for path in command["codex_supporting_files"]
-    ) or "- No extra supporting files are required by default."
-    optional_lines = "\n".join(
-        f"- `{path}`" for path in command["codex_optional_files"]
+def render_ignore_file(tool: str) -> str:
+    header = (
+        f"# {tool} ignore patterns\n"
+        "# Generated locally by `system/scripts/sync_cli_adapters.py` from\n"
+        "# `.agent/ignore-manifest.txt`. Edit the manifest, then rerun the script.\n"
+        "\n"
     )
-    contract_lines = "\n".join(
-        f"{index}. {line}" for index, line in enumerate(command["codex_execution_contract"], start=1)
-    )
-    safety_block = ""
-    if command["dangerous"]:
-        note = command["note"] or "This command changes repo state. Inspect the current checkout before running it."
-        safety_block = f"""
-## Safety
+    return header + "\n".join(load_ignore_patterns()) + "\n"
 
-- This is a state-changing project skill.
-- Treat an explicit `/{command["name"]}` invocation as execution intent.
-- {note}
-"""
-    optional_block = ""
-    if optional_lines:
-        optional_block = f"""
-## Optional Context
 
-{optional_lines}
-"""
-    contract_block = ""
-    if contract_lines:
-        contract_block = f"""
-## Execution Contract
+def render_antigravityignore() -> str:
+    return render_ignore_file("Antigravity")
 
-{contract_lines}
-"""
 
-    return f"""---
-name: {command["name"]}
-description: Run the Beats PM {" / ".join(trigger.strip("`") for trigger in triggers)} workflow in this repo.
----
-
-# {command["name"]}
-
-Generated locally by `system/scripts/sync_cli_adapters.py`.
-
-Use this skill when the user invokes {", ".join(triggers)} or asks for the matching Beats PM workflow.
-
-Execution profile: **{str(command['execution_profile']).title()}**. Resolve escalation and model inheritance through `system/scripts/model_policy.py`.
-Follow `.agent/rules/ACTION_FIRST_OUTPUT.md`; the manifest's resolved response profile remains authoritative.
-
-## Workflow
-
-1. Read `.agent/workflows/{command["name"]}.md`.
-2. Resolve the bounded manifest with `python3 system/scripts/harness_registry.py resolve /{command['name']}`.
-3. Treat these as candidate context. Load only directly relevant files, never the list wholesale, and load no more than five initially:
-
-{supporting_lines}
-{optional_block}
-{contract_block}
-{safety_block}
-4. Treat the remaining user text as workflow input when the request came from an explicit slash command.
-5. Use `compact_operator` narration during execution, then the manifest's final response profile.
-6. Follow the repo workflow instead of inventing a Claude-only variant.
-
-`$ARGUMENTS`
-"""
+def render_cursorignore() -> str:
+    return render_ignore_file("Cursor")
 
 
 def safe_is_dir(path: Path) -> bool:
@@ -420,196 +312,6 @@ def remove_path(path: Path) -> None:
         shutil.rmtree(path, ignore_errors=True)
 
 
-def copy_file_if_changed(source: Path, destination: Path) -> bool:
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    if safe_is_dir(destination):
-        remove_path(destination)
-    if destination.is_symlink():
-        remove_path(destination)
-    if safe_exists(destination):
-        try:
-            source_stat = source.stat()
-            destination_stat = destination.stat()
-            if (
-                not destination.is_symlink()
-                and source_stat.st_size == destination_stat.st_size
-                and source_stat.st_mtime_ns == destination_stat.st_mtime_ns
-            ):
-                return False
-            if not destination.is_symlink() and destination.read_bytes() == source.read_bytes():
-                return False
-        except OSError:
-            remove_path(destination)
-    shutil.copy2(source, destination)
-    return True
-
-
-def copy_tree_changed(source: Path, destination: Path) -> int:
-    changed = 0
-    if safe_exists(destination) and not safe_is_dir(destination):
-        remove_path(destination)
-        changed += 1
-    destination.mkdir(parents=True, exist_ok=True)
-
-    source_entries: set[str] = set()
-    for source_item in source.rglob("*"):
-        rel = source_item.relative_to(source)
-        source_entries.add(rel.as_posix())
-        dest_item = destination / rel
-        if source_item.is_dir():
-            if not safe_is_dir(dest_item):
-                remove_path(dest_item)
-                dest_item.mkdir(parents=True, exist_ok=True)
-                changed += 1
-        elif source_item.is_file():
-            if copy_file_if_changed(source_item, dest_item):
-                changed += 1
-
-    for dest_item in sorted(destination.rglob("*"), key=lambda item: len(item.parts), reverse=True):
-        rel = dest_item.relative_to(destination).as_posix()
-        if rel not in source_entries:
-            remove_path(dest_item)
-            changed += 1
-    return changed
-
-
-def sync_workflow_adapter_dir(destination: Path) -> int:
-    """Sync only canonical, non-ignored workflow files into a runtime adapter."""
-    changed = 0
-    if safe_exists(destination) and not safe_is_dir(destination):
-        remove_path(destination)
-        changed += 1
-    destination.mkdir(parents=True, exist_ok=True)
-
-    expected = {path.name for path in workflow_files()}
-    for source in workflow_files():
-        if copy_file_if_changed(source, destination / source.name):
-            changed += 1
-
-    for dest_item in sorted(destination.rglob("*"), key=lambda item: len(item.parts), reverse=True):
-        rel = dest_item.relative_to(destination).as_posix()
-        if rel not in expected:
-            remove_path(dest_item)
-            changed += 1
-    return changed
-
-def normalize_kilocode_agent_frontmatter(content: str) -> str:
-    lines = content.splitlines()
-    if not lines or lines[0] != "---":
-        return content
-
-    normalized: list[str] = []
-    in_frontmatter = True
-    changed = False
-    for index, line in enumerate(lines):
-        if index > 0 and line == "---":
-            in_frontmatter = False
-            normalized.append(line)
-            continue
-        if in_frontmatter and line.startswith("tools:") and "," in line:
-            tools = [tool.strip() for tool in line.split(":", 1)[1].split(",") if tool.strip()]
-            normalized.append("tools:")
-            normalized.extend(f"  {tool}: true" for tool in tools)
-            changed = True
-            continue
-        normalized.append(line)
-
-    if not changed:
-        return content
-    suffix = "\n" if content.endswith("\n") else ""
-    return "\n".join(normalized) + suffix
-
-
-def normalize_kilocode_agents(path: Path) -> int:
-    if not safe_is_dir(path):
-        return 0
-    changed = 0
-    for agent_file in sorted(path.glob("*.md")):
-        normalized = normalize_kilocode_agent_frontmatter(read_text(agent_file))
-        if write_if_changed(agent_file, normalized):
-            changed += 1
-    return changed
-
-
-def ensure_local_copy(path: Path, target: Path) -> str:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if target.is_dir():
-        changed = copy_tree_changed(target, path)
-        return "unchanged" if changed == 0 else f"synced {changed}"
-    changed = copy_file_if_changed(target, path)
-    return "updated" if changed else "unchanged"
-
-
-CLAUDE_SKILL_MARKER = "Generated locally by `system/scripts/sync_cli_adapters.py`."
-
-
-def prune_stale_claude_skills(skills_dir: Path, expected_names: set[str]) -> list[str]:
-    """Remove only generated skill entrypoints that are no longer promoted."""
-    removed: list[str] = []
-    for skill_dir in sorted(skills_dir.iterdir()):
-        if skill_dir.name in expected_names or not safe_is_dir(skill_dir):
-            continue
-        skill_path = skill_dir / "SKILL.md"
-        if not skill_path.is_file():
-            continue
-        try:
-            is_generated = CLAUDE_SKILL_MARKER in read_text(skill_path)
-        except OSError:
-            continue
-        if not is_generated:
-            continue
-        remove_path(skill_path)
-        if not any(skill_dir.iterdir()):
-            remove_path(skill_dir)
-        removed.append(skill_dir.name)
-    return removed
-
-
-def sync_runtime_links() -> list[str]:
-    messages: list[str] = []
-    for adapter, entries in CORE_ADAPTER_DIRS.items():
-        for name, target in entries.items():
-            if target == AGENT_DIR / "workflows":
-                changed = sync_workflow_adapter_dir(ROOT / adapter / name)
-                status = "unchanged" if changed == 0 else f"synced {changed}"
-            else:
-                status = ensure_local_copy(ROOT / adapter / name, target)
-                if adapter == ".kilocode" and name == "agents":
-                    normalized = normalize_kilocode_agents(ROOT / adapter / name)
-                    if normalized:
-                        status = f"{status}; normalized {normalized}"
-            messages.append(f"{adapter}/{name}: {status}")
-
-    commands_dir = ROOT / ".claude" / "commands"
-    if safe_exists(commands_dir) and not safe_is_dir(commands_dir):
-        remove_path(commands_dir)
-    commands_dir.mkdir(parents=True, exist_ok=True)
-    expected_commands = {f"{workflow.stem}.md" for workflow in workflow_files()}
-    for workflow in workflow_files():
-        changed = write_if_changed(commands_dir / f"{workflow.stem}.md", render_claude_command(workflow))
-        messages.append(f".claude/commands/{workflow.stem}.md: {'updated' if changed else 'unchanged'}")
-    for command_file in sorted(commands_dir.glob("*.md")):
-        if command_file.name not in expected_commands:
-            remove_path(command_file)
-            messages.append(f".claude/commands/{command_file.name}: removed")
-
-    skills_dir = ROOT / ".claude" / "skills"
-    if safe_exists(skills_dir) and not safe_is_dir(skills_dir):
-        remove_path(skills_dir)
-    skills_dir.mkdir(parents=True, exist_ok=True)
-    promoted_commands = get_promoted_command_catalog()
-    expected_skill_dirs = {str(command["name"]) for command in promoted_commands}
-    for command in promoted_commands:
-        skill_dir = skills_dir / str(command["name"])
-        skill_path = skill_dir / "SKILL.md"
-        skill_dir.mkdir(parents=True, exist_ok=True)
-        changed = write_if_changed(skill_path, render_claude_skill(command))
-        messages.append(f".claude/skills/{command['name']}/SKILL.md: {'updated' if changed else 'unchanged'}")
-    for skill_name in prune_stale_claude_skills(skills_dir, expected_skill_dirs):
-        messages.append(f".claude/skills/{skill_name}/SKILL.md: removed stale generated entrypoint")
-    return messages
-
-
 def render_summary() -> str:
     return (
         "Adapter sync complete: "
@@ -623,6 +325,9 @@ def main() -> int:
     if not AGENT_DIR.exists():
         print(f"missing canonical .agent directory: {AGENT_DIR}", file=sys.stderr)
         return 1
+    if not IGNORE_MANIFEST.exists():
+        print(f"missing canonical ignore manifest: {IGNORE_MANIFEST}", file=sys.stderr)
+        return 1
 
     derived_changed = generate_registry_docs.write_generated_files(ROOT)
     generated = {
@@ -630,10 +335,9 @@ def main() -> int:
         ROOT / "CLAUDE.md": render_claude_md(),
         ROOT / "GEMINI.md": render_gemini_md(),
         ROOT / "CODEX_COMMANDS.md": render_codex_commands(),
-        ROOT / ".codex" / "rules.md": render_codex_rules(),
-        ROOT / ".kilocode" / "rules.md": render_kilocode_rules(),
-        ROOT / ".claude" / "CLAUDE.md": render_claude_runtime(),
-        ROOT / ".gemini" / "GEMINI.md": render_gemini_md(),
+        ROOT / ".omp" / "config.yml": render_omp_config(),
+        ROOT / ".antigravityignore": render_antigravityignore(),
+        ROOT / ".cursorignore": render_cursorignore(),
     }
 
     changed = []
@@ -641,7 +345,6 @@ def main() -> int:
         if write_if_changed(path, content):
             changed.append(relative(path))
 
-    link_messages = sync_runtime_links()
     print(render_summary())
     if changed:
         print("Updated files:")
@@ -651,8 +354,6 @@ def main() -> int:
         print("No tracked adapter stubs changed.")
     for path in derived_changed:
         print(f"  - {path}: regenerated from command registry")
-    for message in link_messages:
-        print(f"  - {message}")
     return 0
 
 

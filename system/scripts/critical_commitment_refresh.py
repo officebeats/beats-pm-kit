@@ -323,13 +323,25 @@ def parse_date(text: str) -> dt.date | None:
         return None
 
 
+def _personal_manager_terms() -> list[str]:
+    """Optional local-only direct-manager terms from .beats/personal-terms.json."""
+    try:
+        raw = json.loads(
+            (ROOT / ".beats" / "personal-terms.json").read_text(encoding="utf-8")
+        )
+        terms = raw.get("direct_manager_terms", [])
+        return [str(t).lower() for t in terms] if isinstance(terms, list) else []
+    except (OSError, ValueError):
+        return []
+
+
 def authority_tier(text: str, source: str) -> str:
     lower = f"{source} {text}".lower()
     if any(term in lower for term in ["ceo", "cpo", "cto", "president", "svp", "evp"]):
         return "executive"
     if any(term in lower for term in ["skip-level", "skip level", "boss's boss", "vp "]):
         return "skip_level"
-    if any(term in lower for term in ["boss", "direct manager", "manager", "manager"]):
+    if any(term in lower for term in ["boss", "direct manager", "manager", *_personal_manager_terms()]):
         return "direct_manager"
     if any(term in lower for term in ["director", "leader", "leadership"]):
         return "authorized_leader"

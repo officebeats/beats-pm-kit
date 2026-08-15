@@ -37,13 +37,6 @@ class TestCodexBrowserFirstPolicy(unittest.TestCase):
         self.assertIn("Do not default to macOS `open`, Chrome, Edge, Safari, Computer Use, or standalone Playwright", content)
         self.assertIn("State the reason briefly before using the external browser", content)
 
-    def test_generated_codex_rules_include_browser_first_policy(self):
-        content = sync_cli_adapters.render_codex_rules()
-
-        self.assertIn("Use the Codex in-app Browser first", content)
-        self.assertIn("Use an external browser only for a concrete reason", content)
-        self.assertIn("state the reason briefly", content)
-
 
 if __name__ == "__main__":
     unittest.main()

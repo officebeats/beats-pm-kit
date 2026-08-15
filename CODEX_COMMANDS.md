@@ -40,7 +40,6 @@ matching slash-command workflow.
 | `/obsidian` | `.agent/workflows/obsidian.md` | Fast | Native skill `beats-obsidian` |
 | `/office-cli` | `.agent/workflows/office-cli.md` | Fast | Native skill `beats-office-cli` |
 | `/pack` | `.agent/workflows/pack.md` | Fast | Native skill `beats-pack` |
-| `/manager-weekly-update` | `.agent/workflows/manager-weekly-update.md` | Deep | Dispatch only |
 | `/paste` | `.agent/workflows/paste.md` | Fast | Native skill `beats-paste` |
 | `/plan` | `.agent/workflows/plan.md` | Deep | Native skill `beats-plan` |
 | `/prep` | `.agent/workflows/prep.md` | Balanced | Dispatch only |

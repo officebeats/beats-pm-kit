@@ -43,11 +43,8 @@ class TestActionFirstOutputPolicy(unittest.TestCase):
     def test_runtime_adapter_renderers_reference_canonical_policy(self):
         rendered = {
             "agents": sync_cli_adapters.render_agents_md(),
-            "codex_rules": sync_cli_adapters.render_codex_rules(),
             "gemini": sync_cli_adapters.render_gemini_md(),
             "claude": sync_cli_adapters.render_claude_md(),
-            "claude_runtime": sync_cli_adapters.render_claude_runtime(),
-            "kilocode": sync_cli_adapters.render_kilocode_rules(),
         }
 
         for adapter, content in rendered.items():

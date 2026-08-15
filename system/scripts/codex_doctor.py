@@ -28,8 +28,9 @@ force_utf8_stdio()
 
 GENERATED_FILES = [
     "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
     "CODEX_COMMANDS.md",
-    ".codex/rules.md",
 ]
 
 

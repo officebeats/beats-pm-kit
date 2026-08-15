@@ -31,7 +31,6 @@ class TestCodexAdapter(unittest.TestCase):
             ROOT_DIR / "CLAUDE.md",
             ROOT_DIR / "GEMINI.md",
             ROOT_DIR / "CODEX_COMMANDS.md",
-            ROOT_DIR / ".codex" / "rules.md",
         ]
         if any(not path.exists() for path in generated_files):
             sync_cli_adapters.main()
@@ -41,7 +40,6 @@ class TestCodexAdapter(unittest.TestCase):
         cls.workflow_names = [name for name, _ in cls.workflow_meta]
         cls.command_index = (ROOT_DIR / "CODEX_COMMANDS.md").read_text(encoding="utf-8")
         cls.agents_md = (ROOT_DIR / "AGENTS.md").read_text(encoding="utf-8")
-        cls.codex_rules = (ROOT_DIR / ".codex" / "rules.md").read_text(encoding="utf-8")
 
     def test_codex_command_index_exists(self):
         """Codex must have an explicit slash-command routing table."""
@@ -106,44 +104,16 @@ class TestCodexAdapter(unittest.TestCase):
             with self.subTest(command=command):
                 self.assertIn(f"`/{command}`", rendered)
 
-    def test_claude_obsidian_skill_is_generated_as_a_native_project_skill(self):
-        """Claude Code should receive /obsidian as a lazy project skill, not only a command shim."""
-        command = next(item for item in self.command_catalog if item["name"] == "obsidian")
-        content = sync_cli_adapters.render_claude_skill(command)
-
-        self.assertIn("name: obsidian", content)
-        self.assertIn(".agent/workflows/obsidian.md", content)
-        self.assertIn("$ARGUMENTS", content)
-        self.assertIn("5. Trackers/TASK_MASTER.md", content)
-
-    def test_claude_skill_cleanup_removes_only_stale_generated_entrypoints(self):
-        """Adapter sync should remove stale generated skills without deleting user-authored skills or assets."""
+    def test_adapter_generation_is_idempotent(self):
+        """Re-rendering an adapter must be deterministic and skip identical rewrites."""
         with tempfile.TemporaryDirectory() as tmp:
-            skills_dir = Path(tmp)
-            stale = skills_dir / "stale"
-            stale.mkdir()
-            (stale / "SKILL.md").write_text(
-                "Generated locally by `system/scripts/sync_cli_adapters.py`.\n",
-                encoding="utf-8",
+            target = Path(tmp) / "AGENTS.md"
+            self.assertTrue(
+                sync_cli_adapters.write_if_changed(target, sync_cli_adapters.render_agents_md())
             )
-            (stale / "notes.md").write_text("keep me\n", encoding="utf-8")
-            custom = skills_dir / "custom"
-            custom.mkdir()
-            (custom / "SKILL.md").write_text("# User-authored skill\n", encoding="utf-8")
-
-            removed = sync_cli_adapters.prune_stale_claude_skills(skills_dir, {"obsidian"})
-
-            self.assertEqual(removed, ["stale"])
-            self.assertFalse((stale / "SKILL.md").exists())
-            self.assertTrue((stale / "notes.md").exists())
-            self.assertTrue((custom / "SKILL.md").exists())
-
-    def test_codex_rules_enforce_slash_command_dispatch(self):
-        """The Codex runtime notes must preserve explicit command routing."""
-        self.assertIn("## Slash Command Dispatch", self.codex_rules)
-        self.assertIn("follow the explicit dispatch rule in `CODEX_COMMANDS.md`", self.codex_rules)
-        self.assertIn("If the user's first non-whitespace token is `/command`:", self.codex_rules)
-        self.assertIn("If no workflow exists, report an unknown command and suggest `/help`", self.codex_rules)
+            self.assertFalse(
+                sync_cli_adapters.write_if_changed(target, sync_cli_adapters.render_agents_md())
+            )
 
     def test_beats_resolve_workflow_known_command(self):
         """beats.resolve_workflow should map /day to the workflow file."""
@@ -193,6 +163,7 @@ class TestCodexAdapter(unittest.TestCase):
         visibility = codex_doctor._skill_visibility()
 
         self.assertNotIn("CODEX_PROMPT.md", codex_doctor.GENERATED_FILES)
+        self.assertNotIn(".codex/rules.md", codex_doctor.GENERATED_FILES)
         self.assertIn("personal_memory", codex_doctor.run_checks())
         self.assertEqual(
             visibility["expected_count"],

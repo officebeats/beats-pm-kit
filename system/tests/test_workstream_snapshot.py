@@ -24,14 +24,14 @@ class TestWorkstreamSnapshot(unittest.TestCase):
             (tracker / "WORKSTREAMS.md").write_text(
                 "| Workstream | Latest Outcome | Completed Outcome | Open Items | Recommended Next 3 | Status |\n"
                 "|:-----------|:---------------|:------------------|:-----------|:-------------------|:-------|\n"
-                "| the product API partner routing | 2026-06-28: decision rule drafted | None newly confirmed | 1 Slack ask | Confirm owner; draft outcome; update tracker | Active |\n",
+                "| Partner API routing | 2026-06-28: decision rule drafted | None newly confirmed | 1 Slack ask | Confirm owner; draft outcome; update tracker | Active |\n",
                 encoding="utf-8",
             )
 
             items, note = workstream_snapshot.build_snapshot(root, "day", 5)
             rendered = workstream_snapshot.render_markdown(items, source_note=note)
 
-            self.assertIn("### the product API partner routing", rendered)
+            self.assertIn("### Partner API routing", rendered)
             self.assertIn("- Latest outcome: 2026-06-28: decision rule drafted", rendered)
             self.assertIn("  - Confirm owner", rendered)
 
@@ -57,7 +57,7 @@ class TestWorkstreamSnapshot(unittest.TestCase):
             (critical / "boss-requests.md").write_text(
                 "| ID | Date | Task | Source |\n"
                 "|:---|:-----|:-----|:-------|\n"
-                "| BOSS-001 | 2026-05-07 | Define user stories for the product API sandbox tracking \"Re: old subject\" | boss |\n",
+                "| BOSS-001 | 2026-05-07 | Define user stories for partner API sandbox tracking \"Re: old subject\" | boss |\n",
                 encoding="utf-8",
             )
 
@@ -66,7 +66,7 @@ class TestWorkstreamSnapshot(unittest.TestCase):
 
             self.assertIn("falls back to ranked local task commitments", note)
             self.assertIn("### Define exception intake checklist", rendered)
-            self.assertIn("### Define user stories for the product API sandbox tracking", rendered)
+            self.assertIn("### Define user stories for partner API sandbox tracking", rendered)
             self.assertNotIn("### PLAN-048", rendered)
             self.assertNotIn("### BOSS-001", rendered)
             self.assertNotIn("Re: old subject", rendered)

@@ -3,6 +3,7 @@
  * active .agent skill tree.
  */
 
+import { execFileSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -47,6 +48,30 @@ function descriptionFromMarkdown(content) {
   return tableCell(continuation.join(' '));
 }
 
+/**
+ * Drop git-ignored paths so local-only content (private skills, personal
+ * workflows) never enters the public docs. Outside a git checkout every
+ * path is kept — mirrors _visible_paths in system/scripts/feature_inventory.py.
+ */
+function visiblePaths(paths) {
+  if (paths.length === 0) return [];
+  let stdout;
+  try {
+    stdout = execFileSync('git', ['check-ignore', '--stdin', '-z'], {
+      cwd: KIT_ROOT,
+      input: paths.join('\0') + '\0',
+      maxBuffer: 16 * 1024 * 1024,
+    });
+  } catch (error) {
+    // Exit status 1 = no path is ignored; anything else (128 = not a repo,
+    // ENOENT = git missing) keeps every path.
+    if (error.status !== 1) return paths;
+    stdout = error.stdout ?? Buffer.alloc(0);
+  }
+  const ignored = new Set(stdout.toString('utf-8').split('\0').filter(Boolean));
+  return paths.filter((candidate) => !ignored.has(candidate));
+}
+
 function replaceGeneratedBlock(file, marker, markdown) {
   const target = path.join(DOCS_ROOT, file);
   const content = fs.readFileSync(target, 'utf-8');
@@ -76,16 +101,16 @@ function writeGenerated(target, content) {
 
 function generateSkillsIndex() {
   const skillsDir = path.join(KIT_ROOT, '.agent', 'skills');
-  const skills = fs
+  const manifests = fs
     .readdirSync(skillsDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
-    .map((entry) => {
-      const skillFile = path.join(skillsDir, entry.name, 'SKILL.md');
-      if (!fs.existsSync(skillFile)) return null;
-      const content = fs.readFileSync(skillFile, 'utf-8');
-      return { name: entry.name, description: descriptionFromMarkdown(content) };
-    })
-    .filter(Boolean)
+    .map((entry) => path.join(skillsDir, entry.name, 'SKILL.md'))
+    .filter((skillFile) => fs.existsSync(skillFile));
+  const skills = visiblePaths(manifests)
+    .map((skillFile) => ({
+      name: path.basename(path.dirname(skillFile)),
+      description: descriptionFromMarkdown(fs.readFileSync(skillFile, 'utf-8')),
+    }))
     .sort((left, right) => left.name.localeCompare(right.name));
 
   const rows = skills.map(

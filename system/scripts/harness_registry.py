@@ -14,6 +14,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
+from system.scripts.feature_inventory import _visible_paths as visible_paths  # noqa: E402
 from system.utils.command_registry import (  # noqa: E402
     build_command_catalog,
     get_harness_policy,
@@ -209,7 +210,8 @@ def audit_budgets(root: Path = ROOT) -> dict[str, Any]:
             {"kind": "registry", "tokens": registry["estimated_tokens"], "budget": budgets["registry_tokens"]}
         )
 
-    for path in sorted((root / ".agent" / "skills").glob("*/SKILL.md")):
+    skill_manifests = sorted((root / ".agent" / "skills").glob("*/SKILL.md"))
+    for path in visible_paths(skill_manifests, cwd=root):
         relative = path.relative_to(root).as_posix()
         tokens = estimate_tokens(path.read_text(encoding="utf-8", errors="replace"))
         measurements["skills"][relative] = tokens

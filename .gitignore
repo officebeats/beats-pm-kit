@@ -133,15 +133,16 @@ requirements.txt
 /tests/security_scan.sh
 *.csv
 *.pdf
-/the company-Prior-Auth-MVP-PID.md
+/*-Prior-Auth-MVP-PID.md
 /test_playwright_edge.py
 /system/scripts/workstream_backfill.py
-/.agent/workflows/manager-weekly-update.md
+/.agent/workflows/*-weekly-update.md
 
 # Loose sensitive files (catch-all for raw notes, transcripts, scratch)
-manager_notes_clean.txt
+*_notes_clean.txt
 *.txt
 !/system/**/*.txt
+!/.agent/ignore-manifest.txt
 /scratch/
 
 # ----------------------------------------
@@ -289,3 +290,18 @@ system/task-viewer/node_modules/
 
 # Obsidian graph refactor backups and review artifacts (generated)
 .graph-refactor/
+
+
+
+
+# Ignore Smart Environment folder
+.smart-env
+# iCloud conflict artifacts + derived working files (storage policy 2026-08-15)
+* 2
+* 2.*
+*_work/
+*.inspect.ndjson
+
+# Personal working drafts and person-specific local tooling (never publish)
+/drafts/
+/system/scripts/validate_*_weekly_artifacts.py

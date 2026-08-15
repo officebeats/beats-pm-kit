@@ -61,12 +61,7 @@ def validate_generated_adapters(
     if codex_rows != expected_rows:
         errors.append("CODEX_COMMANDS.md rows do not exactly match the command catalog")
 
-    adapter_dirs = [
-        ".codex/workflows",
-        ".gemini/workflows",
-        ".kilocode/workflows",
-        ".claude/commands",
-    ]
+    adapter_dirs: list[str] = []
     for rel_path in adapter_dirs:
         adapter_dir = root / rel_path
         if not adapter_dir.exists():

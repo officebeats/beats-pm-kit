@@ -6,6 +6,7 @@ import json
 import unittest
 from pathlib import Path
 
+from system.scripts import feature_inventory
 from system.scripts import generate_registry_docs
 from system.scripts import upgrade_compat
 from system.utils import config
@@ -36,6 +37,7 @@ class TestRegistryDocs(unittest.TestCase):
 
     def test_manifest_counts_match_canonical_files(self):
         manifest = json.loads((ROOT / ".agent" / "MANIFEST.json").read_text(encoding="utf-8"))
+        inventory = feature_inventory.collect_inventory(ROOT)
 
         self.assertEqual(manifest["schema_version"], 3)
         self.assertEqual(manifest["harness"]["routing"]["strategy"], "one-level")
@@ -43,12 +45,11 @@ class TestRegistryDocs(unittest.TestCase):
             manifest["harness"]["primary_runtimes"],
             ["antigravity", "codex", "claude"],
         )
-        self.assertEqual(manifest["agents"]["count"], len(list((ROOT / ".agent" / "agents").glob("*.md"))))
+        self.assertEqual(manifest["agents"]["count"], inventory["agents"]["count"])
+        self.assertEqual(manifest["agents"]["names"], inventory["agents"]["names"])
         self.assertEqual(manifest["workflows"]["count"], len(build_command_catalog(ROOT)))
-        self.assertEqual(
-            manifest["skills"]["count"],
-            len(list((ROOT / ".agent" / "skills").glob("*/SKILL.md"))),
-        )
+        self.assertEqual(manifest["skills"]["count"], inventory["skills"]["count"])
+        self.assertEqual(manifest["skills"]["names"], inventory["skills"]["names"])
 
     def test_compatibility_table_covers_registry_runtimes(self):
         registry = load_command_registry(ROOT)

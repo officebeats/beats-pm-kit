@@ -680,7 +680,7 @@ tags:
 - [[3. Meetings]]
 - [[5. Trackers/graph-hubs/Human-readable Hubs|Human-readable Hubs]]
 - [[5. Trackers/graph-hubs/Workstream Hubs|Workstream Hubs]]
-- [[5. Trackers/graph-hubs/Partner and the product Tasks|Partner and the product Tasks]]
+- [[5. Trackers/graph-hubs/Other Active Tasks|Other Active Tasks]]
 
 ## Core Workflows
 

@@ -6,8 +6,7 @@
       "antigravity",
       "codex",
       "claude",
-      "gemini",
-      "kilocode"
+      "gemini"
     ],
     "unknown_capabilities": "deny",
     "allow_cross_provider": false,
@@ -17,8 +16,7 @@
       "antigravity": ".agent/rules/GEMINI.md",
       "codex": "AGENTS.md",
       "claude": "CLAUDE.md",
-      "gemini": "GEMINI.md",
-      "kilocode": ".kilocode/rules.md"
+      "gemini": "GEMINI.md"
     }
   },
   "harness": {
@@ -30,8 +28,7 @@
       "claude"
     ],
     "compatibility_runtimes": [
-      "gemini",
-      "kilocode"
+      "gemini"
     ],
     "execution_loop": [
       "route",
@@ -191,7 +188,6 @@
       "fan-out",
       "improve-plan",
       "interview",
-      "manager-weekly-update",
       "plan",
       "prioritize",
       "review",

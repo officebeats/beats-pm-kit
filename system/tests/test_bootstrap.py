@@ -10,27 +10,46 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent.parent
 
 
+def _gitignored_names(directory: str, names: list[str]) -> set[str]:
+    """Names under `directory` that the source checkout git-ignores.
+
+    Local-only content (private skills, personal workflows, caches) is
+    gitignored in the source repo and must never reach the public fixture.
+    """
+    if not names:
+        return set()
+    candidates = [str(Path(directory) / name) for name in names]
+    try:
+        proc = subprocess.run(
+            ["git", "check-ignore", "--stdin", "-z"],
+            cwd=ROOT,
+            input=b"\x00".join(path.encode() for path in candidates) + b"\x00",
+            capture_output=True,
+            timeout=10,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return set()
+    if proc.returncode not in (0, 1):
+        return set()
+    ignored = set(proc.stdout.split(b"\x00")) - {b""}
+    return {name for name, path in zip(names, candidates) if path.encode() in ignored}
+
+
 def copy_public_repo_subset(destination: Path) -> None:
-    def ignore_agent(path, names):
-        ignored = set()
-        if path.endswith(".agent"):
-            ignored.add("archive")
-        if path.endswith(".agent/skills"):
-            ignored.add("partner-deck-builder")
-        if path.endswith(".agent/skills/reasoning-qa-test-runner"):
-            ignored.add("CODEX_CWINT_REASONING_QA.md")
-        ignored.update({"__pycache__", ".DS_Store"})
+    def ignore_local_only(path, names):
+        ignored = {"__pycache__", ".pytest_cache", ".DS_Store", "test_logs"}
+        ignored |= _gitignored_names(path, names)
         return ignored & set(names)
 
     shutil.copytree(
         ROOT / ".agent",
         destination / ".agent",
-        ignore=ignore_agent,
+        ignore=ignore_local_only,
     )
     shutil.copytree(
         ROOT / "system",
         destination / "system",
-        ignore=shutil.ignore_patterns("__pycache__", ".pytest_cache", "test_logs"),
+        ignore=ignore_local_only,
     )
     for name in [
         ".antigravityignore",
@@ -110,7 +129,17 @@ class TestBootstrapRealUse(unittest.TestCase):
             self.assertTrue((clone / ".beats" / "test-logs").is_dir())
             self.assertTrue((clone / ".beats" / "initialized").exists())
             self.assertTrue((clone / "5. Trackers").is_dir())
-            self.assertTrue((clone / ".codex" / "workflows").is_dir())
+            for generated in [
+                "AGENTS.md",
+                "CLAUDE.md",
+                "GEMINI.md",
+                "CODEX_COMMANDS.md",
+                ".omp/config.yml",
+                ".antigravityignore",
+                ".cursorignore",
+            ]:
+                self.assertTrue((clone / generated).is_file(),
+                                f"sync_cli_adapters did not generate {generated}")
             self.assertTrue(any(codex_output.glob("beats-*/SKILL.md")))
             obsidian_step = next(step for step in payload["next_steps"] if "Obsidian" in step)
             self.assertIn("/obsidian", obsidian_step)

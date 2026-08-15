@@ -188,7 +188,7 @@ def index_content() -> str:
 
 - [[5. Trackers/graph-hubs/Human-readable Hubs|Human-readable Hubs]]
 - [[5. Trackers/graph-hubs/Workstream Hubs|Workstream Hubs]]
-- [[5. Trackers/graph-hubs/Partner and the product Tasks|Partner and the product Tasks]]
+- [[5. Trackers/graph-hubs/Other Active Tasks|Other Active Tasks]]
 - [[5. Trackers/graph-hubs/Meeting Evidence|Meeting Evidence]]
 
 ## Operating Areas

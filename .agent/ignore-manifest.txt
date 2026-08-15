@@ -1,0 +1,103 @@
+# Canonical agent-runtime ignore manifest
+# =========================================
+# Single source of truth for what AI runtimes should NOT index.
+# Generated consumers: .antigravityignore, .cursorignore
+# (rendered by system/scripts/sync_cli_adapters.py — edit HERE, then rerun it).
+#
+# Goal: keep context windows lean; load data on demand.
+# NOTE: ignoring does NOT block access — agents can still read
+# these files when explicitly asked.
+#
+# Syntax: gitignore-style patterns. Lines starting with # and
+# blank lines are stripped before rendering.
+
+# --- Standard dev excludes ---
+node_modules/
+dist/
+build/
+.git/
+.DS_Store
+Thumbs.db
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.bak
+*.log
+
+# --- Large media / binary files ---
+*.mp4
+*.mov
+*.wav
+*.mp3
+*.zip
+*.tar.gz
+
+# --- iCloud conflict artifacts (storage policy 2026-08-15) ---
+* 2
+* 2.*
+
+# --- Symlink double-scan prevention ---
+# .agent/ is the single canonical source of truth; these mirror it
+# and cause 2x-6x duplicate scanning of agents, skills, workflows.
+.agents/
+_agent/
+_agents/
+.gemini/agents/
+.gemini/skills/
+.gemini/workflows/
+.gemini/templates/
+.claude/
+.kilocode/
+
+# --- Local tool state & caches ---
+.smart-env/
+.graph-refactor/
+.obsidian/
+.beats/cache/
+system/cache/
+tmp/
+scratch/
+outputs/
+artifacts/
+
+# --- Non-essential root files (readable on demand) ---
+AGENT_FLOW.md
+README.md
+CHANGELOG.md
+Feb24.md
+Feb25.md
+
+# --- System build artifacts & tooling (apps, not PM working files) ---
+system/task-viewer/
+system/docs-site/
+system/pm-dashboard/
+system/dashboard/
+system/test_logs/
+system/extensions/
+system/examples/
+system/reports/
+system/debug_schema.txt
+
+# --- Large data folders (excluded from initial indexing) ---
+Z Archive/
+0. Incoming/raw/
+/3. Meetings/archive/**
+!/3. Meetings/archive/.gitkeep
+
+# --- Legacy folders (deleted — ignore if present) ---
+/BUGS/
+/CRITICAL/
+/DATA/
+/MEETINGS/
+/PEOPLE/
+/PROJECTS/
+/STRATEGY/
+/_INBOX/
+/_QUEUE/
+/00-DROP-FILES-HERE-00/
+
+# --- Intentionally NOT ignored ---
+# SETTINGS.md, STATUS.md, .agent/ (canonical — single scan),
+# .gemini/GEMINI.md (Gemini runtime rules), system/scripts/,
+# system/config.json, folders 1-8 (PM working data).

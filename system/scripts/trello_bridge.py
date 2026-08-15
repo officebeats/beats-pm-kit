@@ -838,6 +838,18 @@ def recent_activity_rows(actions: list[dict[str, Any]], limit: int = 10) -> list
     return rows
 
 
+def _personal_label_boosts() -> dict[str, int]:
+    """Optional local-only label boosts from .beats/personal-terms.json."""
+    try:
+        raw = json.loads(
+            (BASE_DIR / ".beats" / "personal-terms.json").read_text(encoding="utf-8")
+        )
+        boosts = raw.get("trello_label_boosts", {})
+        return {str(k): int(v) for k, v in boosts.items()} if isinstance(boosts, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
 def urgency(card: dict[str, Any], lane: str) -> dict[str, Any]:
     labels = [label.get("name") or label.get("color") or "" for label in card.get("labels", [])]
     label_text = " ".join(labels).lower()
@@ -866,7 +878,6 @@ def urgency(card: dict[str, Any], lane: str) -> dict[str, Any]:
         elif delta <= 7:
             score += 15
             drivers.append("due this week")
-
     label_boosts = {
         "manager": 15,
         "p0": 35,
@@ -879,8 +890,8 @@ def urgency(card: dict[str, Any], lane: str) -> dict[str, Any]:
         "prod strategy": 8,
         "release management": 8,
         "qa": 4,
-        "the product api": 8,
     }
+    label_boosts.update(_personal_label_boosts())
     for needle, boost in label_boosts.items():
         if needle in label_text:
             score += boost

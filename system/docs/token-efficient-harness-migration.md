@@ -23,7 +23,7 @@
 | `.agent/workflows/testapi.md` | Intentionally not promoted or replayed. It is a company-specific local API workflow without a generic routed PM use case, so it remains available only in the recovery checkout. |
 | `.claudian/` session state | Not replayed; local generated runtime state is outside the core and must stay ignored. |
 | `outputs/` documents and partner artifacts | Not replayed; private/local deliverables remain in the recovery checkout. |
-| `tools/build_mcg_quickstart_devguide_style.py` | Not replayed; it is tied to local partner artifacts and is not harness infrastructure. |
+| Local partner-specific build tooling under `tools/` | Not replayed; it is tied to local partner artifacts and is not harness infrastructure. |
 
 No recovery artifact was deleted or overwritten.
 

@@ -304,33 +304,32 @@ class TestReadmeTruth(unittest.TestCase):
         cls.readme = (ROOT_DIR / "README.md").read_text(encoding='utf-8', errors='replace')
         cls.inventory = _feature_inventory()
 
-    def test_readme_preserves_requested_story_sections(self):
+    def test_readme_preserves_core_sections(self):
+        """README keeps the durable narrative sections readers navigate by."""
         sections = [
-            "AI Product Management Workflows",
-            "Built And Used Daily By An AI-Forward PM",
-            "Core Functionality",
-            "Local-First PM Task Management",
-            "Runtime-Neutral Support",
-            "Model Adaptation And Evaluation",
-            "Context Engineering For Product Managers",
+            "What It Is",
+            "Core Concepts",
+            "Supported Runtimes",
+            "Getting Started",
+            "Key Workflows",
+            "Privacy Posture",
         ]
         for section in sections:
-            self.assertIn(section, self.readme, f"README missing required section: {section}")
+            self.assertIn(f"## {section}", self.readme, f"README missing required section: {section}")
 
-    def test_readme_counts_match_feature_inventory(self):
+    def test_readme_defers_counts_to_feature_inventory(self):
+        """README must not hardcode inventory counts; the script is the source."""
         self.assertGreaterEqual(self.inventory["agents"]["count"], 8)
         self.assertGreaterEqual(self.inventory["skills"]["count"], 50)
         self.assertGreaterEqual(self.inventory["workflows"]["count"], 15)
-        count_phrases = [
-            f"{self.inventory['agents']['count']} canonical agents",
-            f"{self.inventory['skills']['count']} focused skills",
-            f"{self.inventory['workflows']['count']} workflows",
-            f"{self.inventory['codex']['promoted_skill_commands_count']} promoted Codex skills",
-            f"{self.inventory['runtimes']['count']} supported runtimes",
-            f"{len(self.inventory['execution_profiles'])} execution profiles",
-        ]
-        for phrase in count_phrases:
-            self.assertIn(phrase, self.readme)
+        self.assertIn("system/scripts/feature_inventory.py", self.readme)
+        hard_count = re.compile(
+            r"\b\d+\s+(?:canonical\s+)?(?:agents|skills|workflows|runtimes|execution profiles)\b",
+            re.IGNORECASE,
+        )
+        stale_claims = hard_count.findall(self.readme)
+        self.assertEqual(stale_claims, [],
+                         f"README hardcodes inventory counts that drift: {stale_claims}")
         for phrase in ["agents", "skills", "workflow", "local-first"]:
             self.assertIn(phrase, self.readme.lower())
 
@@ -339,14 +338,17 @@ class TestReadmeTruth(unittest.TestCase):
             self.assertIn(f"`/{command}`", self.readme)
 
     def test_readme_runtime_claims_match_registry(self):
-        for runtime in ["Antigravity", "Codex", "Gemini CLI", "Claude Code", "KiloCode"]:
-            self.assertIn(runtime, self.readme)
+        """Every runtime the registry supports is named in the README."""
+        for runtime in self.inventory["runtimes"]["names"]:
+            self.assertIn(runtime, self.readme,
+                          f"Registry supports '{runtime}' but README never mentions it")
 
     def test_readme_highlight_commands_stay_visible(self):
         for command in ["/paste", "/meet", "/boss"]:
             self.assertIn(command, self.readme)
 
     def test_readme_privacy_claims_are_scoped(self):
+        """Privacy claims stay scoped: local storage is ours, provider transmission is not."""
         forbidden = [
             "No API calls with your trade secrets",
             "Enterprise-safe from day one",
@@ -355,8 +357,9 @@ class TestReadmeTruth(unittest.TestCase):
         ]
         for phrase in forbidden:
             self.assertNotIn(phrase, self.readme)
-        self.assertIn("AI runtime/model provider", self.readme)
-        self.assertIn("Folders 1-5 are `.gitignored`", self.readme)
+        self.assertIn("gitignored", self.readme)
+        self.assertIn("never syncs your files to a cloud service", self.readme)
+        self.assertIn("provider's own settings", self.readme)
 
     def test_readme_footer_uses_officebeats_builder_note(self):
         self.assertIn("OfficeBeats", self.readme)
@@ -465,10 +468,14 @@ class TestRealWorldScenarios(unittest.TestCase):
         self.assertIn('plan', workflows, "/plan workflow missing")
 
     def test_bug_tracking_path_exists(self):
-        """PM triages bugs → bug-investigation skill + /track workflow exist."""
+        """PM triages bugs → bug-chaser skill + /track workflow exist."""
         skills = _discover_skills()
         workflows = _discover_workflows()
-        self.assertIn('bug-investigation', skills, "bug-investigation missing")
+        self.assertIn('bug-chaser', skills, "bug-chaser missing")
+        skill_md = skills['bug-chaser'] / "SKILL.md"
+        content = skill_md.read_text(encoding='utf-8', errors='replace')
+        self.assertGreater(len(content), 200,
+                           "bug-chaser SKILL.md is too short to be functional")
         self.assertIn('track', workflows, "/track workflow missing")
 
 

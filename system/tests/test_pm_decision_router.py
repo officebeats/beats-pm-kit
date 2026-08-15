@@ -20,7 +20,7 @@ class TestPMDecisionRouter(unittest.TestCase):
 
     def test_existing_task_signal_routes_to_task_update(self):
         self.assert_intent(
-            "PLAN-009 is blocked until the lead confirms the engineering DRI.",
+            "PLAN-009 is blocked until the platform lead confirms the engineering DRI.",
             "task_update",
             ".agent/workflows/track.md",
         )

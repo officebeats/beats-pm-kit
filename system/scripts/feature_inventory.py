@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -26,21 +27,46 @@ RUNTIME_DISPLAY_NAMES = {
 }
 
 
+def _visible_paths(paths: list[Path], cwd: Path) -> list[Path]:
+    """Drop git-ignored paths so local-only content never enters public inventory.
+
+    Outside a git checkout (or when git is unavailable) every path is kept.
+    """
+    if not paths:
+        return []
+    try:
+        proc = subprocess.run(
+            ["git", "check-ignore", "--stdin", "-z"],
+            cwd=cwd,
+            input=b"\x00".join(bytes(p) for p in paths) + b"\x00",
+            capture_output=True,
+            timeout=10,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return paths
+    if proc.returncode not in (0, 1):
+        return paths
+    ignored = set(proc.stdout.split(b"\x00")) - {b""}
+    return [path for path in paths if bytes(path) not in ignored]
+
+
 def _names_from_files(path: Path, pattern: str = "*.md") -> list[str]:
     if not path.exists():
         return []
-    return sorted(item.stem for item in path.glob(pattern) if item.is_file())
+    files = [item for item in path.glob(pattern) if item.is_file()]
+    return sorted(item.stem for item in _visible_paths(files, cwd=path))
 
 
 def _skill_package_names(path: Path) -> list[str]:
     """Return executable skill packages, excluding standalone reference files."""
     if not path.exists():
         return []
-    return sorted(
-        item.name
+    manifests = [
+        item / "SKILL.md"
         for item in path.iterdir()
         if item.is_dir() and not item.name.startswith(".") and (item / "SKILL.md").is_file()
-    )
+    ]
+    return sorted(manifest.parent.name for manifest in _visible_paths(manifests, cwd=path))
 
 
 def _load_command_registry() -> dict[str, Any]:

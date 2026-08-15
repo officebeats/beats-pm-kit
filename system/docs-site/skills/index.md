@@ -16,26 +16,20 @@ Each skill is a focused capability. The active index is regenerated from `.agent
 | `agentic-memory` | Local-first PM memory with canonical Markdown, compact state, and optional bounded personal recall. |
 | `agile-story-crafter` | End-to-end agile story engine. Generates user stories, splits large epics, and builds full user story maps. |
 | `ai-shaped-readiness-advisor` | Assess whether a product team is ready to use AI through evidence, bounded workflows, human judgment, and measurable operating loops. |
-| `api-design` | Design RESTful APIs following best practices. Use when Designing new API endpoints, Restructuring existing APIs, or Planning API versioning strategy |
-| `apply_patch` | Apply AI-generated code edits from a response file to the local codebase. |
 | `assumption-mapper` | Holistic risk management engine. Identifies underlying assumptions, maps them by Impact x Risk, and prioritizes experimental validation. |
 | `atlassian-context-archive` | Capture Jira and Confluence references found during Slack, Teams, Outlook, or Calendar intake by using read-only Atlassian connector fetches and saving local markdown context artifacts with full source URLs. |
-| `autopilot` | Full autonomous execution from idea to working code |
 | `boss-tracker` | Track high-priority leadership requests. |
 | `brainstorming-engine` | Unified ideation assistant for breaking down opportunities into innovative solutions for both new products and existing features. |
 | `bug-chaser` | Manage bug lifecycle and SLAs. |
-| `bug-investigation` | Investigate bugs systematically and perform root cause analysis. Use when Investigating reported bugs, Diagnosing unexpected behavior, or Finding the root cause of issues |
 | `business-strategy-suite` | Comprehensive suite of business strategy templates and canvases (Lean, Business Model, SWOT, PESTLE, Ansoff, Porter's, Value Prop). |
 | `chat-transcript-archive` | Persist scoped Slack, Teams, Outlook, and Calendar reads as searchable local communication transcripts with metadata, evidence snippets, and task-routing results. |
 | `chief-strategy-officer` | Synthesize strategic roadmaps and document key decisions. |
 | `code-review` | Review code quality, patterns, and best practices. Use when Reviewing code changes for quality, Checking adherence to coding standards, or Identifying potential bugs or issues |
-| `commit-message` | Generate commit messages that follow conventional commits and repository scope conventions. Use when Creating git commits after code changes, Writing commit messages for staged changes, or Following conventional commit format for the project |
 | `comms-crafter-suite` | Generates high-quality written assets: Press Releases, Release Notes, NDAs, EOL messages, Tutorials, and executive memos. |
 | `company-profiler` | Conducts deep-dive research to create a strategic dossier on a target company. |
 | `context-engineering-advisor` | Diagnose and redesign bloated AI context using bounded retrieval, explicit context ownership, and phase-aware compaction. |
 | `context-retriever` | The 'Recall Engine'. Fetches history, decisions, and tasks related to a person or topic. |
 | `core-utility` | System health and diagnostics. |
-| `cross-model-bridge` | Claude-Codex-Gemini tri-model orchestration via /ask codex + /ask gemini, then Claude synthesizes results |
 | `customer-interview-suite` | The complete qualitative research companion. Creates non-leading interview scripts, acts as an interview simulator, conducts deep Socratic interviews with ambiguity gating, and synthesizes transcripts. |
 | `daily-synth` | Daily briefing and planning with critical commitment preflight. |
 | `data-analytics` | Execute SQL, analyze funnels, and define success metrics. |
@@ -45,13 +39,9 @@ Each skill is a focused capability. The active index is regenerated from `.agent
 | `diagram-designer` | Editorial-quality architecture, flow, and strategy diagrams. Self-contained HTML + SVG. |
 | `discovery-engine` | Holistic product discovery framework covering problem framing, opportunity solution trees, and experiment design. |
 | `document-exporter` | Convert Markdown documents into PDF, DOCX, PPTX, or XLSX formats. Routes Office formats to OfficeCLI, PDF via Chrome. |
-| `documentation` | Generate and update technical documentation. Use when Documenting new features or APIs, Updating docs for code changes, or Creating README or getting started guides |
 | `engineering-planner` | Convert a validated request into a decision-complete, testable implementation plan grounded in the actual repository. |
 | `epic-breakdown-advisor` | Complete Epic advisory suite. Frame epics as hypotheses, break them down via Humanizing Work patterns, and decompose features into implementable tasks. |
 | `epic-hypothesis` | Frame an epic as a testable hypothesis with target user, expected outcome, and validation method. Use when defining a major initiative before roadmap, discovery, or delivery planning. |
-| `fix_plans_dropdown` | Diagnose and fix stale or missing plan entries in the Switchboard plans dropdown. |
-| `gemini_interactive` | Standardized high-fidelity protocol for interacting with the Gemini CLI. |
-| `get_kanban_state` | Instantly retrieve the list of active plans categorized by their Kanban columns (CREATED, PLAN REVIEWED, CODED, CODE REVIEWED). |
 | `growth-engine` | Unified engine for Go-To-Market strategy, market sizing, competitive intelligence, and pricing/monetization models. |
 | `inbox-processor` | The "Black Hole" for chaos. Aggressively extracts tasks from raw input, screenshots, and transcripts, then routes them to the ledger. |
 | `launch-strategy` | Build evidence-based launch strategy from positioning, readiness, channel, risk, and success-metric inputs. |
@@ -68,7 +58,6 @@ Each skill is a focused capability. The active index is regenerated from `.agent
 | `prd-author` | Author comprehensive Product Requirements Documents (PRDs) using a strict 8-section unified template, and translate requirements into JTBD Job Stories. Use when drafting new product specifications, breaking down features into Job Stories, or outlining a new feature. |
 | `product-marketer` | Create a go-to-market strategy covering marketing channels, messaging, success metrics, and launch timeline. Use when planning a product launch, creating a GTM plan from scratch, or defining a launch strategy for a new market. |
 | `product-strategy-suite` | Defines the north star of the product: vision framing, strategic canvases, and naming conventions. |
-| `refactoring` | Refactor code safely with a step-by-step approach. Use when Improving code structure without changing behavior, Reducing code duplication, or Simplifying complex logic |
 | `requirements-translator` | Create job stories using the 'When [situation], I want to [motivation], so I can [outcome]' format with detailed acceptance criteria. Use when writing job stories, creating JTBD-style backlog items, or expressing user situations and motivations. |
 | `retrospective` | Facilitate a structured sprint retrospective — what went well, what didn't, and prioritized action items with owners and deadlines. Use when running a retrospective, reflecting on a sprint, creating action items from team feedback, or learning how to run effective retros. |
 | `risk-guardian` | Systematic risk analysis for docs and plans. |

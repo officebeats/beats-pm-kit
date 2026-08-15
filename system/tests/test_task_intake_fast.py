@@ -21,7 +21,7 @@ class TestTaskIntakeFast(unittest.TestCase):
                     "",
                     "| ID | Task | Owner | Due | Status |",
                     "|:---|:-----|:------|:----|:-------|",
-                    "| [PLAN-014](tasks/PLAN-014.md) | **Review DS Guideline Recommendation work** — GLR ramp | Owner | 2026-05-13 | 🔴 Active — GLR production target needs context |",
+                    "| [PLAN-014](tasks/PLAN-014.md) | **Review guideline recommendation work** — GLR ramp | Owner | 2026-05-13 | 🔴 Active — GLR production target needs context |",
                 ]
             ),
             encoding="utf-8",
@@ -29,7 +29,7 @@ class TestTaskIntakeFast(unittest.TestCase):
         (tasks_dir / "PLAN-014.md").write_text(
             "\n".join(
                 [
-                    "# PLAN-014 — Review DS Guideline Recommendation work",
+                    "# PLAN-014 — Review guideline recommendation work",
                     "",
                     "> **Status:** 🔴 Active — GLR production target needs context",
                     "> **Owner:** Owner",
@@ -100,8 +100,8 @@ class TestTaskIntakeFast(unittest.TestCase):
         updated_task = task_file.read_text(encoding="utf-8")
         self.assertIn("Source Note", updated_task)
         self.assertIn("IAD Indicia guideline tenant configuration", updated_task)
-        self.assertIn("title: 'Review DS Guideline Recommendation work'", updated_task)
-        self.assertIn("[Review DS Guideline Recommendation work](tasks/PLAN-014.md)", task_master)
+        self.assertIn("title: 'Review guideline recommendation work'", updated_task)
+        self.assertIn("[Review guideline recommendation work](tasks/PLAN-014.md)", task_master)
         self.assertTrue(result.triage_deferred)
 
     def test_creates_candidate_task_when_match_is_low_confidence(self):

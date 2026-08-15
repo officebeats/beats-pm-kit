@@ -361,10 +361,23 @@ def area_label(area: str) -> str:
     }.get(area, area)
 
 
+def _personal_task_groups() -> dict[str, str]:
+    """Optional local-only prefix→label overrides from .beats/personal-terms.json."""
+    try:
+        raw = json.loads(
+            (ROOT / ".beats" / "personal-terms.json").read_text(encoding="utf-8")
+        )
+        groups = raw.get("task_group_prefixes", {})
+        return {str(k): str(v) for k, v in groups.items()} if isinstance(groups, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
 def task_group_label(agent_ref: str) -> str:
     prefix = agent_ref.split("-", 1)[0]
-    if prefix == "PLAN":
-        return "Partner and the product Tasks"
+    personal = _personal_task_groups().get(prefix)
+    if personal:
+        return personal
     if prefix in {"ADM", "BOSS", "CRR", "DEID", "INTRO", "P1", "P2", "PALM", "PI"}:
         return "Planning and Administration Tasks"
     return "Other Active Tasks"

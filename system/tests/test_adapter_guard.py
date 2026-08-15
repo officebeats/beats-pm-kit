@@ -52,16 +52,6 @@ class TestAdapterGuardConfig(unittest.TestCase):
 
         self.assertTrue(callable(adapter_guard.run_public_docs_check))
 
-    def test_kilocode_agent_tools_are_normalized_to_record_form(self):
-        """KiloCode rejects comma-delimited tools strings in generated agent frontmatter."""
-        from scripts import sync_cli_adapters
-
-        content = "---\nname: reviewer\ntools: Read, Grep, Bash\n---\nBody\n"
-        normalized = sync_cli_adapters.normalize_kilocode_agent_frontmatter(content)
-
-        self.assertIn("tools:\n  Read: true\n  Grep: true\n  Bash: true", normalized)
-        self.assertNotIn("tools: Read, Grep, Bash", normalized)
-
     def test_privacy_guard_enforces_private_workspace_skeletons(self):
         """Only .gitkeep files should be tracked in private workspace folders."""
         from scripts import privacy_guard
