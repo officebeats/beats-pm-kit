@@ -34,6 +34,7 @@ The registry is the only routing source of truth. Runtime adapters and this huma
 | `/obsidian` | Fast | — | Skill `beats-obsidian` |
 | `/office-cli` | Fast | — | Skill `beats-office-cli` |
 | `/pack` | Fast | — | Skill `beats-pack` |
+| `/manager-weekly-update` | Deep | — | Dispatch only |
 | `/paste` | Fast | — | Skill `beats-paste` |
 | `/plan` | Deep | — | Skill `beats-plan` |
 | `/prep` | Balanced | — | Dispatch only |

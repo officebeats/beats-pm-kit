@@ -370,6 +370,26 @@ def task_group_label(agent_ref: str) -> str:
     return "Other Active Tasks"
 
 
+WORKSTREAM_FM_RE = re.compile(r"^workstream:\s*\S+", re.MULTILINE)
+
+
+def note_has_workstream(relative: str) -> bool:
+    """True when a note is already linked from its workstream MOC.
+
+    Area hubs must exclude these notes. Re-listing every classified note in a
+    single area hub is what produced the 720-link `Meeting Evidence` star.
+    Kept deliberately cheap: reads only the frontmatter window.
+    """
+    try:
+        head = (ROOT / relative).read_text(encoding="utf-8", errors="ignore")[:800]
+    except OSError:
+        return False
+    if not head.startswith("---"):
+        return False
+    end = head.find("\n---", 3)
+    return bool(WORKSTREAM_FM_RE.search(head[3:end] if end != -1 else head))
+
+
 def render_hub(path: Path, title: str, description: str, labels: Sequence[NoteLabel]) -> str:
     rows = [
         f"# {title}",
@@ -403,18 +423,29 @@ def render_graph_hubs(labels: Sequence[NoteLabel]) -> dict[Path, str]:
         groups["Workstream Hubs"] = workstreams
 
     for item in visible:
-        if item.path.startswith(TASKS_PREFIX):
+        if item.path.startswith(TASKS_PREFIX) and not note_has_workstream(item.path):
             groups.setdefault(task_group_label(item.agent_ref), []).append(item)
 
     for item in visible:
         if item.path.startswith(TASKS_PREFIX) or item.path.startswith("5. Trackers/workstreams/"):
+            continue
+        # A note carrying `workstream:` is already linked from its workstream MOC.
+        # Listing it here too would recreate the 720-link "Meeting Evidence" star
+        # that made the graph unreadable. Area hubs are triage queues only.
+        if note_has_workstream(item.path):
             continue
         groups.setdefault(area_label(item.path.split("/", 1)[0]), []).append(item)
 
     hubs: dict[Path, str] = {}
     for title, items in sorted(groups.items()):
         path = GENERATED_HUB_PREFIX / f"{title}.md"
-        hubs[path] = render_hub(path, title, "Human-readable navigation grouped by PM workstream or operating area.", items)
+        description = (
+            "Human-readable navigation for the 8 tracked workstreams."
+            if title == "Workstream Hubs"
+            else "Triage queue: notes with no `workstream:` property yet. "
+                 "Classified notes live on their workstream MOC, not here."
+        )
+        hubs[path] = render_hub(path, title, description, items)
 
     index_rows = [
         "# Human-readable Hubs",
