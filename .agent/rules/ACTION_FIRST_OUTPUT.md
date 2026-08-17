@@ -21,6 +21,9 @@ artifacts, or executes workflows.
 5. If work remains, end with one concrete next action. If the request is fully
    complete, end after the result without a generic recap, invitation, or
    closing pleasantry.
+6. When a response mentions a generated or referenced markdown deliverable,
+   attach its clickable preview link (emit via
+   `python3 system/scripts/preview_link.py <file>`).
 
 Use short headings when they materially improve scanning. Brevity must not
 remove evidence, required context, uncertainty, or the answer itself.

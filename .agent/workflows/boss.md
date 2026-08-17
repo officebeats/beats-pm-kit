@@ -118,6 +118,8 @@ Generate a copy-paste-ready Teams DM that:
 
 Present the DM to the user for review before they send it.
 
+Emit the cheat sheet's preview link: `python3 system/scripts/preview_link.py <file> --open --json`.
+
 ## 7. Post-Meeting Hook
 
 After the 1:1 concludes:

@@ -50,6 +50,7 @@ Default output location is `0. Incoming/<deck-slug>/` unless the user provides a
    - Verify PPTX package integrity, PDF page count, and website responsive fold checks.
    - Scan text for forbidden/private terms named by the user.
    - Replace uncertain payloads, schemas, or implementation details with checklist/table formats unless the source provides exact contracts.
+   - Emit the preview link for the primary deliverable brief/notes markdown: `python3 system/scripts/preview_link.py <file> --open --json`.
 
 ## Safety
 

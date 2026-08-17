@@ -28,3 +28,4 @@ This workflow guides the **Tech Lead** or **Staff PM** to enforce quality.
 
 4.  **Output**:
     - A list of `[Fixes]` or an approval.
+    - When the review produced or cites a markdown file, emit its preview link: `python3 system/scripts/preview_link.py <file> --open --json`.

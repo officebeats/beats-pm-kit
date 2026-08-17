@@ -78,3 +78,4 @@ description: Plan the current and upcoming week.
 
       - [Connector gap, stale workstream, or possibly-complete item needing confirmation]
       ```
+    - Emit the preview link for the weekly plan: `python3 system/scripts/preview_link.py "5. Trackers/WEEKLY_PLAN.md" --open --json`.

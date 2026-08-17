@@ -43,3 +43,4 @@ This workflow guides the **Product Strategist** to define the "What" and "Why".
 
 5.  **Output**:
     - Save to `2. Products/[Product]/STRATEGY.md` or `1. Company/STRATEGY_FY26.md`.
+    - Emit the preview link for the saved plan: `python3 system/scripts/preview_link.py <file> --open --json`.

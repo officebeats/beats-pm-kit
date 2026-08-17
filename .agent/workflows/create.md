@@ -36,6 +36,7 @@ This workflow guides the **Staff PM** to turn chaos (notes/transcripts) into ord
     - **Stitch Check**: Ask if the user wants a UI mockup generated alongside the PRD.
     - **Action**: If yes, invoke `/stitch` after drafting the document.
     - **Location**: Write the file to `2. Products/[Product]/features/`.
+    - Emit the preview link for the drafted document: `python3 system/scripts/preview_link.py <file> --open --json`.
 
 5.  **Task Connection (State Transition)**:
     - Call `task_boundary` to mark completion of the drafting phase.
