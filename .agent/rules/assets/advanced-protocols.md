@@ -12,6 +12,16 @@
 4. **Priority Loading**: Load P0 skills eagerly, P1/P2 only when triggered.
 5. **Single Source of Truth**: `.agent/command-registry.json` owns routing. `ROUTING.md` and `MANIFEST.json` are generated views.
 
+### SKILL.md Quick Path Convention
+
+Large skills must open with a distilled fast lane so routine runs avoid loading the full body.
+
+- Any `SKILL.md` whose size excluding the Quick Path section exceeds 5500 bytes MUST carry a `## Quick Path` section.
+- Place it as the **first H2** in the body — immediately after the title (and any intro prose), before every other section.
+- Content budget: **<= 1200 characters** (~300 tokens). A numbered 3–7 step happy path plus one line stating when to read deeper sections.
+- Distill strictly from the skill's own body. Never introduce capabilities, paths, or commands the body does not already define.
+- Check compliance with `python3 -m system.scripts.skill_lint --report` (advisory) or `--strict` (exit 1 on violations).
+
 ### Skill Removal Protocol
 
 - Unused skills are reviewed with regression evidence before deletion.

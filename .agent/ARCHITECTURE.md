@@ -16,7 +16,7 @@
 - `.agent/command-registry.json` owns the schema-v3 harness contract, routing, aliases, execution profiles, escalation signals, and runtime policy.
 - `.agent/workflows/` owns workflow behavior.
 - `.agent/skills/` owns reusable PM methods.
-- `MANIFEST.json`, `rules/ROUTING.md`, `CODEX_COMMANDS.md`, runtime adapters, and compatibility documentation are generated views.
+- `MANIFEST.json`, `command-registry.lite.json`, `rules/ROUTING.md`, `CODEX_COMMANDS.md`, runtime adapters, and compatibility documentation are generated views.
 - `.beats/model-policy.json` is ignored local state for explicit, evaluated model promotions.
 
 ## Execution Profiles
@@ -47,6 +47,6 @@ Unknown capabilities are denied. The kit does not silently switch providers, rew
 - Primary runtimes: Antigravity, Codex, and Claude
 - Compatibility runtimes: Gemini CLI and KiloCode
 - Response profiles: `compact_operator`, `artifact`, and `verbatim`
-- Context checkpoint: completed phase boundary at 65% context, or before the next phase will not fit
+- Context checkpoint: completed phase boundary at 65% context, or before the next phase will not fit; checkpoints append `## Checkpoint <ISO8601>` anchors and never rewrite earlier anchors
 - Evidence rule: compacted context remains addressable; raw evidence is authoritative
 - Optimizer rule: one change per held-out trial and human approval before promotion

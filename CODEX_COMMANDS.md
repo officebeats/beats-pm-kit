@@ -11,49 +11,54 @@ If the user only provides the GitHub repo URL, clone/open the repo, run
 then route any remaining request through the PM decision router or the
 matching slash-command workflow.
 
-| Command | Workflow | Profile | Promoted Codex Skill |
-| --- | --- | --- | --- |
-| `/accuracy` | `.agent/workflows/accuracy.md` | Deep | Dispatch only |
-| `/archive` | `.agent/workflows/archive.md` | Fast | Dispatch only |
-| `/beats-comms` | `.agent/workflows/beats-comms.md` | Balanced | Native skill `beats-comms` |
-| `/beats-slack` | `.agent/workflows/beats-slack.md` | Balanced | Native skill `beats-slack` |
-| `/beats-teams` | `.agent/workflows/beats-teams.md` | Balanced | Native skill `beats-teams` |
-| `/boss` | `.agent/workflows/boss.md` | Deep | Native skill `beats-boss` |
-| `/build` | `.agent/workflows/build.md` | Balanced | Dispatch only |
-| `/challenge` | `.agent/workflows/challenge.md` | Deep | Dispatch only |
-| `/chat` | `.agent/workflows/chat.md` | Fast | Dispatch only |
-| `/context` | `.agent/workflows/context.md` | Fast | Dispatch only |
-| `/create` | `.agent/workflows/create.md` | Deep | Native skill `beats-create` |
-| `/day` | `.agent/workflows/day.md` | Fast | Native skill `beats-day` |
-| `/deck` | `.agent/workflows/deck.md` | Balanced | Native skill `beats-deck` |
-| `/discover` | `.agent/workflows/discover.md` | Deep | Dispatch only |
-| `/fan-out` | `.agent/workflows/fan-out.md` | Deep | Dispatch only |
-| `/find` | `.agent/workflows/find.md` | Fast | Native skill `beats-find` |
-| `/handoff` | `.agent/workflows/handoff.md` | Balanced | Dispatch only |
-| `/help` | `.agent/workflows/help.md` | Fast | Dispatch only |
-| `/improve-plan` | `.agent/workflows/improve-plan.md` | Deep | Dispatch only |
-| `/intel` | `.agent/workflows/intel.md` | Balanced | Dispatch only |
-| `/interview` | `.agent/workflows/interview.md` | Deep | Dispatch only |
-| `/maintain` | `.agent/workflows/maintain.md` | Balanced | Dispatch only |
-| `/meet` | `.agent/workflows/meet.md` | Balanced | Native skill `beats-meet` |
-| `/memory` | `.agent/workflows/memory.md` | Balanced | Native skill `beats-memory` |
-| `/obsidian` | `.agent/workflows/obsidian.md` | Fast | Native skill `beats-obsidian` |
-| `/office-cli` | `.agent/workflows/office-cli.md` | Fast | Native skill `beats-office-cli` |
-| `/pack` | `.agent/workflows/pack.md` | Fast | Native skill `beats-pack` |
-| `/paste` | `.agent/workflows/paste.md` | Fast | Native skill `beats-paste` |
-| `/plan` | `.agent/workflows/plan.md` | Deep | Native skill `beats-plan` |
-| `/prep` | `.agent/workflows/prep.md` | Balanced | Dispatch only |
-| `/prioritize` | `.agent/workflows/prioritize.md` | Deep | Dispatch only |
-| `/regression` | `.agent/workflows/regression.md` | Balanced | Dispatch only |
-| `/retro` | `.agent/workflows/retro.md` | Balanced | Dispatch only |
-| `/review` | `.agent/workflows/review.md` | Deep | Native skill `beats-review` |
-| `/sop` | `.agent/workflows/sop.md` | Balanced | Native skill `beats-sop` |
-| `/sprint` | `.agent/workflows/sprint.md` | Balanced | Dispatch only |
-| `/start` | `.agent/workflows/start.md` | Fast | Dispatch only |
-| `/team` | `.agent/workflows/team.md` | Deep | Dispatch only |
-| `/track` | `.agent/workflows/track.md` | Balanced | Native skill `beats-track` |
-| `/transcript` | `.agent/workflows/transcript.md` | Balanced | Native skill `beats-transcript` |
-| `/update` | `.agent/workflows/update.md` | Deep | Guarded skill `beats-update` |
-| `/vacuum` | `.agent/workflows/vacuum.md` | Deep | Guarded skill `beats-vacuum` |
-| `/vibe` | `.agent/workflows/vibe.md` | Fast | Native skill `beats-vibe` |
-| `/week` | `.agent/workflows/week.md` | Balanced | Native skill `beats-week` |
+Every workflow keeps a row here so Codex can always resolve it by exact
+command name. `Hidden` in the Visibility column means the command is
+decluttered from `.agent/rules/ROUTING.md` and `/help` discovery
+surfaces, not removed; it still resolves normally when typed.
+
+| Command | Workflow | Profile | Promoted Codex Skill | Visibility |
+| --- | --- | --- | --- | --- |
+| `/accuracy` | `.agent/workflows/accuracy.md` | Deep | Dispatch only | Hidden |
+| `/archive` | `.agent/workflows/archive.md` | Fast | Dispatch only | Hidden |
+| `/beats-comms` | `.agent/workflows/beats-comms.md` | Balanced | Native skill `beats-comms` | Visible |
+| `/beats-slack` | `.agent/workflows/beats-slack.md` | Balanced | Native skill `beats-slack` | Visible |
+| `/beats-teams` | `.agent/workflows/beats-teams.md` | Balanced | Native skill `beats-teams` | Visible |
+| `/boss` | `.agent/workflows/boss.md` | Deep | Native skill `beats-boss` | Visible |
+| `/build` | `.agent/workflows/build.md` | Balanced | Dispatch only | Hidden |
+| `/challenge` | `.agent/workflows/challenge.md` | Deep | Dispatch only | Visible |
+| `/chat` | `.agent/workflows/chat.md` | Fast | Dispatch only | Hidden |
+| `/context` | `.agent/workflows/context.md` | Fast | Dispatch only | Hidden |
+| `/create` | `.agent/workflows/create.md` | Deep | Native skill `beats-create` | Visible |
+| `/day` | `.agent/workflows/day.md` | Fast | Native skill `beats-day` | Visible |
+| `/deck` | `.agent/workflows/deck.md` | Balanced | Native skill `beats-deck` | Visible |
+| `/discover` | `.agent/workflows/discover.md` | Deep | Dispatch only | Hidden |
+| `/fan-out` | `.agent/workflows/fan-out.md` | Deep | Dispatch only | Hidden |
+| `/find` | `.agent/workflows/find.md` | Fast | Native skill `beats-find` | Visible |
+| `/handoff` | `.agent/workflows/handoff.md` | Balanced | Dispatch only | Hidden |
+| `/help` | `.agent/workflows/help.md` | Fast | Dispatch only | Visible |
+| `/improve-plan` | `.agent/workflows/improve-plan.md` | Deep | Dispatch only | Hidden |
+| `/intel` | `.agent/workflows/intel.md` | Balanced | Dispatch only | Hidden |
+| `/interview` | `.agent/workflows/interview.md` | Deep | Dispatch only | Hidden |
+| `/maintain` | `.agent/workflows/maintain.md` | Balanced | Dispatch only | Hidden |
+| `/meet` | `.agent/workflows/meet.md` | Balanced | Native skill `beats-meet` | Visible |
+| `/memory` | `.agent/workflows/memory.md` | Balanced | Native skill `beats-memory` | Visible |
+| `/obsidian` | `.agent/workflows/obsidian.md` | Fast | Native skill `beats-obsidian` | Visible |
+| `/office-cli` | `.agent/workflows/office-cli.md` | Fast | Native skill `beats-office-cli` | Visible |
+| `/pack` | `.agent/workflows/pack.md` | Fast | Native skill `beats-pack` | Visible |
+| `/paste` | `.agent/workflows/paste.md` | Fast | Native skill `beats-paste` | Visible |
+| `/plan` | `.agent/workflows/plan.md` | Deep | Native skill `beats-plan` | Visible |
+| `/prep` | `.agent/workflows/prep.md` | Balanced | Dispatch only | Hidden |
+| `/prioritize` | `.agent/workflows/prioritize.md` | Deep | Dispatch only | Hidden |
+| `/regression` | `.agent/workflows/regression.md` | Balanced | Dispatch only | Hidden |
+| `/retro` | `.agent/workflows/retro.md` | Balanced | Dispatch only | Hidden |
+| `/review` | `.agent/workflows/review.md` | Deep | Native skill `beats-review` | Visible |
+| `/sop` | `.agent/workflows/sop.md` | Balanced | Native skill `beats-sop` | Visible |
+| `/sprint` | `.agent/workflows/sprint.md` | Balanced | Dispatch only | Hidden |
+| `/start` | `.agent/workflows/start.md` | Fast | Dispatch only | Hidden |
+| `/team` | `.agent/workflows/team.md` | Deep | Dispatch only | Hidden |
+| `/track` | `.agent/workflows/track.md` | Balanced | Native skill `beats-track` | Visible |
+| `/transcript` | `.agent/workflows/transcript.md` | Balanced | Native skill `beats-transcript` | Visible |
+| `/update` | `.agent/workflows/update.md` | Deep | Guarded skill `beats-update` | Visible |
+| `/vacuum` | `.agent/workflows/vacuum.md` | Deep | Guarded skill `beats-vacuum` | Visible |
+| `/vibe` | `.agent/workflows/vibe.md` | Fast | Native skill `beats-vibe` | Visible |
+| `/week` | `.agent/workflows/week.md` | Balanced | Native skill `beats-week` | Visible |

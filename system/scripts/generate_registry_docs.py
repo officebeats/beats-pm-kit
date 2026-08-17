@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from system.scripts.feature_inventory import collect_inventory
+from system.scripts.harness_registry import render_lite_registry
 from system.utils.command_registry import (
     PROFILE_NAMES,
     build_command_catalog,
@@ -73,6 +74,9 @@ def render_manifest(root: Path) -> str:
 
 
 def render_routing(root: Path) -> str:
+    catalog = build_command_catalog(root)
+    visible = [item for item in catalog if item["visibility"] != "hidden"]
+    hidden = [item for item in catalog if item["visibility"] == "hidden"]
     rows = [
         "# Beats PM Kit Routing",
         "",
@@ -84,7 +88,7 @@ def render_routing(root: Path) -> str:
         "| Command | Profile | Aliases | Runtime adapter |",
         "| --- | --- | --- | --- |",
     ]
-    for item in build_command_catalog(root):
+    for item in visible:
         aliases = ", ".join(f"`/{alias}`" for alias in item["aliases"]) or "—"
         adapter = (
             f"Skill `{item['codex_skill_name']}`"
@@ -103,6 +107,17 @@ def render_routing(root: Path) -> str:
             "",
         ]
     )
+    if hidden:
+        rows.extend(
+            [
+                "## Hidden / Legacy Commands",
+                "",
+                "Decluttered from the discovery table above because they are dispatch-only utilities superseded by the Diamond 6 workflow. They are not deleted: each workflow file still exists under `.agent/workflows/` and resolves normally when a user types the exact command.",
+                "",
+                ", ".join(f"`/{item['name']}`" for item in hidden),
+                "",
+            ]
+        )
     return "\n".join(rows)
 
 
@@ -128,7 +143,7 @@ def render_architecture(root: Path) -> str:
 - `.agent/command-registry.json` owns the schema-v3 harness contract, routing, aliases, execution profiles, escalation signals, and runtime policy.
 - `.agent/workflows/` owns workflow behavior.
 - `.agent/skills/` owns reusable PM methods.
-- `MANIFEST.json`, `rules/ROUTING.md`, `CODEX_COMMANDS.md`, runtime adapters, and compatibility documentation are generated views.
+- `MANIFEST.json`, `command-registry.lite.json`, `rules/ROUTING.md`, `CODEX_COMMANDS.md`, runtime adapters, and compatibility documentation are generated views.
 - `.beats/model-policy.json` is ignored local state for explicit, evaluated model promotions.
 
 ## Execution Profiles
@@ -159,7 +174,7 @@ Unknown capabilities are denied. The kit does not silently switch providers, rew
 - Primary runtimes: Antigravity, Codex, and Claude
 - Compatibility runtimes: Gemini CLI and KiloCode
 - Response profiles: `compact_operator`, `artifact`, and `verbatim`
-- Context checkpoint: completed phase boundary at {harness['checkpoint_policy']['context_threshold_percent']}% context, or before the next phase will not fit
+- Context checkpoint: completed phase boundary at {harness['checkpoint_policy']['context_threshold_percent']}% context, or before the next phase will not fit; checkpoints append `## Checkpoint <ISO8601>` anchors and never rewrite earlier anchors
 - Evidence rule: compacted context remains addressable; raw evidence is authoritative
 - Optimizer rule: one change per held-out trial and human approval before promotion
 """
@@ -196,6 +211,7 @@ def generated_files(root: Path = ROOT) -> dict[Path, str]:
         root / ".agent" / "rules" / "ROUTING.md": render_routing(root),
         root / ".agent" / "ARCHITECTURE.md": render_architecture(root),
         root / "system" / "docs" / "runtime-compatibility.md": render_runtime_compatibility(root),
+        root / ".agent" / "command-registry.lite.json": render_lite_registry(root),
     }
 
 

@@ -10,8 +10,15 @@ IDs from renderer-facing text.
 from __future__ import annotations
 
 import re
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from system.utils.markdown_tables import split_cells, strip_wikilinks  # noqa: E402
 
 
 TASK_ID_RE = re.compile(r"\b[A-Z][A-Z0-9]+-\d{3,}[a-z]?\b")
@@ -46,19 +53,15 @@ class ProgressEntry:
 
 
 def strip_markdown(value: str) -> str:
-    value = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", value or "")
+    value = strip_wikilinks(value or "")
+    value = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", value)
     value = value.replace("~~", "")
     value = re.sub(r"[*_`#>]", "", value)
     return re.sub(r"\s+", " ", value).strip()
 
 
 def table_cells(line: str) -> list[str]:
-    if not line.strip().startswith("|"):
-        return []
-    cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
-    if any(cell.startswith(":---") or cell == "---" for cell in cells):
-        return []
-    return cells
+    return split_cells(line)
 
 
 def header_value(text: str, label: str) -> str:

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "description": "Audit baseline for MCP server configs. vibe_check.py compares every known MCP config file against this allowlist and warns on UNKNOWN (present but not listed) and MISSING (listed but absent) servers. Update this file deliberately when adding or removing an MCP server.",
+  "config_files": [
+    ".mcp.json",
+    ".vscode/mcp.json",
+    ".cursor/mcp.json",
+    "system/config/mcp.template.json"
+  ],
+  "servers": [
+    {
+      "name": "dotcontext",
+      "source_file": ".mcp.json",
+      "command": "npx",
+      "note": "dotcontext MCP server (@dotcontext/mcp) for project context indexing; file is local/gitignored but audited."
+    },
+    {
+      "name": "dotcontext",
+      "source_file": ".vscode/mcp.json",
+      "command": "npx",
+      "note": "VS Code copy of the dotcontext server; file is local/gitignored but audited."
+    },
+    {
+      "name": "ms365",
+      "source_file": "system/config/mcp.template.json",
+      "command": "npx",
+      "note": "Tracked placeholder-only template for the read-only Microsoft 365 MCP server."
+    },
+    {
+      "name": "slack",
+      "source_file": "system/config/mcp.template.json",
+      "command": "<approved-slack-mcp-url>",
+      "note": "Tracked placeholder-only template for the read-only Slack MCP server (http transport; command holds the url placeholder)."
+    }
+  ]
+}

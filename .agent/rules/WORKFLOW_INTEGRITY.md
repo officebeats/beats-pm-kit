@@ -13,6 +13,11 @@ Workflows marked as **Routine** or containing the `// turbo-all` annotation are 
 - **Exempt Workflows**: `audit`.
 - **Logic**: For these tasks, skip to **EXECUTION** mode immediately. The agent may still use a `task.md` for internal tracking but should not block the user with a plan review. Do **NOT** perform pre-flight research (e.g. `dir`, `ls`, or existence checks) for scripts/tools explicitly defined in these workflows.
 
+## 1.7. Workflow Lessons (Consult Before Executing)
+Workflows may accumulate local failure notes in `.beats/lessons/<workflow-name>.md` (gitignored — lessons contain project specifics and never belong in tracked files).
+- **At start**: If a lessons file exists for the workflow being executed, read it (`python3 -m system.scripts.workflow_lessons list <workflow-name>`) and apply the notes.
+- **After a failure or surprise**: Record one concise lesson with `python3 -m system.scripts.workflow_lessons append <workflow-name> --text "<what to do differently>"`. The file keeps at most 10 entries; the oldest is dropped.
+
 ## 1.5. Tool Discovery & Readiness
 Every workflow **MUST** begin with a **Mandatory Tool Inventory**.
 - **Acknowledge**: Before executing Step 1, you must physically confirm you possess the tools listed.

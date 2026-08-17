@@ -18,6 +18,17 @@ author: Beats PM Brain
 
 > **Role**: Extract signal from noise. One meeting → structured output + stakeholder intelligence.
 
+## Quick Path
+
+1. Ingest: prefer a pipeline packet (`3. Meetings/reports/packets/*.json`); process pasted transcripts directly; for "process latest" run `/transcript` preparation first.
+2. Classify the meeting type — a Manager 1:1 activates Manager Meeting Mode (section 3A); packet flags override unless the transcript clearly disproves them.
+3. Extract in a single pass: decisions, action items (task + ID + owner + due), task-master deltas, and key quotes with attribution.
+4. Route: new items through the task-manager Priority Gate into `5. Trackers/TASK_MASTER.md` and `5. Trackers/tasks/{ID}.md`; mentioned TASK_IDs update their Progress Log; enrich `4. People/{firstname-lastname}.md`.
+5. Write the summary to the packet's `expected_summary_path` (else `3. Meetings/summaries/`) with the mandatory hybrid appendix: source transcript, SHA256, run ID, routed updates.
+6. Confirm all updates using the section 4 output format.
+
+Go deeper for Manager Meeting Mode routing (3A), Slack evidence guardrails (2A), and daily/weekly synthesis modes (6-7).
+
 ## 1. Native Interface
 
 - **Inputs**: /meet, /transcript. Synthesis packet JSON, raw transcript text, Quill paste, or file path.

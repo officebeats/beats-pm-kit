@@ -15,6 +15,17 @@ author: Beats PM Brain
 
 > **Role**: Convert scoped Teams context into local Beats PM tasks and status updates without sending messages or mutating Teams state.
 
+## Quick Path
+
+1. Confirm scope: explicit chat/channel/thread/query/person/window, a read-only unread chat list when the connector exposes one, or a configured manifest scope; if none, stop and ask — never broad-scan Teams.
+2. If no time window, run `chat_intake_state.py window --platform teams --scope "<SCOPE>"`.
+3. Read with read-only MS365 operations only; never send, post, react, or move read cursors; label channel reads as recent snapshots.
+4. Convert every candidate into a workstream finding (title of 9 words or fewer, latest outcome, open item, authority tier, commitment type, completion state), dedupe against trackers, and apply the task-manager Priority Gate.
+5. Write local outputs only: transcript to `3. Meetings/chat-transcripts/teams/`, tasks to `5. Trackers/`, run report to `3. Meetings/reports/teams-runs/{RUN_ID}.md`.
+6. Return the workstream snapshot first, then the compact summary with the safety confirmation.
+
+Go deeper into section 2 for the hard safety boundary and the `teams_bridge.py` fallback, section 4 for classification, and section 5 for the run-report contract.
+
 ## 1. Native Interface
 
 - **Inputs**: `/beats-teams` with a chat, channel, team/channel pair, person, thread, search query, time window, or configured Teams intake scope.

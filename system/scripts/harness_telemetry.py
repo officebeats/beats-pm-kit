@@ -14,6 +14,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 LEDGER_REL = Path(".beats/harness/telemetry.jsonl")
+USAGE_LEDGER_REL = Path(".beats/usage.jsonl")
+USAGE_MAX_LINES = 2000
+USAGE_KEEP_LINES = 1000
 TOKEN_FIELDS = (
     "uncached_input_tokens",
     "cached_input_tokens",
@@ -26,6 +29,79 @@ COUNT_FIELDS = ("turns", "retries", "compactions", "source_loads")
 
 def utc_now() -> str:
     return dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def append_usage(
+    command: str,
+    *,
+    sources_loaded: int,
+    source_bytes: int,
+    wall_ms: float,
+    root: Path = ROOT,
+    ledger: Path | None = None,
+    max_lines: int = USAGE_MAX_LINES,
+    keep_lines: int = USAGE_KEEP_LINES,
+) -> dict[str, Any]:
+    """Append one per-command usage entry to the bounded `.beats/usage.jsonl` ledger."""
+    entry = {
+        "ts": utc_now(),
+        "command": str(command),
+        "sources_loaded": int(sources_loaded),
+        "source_bytes": int(source_bytes),
+        "wall_ms": round(float(wall_ms), 3),
+    }
+    destination = ledger or root / USAGE_LEDGER_REL
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with destination.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(entry, separators=(",", ":"), sort_keys=True) + "\n")
+    rotate_usage_ledger(destination, max_lines=max_lines, keep_lines=keep_lines)
+    return entry
+
+
+def rotate_usage_ledger(path: Path, *, max_lines: int = USAGE_MAX_LINES, keep_lines: int = USAGE_KEEP_LINES) -> bool:
+    """Rewrite the ledger keeping only the newest `keep_lines` once it exceeds `max_lines`."""
+    lines = [line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    if len(lines) <= max_lines:
+        return False
+    path.write_text("\n".join(lines[-keep_lines:]) + "\n", encoding="utf-8")
+    return True
+
+
+def load_usage(path: Path) -> list[dict[str, Any]]:
+    """Load usage entries, tolerating malformed lines (reporting must stay graceful)."""
+    if not path.exists():
+        return []
+    entries = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            entry = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(entry, dict) and "command" in entry:
+            entries.append(entry)
+    return entries
+
+
+def usage_hotspots(entries: list[dict[str, Any]], *, top: int = 5) -> list[dict[str, Any]]:
+    """Rank commands by mean source_bytes per resolution, with run counts."""
+    grouped: dict[str, list[int]] = {}
+    for entry in entries:
+        size = entry.get("source_bytes")
+        if isinstance(size, bool) or not isinstance(size, (int, float)):
+            continue
+        grouped.setdefault(str(entry["command"]), []).append(int(size))
+    ranked = [
+        {
+            "command": command,
+            "runs": len(sizes),
+            "mean_source_bytes": int(statistics.mean(sizes)),
+        }
+        for command, sizes in grouped.items()
+    ]
+    ranked.sort(key=lambda row: (-row["mean_source_bytes"], row["command"]))
+    return ranked[:top]
 
 
 def validate_record(record: dict[str, Any]) -> None:

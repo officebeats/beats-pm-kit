@@ -7,6 +7,7 @@ import argparse
 import json
 import math
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -14,6 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
+from system.scripts import harness_telemetry  # noqa: E402
 from system.scripts.feature_inventory import _visible_paths as visible_paths  # noqa: E402
 from system.utils.command_registry import (  # noqa: E402
     build_command_catalog,
@@ -39,16 +41,24 @@ def compact_discovery_registry(root: Path = ROOT) -> dict[str, Any]:
     """Return the complete one-level ID registry loaded for discovery.
 
     Rich descriptions stay in the canonical registry and selected entrypoint.
-    Discovery only needs stable IDs and compatibility aliases, which prevents
-    every task from paying repeatedly for prose it will not use.
+    Discovery only needs stable IDs, aliases, execution profile, and Codex
+    promotion status, which prevents every task from paying repeatedly for
+    prose it will not use. This is also the exact payload persisted to
+    `.agent/command-registry.lite.json` by `render_lite_registry`, so its
+    shape is deliberately terse to stay well under the registry token budget:
+    `profile` is the execution profile's first letter (f=fast, b=balanced,
+    d=deep); `skill` is present (and true) only when the command is promoted
+    to a Codex skill adapter, since dispatch-only is the majority case;
+    `aliases` is present only when non-empty.
     """
-    commands = [
-        {
-            "id": item["name"],
-            "aliases": item["aliases"],
-        }
-        for item in build_command_catalog(root)
-    ]
+    commands: dict[str, Any] = {}
+    for item in build_command_catalog(root):
+        entry: dict[str, Any] = {"profile": item["execution_profile"][0]}
+        if item["codex_promotion"] == "skill":
+            entry["skill"] = True
+        if item["aliases"]:
+            entry["aliases"] = item["aliases"]
+        commands[item["name"]] = entry
     skills = [path.parent.name for path in sorted((root / ".agent" / "skills").glob("*/SKILL.md"))]
     payload = {
         "schema_version": 1,
@@ -60,6 +70,17 @@ def compact_discovery_registry(root: Path = ROOT) -> dict[str, Any]:
         json.dumps(payload, separators=(",", ":"), sort_keys=True)
     )
     return payload
+
+
+def render_lite_registry(root: Path = ROOT) -> str:
+    """Render the persisted `.agent/command-registry.lite.json` contents.
+
+    Uses compact separators (no indentation) deliberately: the whole point of
+    this generated file is staying well under the 3KB/registry_tokens budget
+    for cold-load discovery, and pretty-printing would roughly double it.
+    """
+    payload = compact_discovery_registry(root)
+    return json.dumps(payload, separators=(",", ":"), sort_keys=True) + "\n"
 
 
 def resolve_harness_command(command: str, root: Path = ROOT) -> dict[str, Any]:
@@ -181,10 +202,40 @@ def resolve_harness_skill(skill: str, root: Path = ROOT) -> dict[str, Any]:
     }
 
 
-def resolve_harness_target(target: str, root: Path = ROOT) -> dict[str, Any]:
+def _record_resolution_usage(manifest: dict[str, Any], root: Path, wall_ms: float) -> None:
+    """Append one usage ledger entry for a resolution; never break resolution on failure."""
+    try:
+        if manifest["kind"] == "command":
+            sources = [manifest["workflow"], *manifest["context"]["candidate_required"]]
+        else:
+            sources = [manifest["entrypoint"]]
+        loaded = 0
+        total_bytes = 0
+        for relative in dict.fromkeys(sources):
+            path = root / relative
+            if path.is_file():
+                loaded += 1
+                total_bytes += path.stat().st_size
+        harness_telemetry.append_usage(
+            manifest["id"],
+            sources_loaded=loaded,
+            source_bytes=total_bytes,
+            wall_ms=wall_ms,
+            root=root,
+        )
+    except Exception as exc:  # noqa: BLE001 - telemetry must never break resolution
+        print(f"harness-registry: usage telemetry skipped: {exc}", file=sys.stderr)
+
+
+def resolve_harness_target(target: str, root: Path = ROOT, *, record_usage: bool = True) -> dict[str, Any]:
+    started = time.perf_counter()
     if resolve_command_name(target, root) is not None:
-        return resolve_harness_command(target, root)
-    return resolve_harness_skill(target, root)
+        manifest = resolve_harness_command(target, root)
+    else:
+        manifest = resolve_harness_skill(target, root)
+    if record_usage:
+        _record_resolution_usage(manifest, root, (time.perf_counter() - started) * 1000.0)
+    return manifest
 
 
 def audit_budgets(root: Path = ROOT) -> dict[str, Any]:

@@ -37,7 +37,7 @@ Confirm the launch cohort.
 
         self.assertIn("title: Task Master", text)
         self.assertIn("# Task Master", text)
-        self.assertIn("[Confirm beta customer list](tasks/confirm-beta-customer-list.md)", text)
+        self.assertIn("[[confirm-beta-customer-list\\|Confirm beta customer list]]", text)
         self.assertNotIn("BPM-0123", text)
 
     def test_parses_legacy_id_heading_without_renaming_file(self):
@@ -91,6 +91,32 @@ Confirm the launch cohort.
         self.assertIsNotNone(parsed)
         self.assertEqual(parsed.workstream, "Search beta")
         self.assertEqual(parsed.inferred_fields, ["owner", "due"])
+
+    def test_apostrophe_title_round_trips_without_compounding_escapes(self):
+        root = self.make_root()
+        path = root / "5. Trackers" / "tasks" / "review-peters-weekly-report.md"
+        record = task_store.TaskRecord(
+            task_id="P1-008",
+            title="Review Peter's Weekly Report",
+            path=path,
+        )
+        render_kwargs = dict(
+            summary="Review the report.",
+            context="Weekly report review with Peter.",
+            next_action="Review report",
+            source="Test fixture",
+        )
+        path.write_text(task_store.render_task(record, **render_kwargs), encoding="utf-8")
+
+        for _ in range(3):
+            parsed = task_store.parse_task(path)
+            self.assertIsNotNone(parsed)
+            self.assertEqual(parsed.title, "Review Peter's Weekly Report")
+            path.write_text(task_store.render_task(parsed, **render_kwargs), encoding="utf-8")
+
+        text = path.read_text(encoding="utf-8")
+        self.assertIn("Review Peter''s Weekly Report", text)
+        self.assertNotIn("''''", text)
 
 
 if __name__ == "__main__":

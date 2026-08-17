@@ -7,28 +7,16 @@ The registry is the only routing source of truth. Runtime adapters and this huma
 
 | Command | Profile | Aliases | Runtime adapter |
 | --- | --- | --- | --- |
-| `/accuracy` | Deep | — | Dispatch only |
-| `/archive` | Fast | — | Dispatch only |
 | `/beats-comms` | Balanced | — | Skill `beats-comms` |
 | `/beats-slack` | Balanced | — | Skill `beats-slack` |
 | `/beats-teams` | Balanced | — | Skill `beats-teams` |
 | `/boss` | Deep | — | Skill `beats-boss` |
-| `/build` | Balanced | — | Dispatch only |
 | `/challenge` | Deep | — | Dispatch only |
-| `/chat` | Fast | — | Dispatch only |
-| `/context` | Fast | — | Dispatch only |
 | `/create` | Deep | — | Skill `beats-create` |
 | `/day` | Fast | `/status`, `/morning`, `/brief`, `/now` | Skill `beats-day` |
 | `/deck` | Balanced | — | Skill `beats-deck` |
-| `/discover` | Deep | — | Dispatch only |
-| `/fan-out` | Deep | — | Dispatch only |
 | `/find` | Fast | — | Skill `beats-find` |
-| `/handoff` | Balanced | — | Dispatch only |
 | `/help` | Fast | — | Dispatch only |
-| `/improve-plan` | Deep | — | Dispatch only |
-| `/intel` | Balanced | — | Dispatch only |
-| `/interview` | Deep | — | Dispatch only |
-| `/maintain` | Balanced | — | Dispatch only |
 | `/meet` | Balanced | — | Skill `beats-meet` |
 | `/memory` | Balanced | `/reflect` | Skill `beats-memory` |
 | `/obsidian` | Fast | — | Skill `beats-obsidian` |
@@ -36,15 +24,8 @@ The registry is the only routing source of truth. Runtime adapters and this huma
 | `/pack` | Fast | — | Skill `beats-pack` |
 | `/paste` | Fast | — | Skill `beats-paste` |
 | `/plan` | Deep | — | Skill `beats-plan` |
-| `/prep` | Balanced | — | Dispatch only |
-| `/prioritize` | Deep | — | Dispatch only |
-| `/regression` | Balanced | — | Dispatch only |
-| `/retro` | Balanced | — | Dispatch only |
 | `/review` | Deep | — | Skill `beats-review` |
 | `/sop` | Balanced | — | Skill `beats-sop` |
-| `/sprint` | Balanced | — | Dispatch only |
-| `/start` | Fast | — | Dispatch only |
-| `/team` | Deep | — | Dispatch only |
 | `/track` | Balanced | — | Skill `beats-track` |
 | `/transcript` | Balanced | — | Skill `beats-transcript` |
 | `/update` | Deep | — | Skill `beats-update` |
@@ -55,3 +36,9 @@ The registry is the only routing source of truth. Runtime adapters and this huma
 ## Escalation
 
 Conflicting evidence, high-stakes decisions, external mutations, broad changes, and failed validation escalate to Deep. Runtime model defaults remain inherited; explicit promotions stay local and evidence-gated.
+
+## Hidden / Legacy Commands
+
+Decluttered from the discovery table above because they are dispatch-only utilities superseded by the Diamond 6 workflow. They are not deleted: each workflow file still exists under `.agent/workflows/` and resolves normally when a user types the exact command.
+
+`/accuracy`, `/archive`, `/build`, `/chat`, `/context`, `/discover`, `/fan-out`, `/handoff`, `/improve-plan`, `/intel`, `/interview`, `/maintain`, `/prep`, `/prioritize`, `/regression`, `/retro`, `/sprint`, `/start`, `/team`

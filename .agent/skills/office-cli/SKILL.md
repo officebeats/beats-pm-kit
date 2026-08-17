@@ -9,6 +9,16 @@ description: Create, read, and edit Word (.docx), Excel (.xlsx), and PowerPoint 
 
 Use this skill when the user requests a PowerPoint deck, Word document, Excel spreadsheet, or any Office format export. OfficeCLI is a single-binary CLI that creates and edits `.pptx`, `.docx`, and `.xlsx` files — no Microsoft Office installation required.
 
+## Quick Path
+
+1. Verify install: `officecli --version`; if missing, run the install script from Prerequisites.
+2. Create the file: `officecli create deck.pptx` (or `.docx` / `.xlsx`).
+3. Add elements with `officecli add <file> <path> --type <type> --prop key=value` — all attributes go through `--prop`, paths are 1-based and single-quoted, `--index` is 0-based.
+4. For 3+ operations use `officecli batch <file> --commands '<json>' --json` for atomic multi-op writes.
+5. Validate with `officecli validate <file>` and inspect structure via `officecli view <file> outline`.
+
+Go deeper into the PowerPoint/Word/Excel workflow sections for element recipes, Common Pitfalls before debugging property errors, and Specialized Sub-Skills for pitch decks, academic papers, or data dashboards.
+
 ## Prerequisites
 
 Verify OfficeCLI is installed:

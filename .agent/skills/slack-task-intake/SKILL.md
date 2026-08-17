@@ -15,6 +15,17 @@ author: Beats PM Brain
 
 > **Role**: Convert scoped Slack context into local Beats PM tasks without sending messages or mutating Slack state.
 
+## Quick Path
+
+1. Confirm scope: explicit channel/DM/thread/query/window or a configured manifest scope; if none, stop and ask — never broad-scan Slack.
+2. If no time window, run `chat_intake_state.py window --platform slack --scope "<SCOPE>"`; pre-chunk high-volume scopes with `chat_intake_state.py chunks` and execute chunks oldest-to-newest.
+3. Read with read-only Slack operations only; never send, react, edit, or change unread state.
+4. Convert every candidate into a workstream finding (title of 9 words or fewer, latest outcome, open item, authority tier, commitment type, completion state), dedupe against trackers, and apply the task-manager Priority Gate.
+5. Write local outputs only: transcript to `3. Meetings/chat-transcripts/slack/`, tasks to `5. Trackers/`, run report to `3. Meetings/reports/slack-runs/{RUN_ID}.md`.
+6. Return the workstream snapshot first, then the compact summary with the safety confirmation.
+
+Go deeper into section 3 for chunking rules and connector caps, section 4 for classification, and section 5 for the run-report contract.
+
 ## 1. Native Interface
 
 - **Inputs**: `/beats-slack` with a channel, DM, thread, search query, time window, or configured Slack intake scope.

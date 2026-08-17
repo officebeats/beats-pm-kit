@@ -8,7 +8,7 @@ import os
 import shutil
 import tempfile
 import time
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 # Add system/ to path so 'import scripts.vacuum' resolves to system/scripts/vacuum.py
@@ -183,7 +183,7 @@ class TestVacuum(unittest.TestCase):
         root = Path(self.test_dir).resolve()
         context = {"files": [{"path": "5. Trackers/tasks/example.md"}]}
         tasks = {"tasks": [{"task_id": "BPM-0001"}]}
-        task_path = root / "system" / "cache" / "task_index.json"
+        task_path = root / ".agent" / "cache" / "task_index.json"
 
         with patch.object(vacuum.context_router, "build_index", return_value=context) as context_build, \
              patch.object(vacuum.task_intake_fast, "build_task_index", return_value=tasks) as task_build, \
@@ -199,6 +199,81 @@ class TestVacuum(unittest.TestCase):
         )
         task_build.assert_called_once_with(root)
         task_write.assert_called_once_with(root, tasks)
+
+
+class TestExpireStaleInsights(unittest.TestCase):
+
+    STATUS_CONTENT = """# 📡 KIT STATUS
+
+> **Last Updated:** 2026-08-15
+
+## 🧠 Latest Strategic Insights
+
+- **Untagged insight** stays forever because nobody dated it.
+- **Future insight** still holds. (valid-until: 2027-01-01)
+- **Expired insight** about an old deadline. (valid-until: 2026-08-01)
+  continuation detail line that must travel with its bullet
+- Another untagged one.
+"""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.status = self.root / "STATUS.md"
+        self.status.write_text(self.STATUS_CONTENT, encoding="utf-8")
+        self.today = date(2026, 8, 17)
+
+    def tearDown(self):
+        shutil.rmtree(self.root)
+
+    def test_moves_only_tagged_past_bullets(self):
+        report = vacuum.expire_stale_insights(self.root, apply=True, today=self.today)
+
+        self.assertEqual(report["moved"], 1)
+        self.assertTrue(report["applied"])
+        text = self.status.read_text(encoding="utf-8")
+        head, _, expired = text.partition(vacuum.EXPIRED_INSIGHTS_HEADING)
+        self.assertIn("**Untagged insight**", head)
+        self.assertIn("(valid-until: 2027-01-01)", head)
+        self.assertNotIn("**Expired insight**", head)
+        self.assertIn("**Expired insight** about an old deadline. (valid-until: 2026-08-01) (moved 2026-08-17)", expired)
+        self.assertIn("  continuation detail line that must travel with its bullet", expired)
+
+    def test_second_run_is_idempotent(self):
+        vacuum.expire_stale_insights(self.root, apply=True, today=self.today)
+        after_first = self.status.read_bytes()
+
+        report = vacuum.expire_stale_insights(self.root, apply=True, today=self.today)
+
+        self.assertEqual(report["moved"], 0)
+        self.assertFalse(report["applied"])
+        self.assertEqual(self.status.read_bytes(), after_first)
+
+    def test_dry_run_reports_without_modifying(self):
+        before = self.status.read_bytes()
+
+        report = vacuum.expire_stale_insights(self.root, apply=False, today=self.today)
+
+        self.assertEqual(report["moved"], 1)
+        self.assertFalse(report["applied"])
+        self.assertEqual(self.status.read_bytes(), before)
+
+    def test_last_updated_staleness_is_report_only(self):
+        stale_today = date(2026, 10, 15)
+        content_without_expired = self.STATUS_CONTENT.replace(
+            "- **Expired insight** about an old deadline. (valid-until: 2026-08-01)\n"
+            "  continuation detail line that must travel with its bullet\n",
+            "",
+        )
+        self.status.write_text(content_without_expired, encoding="utf-8")
+        before = self.status.read_bytes()
+
+        fresh = vacuum.expire_stale_insights(self.root, apply=True, today=self.today)
+        stale = vacuum.expire_stale_insights(self.root, apply=True, today=stale_today)
+
+        self.assertFalse(fresh["last_updated_stale"])
+        self.assertEqual(stale["last_updated"], "2026-08-15")
+        self.assertTrue(stale["last_updated_stale"])
+        self.assertEqual(self.status.read_bytes(), before)
 
 if __name__ == '__main__':
     unittest.main()

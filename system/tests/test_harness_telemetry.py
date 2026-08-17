@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -79,6 +80,66 @@ class TestHarnessTelemetry(unittest.TestCase):
         self.assertEqual(payload["scenarios"][0]["id"], "codex:cold:source-heavy")
         self.assertEqual(payload["scenarios"][0]["total_processed_tokens"], 2000)
         self.assertEqual(payload["scenarios"][0]["pairing"]["repository_fixture"], "fixture-v1")
+
+    def test_usage_append_writes_contract_fields(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            entry = harness_telemetry.append_usage(
+                "day", sources_loaded=3, source_bytes=2048, wall_ms=12.3456, root=root
+            )
+            ledger = root / harness_telemetry.USAGE_LEDGER_REL
+            lines = ledger.read_text(encoding="utf-8").splitlines()
+            self.assertEqual(len(lines), 1)
+            stored = json.loads(lines[0])
+            self.assertEqual(stored, entry)
+            self.assertEqual(
+                sorted(stored), ["command", "source_bytes", "sources_loaded", "ts", "wall_ms"]
+            )
+            self.assertEqual(stored["command"], "day")
+            self.assertEqual(stored["sources_loaded"], 3)
+            self.assertEqual(stored["source_bytes"], 2048)
+            self.assertAlmostEqual(stored["wall_ms"], 12.346)
+            self.assertTrue(stored["ts"].endswith("Z"))
+
+    def test_usage_ledger_rotates_keeping_newest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ledger = Path(tmp) / "usage.jsonl"
+            for index in range(21):
+                harness_telemetry.append_usage(
+                    f"cmd-{index}",
+                    sources_loaded=1,
+                    source_bytes=index,
+                    wall_ms=1.0,
+                    ledger=ledger,
+                    max_lines=20,
+                    keep_lines=10,
+                )
+            entries = harness_telemetry.load_usage(ledger)
+            self.assertEqual(len(entries), 10)
+            self.assertEqual(entries[0]["command"], "cmd-11")
+            self.assertEqual(entries[-1]["command"], "cmd-20")
+
+    def test_load_usage_skips_malformed_lines_and_hotspots_rank_by_mean(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ledger = Path(tmp) / "usage.jsonl"
+            harness_telemetry.append_usage("day", sources_loaded=1, source_bytes=100, wall_ms=1, ledger=ledger)
+            harness_telemetry.append_usage("day", sources_loaded=1, source_bytes=300, wall_ms=1, ledger=ledger)
+            harness_telemetry.append_usage("create", sources_loaded=2, source_bytes=900, wall_ms=1, ledger=ledger)
+            with ledger.open("a", encoding="utf-8") as handle:
+                handle.write("{not json\n")
+            entries = harness_telemetry.load_usage(ledger)
+            self.assertEqual(len(entries), 3)
+            hotspots = harness_telemetry.usage_hotspots(entries, top=5)
+            self.assertEqual(
+                hotspots,
+                [
+                    {"command": "create", "runs": 1, "mean_source_bytes": 900},
+                    {"command": "day", "runs": 2, "mean_source_bytes": 200},
+                ],
+            )
+
+    def test_missing_usage_ledger_loads_empty(self):
+        self.assertEqual(harness_telemetry.load_usage(Path("/nonexistent/usage.jsonl")), [])
 
 
 if __name__ == "__main__":

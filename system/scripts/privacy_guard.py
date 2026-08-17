@@ -305,7 +305,14 @@ def scan_tree() -> list[Finding]:
 
 
 def scan_all_refs() -> list[Finding]:
-    findings: list[Finding] = []
+    """Scan every reachable commit.
+
+    Path-policy findings and content findings are capped independently so a
+    flood of historical path violations can never starve the content scan
+    (PII, secrets, private-org terms) — the check that actually matters.
+    """
+    path_results: list[Finding] = []
+    content_results: list[Finding] = []
     object_paths = iter_all_object_paths()
     object_info = batch_object_info([object_id for object_id, _path in object_paths])
     seen_blobs: dict[str, str] = {}
@@ -314,9 +321,8 @@ def scan_all_refs() -> list[Finding]:
         object_type, _size = object_info.get(object_id, ("", 0))
         if object_type != "blob":
             continue
-        findings.extend(path_findings(path, "all-refs"))
-        if len(findings) >= MAX_FINDINGS:
-            return findings
+        if len(path_results) < MAX_FINDINGS:
+            path_results.extend(path_findings(path, "all-refs"))
         seen_blobs.setdefault(object_id, path)
 
     blob_ids = [
@@ -326,13 +332,13 @@ def scan_all_refs() -> list[Finding]:
     ]
 
     for object_id, data in batch_object_data(blob_ids).items():
+        if len(content_results) >= MAX_FINDINGS:
+            break
         text = safe_text(data)
         if text is None:
             continue
-        findings.extend(content_findings(text, f"all-refs:{seen_blobs[object_id]}"))
-        if len(findings) >= MAX_FINDINGS:
-            return findings
-    return findings
+        content_results.extend(content_findings(text, f"all-refs:{seen_blobs[object_id]}"))
+    return path_results + content_results
 
 
 def print_findings(findings: list[Finding]) -> None:

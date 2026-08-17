@@ -44,6 +44,8 @@ class TaskRecord:
     updated: str = ""
     source_refs: list[str] = field(default_factory=list)
     inferred_fields: list[str] = field(default_factory=list)
+    priority: str = ""
+    tags: list[str] = field(default_factory=list)
     body: str = ""
 
 
@@ -77,6 +79,21 @@ def unique_task_path(root: Path, title: str, current: Path | None = None) -> Pat
     return candidate
 
 
+def _unescape_yaml_scalar(raw: str) -> str:
+    """Undo YAML scalar quoting, including doubled-quote escapes.
+
+    A bare `.strip("\"'")` only removes the outer wrapping quotes and leaves
+    an internal `''` escape (YAML single-quoted style) doubled forever — each
+    read-then-rewrite round trip compounds it further. Detect the wrapping
+    quote style first, then unescape only the matching internal sequence.
+    """
+    if len(raw) >= 2 and raw[0] == raw[-1] == "'":
+        return raw[1:-1].replace("''", "'")
+    if len(raw) >= 2 and raw[0] == raw[-1] == '"':
+        return raw[1:-1].replace('\\"', '"')
+    return raw.strip("\"'")
+
+
 def _frontmatter(text: str) -> tuple[dict[str, str | list[str]], str]:
     text = text.replace("\r\n", "\n").replace("\r", "\n")
     if not text.startswith("---\n"):
@@ -88,7 +105,7 @@ def _frontmatter(text: str) -> tuple[dict[str, str | list[str]], str]:
     active_list = ""
     for raw in text[4:end].splitlines():
         if active_list and re.match(r"^\s+-\s+", raw):
-            value = re.sub(r"^\s+-\s+", "", raw).strip().strip("\"'")
+            value = _unescape_yaml_scalar(re.sub(r"^\s+-\s+", "", raw).strip())
             current = metadata.setdefault(active_list, [])
             if isinstance(current, list):
                 current.append(value)
@@ -97,7 +114,7 @@ def _frontmatter(text: str) -> tuple[dict[str, str | list[str]], str]:
         if not match:
             continue
         key, value = match.groups()
-        value = value.strip().strip("\"'")
+        value = _unescape_yaml_scalar(value.strip())
         if value:
             metadata[key] = value
             active_list = ""
@@ -110,6 +127,50 @@ def _frontmatter(text: str) -> tuple[dict[str, str | list[str]], str]:
 def _legacy_field(text: str, label: str) -> str:
     match = re.search(rf"^>\s*\*\*{re.escape(label)}:\*\*\s*(.+?)\s*$", text, flags=re.MULTILINE | re.IGNORECASE)
     return match.group(1).strip() if match else ""
+
+_PRIORITY_SLUGS = (
+    ("do first", "do-first"),
+    ("do-first", "do-first"),
+    ("schedule", "schedule"),
+    ("quick win", "quick-win"),
+    ("quick-win", "quick-win"),
+    ("monitor", "monitor"),
+)
+
+
+def _priority_slug(raw: str) -> str:
+    lowered = raw.strip().lower()
+    for needle, slug in _PRIORITY_SLUGS:
+        if needle in lowered:
+            return slug
+    return ""
+
+
+def _lane_slug(raw: str) -> str:
+    lowered = re.sub(r"[^a-z0-9]+", "-", raw.strip().lower()).strip("-")
+    return lowered
+
+
+def _status_slug(raw: str) -> str:
+    """Reduce a status value to its leading phrase, slugified.
+
+    Body ``> **Status:**`` lines in this vault are sometimes a clean label
+    (``In Progress``) and sometimes a label followed by a narrative
+    continuation after an em-dash or hyphen (``Overdue — ML-1917 remains a
+    Known Reasoning Issue...``). Frontmatter is a queryable index over the
+    body, not a replacement for it, so only the leading label — already a
+    self-contained phrase in the source text — is kept; the full narrative
+    stays intact and unedited in the body. This is truncation at an existing
+    boundary, not reinterpretation: no status is ever guessed or upgraded.
+    """
+    leading = re.split(r"\s+[—-]\s+", raw.strip(), maxsplit=1)[0]
+    leading = re.sub(r"^[^\w]+", "", leading).strip()
+    return _lane_slug(leading)
+
+
+def _normalize_iso_date(raw: str) -> str:
+    match = re.search(r"\b(\d{4}-\d{2}-\d{2})\b", raw)
+    return match.group(1) if match else ""
 
 
 def _title_from_text(path: Path, text: str, metadata: dict[str, str | list[str]]) -> str:
@@ -149,19 +210,40 @@ def parse_task(path: Path) -> TaskRecord | None:
     source_refs = [str(item) for item in refs] if isinstance(refs, list) else ([str(refs)] if refs else [])
     inferred = metadata.get("inferred_fields", [])
     inferred_fields = [str(item) for item in inferred] if isinstance(inferred, list) else ([str(inferred)] if inferred else [])
+
+    lane_value = scalar("lane", "Lane", "Triage")
+    workstream_value = scalar("workstream", "Workstream")
+    priority_value = scalar("priority", "Eisenhower")
+    if priority_value and priority_value not in {slug for _, slug in _PRIORITY_SLUGS}:
+        priority_value = _priority_slug(priority_value)
+
+    tag_values = metadata.get("tags", [])
+    if isinstance(tag_values, list) and tag_values:
+        tags = [str(item) for item in tag_values]
+    else:
+        tags = ["beats-task"]
+        workstream_slug = _lane_slug(workstream_value)
+        if workstream_slug:
+            tags.append(workstream_slug)
+        lane_slug = _lane_slug(lane_value)
+        if lane_slug:
+            tags.append(lane_slug)
+
     return TaskRecord(
         task_id=task_id,
         title=_title_from_text(path, body, metadata),
         path=path,
         status=scalar("status", "Status", "inbox"),
-        lane=scalar("lane", "Lane", "Triage"),
+        lane=lane_value,
         owner=scalar("owner", "Owner", "Unassigned"),
-        workstream=scalar("workstream", "Workstream"),
+        workstream=workstream_value,
         due=scalar("due", "Due"),
         created=scalar("created", "Created"),
         updated=scalar("updated", "Last Updated"),
         source_refs=source_refs,
         inferred_fields=inferred_fields,
+        priority=priority_value,
+        tags=tags,
         body=body,
     )
 
@@ -190,24 +272,47 @@ def _yaml_value(value: str) -> str:
     return "'" + value.replace("'", "''") + "'"
 
 
+def _yaml_scalar_or_null(value: str) -> str:
+    if not value or value.strip().lower() in {"unassigned", "tbd"}:
+        return "null"
+    return _yaml_value(value.strip())
+
+
+def _tags_or_default(tags: list[str], workstream: str, lane: str) -> list[str]:
+    if tags:
+        return tags
+    result = ["beats-task"]
+    workstream_slug = _lane_slug(workstream)
+    if workstream_slug:
+        result.append(workstream_slug)
+    lane_slug = _lane_slug(lane)
+    if lane_slug:
+        result.append(lane_slug)
+    return result
+
+
 def render_task(record: TaskRecord, *, summary: str, context: str, next_action: str, source: str) -> str:
     today = record.created or dt.date.today().isoformat()
     updated = record.updated or today
+    tags = _tags_or_default(record.tags, record.workstream, record.lane)
+    due_iso = _normalize_iso_date(record.due)
     lines = [
         "---",
         f"title: {_yaml_value(record.title)}",
         f"task_id: {_yaml_value(record.task_id)}",
         f"status: {_yaml_value(record.status)}",
         f"lane: {_yaml_value(record.lane)}",
-        f"owner: {_yaml_value(record.owner)}",
         f"workstream: {_yaml_value(record.workstream)}",
-        f"due: {_yaml_value(record.due)}",
         f"created: {_yaml_value(today)}",
         f"updated: {_yaml_value(updated)}",
         "source_refs:",
         *[f"  - {_yaml_value(ref)}" for ref in record.source_refs],
         "inferred_fields:",
         *[f"  - {_yaml_value(field)}" for field in record.inferred_fields],
+        f"tags: [{', '.join(tags)}]" if tags else "tags: []",
+        f"priority: {_yaml_scalar_or_null(record.priority)}",
+        f"due: {_yaml_scalar_or_null(due_iso)}",
+        f"owner: {_yaml_scalar_or_null(record.owner)}",
         "---",
         "",
         f"# {record.title}",
@@ -295,6 +400,122 @@ def rebuild_task_master(root: Path = ROOT) -> Path:
     return path
 
 
+def backfill_frontmatter(path: Path) -> bool:
+    """Backfill missing frontmatter keys on an existing task note in place.
+
+    Preserves every existing frontmatter key/value and the entire body verbatim;
+    only inserts keys that are absent from frontmatter, evaluated independently
+    so a note missing some but not all keys still gets the rest filled in.
+
+    `status`/`lane`/`type` are backfilled from real evidence already in the file
+    (frontmatter's own legacy body fields via `parse_task`, or the universal
+    `task` note-type constant) — never fabricated. `workstream`/`program` have
+    no such body-level fallback for legacy notes; when genuinely unknown they
+    are written as explicit YAML `null` rather than omitted, so a Dataview
+    query can surface "tasks missing a workstream" as a real, queryable gap
+    instead of a silently absent key.
+
+    Idempotent per key: re-running on an already-complete note is a no-op.
+    """
+    text = _read(path)
+    if not text.strip() or not text.startswith("---\n"):
+        return False
+    end = text.find("\n---\n", 4)
+    if end < 0:
+        return False
+    raw_frontmatter = text[4:end]
+    existing_keys = set(re.findall(r"^([a-zA-Z_][a-zA-Z0-9_-]*):", raw_frontmatter, flags=re.MULTILINE))
+    record = parse_task(path)
+    if record is None:
+        return False
+
+    missing_new = {"tags", "priority", "due", "owner"} - existing_keys
+    missing_legacy = {"status", "lane", "type", "workstream", "program"} - existing_keys
+    if not missing_new and not missing_legacy:
+        return False
+
+    tags = _tags_or_default(record.tags, record.workstream, record.lane)
+    due_iso = _normalize_iso_date(record.due)
+    new_lines: list[str] = []
+    if "status" in missing_legacy:
+        new_lines.append(f"status: {_yaml_scalar_or_null(_status_slug(record.status) or record.status)}")
+    if "lane" in missing_legacy:
+        new_lines.append(f"lane: {_yaml_scalar_or_null(_lane_slug(record.lane) or record.lane)}")
+    if "workstream" in missing_legacy:
+        new_lines.append(f"workstream: {_yaml_scalar_or_null(record.workstream)}")
+    if "program" in missing_legacy:
+        new_lines.append("program: null")
+    if "type" in missing_legacy:
+        new_lines.append("type: task")
+    if "tags" in missing_new:
+        new_lines.append(f"tags: [{', '.join(tags)}]" if tags else "tags: []")
+    if "priority" in missing_new:
+        new_lines.append(f"priority: {_yaml_scalar_or_null(record.priority)}")
+    if "due" in missing_new:
+        new_lines.append(f"due: {_yaml_scalar_or_null(due_iso)}")
+    if "owner" in missing_new:
+        new_lines.append(f"owner: {_yaml_scalar_or_null(record.owner)}")
+
+    updated = text[:end] + "\n" + "\n".join(new_lines) + text[end:]
+    path.write_text(updated, encoding="utf-8")
+    return True
+
+
+def normalize_status_frontmatter(path: Path) -> bool:
+    """Re-slug an existing `status:` frontmatter value if it still carries a
+    narrative continuation (e.g. from an earlier /track run that copied the
+    full body Status line verbatim). Truncates at the same boundary as
+    `_status_slug`; never touches the body, never invents a status.
+    Idempotent: a value that is already a clean slug is left untouched.
+    """
+    text = _read(path)
+    if not text.strip() or not text.startswith("---\n"):
+        return False
+    end = text.find("\n---\n", 4)
+    if end < 0:
+        return False
+    raw_frontmatter = text[4:end]
+    match = re.search(r"^status:\s*(.+)$", raw_frontmatter, flags=re.MULTILINE)
+    if not match:
+        return False
+    current = match.group(1).strip().strip("\"'")
+    if current in {"null", ""}:
+        return False
+    slugged = _status_slug(current)
+    if not slugged or slugged == current:
+        return False
+    new_frontmatter = raw_frontmatter[: match.start()] + f"status: {slugged}" + raw_frontmatter[match.end() :]
+    updated = text[:4] + new_frontmatter + text[end:]
+    path.write_text(updated, encoding="utf-8")
+    return True
+
+
+def normalize_all_status_frontmatter(root: Path = ROOT) -> list[str]:
+    tasks_dir = root / TASKS_REL
+    if not tasks_dir.exists():
+        return []
+    touched: list[str] = []
+    for candidate in sorted(tasks_dir.glob("*.md")):
+        if candidate.name.startswith("_"):
+            continue
+        if normalize_status_frontmatter(candidate):
+            touched.append(candidate.relative_to(root).as_posix())
+    return touched
+
+
+def backfill_all_frontmatter(root: Path = ROOT) -> list[str]:
+    tasks_dir = root / TASKS_REL
+    if not tasks_dir.exists():
+        return []
+    touched: list[str] = []
+    for candidate in sorted(tasks_dir.glob("*.md")):
+        if candidate.name.startswith("_"):
+            continue
+        if backfill_frontmatter(candidate):
+            touched.append(candidate.relative_to(root).as_posix())
+    return touched
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
@@ -304,6 +525,14 @@ def main(argv: list[str] | None = None) -> int:
     commands.add_parser("list", help="List canonical task notes")
     show = commands.add_parser("show", help="Show one task by its internal ID")
     show.add_argument("task_id")
+    commands.add_parser(
+        "backfill-frontmatter",
+        help="Append tags/priority/due/owner to every task note's frontmatter in place",
+    )
+    commands.add_parser(
+        "normalize-status",
+        help="Re-slug any status: frontmatter value that still carries a narrative continuation",
+    )
     args = parser.parse_args(argv)
     root = args.root.resolve()
     if args.command == "rebuild":
@@ -314,6 +543,12 @@ def main(argv: list[str] | None = None) -> int:
             {"task_id": task.task_id, "title": task.title, "status": task.status, "path": task.path.relative_to(root).as_posix()}
             for task in iter_tasks(root)
         ]
+    elif args.command == "backfill-frontmatter":
+        touched = backfill_all_frontmatter(root)
+        payload = {"ok": True, "updated": touched, "count": len(touched)}
+    elif args.command == "normalize-status":
+        touched = normalize_all_status_frontmatter(root)
+        payload = {"ok": True, "updated": touched, "count": len(touched)}
     else:
         task = task_by_id(root, args.task_id)
         if task is None:

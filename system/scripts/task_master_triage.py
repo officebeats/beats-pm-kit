@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import re
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from urllib.parse import quote
@@ -28,6 +29,11 @@ except ImportError:  # pragma: no cover
 
 
 BASE_DIR = Path(__file__).resolve().parents[2]
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
+from system.utils.markdown_tables import split_cells, strip_wikilinks  # noqa: E402
+
 TASK_MASTER_PATH = BASE_DIR / "5. Trackers" / "TASK_MASTER.md"
 TASKS_DIR = BASE_DIR / "5. Trackers" / "tasks"
 REPORTS_DIR = BASE_DIR / "3. Meetings" / "reports" / "day"
@@ -153,6 +159,7 @@ def remove_block(text: str, begin: str, end: str) -> str:
 
 def strip_markdown(value: str) -> str:
     value = value.replace("~~", "")
+    value = strip_wikilinks(value)
     value = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", value)
     value = re.sub(r"[*_`#>]", "", value)
     return re.sub(r"\s+", " ", value).strip()
@@ -219,7 +226,7 @@ def parse_progress_entries(text: str) -> list[ProgressEntry]:
             continue
         if not stripped.startswith("|"):
             continue
-        parts = [part.strip() for part in stripped.strip("|").split("|")]
+        parts = split_cells(stripped)
         if len(parts) < 3 or parts[0].lower() == "date" or not parts[0].startswith("20"):
             continue
         entries.append(
@@ -242,7 +249,7 @@ def parse_reference_links(text: str, base_path: Path) -> list[ReferenceLink]:
         stripped = line.strip()
         if not stripped.startswith("|"):
             continue
-        parts = [part.strip() for part in stripped.strip("|").split("|")]
+        parts = split_cells(stripped)
         if len(parts) < 3 or parts[0].lower() == "type" or parts[0].startswith(":"):
             continue
         kind = strip_markdown(parts[0])

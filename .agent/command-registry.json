@@ -76,6 +76,7 @@
       }
     },
     "checkpoint_policy": {
+      "append_only_anchors": true,
       "context_threshold_percent": 65,
       "phase_boundaries": [
         "discovery",
@@ -354,6 +355,7 @@
       }
     },
     "discover": {
+      "visibility": "hidden",
       "codex": {
         "promotion": "dispatch-only",
         "supporting_files": [
@@ -408,6 +410,7 @@
       }
     },
     "prioritize": {
+      "visibility": "hidden",
       "codex": {
         "promotion": "dispatch-only",
         "supporting_files": [
@@ -826,6 +829,57 @@
           "Report warnings separately from hard failures."
         ]
       }
+    },
+    "accuracy": {
+      "visibility": "hidden"
+    },
+    "archive": {
+      "visibility": "hidden"
+    },
+    "build": {
+      "visibility": "hidden"
+    },
+    "chat": {
+      "visibility": "hidden"
+    },
+    "context": {
+      "visibility": "hidden"
+    },
+    "fan-out": {
+      "visibility": "hidden"
+    },
+    "handoff": {
+      "visibility": "hidden"
+    },
+    "improve-plan": {
+      "visibility": "hidden"
+    },
+    "intel": {
+      "visibility": "hidden"
+    },
+    "interview": {
+      "visibility": "hidden"
+    },
+    "maintain": {
+      "visibility": "hidden"
+    },
+    "prep": {
+      "visibility": "hidden"
+    },
+    "regression": {
+      "visibility": "hidden"
+    },
+    "retro": {
+      "visibility": "hidden"
+    },
+    "sprint": {
+      "visibility": "hidden"
+    },
+    "start": {
+      "visibility": "hidden"
+    },
+    "team": {
+      "visibility": "hidden"
     }
   }
 }

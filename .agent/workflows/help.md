@@ -33,13 +33,11 @@ _For deeper execution cycles._
 | **`/find`** | Search full meeting, chat, decision, workstream, and task text and return source-backed context. |
 | **`/transcript`** | **Quill Integration**. Pulls meetings from last 10 days. |
 | **`/beats-comms`** | Read-only scoped Slack, Teams, Outlook, and Calendar intake through MCP/connectors. |
-| **`/discover`**  | Product discovery with OST and Assumption Mapping.   |
-| **`/prioritize`** | Score and rank backlogs with RICE/ICE.               |
-| **`/fan-out`**   | Parallel multi-agent task orchestration.            |
-| **`/maintain`**  | Refresh local indexes, validate adapters, run triage, and report health. |
 | **`/obsidian`**  | Set up or open the optional direct-vault task and knowledge view. |
 | **`/vacuum`**    | System optimization, task archiving, and cleanup.   |
 | **`/update`**    | Pull latest kit version from GitHub.                |
+
+Additional dispatch-only utility commands (`/discover`, `/prioritize`, `/fan-out`, `/maintain`, and others) stay decluttered from this list but remain fully usable; type the exact command name, or see the "Hidden / Legacy Commands" section of `.agent/rules/ROUTING.md` for the full set.
 
 ## How to Start (The Loop)
 

@@ -20,7 +20,9 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from system.scripts import personal_memory
-TARGET_VERSION = "13.0.0"
+from system.utils.markdown_tables import split_cells
+
+TARGET_VERSION = "13.1.0"
 CONTENT_ROOTS = (
     "0. Incoming",
     "1. Company",
@@ -198,15 +200,29 @@ def linked_title_hints(root: Path, paths: list[Path]) -> dict[str, set[str]]:
             add(source, target, label)
         if source == root / "5. Trackers" / "TASK_MASTER.md":
             for line in text.splitlines():
-                cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+                cells = split_cells(line)
                 if len(cells) < 2:
                     continue
                 link = re.search(r"\]\((tasks/[^)]+\.md)\)", cells[0])
-                if not link:
+                if link:
+                    emphasized = re.search(r"\*\*(.+?)\*\*", cells[1])
+                    label = emphasized.group(1) if emphasized else re.split(r"\s+[—–]\s+", cells[1], maxsplit=1)[0]
+                    add(source, link.group(1), label)
                     continue
-                emphasized = re.search(r"\*\*(.+?)\*\*", cells[1])
-                label = emphasized.group(1) if emphasized else re.split(r"\s+[—–]\s+", cells[1], maxsplit=1)[0]
-                add(source, link.group(1), label)
+                wiki = re.search(r"\[\[([^\]|]+?)(?:\\?\|([^\]]*))?\]\]", cells[0])
+                if not wiki:
+                    continue
+                target = wiki.group(1).strip().rstrip("\\")
+                alias = (wiki.group(2) or "").strip()
+                if not target or not alias:
+                    continue
+                if target.startswith("5. Trackers/"):
+                    target = target[len("5. Trackers/") :]
+                if "/" not in target:
+                    target = f"tasks/{target}"
+                if not target.lower().endswith(".md"):
+                    target = f"{target}.md"
+                add(source, target, alias)
     return hints
 
 

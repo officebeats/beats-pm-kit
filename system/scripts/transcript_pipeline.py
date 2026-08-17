@@ -29,6 +29,11 @@ CURRENT_FILE = Path(__file__).resolve()
 SYSTEM_ROOT = CURRENT_FILE.parent.parent
 DEFAULT_ROOT = SYSTEM_ROOT.parent
 
+if str(DEFAULT_ROOT) not in sys.path:
+    sys.path.insert(0, str(DEFAULT_ROOT))
+
+from system.utils.markdown_tables import split_cells  # noqa: E402
+
 MANIFEST_NAME = "_manifest.json"
 SUMMARY_SUFFIX = ".md"
 PACKETS_DIRNAME = "packets"
@@ -512,7 +517,7 @@ def extract_action_items(summary_text: str, max_items: int = 5) -> list[str]:
         if in_actions and line.startswith("## "):
             break
         if in_actions and line.startswith("|") and "---" not in line and "Due Date" not in line:
-            cells = [cell.strip() for cell in line.strip("|").split("|")]
+            cells = split_cells(line)
             if len(cells) >= 3:
                 actions.append(f"{cells[1]}: {cells[2]} ({cells[0]})")
         if len(actions) >= max_items:

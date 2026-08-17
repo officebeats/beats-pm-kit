@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+# Last line of defense before content reaches the public remote.
+# Catches commits made with --no-verify or from clones without hooks.
+python3 system/scripts/privacy_guard.py --tree

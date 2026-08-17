@@ -111,6 +111,7 @@
       ]
     },
     "checkpoint_policy": {
+      "append_only_anchors": true,
       "context_threshold_percent": 65,
       "phase_boundaries": [
         "discovery",
@@ -288,7 +289,7 @@
       "wwas"
     ]
   },
-  "version": "13.0.0",
+  "version": "13.1.0",
   "workflows": {
     "commands": [
       "/accuracy",

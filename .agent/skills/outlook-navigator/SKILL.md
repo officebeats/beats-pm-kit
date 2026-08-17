@@ -7,6 +7,17 @@ description: Read-only Outlook mail and Calendar intake for context, task extrac
 
 # Outlook Navigator Skill
 
+## Quick Path
+
+1. Resolve an explicit named mail or calendar scope; compute missing windows with `chat_intake_state.py window --platform outlook|calendar --scope "<SCOPE>"` (mail defaults 5 business days back; calendar 14 days forward).
+2. Prefer read-only MS365 MCP/connector reads; use `outlook_bridge.py` (AppleScript) only when connector reads are unavailable and label it as a fallback.
+3. Persist evidence via the chat-transcript-archive skill to `3. Meetings/chat-transcripts/outlook|calendar/` plus run reports.
+4. Analyze for deadlines, decisions, strategy changes, scheduled events, latest/completed outcomes, and open items per workstream.
+5. Enrich `4. People/{firstname-lastname}.md` from senders, CCs, and email signatures.
+6. Triage: route workstream updates, suggest `/track` items, send boss asks to `5. Trackers/critical/boss-requests.md`; ask before checking off implied completions.
+
+Never create, send, modify, or delete mail or calendar items. Go deeper into the Protocol steps for scope rules and the Hard Safety Rules before any borderline operation.
+
 ## Goal
 The outlook-navigator is the read-only mail and calendar intake path. It fetches named Outlook and Calendar source windows for local workstream/task synthesis but does not mutate Microsoft 365 state.
 

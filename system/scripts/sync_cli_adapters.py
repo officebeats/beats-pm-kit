@@ -92,13 +92,19 @@ def render_codex_commands() -> str:
         "then route any remaining request through the PM decision router or the",
         "matching slash-command workflow.",
         "",
-        "| Command | Workflow | Profile | Promoted Codex Skill |",
-        "| --- | --- | --- | --- |",
+        "Every workflow keeps a row here so Codex can always resolve it by exact",
+        "command name. `Hidden` in the Visibility column means the command is",
+        "decluttered from `.agent/rules/ROUTING.md` and `/help` discovery",
+        "surfaces, not removed; it still resolves normally when typed.",
+        "",
+        "| Command | Workflow | Profile | Promoted Codex Skill | Visibility |",
+        "| --- | --- | --- | --- | --- |",
     ]
     for item in get_command_catalog():
+        visibility = "Hidden" if item["visibility"] == "hidden" else "Visible"
         rows.append(
             f"| `/{item['name']}` | `{item['workflow']}` | "
-            f"{str(item['execution_profile']).title()} | {codex_adapter_label(item)} |"
+            f"{str(item['execution_profile']).title()} | {codex_adapter_label(item)} | {visibility} |"
         )
     rows.append("")
     return "\n".join(rows)

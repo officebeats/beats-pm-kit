@@ -56,7 +56,7 @@ The budget check uses a deterministic UTF-8 byte estimate so CI does not depend 
 
 `context_store.py` archives full payloads under ignored `.beats/context/` with stable IDs, SHA-256, source, timestamp, producer command, byte count, and token estimate. Compact views retain high-signal lines and a deterministic retrieval command. Retrieval hash-verifies the original bytes.
 
-`context_checkpoint.py` permits compaction only after discovery, planning, creation, or verification. A checkpoint must preserve the goal, decisions, exact stakeholder language, source IDs, artifacts, open questions, failed attempts, verification state, next action, most recent complete turn, and intact tool-call/result pairs.
+`context_checkpoint.py` permits compaction only after discovery, planning, creation, or verification. A checkpoint must preserve the goal, decisions, exact stakeholder language, source IDs, artifacts, open questions, failed attempts, verification state, next action, most recent complete turn, and intact tool-call/result pairs. Checkpoints are append-only and anchored: each one appends a `## Checkpoint <ISO8601>` section to `ANCHORS.md` in the checkpoint directory, earlier anchors are never rewritten or reordered, and a mutated anchor hash blocks the next checkpoint.
 
 Raw retrieval is mandatory before quotations, customer commitments, legal language, security findings, and final citations.
 

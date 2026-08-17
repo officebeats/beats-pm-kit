@@ -7,6 +7,7 @@ Checks toolchain, file structure, critical files, and AI model configuration.
 
 import sys
 import os
+import json
 import datetime
 from pathlib import Path
 from typing import List
@@ -36,6 +37,7 @@ from system.utils.subprocess_helper import (
     check_extension_installed,
 )
 from system.utils.config import get_config
+from system.scripts import harness_telemetry
 
 class Logger:
     """Redirects stdout to both console and a log file."""
@@ -180,6 +182,101 @@ def check_extensions() -> None:
             print_warning(f"Ext: {ext_name}: Not Installed")
 
 
+# MCP config drift audit
+MCP_ALLOWLIST_REL = "system/config/mcp-allowlist.json"
+DEFAULT_MCP_CONFIG_FILES = (
+    ".mcp.json",
+    ".vscode/mcp.json",
+    ".cursor/mcp.json",
+    "system/config/mcp.template.json",
+)
+
+
+def _mcp_server_map(config: dict) -> dict:
+    """Return the server-name -> spec map from either client config shape."""
+    servers = config.get("mcpServers")
+    if not isinstance(servers, dict):
+        servers = config.get("servers")
+    return servers if isinstance(servers, dict) else {}
+
+
+def collect_mcp_servers(root: Path, config_files) -> List[dict]:
+    """Collect {name, source_file, command} for every server in every readable config."""
+    observed = []
+    for relative in config_files:
+        path = root / relative
+        if not path.is_file():
+            continue
+        try:
+            config = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if not isinstance(config, dict):
+            continue
+        for name, spec in sorted(_mcp_server_map(config).items()):
+            command = ""
+            if isinstance(spec, dict):
+                command = spec.get("command") or spec.get("url") or ""
+            observed.append({"name": name, "source_file": relative, "command": command})
+    return observed
+
+
+def mcp_config_drift(observed: List[dict], allowlisted: List[dict]) -> dict:
+    """Compare observed servers against the allowlist by (name, source_file)."""
+    observed_keys = {(item["name"], item["source_file"]) for item in observed}
+    allowed_keys = {(item["name"], item["source_file"]) for item in allowlisted}
+    return {
+        "unknown": [item for item in observed if (item["name"], item["source_file"]) not in allowed_keys],
+        "missing": [item for item in allowlisted if (item["name"], item["source_file"]) not in observed_keys],
+    }
+
+
+def check_token_hotspots() -> None:
+    """Report the commands with the highest mean source bytes per resolution."""
+    print_cyan("\nToken Hotspots:")
+
+    ledger = BRAIN_ROOT / harness_telemetry.USAGE_LEDGER_REL
+    entries = harness_telemetry.load_usage(ledger)
+    if not entries:
+        print_success("No usage ledger yet (.beats/usage.jsonl); resolve a command to start recording")
+        return
+
+    for row in harness_telemetry.usage_hotspots(entries, top=5):
+        print_success(
+            f"/{row['command']}: {row['mean_source_bytes']:,} mean source bytes over {row['runs']} run(s)"
+        )
+
+
+def check_mcp_config_drift() -> None:
+    """Audit every known MCP config against the committed allowlist baseline."""
+    print_cyan("\nMCP Config Drift:")
+
+    allowlist_path = BRAIN_ROOT / MCP_ALLOWLIST_REL
+    if not allowlist_path.is_file():
+        print_warning(f"{MCP_ALLOWLIST_REL}: Missing (no MCP audit baseline)")
+        return
+    try:
+        allowlist = json.loads(allowlist_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        print_error(f"{MCP_ALLOWLIST_REL}: Unreadable ({exc})")
+        return
+
+    config_files = allowlist.get("config_files") or list(DEFAULT_MCP_CONFIG_FILES)
+    allowlisted = allowlist.get("servers") or []
+    observed = collect_mcp_servers(BRAIN_ROOT, config_files)
+    drift = mcp_config_drift(observed, allowlisted)
+
+    for item in drift["unknown"]:
+        print_warning(f"UNKNOWN MCP server '{item['name']}' in {item['source_file']} (not allowlisted)")
+    for item in drift["missing"]:
+        print_warning(f"MISSING MCP server '{item['name']}' expected in {item['source_file']} (allowlisted but absent)")
+    if not drift["unknown"] and not drift["missing"]:
+        print_success(
+            f"MCP configs match allowlist ({len(observed)} server entries across {len(config_files)} config files)"
+        )
+
+
+
 def main() -> None:
     """Main entry point for vibe check."""
     # Hijack stdout
@@ -196,6 +293,8 @@ def main() -> None:
     check_critical_files()
     check_skills_configuration()
     check_extensions()
+    check_token_hotspots()
+    check_mcp_config_drift()
 
     print_cyan("\n--- Check Complete ---")
 

@@ -7,12 +7,13 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import os
 import re
 import sqlite3
 import sys
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -238,8 +239,9 @@ def classify_path(relative_path: Path) -> str:
     return "other"
 
 
-def iter_candidate_files(root: Path):
-    for relative_root in SCAN_ROOTS.values():
+def iter_candidate_files(root: Path, kinds: Iterable[str] | None = None):
+    selected = SCAN_ROOTS.items() if kinds is None else ((kind, SCAN_ROOTS[kind]) for kind in kinds)
+    for _, relative_root in selected:
         base = root / relative_root
         if not base.exists():
             continue
@@ -270,8 +272,103 @@ def file_stats(path: Path, root: Path) -> dict[str, Any]:
     }
 
 
-def current_file_state(root: Path) -> dict[str, dict[str, Any]]:
-    return {item["path"]: item for item in (file_stats(path, root) for path in iter_candidate_files(root))}
+def current_file_state(root: Path, kinds: Iterable[str] | None = None) -> dict[str, dict[str, Any]]:
+    return {item["path"]: item for item in (file_stats(path, root) for path in iter_candidate_files(root, kinds))}
+
+
+MTIME_CACHE_FILENAME = "mtime_cache.json"
+MTIME_CACHE_SCHEMA_VERSION = 1
+MTIME_CACHE_TTL_SECONDS = 300  # safety net for filesystems that don't propagate dir mtimes reliably
+
+
+def _dir_tree_signature(base: Path) -> tuple[int, int]:
+    """Cheap recursive fingerprint of a directory tree: (max mtime_ns, dir count).
+
+    Stats directories only, never files, so it is far cheaper than a full
+    rglob+stat walk. Creating, deleting, or renaming a file or directory
+    anywhere under `base` updates its immediate parent directory's mtime, so
+    this fingerprint reliably changes for any structural edit. It cannot see a
+    content-only edit of an already-known file (the containing directory's
+    mtime is untouched by that) — `index_is_current` covers that case with a
+    targeted stat of the previously indexed files, and `MTIME_CACHE_TTL_SECONDS`
+    bounds staleness for filesystems that don't propagate directory mtimes for
+    nested structural changes.
+    """
+    try:
+        max_mtime_ns = base.stat().st_mtime_ns
+    except OSError:
+        return (-1, -1)
+    dir_count = 1
+    pending = [base]
+    while pending:
+        current = pending.pop()
+        try:
+            entries = list(os.scandir(current))
+        except OSError:
+            continue
+        for entry in entries:
+            if entry.name in SKIP_DIRS:
+                continue
+            try:
+                if not entry.is_dir(follow_symlinks=False):
+                    continue
+                entry_mtime_ns = entry.stat(follow_symlinks=False).st_mtime_ns
+            except OSError:
+                continue
+            dir_count += 1
+            if entry_mtime_ns > max_mtime_ns:
+                max_mtime_ns = entry_mtime_ns
+            pending.append(Path(entry.path))
+    return (max_mtime_ns, dir_count)
+
+
+def _mtime_cache_path(index_path: Path) -> Path:
+    return index_path.parent / MTIME_CACHE_FILENAME
+
+
+def _load_mtime_cache(index_path: Path) -> dict[str, Any]:
+    cache_path = _mtime_cache_path(index_path)
+    if not cache_path.exists():
+        return {}
+    try:
+        data = json.loads(cache_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    if data.get("schema_version") != MTIME_CACHE_SCHEMA_VERSION:
+        return {}
+    return data.get("roots", {})
+
+
+def _save_mtime_cache(index_path: Path, roots: dict[str, Any]) -> None:
+    cache_path = _mtime_cache_path(index_path)
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {"schema_version": MTIME_CACHE_SCHEMA_VERSION, "roots": roots}
+    cache_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def _mark_roots_fresh(index_path: Path, root: Path, kinds: Iterable[str] | None = None) -> None:
+    """Seed/refresh the cheap directory-mtime signature after a successful full build."""
+    cache = _load_mtime_cache(index_path)
+    now = time.time()
+    for kind, relative_root in SCAN_ROOTS.items():
+        if kinds is not None and kind not in kinds:
+            continue
+        cache[kind] = {"signature": list(_dir_tree_signature(root / relative_root)), "checked_at": now}
+    _save_mtime_cache(index_path, cache)
+
+
+def _targeted_file_state(root: Path, known_paths: Iterable[str]) -> dict[str, dict[str, Any]]:
+    """Re-stat a known set of candidate files directly, skipping directory discovery."""
+    state: dict[str, dict[str, Any]] = {}
+    for rel_path in known_paths:
+        try:
+            stat = (root / rel_path).stat()
+        except OSError:
+            continue  # removed; its absence is caught by comparison against `indexed`
+        if stat.st_size > MAX_FILE_BYTES:
+            continue  # grew past the limit; comparison against `indexed` flags this as stale
+        state[rel_path] = {"path": rel_path, "mtime_ns": stat.st_mtime_ns, "size": stat.st_size}
+    return state
 
 
 def load_index(index_path: Path = INDEX_PATH) -> dict[str, Any] | None:
@@ -283,23 +380,53 @@ def load_index(index_path: Path = INDEX_PATH) -> dict[str, Any] | None:
         return None
 
 
-def index_is_current(index: dict[str, Any] | None, root: Path) -> bool:
+def index_is_current(index: dict[str, Any] | None, root: Path, *, index_path: Path = INDEX_PATH) -> bool:
     if not index or index.get("schema_version") != INDEX_VERSION:
         return False
-    indexed = {
-        item["path"]: {
+
+    indexed_by_kind: dict[str, dict[str, dict[str, Any]]] = {}
+    for item in index.get("files", []):
+        indexed_by_kind.setdefault(item.get("kind"), {})[item["path"]] = {
             "path": item["path"],
             "mtime_ns": item.get("mtime_ns"),
             "size": item.get("size"),
         }
-        for item in index.get("files", [])
-    }
-    return indexed == current_file_state(root)
+
+    now = time.time()
+    cache = _load_mtime_cache(index_path)
+    signatures: dict[str, tuple[int, int]] = {}
+    structurally_unchanged: set[str] = set()
+    for kind, relative_root in SCAN_ROOTS.items():
+        signature = _dir_tree_signature(root / relative_root)
+        signatures[kind] = signature
+        cached_entry = cache.get(kind)
+        if (
+            cached_entry is not None
+            and tuple(cached_entry.get("signature", ())) == signature
+            and now - cached_entry.get("checked_at", 0.0) <= MTIME_CACHE_TTL_SECONDS
+        ):
+            structurally_unchanged.add(kind)
+
+    current: dict[str, dict[str, Any]] = {}
+    for kind in structurally_unchanged:
+        current.update(_targeted_file_state(root, indexed_by_kind.get(kind, {}).keys()))
+    walked_kinds = [kind for kind in SCAN_ROOTS if kind not in structurally_unchanged]
+    if walked_kinds:
+        current.update(current_file_state(root, kinds=walked_kinds))
+
+    indexed_flat = {path: item for bucket in indexed_by_kind.values() for path, item in bucket.items()}
+    if indexed_flat != current:
+        return False
+
+    for kind in SCAN_ROOTS:
+        cache[kind] = {"signature": list(signatures[kind]), "checked_at": now}
+    _save_mtime_cache(index_path, cache)
+    return True
 
 
 def build_index(root: Path = ROOT, *, force: bool = False, index_path: Path = INDEX_PATH) -> dict[str, Any]:
     cached = load_index(index_path)
-    if not force and index_is_current(cached, root):
+    if not force and index_is_current(cached, root, index_path=index_path):
         if not knowledge_db_path(root).exists():
             bodies = {path.relative_to(root).as_posix(): read_text(path) for path in iter_candidate_files(root)}
             sync_knowledge_db(root, cached, bodies)  # type: ignore[arg-type]
@@ -343,6 +470,7 @@ def build_index(root: Path = ROOT, *, force: bool = False, index_path: Path = IN
     index_path.parent.mkdir(parents=True, exist_ok=True)
     index_path.write_text(json.dumps(index, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     sync_knowledge_db(root, index, bodies)
+    _mark_roots_fresh(index_path, root)
     return index
 
 
@@ -650,7 +778,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "stale":
         index = load_index(index_path)
-        stale = not index_is_current(index, root)
+        stale = not index_is_current(index, root, index_path=index_path)
         if not args.quiet:
             emit({"stale": stale, "index_path": str(index_path)}, as_json=args.json)
         return 1 if stale else 0

@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
-"""Create loss-aware workflow checkpoints only at completed phase boundaries."""
+"""Create loss-aware workflow checkpoints only at completed phase boundaries.
+
+Checkpoints are append-only and anchored: each one writes a new JSON file and
+appends a `## Checkpoint <ISO8601>` section to `ANCHORS.md` in the checkpoint
+directory. Earlier anchors are never rewritten or reordered; every section
+carries a content hash and any mutation raises before a new checkpoint writes.
+"""
 
 from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import re
 import sys
@@ -27,10 +34,120 @@ REQUIRED_FIELDS = {
     "recent_complete_turn",
     "tool_pairs_complete",
 }
+CHECKPOINT_DIRNAME = ".beats/context/checkpoints"
+ANCHORS_FILENAME = "ANCHORS.md"
+ANCHORS_HEADER = (
+    "# Checkpoint Anchors\n"
+    "\n"
+    "> Append-only ledger. Each checkpoint appends one `## Checkpoint <ISO8601>` section.\n"
+    "> Existing sections are never rewritten or reordered; every section carries a content\n"
+    "> hash and any mutation fails the next checkpoint.\n"
+)
+ANCHOR_HASH_RE = re.compile(r"^<!-- anchor-hash: ([0-9a-f]{64}) -->$")
+ANCHOR_HEADING_PREFIX = "## Checkpoint "
 
 
 def utc_now() -> str:
     return dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _anchor_digest(body: str) -> str:
+    return hashlib.sha256(body.encode("utf-8")).hexdigest()
+
+
+def parse_anchors(text: str) -> list[dict[str, str]]:
+    """Parse anchor sections into {heading, body, recorded_hash} dicts.
+
+    Raises ValueError when a section has no hash line or carries content
+    after its hash line (both indicate a hand edit).
+    """
+    sections: list[list[str]] = []
+    current: list[str] | None = None
+    for line in text.split("\n"):
+        if line.startswith(ANCHOR_HEADING_PREFIX):
+            if current is not None:
+                sections.append(current)
+            current = [line]
+        elif current is not None:
+            current.append(line)
+    if current is not None:
+        sections.append(current)
+
+    anchors: list[dict[str, str]] = []
+    for lines in sections:
+        hash_index = None
+        recorded = None
+        for index, line in enumerate(lines):
+            match = ANCHOR_HASH_RE.match(line)
+            if match:
+                hash_index = index
+                recorded = match.group(1)
+                break
+        if hash_index is None or recorded is None:
+            raise ValueError(f"Anchor section without a hash line: {lines[0]!r}")
+        if any(line.strip() for line in lines[hash_index + 1 :]):
+            raise ValueError(f"Content added after the hash line of {lines[0]!r}")
+        anchors.append(
+            {
+                "heading": lines[0],
+                "body": "\n".join(lines[:hash_index]),
+                "recorded_hash": recorded,
+            }
+        )
+    return anchors
+
+
+def verify_anchors(anchors_path: Path) -> int:
+    """Guard: raise ValueError if any existing anchor's content hash changed.
+
+    Returns the number of verified anchors (0 when the ledger does not exist).
+    """
+    if not anchors_path.exists():
+        return 0
+    anchors = parse_anchors(anchors_path.read_text(encoding="utf-8"))
+    for anchor in anchors:
+        actual = _anchor_digest(anchor["body"])
+        if actual != anchor["recorded_hash"]:
+            raise ValueError(
+                "Append-only violation: content hash changed for "
+                f"{anchor['heading']!r} (checkpoint anchors are never rewritten)"
+            )
+    return len(anchors)
+
+
+def append_anchor(
+    checkpoint_dir: Path,
+    *,
+    timestamp: str,
+    workflow: str,
+    phase: str,
+    checkpoint_file: str,
+    document_sha256: str,
+) -> Path:
+    """Append one anchored `## Checkpoint <ISO8601>` section to the ledger.
+
+    Verifies all existing anchors first and appends in 'a' mode, so earlier
+    sections are never rewritten or reordered.
+    """
+    anchors_path = checkpoint_dir / ANCHORS_FILENAME
+    verify_anchors(anchors_path)
+    body = "\n".join(
+        [
+            f"{ANCHOR_HEADING_PREFIX}{timestamp}",
+            "",
+            f"- workflow: {workflow}",
+            f"- completed_phase: {phase}",
+            f"- checkpoint_file: {checkpoint_file}",
+            f"- checkpoint_sha256: {document_sha256}",
+        ]
+    )
+    section = f"{body}\n<!-- anchor-hash: {_anchor_digest(body)} -->\n\n"
+    is_new = not anchors_path.exists()
+    with anchors_path.open("a", encoding="utf-8") as handle:
+        if is_new:
+            handle.write(ANCHORS_HEADER + "\n")
+        handle.write(section)
+    return anchors_path
 
 
 def should_checkpoint(
@@ -78,8 +195,10 @@ def create_checkpoint(
     timestamp = utc_now()
     safe_workflow = re.sub(r"[^a-z0-9-]+", "-", workflow.lower()).strip("-") or "workflow"
     filename = timestamp.replace(":", "").replace("-", "") + f"-{safe_workflow}-{phase}.json"
-    output = root / ".beats/context/checkpoints" / filename
+    output = root / CHECKPOINT_DIRNAME / filename
     output.parent.mkdir(parents=True, exist_ok=True)
+    # Guard before any write: a mutated anchor ledger blocks new checkpoints.
+    verify_anchors(output.parent / ANCHORS_FILENAME)
     document = {
         "schema_version": 1,
         "workflow": workflow,
@@ -92,7 +211,16 @@ def create_checkpoint(
         },
         **payload,
     }
-    output.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    serialized = json.dumps(document, indent=2, sort_keys=True) + "\n"
+    output.write_text(serialized, encoding="utf-8")
+    append_anchor(
+        output.parent,
+        timestamp=timestamp,
+        workflow=workflow,
+        phase=phase,
+        checkpoint_file=output.name,
+        document_sha256=hashlib.sha256(serialized.encode("utf-8")).hexdigest(),
+    )
     return output
 
 

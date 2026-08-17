@@ -2,7 +2,6 @@ import datetime as dt
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
 
 from system.scripts import task_intake_fast
 
@@ -101,7 +100,7 @@ class TestTaskIntakeFast(unittest.TestCase):
         self.assertIn("Source Note", updated_task)
         self.assertIn("IAD Indicia guideline tenant configuration", updated_task)
         self.assertIn("title: 'Review guideline recommendation work'", updated_task)
-        self.assertIn("[Review guideline recommendation work](tasks/PLAN-014.md)", task_master)
+        self.assertIn("[[PLAN-014\\|Review guideline recommendation work]]", task_master)
         self.assertTrue(result.triage_deferred)
 
     def test_creates_candidate_task_when_match_is_low_confidence(self):
@@ -122,7 +121,7 @@ class TestTaskIntakeFast(unittest.TestCase):
         self.assertTrue(source_note.exists())
         self.assertIn("Random stakeholder note", source_note.read_text(encoding="utf-8"))
         self.assertNotIn("INBOX-001", task_file.name)
-        self.assertIn("[Random stakeholder note ask Finance]", (root / "5. Trackers" / "TASK_MASTER.md").read_text(encoding="utf-8"))
+        self.assertIn("[[random-stakeholder-note-ask-finance\\|Random stakeholder note ask Finance]]", (root / "5. Trackers" / "TASK_MASTER.md").read_text(encoding="utf-8"))
         self.assertIn("# Random stakeholder note ask", task_file.read_text(encoding="utf-8"))
         self.assertIn("task_id: INBOX-001", task_file.read_text(encoding="utf-8"))
         self.assertIn("workstream: Unassigned", task_file.read_text(encoding="utf-8"))
@@ -154,23 +153,15 @@ class TestTaskIntakeFast(unittest.TestCase):
         self.assertEqual(frontmatter.count("0. Incoming/raw/"), 2)
         self.assertNotIn("> **Last Updated:**", text)
 
-    def test_task_index_falls_back_when_agent_cache_is_read_only(self):
+    def test_write_task_index_writes_only_canonical_cache(self):
         root = self.make_repo()
         index = task_intake_fast.build_task_index(root)
-        primary = root / task_intake_fast.CACHE_REL
-        fallback = root / task_intake_fast.FALLBACK_CACHE_REL
-        original_write_text = Path.write_text
 
-        def guarded_write(path, data, *args, **kwargs):
-            if path == primary:
-                raise PermissionError("agent cache is read-only")
-            return original_write_text(path, data, *args, **kwargs)
+        written = task_intake_fast.write_task_index(root, index)
 
-        with patch.object(Path, "write_text", new=guarded_write):
-            written = task_intake_fast.write_task_index(root, index)
-
-        self.assertEqual(written, fallback)
-        self.assertTrue(fallback.exists())
+        self.assertEqual(written, root / task_intake_fast.CACHE_REL)
+        self.assertTrue(written.exists())
+        self.assertFalse((root / "system" / "cache" / "task_index.json").exists())
         self.assertEqual(task_intake_fast.load_or_build_index(root)["tasks"], index["tasks"])
 
 

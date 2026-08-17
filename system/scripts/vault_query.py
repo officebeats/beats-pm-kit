@@ -24,6 +24,10 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from system.utils.markdown_tables import split_cells  # noqa: E402
 
 TASKS_DIR = "5. Trackers/tasks"
 LABELS_JSON = ".beats/markdown-labels.json"
@@ -217,7 +221,7 @@ def parse_quote_rows(text: str) -> list[dict[str, str]]:
         stripped = line.strip()
         if not stripped.startswith("|"):
             continue
-        cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+        cells = split_cells(stripped)
         if not cells or all(re.fullmatch(r":?-{2,}:?", c) for c in cells):
             continue  # separator row
         if cells[0].casefold() == "date":

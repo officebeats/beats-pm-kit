@@ -35,6 +35,11 @@ except ModuleNotFoundError:  # pragma: no cover
 
 
 BASE_DIR = Path(__file__).resolve().parents[2]
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
+
+from system.utils.markdown_tables import split_cells, strip_wikilinks  # noqa: E402
+
 CONFIG_PATH = BASE_DIR / "system" / "config" / "trello_config.json"
 TEMPLATE_CONFIG_PATH = BASE_DIR / "system" / "config" / "trello_config.template.json"
 TRACKERS_DIR = BASE_DIR / "5. Trackers"
@@ -137,6 +142,7 @@ def safe_slug(value: str, fallback: str = "card") -> str:
 
 def strip_markdown(value: str) -> str:
     value = value.replace("~~", "")
+    value = strip_wikilinks(value)
     value = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", value)
     value = re.sub(r"[*_`#>]", "", value)
     return re.sub(r"\s+", " ", value).strip()
@@ -521,13 +527,24 @@ def save_ledger(ledger: dict[str, Any]) -> None:
     write_text(LEDGER_PATH, json.dumps(ledger, indent=2, sort_keys=True))
 
 
+WIKILINK_CELL_RE = re.compile(r"\[\[([^\]|]+?)(?:\\?\|[^\]]*)?\]\]")
+TASK_ID_SHAPE_RE = re.compile(r"^[A-Z][A-Z0-9]*-[A-Z0-9-]+[a-z]?$")
+
+
 def extract_task_id(cell: str) -> str:
     cell = cell.strip().replace("~~", "")
     link_match = re.search(r"\[([^\]]+)\]\(([^)]+)\)", cell)
     if link_match:
         return link_match.group(1).strip()
+    wiki_match = WIKILINK_CELL_RE.search(cell)
+    if wiki_match:
+        target = wiki_match.group(1).strip().rstrip("\\")
+        candidate = target.rsplit("/", 1)[-1]
+        if candidate.lower().endswith(".md"):
+            candidate = candidate[:-3]
+        return candidate if TASK_ID_SHAPE_RE.match(candidate) else ""
     clean = re.sub(r"[`*_]", "", cell).strip()
-    if re.match(r"^[A-Z][A-Z0-9]*-[A-Z0-9-]+[a-z]?$", clean):
+    if TASK_ID_SHAPE_RE.match(clean):
         return clean
     return ""
 
@@ -537,6 +554,13 @@ def extract_task_path(cell: str, task_id: str) -> Path:
     if link_match:
         target = link_match.group(1).strip()
         return (TRACKERS_DIR / target).resolve()
+    wiki_match = WIKILINK_CELL_RE.search(cell)
+    if wiki_match:
+        target = wiki_match.group(1).strip().rstrip("\\")
+        if "/" in target:
+            if not target.lower().endswith(".md"):
+                target = f"{target}.md"
+            return (BASE_DIR / target).resolve()
     return TASKS_DIR / f"{task_id}.md"
 
 
@@ -548,7 +572,7 @@ def load_task_master_tasks() -> dict[str, dict[str, Any]]:
     for line_no, line in enumerate(TASK_MASTER_PATH.read_text(encoding="utf-8").splitlines(), start=1):
         if not line.strip().startswith("|"):
             continue
-        parts = [part.strip() for part in line.strip().strip("|").split("|")]
+        parts = split_cells(line)
         if len(parts) < 5 or parts[0].lower() in {"id", ":---", "completed", "item"}:
             continue
         task_id = extract_task_id(parts[0])
@@ -947,7 +971,7 @@ def desired_label_names(card: dict[str, Any], lane: str) -> set[str]:
 
 
 def is_table_separator(line: str) -> bool:
-    cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+    cells = [cell.strip() for cell in re.split(r"(?<!\\)\|", line.strip().strip("|"))]
     return bool(cells) and all(re.fullmatch(r":?-{3,}:?", cell or "") for cell in cells)
 
 
@@ -961,10 +985,10 @@ def convert_tables_to_bullets(text: str) -> str:
             and lines[idx].strip().startswith("|")
             and is_table_separator(lines[idx + 1])
         ):
-            headers = [cell.strip() for cell in lines[idx].strip().strip("|").split("|")]
+            headers = split_cells(lines[idx])
             idx += 2
             while idx < len(lines) and lines[idx].strip().startswith("|"):
-                cells = [cell.strip() for cell in lines[idx].strip().strip("|").split("|")]
+                cells = split_cells(lines[idx])
                 pairs = [
                     f"{headers[col]}: {cells[col]}"
                     for col in range(min(len(headers), len(cells)))

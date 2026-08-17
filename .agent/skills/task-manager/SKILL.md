@@ -19,6 +19,17 @@ author: Beats PM Kit
 
 The task note is the source of truth. `TASK_MASTER.md`, workstream summaries, dashboards, Obsidian, and optional packs are views over the Markdown notes in `5. Trackers/tasks/`.
 
+## Quick Path
+
+1. Task notes are the source of truth: one readable Markdown file per task in `5. Trackers/tasks/`, stable ID in `task_id` frontmatter, human-readable `title` and matching H1.
+2. For one pasted evidence item, run `python3 system/scripts/task_intake_fast.py --text "<raw evidence>" --source "<source label>"`.
+3. Match evidence against existing tasks and workstreams before creating new state; record source provenance and mark `inferred_fields`.
+4. Apply the priority gate: `Today`/`Next` work needs an owner, date or decision gate, intended outcome, and known dependency; consequential ambiguity becomes `status: needs-triage` plus one concrete question.
+5. Rebuild generated views with `python3 system/scripts/task_store.py rebuild`; never edit the `TASK_MASTER.md` managed table as primary state.
+6. Lead recurring output with readable workstream sections: latest outcome, completed, open items, recommended next 3.
+
+Go deeper for the task note format, daily evidence triangulation rules, upgrade safety, and the optional Obsidian view.
+
 ## Core contract
 
 - Create one descriptive Markdown file per task, such as `confirm-beta-customer-list.md`.

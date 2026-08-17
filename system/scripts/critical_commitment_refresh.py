@@ -24,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from system.scripts import task_display, task_store  # noqa: E402
+from system.utils.markdown_tables import split_cells, strip_wikilinks  # noqa: E402
 
 CONFIG_TEMPLATE = ROOT / "system" / "config" / "critical_intake.template.json"
 CONFIG_LOCAL = ROOT / "system" / "config" / "critical_intake.local.json"
@@ -290,6 +291,7 @@ def build_health(root: Path) -> list[SourceHealth]:
 
 
 def strip_markdown(value: str) -> str:
+    value = strip_wikilinks(value)
     value = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", value)
     value = value.replace("~~", "")
     value = re.sub(r"[*_`#>]", "", value)
@@ -297,12 +299,7 @@ def strip_markdown(value: str) -> str:
 
 
 def table_cells(line: str) -> list[str]:
-    if not line.strip().startswith("|"):
-        return []
-    cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
-    if any(cell.startswith(":---") or cell == "---" for cell in cells):
-        return []
-    return cells
+    return split_cells(line)
 
 
 def extract_task_id(cell: str) -> str:

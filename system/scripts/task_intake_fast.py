@@ -28,10 +28,10 @@ if str(DEFAULT_ROOT) not in sys.path:
     sys.path.insert(0, str(DEFAULT_ROOT))
 
 from system.scripts import markdown_humanizer, task_store
+from system.utils.markdown_tables import split_cells, strip_wikilinks
 
 
 CACHE_REL = Path(".agent/cache/task_index.json")
-FALLBACK_CACHE_REL = Path("system/cache/task_index.json")
 TASK_MASTER_REL = Path("5. Trackers/TASK_MASTER.md")
 TASKS_REL = Path("5. Trackers/tasks")
 RAW_REL = Path("0. Incoming/raw")
@@ -145,6 +145,7 @@ def write_text(path: Path, text: str) -> None:
 
 
 def strip_markdown(value: str) -> str:
+    value = strip_wikilinks(value)
     value = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", value)
     value = value.replace("~~", "")
     value = re.sub(r"[*_`#>]", "", value)
@@ -152,12 +153,7 @@ def strip_markdown(value: str) -> str:
 
 
 def table_cells(line: str) -> list[str]:
-    if not TASK_ROW_RE.match(line.strip()):
-        return []
-    cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
-    if any(cell.startswith(":---") or cell == "---" for cell in cells):
-        return []
-    return cells
+    return split_cells(line)
 
 
 def extract_task_id(value: str) -> str:
@@ -296,31 +292,19 @@ def build_task_index(root: Path) -> dict[str, Any]:
 
 def write_task_index(root: Path, index: dict[str, Any]) -> Path:
     rendered = json.dumps(index, indent=2, sort_keys=True) + "\n"
-    primary = root / CACHE_REL
-    fallback = root / FALLBACK_CACHE_REL
-    for cache_path in (primary, fallback):
-        try:
-            cache_path.parent.mkdir(parents=True, exist_ok=True)
-            cache_path.write_text(rendered, encoding="utf-8")
-            return cache_path
-        except OSError:
-            continue
-    raise OSError(f"Unable to write task index to {primary} or {fallback}")
+    cache_path = root / CACHE_REL
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    cache_path.write_text(rendered, encoding="utf-8")
+    return cache_path
 
 
 def load_or_build_index(root: Path, rebuild: bool = False) -> dict[str, Any]:
-    cache_paths = [root / CACHE_REL, root / FALLBACK_CACHE_REL]
-    if not rebuild:
-        existing = sorted(
-            (path for path in cache_paths if path.exists()),
-            key=lambda path: path.stat().st_mtime_ns,
-            reverse=True,
-        )
-        for cache_path in existing:
-            try:
-                return json.loads(cache_path.read_text(encoding="utf-8"))
-            except (json.JSONDecodeError, OSError):
-                continue
+    cache_path = root / CACHE_REL
+    if not rebuild and cache_path.exists():
+        try:
+            return json.loads(cache_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            pass
     index = build_task_index(root)
     write_task_index(root, index)
     return index

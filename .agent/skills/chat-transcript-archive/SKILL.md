@@ -15,6 +15,17 @@ author: Beats PM Brain
 
 > **Role**: Save communication intake into the kit as searchable local evidence without mutating the source system.
 
+## Quick Path
+
+1. Resolve an explicit or configured named read-only source window (Slack, Teams, Outlook, Calendar); never read a source system without one.
+2. If the window has no time bounds, run `system/scripts/chat_intake_state.py window`; pre-chunk high-volume Slack scopes with `chat_intake_state.py chunks`.
+3. Read only with read-only MCP/connector operations allowed by the platform workflow.
+4. Save the transcript to `3. Meetings/chat-transcripts/{platform}/{YYYY-MM-DD}_{scope-slug}_{RUN_ID}.md` using the Transcript Contract shape.
+5. Archive referenced Jira/Confluence context, route accepted task updates through the task-manager rules, write the run report, then record the run in `3. Meetings/chat-transcripts/_manifest.json`.
+6. Report the transcript path, run report path, local task files updated, and manual follow-ups.
+
+Go deeper into section 2 for the full transcript contract, section 4 for per-platform allowed/prohibited operations, and section 3 for privacy rules.
+
 ## 1. Archive Paths
 
 Write communication transcripts under:

@@ -24,6 +24,7 @@ sys.path.insert(0, str(ROOT))
 
 from system.scripts import critical_commitment_refresh  # noqa: E402
 from system.scripts import task_display  # noqa: E402
+from system.utils.markdown_tables import split_cells, strip_wikilinks  # noqa: E402
 
 
 @dataclass
@@ -50,19 +51,15 @@ def read_text(path: Path) -> str:
 
 
 def strip_markdown(value: str) -> str:
-    value = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", value or "")
+    value = strip_wikilinks(value)
+    value = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", value)
     value = value.replace("~~", "")
     value = re.sub(r"[*_`#>]", "", value)
     return re.sub(r"\s+", " ", value).strip()
 
 
 def table_cells(line: str) -> list[str]:
-    if not line.strip().startswith("|"):
-        return []
-    cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
-    if any(cell.startswith(":---") or cell == "---" for cell in cells):
-        return []
-    return cells
+    return split_cells(line)
 
 
 def split_actions(value: str) -> list[str]:

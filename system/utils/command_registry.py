@@ -249,6 +249,10 @@ def build_command_catalog(root: Path | str | None = None):
         if promotion not in {"dispatch-only", "skill"}:
             raise ValueError(f"Unsupported Codex promotion mode for /{name}: {promotion}")
 
+        visibility = override.get("visibility", "visible")
+        if visibility not in {"visible", "hidden"}:
+            raise ValueError(f"Unsupported visibility for /{name}: {visibility}")
+
         aliases = []
         for alias in override.get("aliases", []):
             normalized = normalize_command_name(alias)
@@ -289,6 +293,7 @@ def build_command_catalog(root: Path | str | None = None):
                 "dangerous": bool(override.get("dangerous", False)),
                 "note": override.get("note", ""),
                 "codex_promotion": promotion,
+                "visibility": visibility,
                 "codex_skill_name": skill_name,
                 "codex_supporting_files": codex.get("supporting_files", []),
                 "codex_optional_files": codex.get("optional_files", []),

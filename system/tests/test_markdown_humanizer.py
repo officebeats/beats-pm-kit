@@ -61,7 +61,7 @@ class TestMarkdownHumanizer(unittest.TestCase):
         self.assertIn("task_id: TASK-012", task_text)
         self.assertIn("# Partner integration walkthrough", task_text)
         self.assertIn(
-            "[Partner integration walkthrough](../tasks/TASK-012.md)",
+            "[[TASK-012|Partner integration walkthrough]]",
             workstream.read_text(encoding="utf-8"),
         )
         self.assertIn(
@@ -105,6 +105,27 @@ class TestMarkdownHumanizer(unittest.TestCase):
 
         self.assertIn("# Prepare the customer readiness review", task.read_text(encoding="utf-8"))
         self.assertIn("5. Trackers/tasks/TASK-099.markdown", result.updated_paths)
+
+    def test_apostrophe_title_is_stable_across_repeated_runs(self):
+        root = self.make_root()
+        task = root / "5. Trackers" / "tasks" / "TASK-201.md"
+        task.write_text(
+            "---\ntitle: 'Review Peter''s Weekly Report'\ntask_id: TASK-201\n---\n\n"
+            "# Review Peter's Weekly Report\n\nReview the weekly report details.\n",
+            encoding="utf-8",
+        )
+
+        _, _, metadata = markdown_humanizer.split_frontmatter(task.read_text(encoding="utf-8"))
+        self.assertEqual(metadata["title"], "Review Peter's Weekly Report")
+
+        markdown_humanizer.run_humanizer(root, apply=True)
+        first = task.read_text(encoding="utf-8")
+        markdown_humanizer.run_humanizer(root, apply=True)
+        second = task.read_text(encoding="utf-8")
+
+        self.assertEqual(first, second)
+        self.assertIn("title: 'Review Peter''s Weekly Report'", second)
+        self.assertNotIn("''''", second)
 
     def test_write_time_formatter_is_bounded_and_caps_task_title(self):
         root = self.make_root()
@@ -168,6 +189,56 @@ class TestMarkdownHumanizer(unittest.TestCase):
         self.assertTrue(filesystem.write_file(path, content))
 
         self.assertEqual(path.read_text(encoding="utf-8"), content)
+
+    def test_relative_markdown_links_become_wikilinks(self):
+        root = Path(tempfile.mkdtemp())
+        (root / "5. Trackers" / "tasks").mkdir(parents=True)
+        (root / "5. Trackers" / "workstreams").mkdir(parents=True)
+        (root / "4. People").mkdir(parents=True)
+        (root / "4. People" / "ernesto-rodriguez.md").write_text("# Ernesto Rodriguez\n", encoding="utf-8")
+        (root / "5. Trackers" / "workstreams" / "example-workstream.md").write_text(
+            "# Example Workstream\n", encoding="utf-8"
+        )
+        (root / "5. Trackers" / "workstreams" / "duplicate.md").write_text("# Duplicate A\n", encoding="utf-8")
+        (root / "5. Trackers" / "tasks" / "duplicate.md").write_text("# Duplicate B\n", encoding="utf-8")
+        task = root / "5. Trackers" / "tasks" / "BOSS-777.md"
+        task.write_text(
+            "# Coordinate handoff\n\n"
+            "## Stakeholders\n\n"
+            "| Owner | [Ernesto Rodriguez](../../4. People/ernesto-rodriguez.md) | Primary execution |\n"
+            "| Workstream | [Example Workstream](../workstreams/example-workstream.md) | |\n"
+            "| Reference | [External Doc](https://example.com/doc.md) | |\n"
+            "| Ambiguous | [Duplicate Note](../workstreams/duplicate.md) | |\n",
+            encoding="utf-8",
+        )
+
+        first = markdown_humanizer.run_humanizer(root, apply=True)
+        rendered = task.read_text(encoding="utf-8")
+
+        self.assertIn("[[ernesto-rodriguez\\|Ernesto Rodriguez]]", rendered)
+        self.assertIn("[[example-workstream\\|Example Workstream]]", rendered)
+        self.assertIn("[External Doc](https://example.com/doc.md)", rendered)
+        self.assertIn("[[5. Trackers/workstreams/duplicate\\|Duplicate Note]]", rendered)
+        self.assertGreaterEqual(first.files_updated, 1)
+
+        second = markdown_humanizer.run_humanizer(root, apply=True)
+        self.assertEqual(task.read_text(encoding="utf-8"), rendered)
+        self.assertEqual(second.files_updated, 0)
+        self.assertNotIn("[[[[", rendered)
+        self.assertNotIn("]]]]", rendered)
+
+    def test_write_generated_markdown_converts_relative_link_on_first_write(self):
+        root = Path(tempfile.mkdtemp())
+        (root / "5. Trackers" / "tasks").mkdir(parents=True)
+        (root / "5. Trackers" / "workstreams").mkdir(parents=True)
+        (root / "5. Trackers" / "workstreams" / "onboarding.md").write_text("# Onboarding\n", encoding="utf-8")
+        task = root / "5. Trackers" / "tasks" / "chokepoint-check.md"
+        content = "# Chokepoint check\n\n[Onboarding](../workstreams/onboarding.md)\n"
+
+        rendered = markdown_humanizer.write_generated_markdown(task, content, root=root)
+
+        self.assertIn("[[onboarding|Onboarding]]", rendered)
+        self.assertEqual(task.read_text(encoding="utf-8"), rendered)
 
     def test_primary_generators_use_shared_formatter(self):
         paths = (

@@ -25,6 +25,7 @@ GENERATED_REPO_FILES = [
     "GEMINI.md",
     "CODEX_COMMANDS.md",
     ".agent/MANIFEST.json",
+    ".agent/command-registry.lite.json",
     ".agent/ARCHITECTURE.md",
     ".agent/rules/ROUTING.md",
     "system/docs/runtime-compatibility.md",

@@ -12,7 +12,7 @@ import shutil
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Optional, Sequence
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -62,8 +62,10 @@ MARKDOWN_ID_LINK_RE = re.compile(
     rf"\[(?P<id>{ID_PATTERN})\]\((?P<target>[^)\n]+\.md(?:#[^)\n]+)?)\)"
 )
 WIKILINK_ID_RE = re.compile(
-    rf"\[\[(?P<target>[^\]|]+?)(?:\.md)?\|?(?P<alias>{ID_PATTERN})?\]\]"
+    rf"\[\[(?P<target>[^\]|]+?)(?:\.md)?(?:\\?\|)?(?P<alias>{ID_PATTERN})?\]\]"
 )
+MARKDOWN_LINK_RE = re.compile(r"(?<!!)\[(?P<text>[^\]\n]+)\]\((?P<target>[^)\n]+)\)")
+WIKILINK_SCAN_DIRS = ("5. Trackers/tasks", "5. Trackers/workstreams", "4. People")
 GENERIC_TITLES = {"index", "item", "note", "notes", "task", "tasks", "untitled", "workstream"}
 
 
@@ -92,6 +94,21 @@ class HumanizeResult:
     updated_paths: list[str] = field(default_factory=list)
 
 
+def _unescape_yaml_scalar(raw: str) -> str:
+    """Undo YAML scalar quoting, including doubled-quote escapes.
+
+    A bare `.strip("\"'")` only removes the outer wrapping quotes and leaves
+    an internal `''` escape (YAML single-quoted style) doubled forever — each
+    read-then-rewrite round trip compounds it further. Detect the wrapping
+    quote style first, then unescape only the matching internal sequence.
+    """
+    if len(raw) >= 2 and raw[0] == raw[-1] == "'":
+        return raw[1:-1].replace("''", "'")
+    if len(raw) >= 2 and raw[0] == raw[-1] == '"':
+        return raw[1:-1].replace('\\"', '"')
+    return raw.strip("\"'")
+
+
 def split_frontmatter(text: str) -> tuple[list[str], str, dict[str, str]]:
     text = text.replace("\r\n", "\n").replace("\r", "\n")
     if not text.startswith("---\n"):
@@ -104,7 +121,7 @@ def split_frontmatter(text: str) -> tuple[list[str], str, dict[str, str]]:
     for line in lines:
         match = re.match(r"^([A-Za-z_][A-Za-z0-9_-]*):\s*(.*?)\s*$", line)
         if match:
-            metadata[match.group(1)] = match.group(2).strip().strip("\"'")
+            metadata[match.group(1)] = _unescape_yaml_scalar(match.group(2).strip())
     return lines, text[end + 5 :], metadata
 
 
@@ -268,7 +285,87 @@ def task_labels(root: Path) -> dict[str, str]:
     return labels
 
 
-def replace_id_links(text: str, labels: dict[str, str]) -> tuple[str, int]:
+def _intra_vault_md_target(target: str) -> Optional[tuple[str, str]]:
+    """Split a link target into (path, anchor) when it is a relative intra-vault .md link."""
+    if not target or target.startswith("#") or target.startswith("mailto:") or "://" in target:
+        return None
+    path_part, _, anchor = target.partition("#")
+    path_part = unquote(path_part).strip()
+    if not path_part or path_part.startswith("/") or not path_part.lower().endswith((".md", ".markdown")):
+        return None
+    return path_part, unquote(anchor)
+
+
+def _vault_stem_index(root: Path) -> dict[str, list[str]]:
+    """Map lowercase filename stem -> relative (extension-less) paths for task/workstream/people notes."""
+    index: dict[str, list[str]] = {}
+    for relative_dir in WIKILINK_SCAN_DIRS:
+        base = root / relative_dir
+        if not base.exists():
+            continue
+        for path in base.rglob("*"):
+            if not path.is_file() or path.suffix.lower() not in {".md", ".markdown"}:
+                continue
+            relative = path.relative_to(root)
+            if any(part.startswith(".") or part in SKIP_DIRS for part in relative.parts):
+                continue
+            index.setdefault(path.stem.lower(), []).append(relative.with_suffix("").as_posix())
+    return index
+
+
+def _wikilink_pipe(text: str, match_start: int) -> str:
+    """Return the alias separator for a wikilink emitted at `match_start`.
+
+    Inside a Markdown table row a bare `|` splits the cell, so Obsidian (and
+    the kit's own table parsers) require the `\\|` escape there.
+    """
+    line_start = text.rfind("\n", 0, match_start) + 1
+    if text[line_start:match_start].lstrip().startswith("|"):
+        return "\\|"
+    return "|"
+
+
+def convert_relative_links_to_wikilinks(
+    text: str, *, origin: Optional[Path] = None, root: Optional[Path] = None
+) -> tuple[str, int]:
+    """Rewrite `[text](relative/note.md)` links into `[[target|text]]` wikilinks.
+
+    External URLs, mailto links, anchor-only links, and non-Markdown targets are left
+    untouched. Uses the short `[[stem|text]]` form when the target filename is unique
+    among task, workstream, and people notes; otherwise falls back to the full
+    vault-relative path so the link stays unambiguous.
+    """
+    if origin is None or root is None or not MARKDOWN_LINK_RE.search(text):
+        return text, 0
+    origin = Path(origin)
+    root = Path(root).resolve()
+    stem_index = _vault_stem_index(root)
+    changes = 0
+
+    def replace(match: re.Match[str]) -> str:
+        nonlocal changes
+        parsed = _intra_vault_md_target(match.group("target"))
+        if parsed is None:
+            return match.group(0)
+        path_part, anchor = parsed
+        try:
+            resolved = (origin.parent / path_part).resolve()
+            relative_no_ext = resolved.relative_to(root).with_suffix("").as_posix()
+        except ValueError:
+            return match.group(0)
+        stem = Path(path_part).stem
+        candidates = stem_index.get(stem.lower(), [])
+        wiki_target = stem if len(candidates) == 1 and candidates[0] == relative_no_ext else relative_no_ext
+        anchor_suffix = f"#{anchor}" if anchor else ""
+        changes += 1
+        return f"[[{wiki_target}{anchor_suffix}{_wikilink_pipe(text, match.start())}{match.group('text')}]]"
+
+    return MARKDOWN_LINK_RE.sub(replace, text), changes
+
+
+def replace_id_links(
+    text: str, labels: dict[str, str], *, origin: Optional[Path] = None, root: Optional[Path] = None
+) -> tuple[str, int]:
     changes = 0
 
     def markdown(match: re.Match[str]) -> str:
@@ -286,9 +383,11 @@ def replace_id_links(text: str, labels: dict[str, str]) -> tuple[str, int]:
         if not label:
             return match.group(0)
         changes += 1
-        return f"[[{match.group('target')}|{label}]]"
+        return f"[[{match.group('target')}{_wikilink_pipe(match.string, match.start())}{label}]]"
 
     updated = MARKDOWN_ID_LINK_RE.sub(markdown, text)
+    updated, link_changes = convert_relative_links_to_wikilinks(updated, origin=origin, root=root)
+    changes += link_changes
     return WIKILINK_ID_RE.sub(wikilink, updated), changes
 
 
@@ -302,7 +401,7 @@ def humanize_generated_content(path: Path, content: str, *, root: Optional[Path]
     if not relative or resolved_root is None or preserved(relative):
         return content
     labels = task_labels(resolved_root) if MARKDOWN_ID_LINK_RE.search(content) or WIKILINK_ID_RE.search(content) else {}
-    updated, _ = replace_id_links(content, labels)
+    updated, _ = replace_id_links(content, labels, origin=path, root=resolved_root)
     if relative.startswith(TASKS_PREFIX):
         task_id, title = task_identity(path, updated)
         title = cap_words(title)
@@ -547,7 +646,7 @@ def run_humanizer(root: Path = ROOT, *, apply: bool = False) -> HumanizeResult:
         if preserved(relative):
             continue
         original = path.read_text(encoding="utf-8", errors="replace")
-        updated, reference_changes = replace_id_links(original, task_label_map)
+        updated, reference_changes = replace_id_links(original, task_label_map, origin=path, root=root)
         heading_changed = False
         if relative.startswith(TASKS_PREFIX):
             task_id, title = task_identity(path, updated)

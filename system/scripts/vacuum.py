@@ -6,6 +6,7 @@ Optimized for speed and long-term retrieval.
 """
 
 import sys
+import re
 import time
 import shutil
 from datetime import datetime
@@ -242,6 +243,103 @@ def humanize_markdown_labels():
         print(f"  ⚠️ {result.needs_review} notes need a stronger human label")
     return result
 
+
+INSIGHT_VALID_UNTIL_RE = re.compile(r"\(valid-until:\s*(\d{4}-\d{2}-\d{2})\)\s*$")
+EXPIRED_INSIGHTS_HEADING = "## Expired Insights"
+STATUS_LAST_UPDATED_RE = re.compile(r"^>\s*\*\*Last Updated:\*\*\s*(\d{4}-\d{2}-\d{2})")
+STATUS_STALE_AFTER_DAYS = 45
+
+
+def expire_stale_insights(root: Path, apply: bool = True, today=None) -> dict:
+    """
+    Retire past-dated strategic insights in STATUS.md.
+
+    Convention: an insight bullet MAY end with " (valid-until: YYYY-MM-DD)".
+    Bullets whose valid-until date is before today move to an
+    "## Expired Insights" section at the bottom of the same file with a
+    "moved <ISO date>" annotation. Bullets WITHOUT the tag are never touched;
+    this pass never invents expiry dates.
+
+    Also reports (never edits) when the "> **Last Updated:**" date is older
+    than STATUS_STALE_AFTER_DAYS days.
+
+    With apply=False this is a pure report pass: the file is never modified.
+    """
+    if today is None:
+        today = datetime.now().date()
+    status_path = Path(root) / "STATUS.md"
+    report = {
+        "status_path": str(status_path),
+        "moved": 0,
+        "moved_bullets": [],
+        "last_updated": None,
+        "last_updated_stale": False,
+        "applied": False,
+    }
+    if not status_path.exists():
+        return report
+
+    original = status_path.read_text(encoding="utf-8")
+    lines = original.split("\n")
+
+    for line in lines:
+        match = STATUS_LAST_UPDATED_RE.match(line)
+        if match:
+            try:
+                last_updated = datetime.strptime(match.group(1), "%Y-%m-%d").date()
+            except ValueError:
+                break
+            report["last_updated"] = last_updated.isoformat()
+            report["last_updated_stale"] = (today - last_updated).days > STATUS_STALE_AFTER_DAYS
+            break
+
+    kept = []
+    moved_blocks = []
+    in_expired_section = False
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if line.startswith("## "):
+            in_expired_section = line.strip() == EXPIRED_INSIGHTS_HEADING
+        expired = False
+        if not in_expired_section and line.startswith("- "):
+            match = INSIGHT_VALID_UNTIL_RE.search(line.rstrip())
+            if match:
+                try:
+                    valid_until = datetime.strptime(match.group(1), "%Y-%m-%d").date()
+                except ValueError:
+                    valid_until = None
+                expired = valid_until is not None and valid_until < today
+        if not expired:
+            kept.append(line)
+            i += 1
+            continue
+        block = [line]
+        i += 1
+        # Carry indented continuation lines along with their bullet.
+        while i < len(lines) and lines[i].strip() and lines[i][:1] in (" ", "\t"):
+            block.append(lines[i])
+            i += 1
+        moved_blocks.append(block)
+        report["moved_bullets"].append(block[0].strip())
+
+    report["moved"] = len(moved_blocks)
+    if not moved_blocks or not apply:
+        return report
+
+    while kept and kept[-1] == "":
+        kept.pop()
+    if not any(line.strip() == EXPIRED_INSIGHTS_HEADING for line in kept):
+        kept.extend(["", EXPIRED_INSIGHTS_HEADING, ""])
+    moved_stamp = today.isoformat()
+    for block in moved_blocks:
+        kept.append(f"{block[0]} (moved {moved_stamp})")
+        kept.extend(block[1:])
+    kept.append("")
+    status_path.write_text("\n".join(kept), encoding="utf-8")
+    report["applied"] = True
+    return report
+
 def check_system_access():
     """
     Validation: Ensure the System (Python) can access the GitIgnored "Dark Matter".
@@ -425,6 +523,21 @@ def main():
         humanize_markdown_labels()
     except Exception as e:
         print(f"  ⚠️ Human-readable Markdown pass failed: {e}")
+
+    # 6b. Strategic insight expiry (STATUS.md valid-until tags)
+    print("\n--- ⏳ Strategic Insight Expiry (STATUS.md) ---")
+    try:
+        expiry = expire_stale_insights(BRAIN_ROOT, apply=True)
+        if expiry["moved"]:
+            print(f"  ✅ Moved {expiry['moved']} expired insight(s) to '{EXPIRED_INSIGHTS_HEADING}'")
+            for bullet in expiry["moved_bullets"]:
+                print(f"    • {bullet[:100]}")
+        else:
+            print("  ✅ No expired insights (untagged bullets are never touched)")
+        if expiry["last_updated_stale"]:
+            print(f"  ⚠️ STATUS.md 'Last Updated' ({expiry['last_updated']}) is older than {STATUS_STALE_AFTER_DAYS} days")
+    except Exception as e:
+        print(f"  ⚠️ Insight expiry pass failed: {e}")
 
     # 7. Deep Memory Consolidation
     print("\n--- 🧠 Deep Memory Consolidation ---")
