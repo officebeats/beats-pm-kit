@@ -52,7 +52,35 @@ def is_closed(status: str) -> bool:
 def _cell(value: str) -> str:
     """Render a table cell as plain text: no wikilinks, no unescaped pipes."""
     value = task_display.strip_markdown(value or "")
+    if value.lower() in {"null", "none"}:
+        value = ""
     return value.replace("|", "\\|") or "—"
+
+
+def _workstream_titles(root: Path) -> dict[str, str]:
+    """Map workstream slugs to the human title from each note's own H1."""
+    titles: dict[str, str] = {}
+    ws_dir = root / "5. Trackers" / "workstreams"
+    if not ws_dir.is_dir():
+        return titles
+    for path in ws_dir.glob("*.md"):
+        if path.name.startswith("_"):
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        title = task_display.display_title_from_task_text(text, fallback="")
+        if title:
+            titles[path.stem] = title
+    return titles
+
+
+def _workstream_label(slug: str, titles: dict[str, str]) -> str:
+    """Human-readable workstream label; never a raw slug or internal ID."""
+    slug = (slug or "").strip()
+    if not slug or slug.lower() in {"null", "none"}:
+        return ""
+    if slug in titles:
+        return titles[slug]
+    return slug.replace("-", " ").replace("_", " ").strip().capitalize()
 
 
 def _due_date(raw: str) -> dt.date | None:
@@ -76,18 +104,18 @@ def parse_generated_at(text: str) -> dt.datetime | None:
         return None
 
 
-def _task_row(record: "task_store.TaskRecord") -> str:
+def _task_row(record: "task_store.TaskRecord", titles: dict[str, str]) -> str:
     title = task_display.display_title_from_title(record.title)
     return "| {} | {} | {} | {} | {} |".format(
         _cell(title),
         _cell(record.status),
         _cell(record.due),
         _cell(record.owner),
-        _cell(record.workstream),
+        _cell(_workstream_label(record.workstream, titles)),
     )
 
 
-def _render_task_sections(records: list, today: dt.date) -> tuple[list[str], list[str]]:
+def _render_task_sections(records: list, today: dt.date, titles: dict[str, str]) -> tuple[list[str], list[str]]:
     """Return (active-tasks-by-lane lines, due-rollup lines)."""
     active = [record for record in records if not is_closed(record.status)]
     by_lane: dict[str, list] = {}
@@ -103,7 +131,7 @@ def _render_task_sections(records: list, today: dt.date) -> tuple[list[str], lis
         lane_lines.append("")
         lane_lines.append("| Task | Status | Due | Owner | Workstream |")
         lane_lines.append("|:---|:---|:---|:---|:---|")
-        lane_lines.extend(_task_row(record) for record in rows)
+        lane_lines.extend(_task_row(record, titles) for record in rows)
         lane_lines.append("")
 
     overdue: list[tuple[dt.date, object]] = []
@@ -197,13 +225,12 @@ def _render_boss_requests(root: Path) -> list[str]:
     lines = [
         "## Boss Requests — Open",
         "",
-        "| ID | Request | Due | Status |",
-        "|:---|:---|:---|:---|",
+        "| Request | Due | Status |",
+        "|:---|:---|:---|",
     ]
     for item in items:
         lines.append(
-            "| {} | {} | {} | {} |".format(
-                _cell(item["id"]),
+            "| {} | {} | {} |".format(
                 _cell(item["request"]),
                 _cell(item["due"]),
                 _cell(item["status"]),
@@ -220,7 +247,7 @@ def render_skeleton(root: Path = ROOT, *, today: dt.date | None = None, now: dt.
     records = list(task_store.iter_tasks(root))
     active_count = sum(1 for record in records if not is_closed(record.status))
 
-    lane_lines, rollup_lines = _render_task_sections(records, today)
+    lane_lines, rollup_lines = _render_task_sections(records, today, _workstream_titles(root))
     sections = ["active-tasks", "due-rollup"]
     lines = [
         f"<!-- generated: {now.isoformat(timespec='seconds')} by nightly_consolidate -->",

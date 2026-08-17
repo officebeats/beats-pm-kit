@@ -90,9 +90,10 @@ class TestDaySkeleton(unittest.TestCase):
         self.assertNotIn("[[", text)
 
         self.assertIn("## Boss Requests — Open", text)
-        self.assertIn("BOSS-001", text)
         self.assertIn("Ship the sandbox stories", text)
-        self.assertNotIn("BOSS-002", text)
+        self.assertNotIn("Old onboarding thing", text)
+        # Human-readable surface: no raw internal IDs anywhere.
+        self.assertNotRegex(text, r"\b[A-Z]{2,6}-\d{3}\b")
 
     def test_overdue_boundary(self):
         root = self.make_root()
