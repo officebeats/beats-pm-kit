@@ -104,7 +104,11 @@ def markdown_files(root: Path) -> list[Path]:
         base = root / relative
         if not base.exists():
             continue
-        paths.extend(path for path in base.rglob("*.md") if path.is_file() and path.name != ".gitkeep")
+        paths.extend(
+            path
+            for path in base.rglob("*.md")
+            if path.is_file() and path.name != ".gitkeep" and "markdown-label-backups" not in path.parts
+        )
     for name in ("SETTINGS.md", "STATUS.md", "DECISION_LOG.md", "BRAIN_DUMP.md"):
         path = root / name
         if path.exists():
@@ -400,7 +404,7 @@ def inspect(root: Path = ROOT) -> Report:
         normalized = title.lower() if title else ""
         if normalized:
             titles.setdefault(normalized, []).append(relative)
-        task_match = re.search(r"(?:^task_id:\s*|\*\*Internal ID:\*\*\s*)([A-Z][A-Z0-9]+-\d{3,})", text, flags=re.MULTILINE)
+        task_match = re.search(r"(?:^task_id:\s*|\*\*Internal ID:\*\*\s*)([A-Z][A-Z0-9]+-\d{3,}[a-z]?)", text, flags=re.MULTILINE)
         if task_match:
             task_id = task_match.group(1)
             if task_id in task_ids:

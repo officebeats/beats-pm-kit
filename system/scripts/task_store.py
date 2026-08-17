@@ -25,9 +25,18 @@ from system.scripts import markdown_humanizer
 
 TASKS_REL = Path("5. Trackers/tasks")
 TASK_MASTER_REL = Path("5. Trackers/TASK_MASTER.md")
+WORKSTREAMS_REL = Path("5. Trackers/workstreams")
+TASK_INDEX_JSON_REL = Path("5. Trackers/.task-index.json")
+TRELLO_HOTLIST_REL = Path("5. Trackers/TRELLO_HOTLIST.md")
+TRIAGE_SUMMARY_REL = Path("5. Trackers/TRIAGE_SUMMARY.md")
+MANUAL_ARCHIVE_REL = Path("5. Trackers/archive/TASK_MASTER_MANUAL_ARCHIVE.md")
 MANAGED_START = "<!-- beats-task-index:start -->"
 MANAGED_END = "<!-- beats-task-index:end -->"
+TRELLO_HOTLIST_MARKERS = ("<!-- TRELLO_HOTLIST:BEGIN -->", "<!-- TRELLO_HOTLIST:END -->")
+TRIAGE_SUMMARY_MARKERS = ("<!-- TASK_TRIAGE_SUMMARY:BEGIN -->", "<!-- TASK_TRIAGE_SUMMARY:END -->")
 TASK_ID_RE = re.compile(r"\b[A-Z][A-Z0-9]+-\d{3,}[a-z]?\b")
+CLOSED_STATUSES = {"done", "cancelled", "✅ done"}
+_GENERATED_LINE_RE = re.compile(r"^> Generated: .*$", flags=re.MULTILINE)
 
 
 @dataclass
@@ -355,33 +364,183 @@ def _escape_table(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip().replace("|", "\\|")
 
 
-def render_index(tasks: Iterable[TaskRecord]) -> str:
-    ordered = sorted(tasks, key=lambda task: (task.status.lower() in {"done", "cancelled", "✅ done"}, task.due or "9999-99-99", task.title.lower()))
+def _is_closed(task: TaskRecord) -> bool:
+    return task.status.strip().lower() in CLOSED_STATUSES
+
+
+def _due_key(task: TaskRecord) -> str:
+    return _normalize_iso_date(task.due) or "9999-99-99"
+
+
+def _wikilink_alias(value: str) -> str:
+    return re.sub(r"\s+", " ", value).replace("|", "/").replace("[", "").replace("]", "").strip()
+
+
+def workstream_title(root: Path, slug: str) -> str:
+    """Human title for a workstream slug, preferring the workstream note's H1."""
+    if not slug:
+        return "Unassigned"
+    text = _read(root / WORKSTREAMS_REL / f"{slug}.md")
+    if text:
+        _, body = _frontmatter(text)
+        match = re.search(r"^#\s+(.+?)\s*$", body, flags=re.MULTILINE)
+        if match and "{{" not in match.group(1):
+            return match.group(1)
+    words = slug.replace("-", " ").strip()
+    return words[:1].upper() + words[1:] if words else "Unassigned"
+
+
+def _resume_lines(tasks: list[TaskRecord], today: str, titles: dict[str, str]) -> list[str]:
+    """'Resume Here' bullets: overdue work first, then the top today-lane task per workstream."""
+    open_tasks = [task for task in tasks if not _is_closed(task)]
+    lines: list[str] = []
+    listed: set[str] = set()
+    overdue = [
+        task
+        for task in open_tasks
+        if task.status.strip().lower() == "overdue"
+        or (_normalize_iso_date(task.due) and _normalize_iso_date(task.due) < today)
+    ]
+    for task in sorted(overdue, key=lambda task: (_due_key(task), task.title.lower())):
+        due = _normalize_iso_date(task.due)
+        reason = f"overdue since {due}" if due else "status is overdue"
+        lines.append(f"- [[{task.path.stem}|{_wikilink_alias(task.title)}]] — {reason}")
+        listed.add(task.task_id)
+    today_lanes: dict[str, list[TaskRecord]] = {}
+    for task in open_tasks:
+        slug = _lane_slug(task.workstream)
+        if slug and _lane_slug(task.lane) == "today":
+            today_lanes.setdefault(slug, []).append(task)
+    for slug in sorted(today_lanes, key=lambda slug: titles.get(slug, slug).lower()):
+        top = min(today_lanes[slug], key=lambda task: (_due_key(task), task.title.lower()))
+        if top.task_id in listed:
+            continue
+        lines.append(
+            f"- [[{top.path.stem}|{_wikilink_alias(top.title)}]] — next up in {titles.get(slug, slug)} (today lane)"
+        )
+        listed.add(top.task_id)
+    return lines[:10]
+
+
+def render_index(tasks: Iterable[TaskRecord], root: Path = ROOT, *, today: str = "", generated: str = "") -> str:
+    tasks = list(tasks)
+    today = today or dt.date.today().isoformat()
+    generated = generated or dt.datetime.now().isoformat(timespec="seconds")
+    groups: dict[str, list[TaskRecord]] = {}
+    for task in tasks:
+        groups.setdefault(_lane_slug(task.workstream), []).append(task)
+    titles = {slug: workstream_title(root, slug) for slug in groups}
+    ordered_slugs = sorted(
+        groups,
+        key=lambda slug: (min(_due_key(task) for task in groups[slug]), titles[slug].lower()),
+    )
     rows = [
         MANAGED_START,
         "> Generated from the readable Markdown notes in `5. Trackers/tasks/`. Edit the task note, then rebuild this index.",
+        f"> Generated: {generated}",
         "",
-        "| Task | Owner | Due | Status |",
-        "|:---|:---|:---|:---|",
+        "## Resume Here",
+        "",
     ]
-    for task in ordered:
-        relative = Path("tasks") / task.path.name
-        rows.append(
-            f"| [{_escape_table(task.title)}]({relative.as_posix().replace(' ', '%20')}) "
-            f"| {_escape_table(task.owner)} | {_escape_table(task.due or 'TBD')} | {_escape_table(task.status)} |"
-        )
+    rows.extend(
+        _resume_lines(tasks, today, titles)
+        or ["- Nothing overdue and no today-lane workstream tasks. Pick from the tables below."]
+    )
+    for slug in ordered_slugs:
+        heading = f"### [[{slug}|{titles[slug]}]]" if slug else "### Unassigned"
+        rows.extend(["", heading, "", "| Task | Owner | Due | Status |", "|:---|:---|:---|:---|"])
+        for task in sorted(groups[slug], key=lambda task: (_is_closed(task), _due_key(task), task.title.lower())):
+            rows.append(
+                f"| [[{task.path.stem}\\|{_wikilink_alias(task.title)}]] "
+                f"| {_escape_table(task.owner)} | {_escape_table(task.due or 'TBD')} | {_escape_table(task.status)} |"
+            )
     rows.append(MANAGED_END)
     return "\n".join(rows)
 
 
+def _relocate_marked_section(root: Path, text: str, markers: tuple[str, str], target_rel: Path, label: str) -> str:
+    """One-time migration: move a bridge-managed marker block into its own note, leaving a link."""
+    begin, end = markers
+    start = text.find(begin)
+    if start < 0:
+        return text
+    stop = text.find(end, start)
+    if stop < 0:
+        return text
+    stop += len(end)
+    target = root / target_rel
+    if not target.exists() or begin not in _read(target):
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(text[start:stop].rstrip() + "\n", encoding="utf-8")
+    link = f"See [[{target_rel.stem}|{label}]]."
+    return text[:start] + link + text[stop:]
+
+
+def _relocate_manual_archive(root: Path, text: str) -> str:
+    """One-time migration: park the stale manual sections in an archive note, leaving a link."""
+    match = re.search(r"^## Friday Status Focus.*$", text, flags=re.MULTILINE)
+    if not match:
+        return text
+    start = match.start()
+    tail = re.search(r"^\*Source of truth:.*$", text, flags=re.MULTILINE)
+    stop = tail.start() if tail and tail.start() > start else len(text)
+    target = root / MANUAL_ARCHIVE_REL
+    if not target.exists():
+        target.parent.mkdir(parents=True, exist_ok=True)
+        header = (
+            "---\ntitle: Task Master Manual Archive\n---\n\n"
+            "# Task Master Manual Archive\n\n"
+            "> Relocated verbatim from `5. Trackers/TASK_MASTER.md` to keep the Task Master index lean.\n\n"
+        )
+        target.write_text(header + text[start:stop].rstrip() + "\n", encoding="utf-8")
+    link = f"See [[{MANUAL_ARCHIVE_REL.stem}|Task Master manual archive]] for the pre-refactor manual sections."
+    return text[:start] + link + "\n\n" + text[stop:]
+
+
+def _migrate_task_master_layout(root: Path, text: str) -> str:
+    if not text:
+        return text
+    text = _relocate_marked_section(root, text, TRELLO_HOTLIST_MARKERS, TRELLO_HOTLIST_REL, "Trello Hotlist")
+    text = _relocate_marked_section(root, text, TRIAGE_SUMMARY_MARKERS, TRIAGE_SUMMARY_REL, "Task Triage Summary")
+    text = _relocate_manual_archive(root, text)
+    text = re.sub(r"^> \*\*Last Updated:\*\*.*\n", "", text, flags=re.MULTILINE)
+    return re.sub(r"\n{3,}", "\n\n", text)
+
+
+def write_task_index_json(root: Path, tasks: list[TaskRecord]) -> Path:
+    path = root / TASK_INDEX_JSON_REL
+    payload = [
+        {
+            "task_id": task.task_id,
+            "title": task.title,
+            "workstream": task.workstream,
+            "lane": task.lane,
+            "status": task.status,
+            "due": task.due,
+            "owner": task.owner,
+            "path": task.path.relative_to(root).as_posix(),
+        }
+        for task in sorted(tasks, key=lambda task: task.task_id)
+    ]
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2, ensure_ascii=False)
+        handle.write("\n")
+    return path
+
+
 def rebuild_task_master(root: Path = ROOT) -> Path:
     path = root / TASK_MASTER_REL
-    existing = _read(path)
+    existing = _migrate_task_master_layout(root, _read(path))
+    tasks = list(iter_tasks(root))
     title_block = "---\ntitle: Task Master\n---\n\n# Task Master\n\n"
-    managed = render_index(iter_tasks(root))
+    managed = render_index(tasks, root)
     if MANAGED_START in existing and MANAGED_END in existing:
         pattern = re.compile(rf"{re.escape(MANAGED_START)}.*?{re.escape(MANAGED_END)}", re.DOTALL)
-        updated = pattern.sub(managed, existing, count=1)
+        previous = pattern.search(existing).group(0)
+        placeholder = "> Generated: -"
+        if _GENERATED_LINE_RE.sub(placeholder, previous) == _GENERATED_LINE_RE.sub(placeholder, managed):
+            managed = previous  # unchanged index: keep the existing timestamp so rebuilds stay idempotent
+        updated = pattern.sub(lambda _: managed, existing, count=1)
     else:
         # Preserve manual sections while replacing the first legacy task table.
         content = existing
@@ -397,6 +556,7 @@ def rebuild_task_master(root: Path = ROOT) -> Path:
         content = legacy_table.sub("", content, count=1).strip()
         updated = title_block + managed + (("\n\n" + content) if content else "")
     _write(path, updated)
+    write_task_index_json(root, tasks)
     return path
 
 
