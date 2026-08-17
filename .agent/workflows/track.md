@@ -23,11 +23,17 @@ description: Capture, triangulate, and manage product work in canonical human-re
    - Include local meeting transcripts and previously archived evidence.
    - Archive raw evidence before interpretation and preserve timestamps, participants, and source links.
    - Never broad-scan accounts, change unread state, send messages, or mutate source systems.
+   - **Completeness contract** (hard requirements):
+     - Enumerate the ENTIRE source window via pagination (`@odata.nextLink` or the source's equivalent) before triage — never stop at one page.
+     - For every relevant item, fetch the FULL body/transcript verbatim into `0. Incoming/` with sender, date, participants, and source links. Previews are triage hints only, never the record.
+     - `$select`/`$top` tune transport only; they never justify skipping items.
+     - If a source fails mid-window, record the exact gap (source + date range) in the evidence packet instead of silently continuing.
 
 4. **Triangulate before creating work**
    - Search existing task notes and workstreams first.
    - When past context is missing or conflicting, run `/find <specific question>` once and verify any semantic-memory lead against dated Markdown.
    - Merge repeated signals from meetings, chats, and email under the same task or workstream.
+   - Create a new workstream only when >=2 tasks would link to it OR it is a boss ask; otherwise attach the task to an existing lane or mark it `needs-triage`.
    - Record the first source, latest source, decision changes, blockers, and completion evidence.
    - If one source fails, label the gap and use cached evidence only for that source.
 
@@ -45,6 +51,7 @@ description: Capture, triangulate, and manage product work in canonical human-re
 7. **Report the result**
    - Show readable workstreams first, then tasks created or updated, evidence used, inferred fields, source gaps, and unresolved questions.
    - Keep IDs in links or an `Agent refs` line only.
+   - Emit the preview link for the primary updated file: `python3 system/scripts/preview_link.py <file> --open --json`.
 
 8. **Offer Obsidian without blocking**
    - Run `python3 system/scripts/obsidian_bridge.py guide --json` after local task work.

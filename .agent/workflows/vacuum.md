@@ -28,6 +28,12 @@ python system/scripts/markdown_humanizer.py --json
 python system/scripts/enforce_structure.py
 ```
 
+3b. Prune oversized evidence sections (archives, never deletes). Entries beyond the newest 10 move verbatim to `5. Trackers/archive/evidence/`:
+
+```bash
+python3 system/scripts/evidence_prune.py --apply --json
+```
+
 4. Run a final health check:
 
 ```bash

@@ -4,6 +4,8 @@
 > Owner: [Owner]
 > Last reviewed: [YYYY-MM-DD]
 > Agent Refs: [Task Master IDs, Trello cards, Jira/Confluence links, transcript/chat evidence]
+> Job: When [situation], I want to [motivation], so I can [outcome]
+> Outcome metric: [measurable signal that this workstream is done/winning]
 
 ## Latest Outcomes
 
