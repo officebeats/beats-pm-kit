@@ -32,6 +32,7 @@ Screenshots/images and transcript-like clipboard text are task-master management
 
 - Do not ask "what should I do with this?" for a screenshot or transcript that contains visible work signal.
 - Extract tasks, status changes, blockers, owners, due dates, source references, and referenced tickets/links first.
+- For screenshots/images and user-provided excerpts, transcribe the full visible text verbatim (privacy-redacted; mark `[REDACTED]`/`[ILLEGIBLE]`) into the evidence transcript's `Extracted Text` section per `chat-transcript-archive`, so the evidence is reusable later without the image.
 - Route accepted work through `task-manager` Priority Gate into `5. Trackers/TASK_MASTER.md` and `5. Trackers/tasks/`.
 - Render user-facing task/workstream labels from readable titles and source provenance. Keep Task Master IDs, Jira IDs, Trello IDs, and source IDs only in local links, metadata, or an `Agent refs` line.
 - If the evidence is ambiguous, return concrete candidate tracker updates for user confirmation instead of switching to profile lookup, reply drafting, or generic summarization.
@@ -51,7 +52,7 @@ Fast-path steps:
 1. Extract status, owner, due date, dependency, source platform, participants, and exact follow-up date.
 2. Search local trackers for a matching existing item before creating anything new.
 3. Read only `TASK_MASTER.md`, the matched task detail file(s), and relevant people profiles.
-4. Save the compact local evidence transcript/report when the screenshot represents communication evidence.
+4. Save the compact local evidence transcript/report when the screenshot represents communication evidence: `3. Meetings/chat-transcripts/{platform}/...` with a run entry in `3. Meetings/chat-transcripts/_manifest.json`, including the verbatim `Extracted Text` section. The attached-chat fast path does not stage anything in `0. Incoming/`.
 5. Capture display provenance for touched work: readable title, started date/source, latest progress source, and internal refs.
 6. Apply local tracker/profile updates.
 7. Refresh task health with targeted triage:

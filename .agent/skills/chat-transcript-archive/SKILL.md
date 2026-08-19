@@ -86,7 +86,7 @@ Every saved communication transcript must include:
 - Issues and recommendations for MCP/connector gaps, read-state uncertainty, fallback bridge usage, duplicates skipped, or task routing conflicts.
 - Atlassian artifact paths written or skipped when referenced context capture runs.
 
-For user-provided screenshots, pasted email/chat snippets, or short exports, mark the read source as `user-provided evidence` and keep the same transcript sections. It is acceptable for `Source References` to contain screenshot-visible metadata instead of connector URLs. Do not run source-system window calculation or connector reads just to satisfy this contract.
+For user-provided screenshots, pasted email/chat snippets, or short exports: mark the read source as `user-provided evidence`; `Source References` may hold screenshot-visible metadata instead of connector URLs; do not run window calculation or connector reads just to satisfy this contract. Also add an `## Extracted Text` section: full visible text verbatim, privacy-redacted (`[REDACTED]`, `[ILLEGIBLE]`), so the evidence is reusable without the image. Connector/MCP reads keep the short-snippet rule.
 
 Use this Markdown shape:
 
@@ -106,6 +106,9 @@ Use this Markdown shape:
 
 ## Atlassian References
 - Jira/Confluence references found, artifacts written, or unresolved references.
+
+## Extracted Text (user-provided evidence only)
+- ...
 
 ## Evidence Snippets
 - ...
@@ -137,7 +140,7 @@ Use this Markdown shape:
 ## 3. Privacy And Searchability
 
 - Keep transcripts local to the repo.
-- Prefer source links and short snippets over full conversation dumps.
+- Prefer source links and short snippets over full dumps for connector/MCP reads; user-provided evidence may carry a verbatim redacted `Extracted Text` section.
 - Do not include secrets, tokens, credentials, or private unrelated chatter.
 - Use stable filenames with date, scope slug, and run ID so repo search can find the source later.
 - Use `system/scripts/chat_intake_state.py record` only after transcript and report writes succeed.
