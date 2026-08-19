@@ -305,3 +305,4 @@ system/task-viewer/node_modules/
 # Personal working drafts and person-specific local tooling (never publish)
 /drafts/
 /system/scripts/validate_*_weekly_artifacts.py
+/.opencode/
