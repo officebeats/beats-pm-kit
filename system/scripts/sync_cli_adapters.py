@@ -135,9 +135,11 @@ On a new Codex session:
 7. Use `compact_operator` narration during execution and the resolved final profile for the deliverable.
 8. Translate unsupported primitives only when the active runtime reports the required capability.
 9. Write durable outputs and verification traces into the standard local paths so runtime switching stays lossless.
+## Token Efficiency & Bounded Context
+
+Load and follow `.agent/rules/TOKEN_EFFICIENCY.md` for all retrieval, planning, and task execution. Use 2-tier bounded queries, preserve prompt prefix caching, and avoid full-file dumps.
 
 ## Action-First Responses
-
 Load and follow `.agent/rules/ACTION_FIRST_OUTPUT.md` for every user-facing
 response. Apply it to conversational presentation only. Safety requirements,
 explicit user instructions, resolved response profiles, workflow contracts,
@@ -202,9 +204,8 @@ def render_antigravity_md() -> str:
 This file is the primary entrypoint for Google Antigravity.
 
 The canonical agent contract, workflows, skills, and rules live in `.agent/`.
-Load `.agent/rules/OBSIDIAN_AND_NAMING_STANDARDS.md`, `.agent/rules/GEMINI.md`, and `.agent/rules/ACTION_FIRST_OUTPUT.md` first,
+Load `.agent/rules/TOKEN_EFFICIENCY.md`, `.agent/rules/OBSIDIAN_AND_NAMING_STANDARDS.md`, `.agent/rules/GEMINI.md`, and `.agent/rules/ACTION_FIRST_OUTPUT.md` first,
 then resolve workflows from `.agent/workflows/`.
-For file-to-Markdown conversion, load `.agent/skills/markitdown/SKILL.md`.
 Generated local adapter directories are intentionally ignored by Git.
 
 If the user provides only the GitHub repo URL, clone/open the repo and run:
@@ -221,9 +222,8 @@ def render_gemini_md() -> str:
     return """# GEMINI.md - Beats Agentic PM Harness Adapter
 
 This file is a thin compatibility entrypoint for Gemini CLI and Antigravity.
-
 The canonical agent contract, workflows, skills, and rules live in `.agent/`.
-Load `.agent/rules/GEMINI.md` and `.agent/rules/ACTION_FIRST_OUTPUT.md` first,
+Load `.agent/rules/TOKEN_EFFICIENCY.md`, `.agent/rules/GEMINI.md`, and `.agent/rules/ACTION_FIRST_OUTPUT.md` first,
 then resolve workflows from `.agent/workflows/`.
 For file-to-Markdown conversion, load `.agent/skills/markitdown/SKILL.md`.
 Generated local adapter directories are intentionally ignored by Git.
@@ -241,10 +241,8 @@ Then route the first real PM input through the PM decision router or the matchin
 def render_claude_md() -> str:
     return """# CLAUDE.md - Beats Agentic PM Harness Claude Adapter
 
-Claude Code is a primary harness runtime. This file is its thin entrypoint.
-
 The canonical agent contract, workflows, skills, and rules live in `.agent/`.
-Load `.agent/rules/ACTION_FIRST_OUTPUT.md` for every user-facing response.
+Load `.agent/rules/TOKEN_EFFICIENCY.md` and `.agent/rules/ACTION_FIRST_OUTPUT.md` for every user-facing response.
 For file-to-Markdown conversion, load `.agent/skills/markitdown/SKILL.md`.
 Run `python system/scripts/sync_cli_adapters.py` to regenerate local Claude command adapters under `.claude/`.
 Generated local adapter directories are intentionally ignored by Git.

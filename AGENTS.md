@@ -21,9 +21,11 @@ On a new Codex session:
 7. Use `compact_operator` narration during execution and the resolved final profile for the deliverable.
 8. Translate unsupported primitives only when the active runtime reports the required capability.
 9. Write durable outputs and verification traces into the standard local paths so runtime switching stays lossless.
+## Token Efficiency & Bounded Context
+
+Load and follow `.agent/rules/TOKEN_EFFICIENCY.md` for all retrieval, planning, and task execution. Use 2-tier bounded queries, preserve prompt prefix caching, and avoid full-file dumps.
 
 ## Action-First Responses
-
 Load and follow `.agent/rules/ACTION_FIRST_OUTPUT.md` for every user-facing
 response. Apply it to conversational presentation only. Safety requirements,
 explicit user instructions, resolved response profiles, workflow contracts,

@@ -1,9 +1,7 @@
 # CLAUDE.md - Beats Agentic PM Harness Claude Adapter
 
-Claude Code is a primary harness runtime. This file is its thin entrypoint.
-
 The canonical agent contract, workflows, skills, and rules live in `.agent/`.
-Load `.agent/rules/ACTION_FIRST_OUTPUT.md` for every user-facing response.
+Load `.agent/rules/TOKEN_EFFICIENCY.md` and `.agent/rules/ACTION_FIRST_OUTPUT.md` for every user-facing response.
 For file-to-Markdown conversion, load `.agent/skills/markitdown/SKILL.md`.
 Run `python system/scripts/sync_cli_adapters.py` to regenerate local Claude command adapters under `.claude/`.
 Generated local adapter directories are intentionally ignored by Git.

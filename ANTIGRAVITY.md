@@ -3,9 +3,8 @@
 This file is the primary entrypoint for Google Antigravity.
 
 The canonical agent contract, workflows, skills, and rules live in `.agent/`.
-Load `.agent/rules/OBSIDIAN_AND_NAMING_STANDARDS.md`, `.agent/rules/GEMINI.md`, and `.agent/rules/ACTION_FIRST_OUTPUT.md` first,
+Load `.agent/rules/TOKEN_EFFICIENCY.md`, `.agent/rules/OBSIDIAN_AND_NAMING_STANDARDS.md`, `.agent/rules/GEMINI.md`, and `.agent/rules/ACTION_FIRST_OUTPUT.md` first,
 then resolve workflows from `.agent/workflows/`.
-For file-to-Markdown conversion, load `.agent/skills/markitdown/SKILL.md`.
 Generated local adapter directories are intentionally ignored by Git.
 
 If the user provides only the GitHub repo URL, clone/open the repo and run:
