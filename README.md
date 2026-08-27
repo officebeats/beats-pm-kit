@@ -74,7 +74,8 @@ The execution loop is `route -> load bounded context -> act with tools -> checkp
 | omp | `.omp/config.yml` |
 | Claude Code | `CLAUDE.md` |
 | OpenAI Codex CLI | `AGENTS.md` + `CODEX_COMMANDS.md` |
-| Gemini CLI / Google Antigravity | `GEMINI.md` (+ `.agent/rules/GEMINI.md`) |
+| Google Antigravity | `ANTIGRAVITY.md` (+ `.agent/`) |
+| Gemini CLI | `GEMINI.md` (+ `.agent/rules/GEMINI.md`) |
 | GitHub Copilot | `.github/skills/` and `.github/agents/` |
 | Obsidian | Optional UI over the same vault (`/obsidian`) |
 

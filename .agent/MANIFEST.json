@@ -1,10 +1,11 @@
 {
   "agents": {
-    "count": 22,
+    "count": 26,
     "directory": ".agent/agents/",
     "names": [
       "architect",
       "career-coach",
+      "chief-of-staff",
       "code-reviewer",
       "cpo",
       "critic",
@@ -14,10 +15,13 @@
       "documentation-writer",
       "executor",
       "gtm-lead",
+      "operator",
       "orchestrator",
       "planner",
+      "product-manager",
       "program-manager",
       "qa-engineer",
+      "researcher",
       "security-reviewer",
       "sop-librarian",
       "staff-pm",
@@ -219,7 +223,7 @@
   },
   "schema_version": 3,
   "skills": {
-    "count": 65,
+    "count": 69,
     "directory": ".agent/skills/",
     "names": [
       "ab-test-analysis",
@@ -266,16 +270,20 @@
       "positioning-strategist",
       "pr-review",
       "prd-author",
+      "product-discovery",
       "product-marketer",
+      "product-strategy",
       "product-strategy-suite",
       "requirements-translator",
       "retrospective",
       "risk-guardian",
+      "roadmapping",
       "roadmapping-suite",
       "security-audit",
       "slack-task-intake",
       "sop-manager",
       "stakeholder-management-suite",
+      "story-engine",
       "summarize-interview",
       "task-manager",
       "team-orchestrator",
@@ -289,7 +297,7 @@
       "wwas"
     ]
   },
-  "version": "13.2.0",
+  "version": "14.0.0",
   "workflows": {
     "commands": [
       "/accuracy",

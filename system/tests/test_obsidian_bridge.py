@@ -2,8 +2,8 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
-
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR))
@@ -89,18 +89,18 @@ class TestObsidianDetection(unittest.TestCase):
     def test_no_install_has_no_valid_vaults(self):
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
-            result = obsidian_bridge.detect_obsidian(
-                platform_name="Linux",
-                home=tmp_path,
-                env={},
-                command_lookup=lambda _: None,
-                rest_probe=lambda: {"url": "https://127.0.0.1:27124/", "reachable": False},
-                spotlight_paths=[],
-            )
+            with patch.object(obsidian_bridge, "app_candidates", return_value=[]):
+                result = obsidian_bridge.detect_obsidian(
+                    platform_name="Linux",
+                    home=tmp_path,
+                    env={},
+                    command_lookup=lambda _: None,
+                    rest_probe=lambda: {"url": "https://127.0.0.1:27124/", "reachable": False},
+                    spotlight_paths=[],
+                )
 
-            self.assertFalse(result["installed"])
-            self.assertEqual(result["valid_vaults"], [])
-
+                self.assertFalse(result["installed"])
+                self.assertEqual(result["valid_vaults"], [])
     def test_default_config_prefers_the_kit_as_the_direct_vault(self):
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)

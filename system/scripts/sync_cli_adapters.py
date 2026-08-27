@@ -196,6 +196,26 @@ python system/scripts/sync_codex_skill_adapters.py --output-dir <codex-skills-di
 ```
 """
 
+def render_antigravity_md() -> str:
+    return """# ANTIGRAVITY.md - Beats Agentic PM Harness Adapter
+
+This file is the primary entrypoint for Google Antigravity.
+
+The canonical agent contract, workflows, skills, and rules live in `.agent/`.
+Load `.agent/rules/OBSIDIAN_AND_NAMING_STANDARDS.md`, `.agent/rules/GEMINI.md`, and `.agent/rules/ACTION_FIRST_OUTPUT.md` first,
+then resolve workflows from `.agent/workflows/`.
+For file-to-Markdown conversion, load `.agent/skills/markitdown/SKILL.md`.
+Generated local adapter directories are intentionally ignored by Git.
+
+If the user provides only the GitHub repo URL, clone/open the repo and run:
+
+```bash
+python3 system/scripts/bootstrap.py --agent --non-interactive --repo-url <url>
+```
+
+Then route the first real PM input through the PM decision router or the matching workflow.
+"""
+
 
 def render_gemini_md() -> str:
     return """# GEMINI.md - Beats Agentic PM Harness Adapter
@@ -338,6 +358,7 @@ def main() -> int:
     derived_changed = generate_registry_docs.write_generated_files(ROOT)
     generated = {
         ROOT / "AGENTS.md": render_agents_md(),
+        ROOT / "ANTIGRAVITY.md": render_antigravity_md(),
         ROOT / "CLAUDE.md": render_claude_md(),
         ROOT / "GEMINI.md": render_gemini_md(),
         ROOT / "CODEX_COMMANDS.md": render_codex_commands(),

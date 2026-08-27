@@ -21,6 +21,7 @@ from system.utils.root_policy import generated_or_local_prefixes
 
 GENERATED_REPO_FILES = [
     "AGENTS.md",
+    "ANTIGRAVITY.md",
     "CLAUDE.md",
     "GEMINI.md",
     "CODEX_COMMANDS.md",

@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ID_ONLY_RE = re.compile(r"^(?:[A-Z][A-Z0-9]+-\d{2,}|[0-9a-f-]{12,})$", re.IGNORECASE)
-
+ID_ONLY_FILENAME_RE = re.compile(r"^(?:(?:TASK|PLAN|PRD|SPEC|BUG|TRANSCRIPT|MEETING|CALL|DOC|ITEM)-\d{2,}|[0-9a-f-]{12,})\.md$", re.IGNORECASE)
 
 def tracked_markdown(root: Path) -> list[Path]:
     result = subprocess.run(
@@ -24,8 +24,8 @@ def tracked_markdown(root: Path) -> list[Path]:
         text=True,
     )
     if result.returncode == 0:
-        return [root / line for line in result.stdout.splitlines() if line.strip()]
-    return [path for path in root.rglob("*.md") if ".git" not in path.parts and "node_modules" not in path.parts]
+        return [root / line for line in result.stdout.splitlines() if line.strip() and "fixtures" not in line]
+    return [path for path in root.rglob("*.md") if ".git" not in path.parts and "node_modules" not in path.parts and "fixtures" not in path.parts]
 
 
 def document_title(text: str) -> str:
@@ -44,14 +44,16 @@ def problems(root: Path = ROOT) -> list[dict[str, str]]:
     for path in tracked_markdown(root):
         if not path.exists():
             continue
-        title = document_title(path.read_text(encoding="utf-8", errors="replace"))
+        filename = path.name
         relative = path.relative_to(root).as_posix()
+        if ID_ONLY_FILENAME_RE.fullmatch(filename):
+            issues.append({"path": relative, "problem": f"ID-only filename: {filename} (must be human-readable kebab-case slug)"})
+        title = document_title(path.read_text(encoding="utf-8", errors="replace"))
         if not title:
             issues.append({"path": relative, "problem": "missing title or H1"})
         elif ID_ONLY_RE.fullmatch(title):
             issues.append({"path": relative, "problem": f"ID-only title: {title}"})
     return issues
-
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)

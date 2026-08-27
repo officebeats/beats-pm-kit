@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT))
 from system.scripts import personal_memory
 from system.utils.markdown_tables import split_cells
 
-TARGET_VERSION = "13.2.0"
+TARGET_VERSION = "14.0.0"
 CONTENT_ROOTS = (
     "0. Incoming",
     "1. Company",

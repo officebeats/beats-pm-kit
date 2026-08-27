@@ -118,12 +118,12 @@ class TestVacuum(unittest.TestCase):
              self.assertNotIn("- [x] Completed task 1", new_content)
             
             # Verify archive exists
-             archive_files = os.listdir(vacuum.ARCHIVE_DIR)
-             self.assertTrue(len(archive_files) > 0)
-             with open(os.path.join(vacuum.ARCHIVE_DIR, archive_files[0]), encoding='utf-8') as archive_handle:
+             year = datetime.now().year
+             archive_path = os.path.join(vacuum.ARCHIVE_DIR, f"archive_{year}_{filename}")
+             self.assertTrue(os.path.exists(archive_path))
+             with open(archive_path, encoding='utf-8') as archive_handle:
                  archive_content = archive_handle.read()
              self.assertIn("- [x] Completed task 1", archive_content)
-
     def test_archive_transcripts(self):
         """Test transcript archiving logic."""
         # Setup mock directories (real ones in temp dir)

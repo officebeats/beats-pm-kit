@@ -7,9 +7,11 @@ from pathlib import Path
 
 PUBLIC_ROOT_FILES = {
     ".antigravityignore",
+    ".cursorignore",
     ".gitattributes",
     ".gitignore",
     "AGENTS.md",
+    "ANTIGRAVITY.md",
     "CLAUDE.md",
     "CODEX_COMMANDS.md",
     "GEMINI.md",

@@ -1,100 +1,100 @@
-# 📄 PRD: [Feature Name]
+---
+title: "Product Requirements Document: [Feature / Initiative Name]"
+id: "PRD-XXX"
+type: "prd"
+status: "in-progress"
+owner: "[Owner Name]"
+target_release: "[Target Quarter / Sprint]"
+up: "[[MOC_Products]]"
+tags:
+  - type/prd
+  - status/in-progress
+  - area/[domain]
+  - priority/p1
+aliases:
+  - "[Feature Name] PRD"
+---
 
-**Product**: [Product Name]  
-**Status**: Draft / Under Review / Approved  
-**Owner**: [Lead Name]  
-**Priority**: 🔥 Critical / ⚡ Now  
+# 📄 PRD: [Feature / Initiative Name]
+
+> **Executive Summary**: [1-2 sentences explaining what is being built, for whom, and why now.]
 
 ---
 
-## 🎯 1. Executive Summary
-### **The What**
-> [Detailed description of the final product/feature experience.]
-
-### **The Why**
-> [The business problem, user pain point, or strategic opportunity this solves.]
-
-- **Primary Objective**: [Main goal]
-- **Target Value**: [Revenue or Liquidity Impact]
-- **Key Success Metric**: [e.g. 50 Leads Flipped in 30 Days]
+## 1. Problem Statement & Customer Context
+- **Target Persona**: Who specifically experiences this friction? (e.g. *Enterprise RevOps Admin managing 500+ seats*).
+- **Core Friction & Root Cause**: What is blocking the customer today? What is the quantifiable cost of this problem?
+- **Evidence & Customer Quotes**:
+  > *"[Verbatim customer quote from interview or support ticket illustrating the acute pain.]"* — [[3. Meetings/notes/[interview-slug]|Customer Name]]
 
 ---
 
-## 📰 2. Working Backwards: The Press Release
-> **Amazon Method**: Write the "Future News" of this feature launch to ensure we are building something that actually matters to customers.
+## 2. Jobs To Be Done (JTBD) & User Stories
 
-### **Headline**
-> *Product Name Empowers [Persona] to [Grand Achievement]*
+### Job Stories (JTBD)
+- **Primary Job**: When `[trigger event / situation]`, I want to `[execute action]`, so I can `[achieve high-value outcome]`.
+- **Secondary Job**: When `[edge condition]`, I want to `[mitigate friction]`, so I can `[maintain workflow continuity]`.
 
-### **Summary**
-> [A short paragraph for a press outlet describing the launch and its impact.]
+### User Stories & Acceptance Criteria
+#### Story 1: [Core Workflow Capability]
+- **As a** `[user role]`
+- **I want** `[system capability]`
+- **So that** `[business/user value]`
 
-### **The Problem**
-> [Quote or description of the pain point from the user's perspective before this launch.]
-
-### **The Solution**
-> [How this specific feature solves the problem in a way that feels like magic.]
-
-### **Internal FAQ**
-- **Q**: [Common Question]?
-- **A**: [Clear Answer].
-
----
-
-## 🏛️ 3. Executive Logic & Rules
-> **The High-Level Guardrails**: Non-technical but granular rules that define the feature's integrity.
-
-- **Rule 1**: [Verbatim logic from leadership]
-- **Rule 2**: [Integrity/Brand constraints]
+```gherkin
+Scenario: Happy Path Execution
+  Given [initial user state / system precondition]
+  When [user triggers action]
+  Then [expected system reaction occurs within target latency]
+  And [state change is persisted]
+```
 
 ---
 
-## 🛣️ 4. Critical User Journeys (CUJs) & System Triggers
-> **The Experience**: Step-by-step journeys for each actor, explicitly mapping user actions to the underlying automation.
+## 3. Solution Overview & User Experience
+- **Functional Requirements**:
+  1. `[Requirement 1]`: [Detailed behavior and business logic].
+  2. `[Requirement 2]`: [Edge case handling and validation].
+- **Scope Boundaries (Non-Goals)**:
+  - ❌ *Out of Scope for V1*: [Explicitly deferred capabilities].
+  - ❌ *Non-Goal*: [What this feature is deliberately NOT trying to solve].
 
-### Persona A: [The Prime / The Seller]
-| Step | User Action | System / Automation Trigger |
-| :--- | :--- | :--- |
-| 1 | [Action] | [Automation / Tooling Trigger] |
-| 2 | [Action] | [Automation / Tooling Trigger] |
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant App as Web/Mobile App
+    participant API as Backend Service
+    participant DB as Storage / Database
 
-### Persona B: [The Sub / The Buyer]
-| Step | User Action | System / Automation Trigger |
-| :--- | :--- | :--- |
-| 1 | [Action] | [Automation / Tooling Trigger] |
-| 2 | [Action] | [Automation / Tooling Trigger] |
-
----
-
-## ⚙️ 5. Engineering Specifications (Functional)
-> **The Build**: Atomic, unambiguous requirements for Devs.
-
-### A. Data Schema / UI Elements
-- [ ] **Field**: [Name] | **Type**: [String/Bool/Int] | **Constraint**: [Required/Optional]
-
-### B. Business Logic
-- [ ] **Logic 1**: If [Condition], then [Outcome].
+    User->>App: Trigger Action
+    App->>API: POST /api/v1/resource
+    API->>DB: Persist State (Idempotent)
+    DB-->>API: 200 OK
+    API-->>App: Return Updated Payload
+    App-->>User: Visual Confirmation Toast
+```
 
 ---
 
-## 🛡️ 6. Non-Functional Requirements (NFRs)
-> **The "ilities"**: Performance, Security, and Reliability standards.
+## 4. Hypotheses, Metrics & Guardrails
 
-- **Performance**: [e.g., Latency < 200ms for lead cards].
-- **Scalability**: [e.g., Support 2,000 simultaneous contractors].
-- **Security**: [e.g., PII encryption for client data until lead is purchased].
-- **Reliability**: [e.g., 99.9% uptime for the sync cron job].
-
----
-
-## 🚫 7. Out of Scope
-- [Items that would slow down the 120-day push]
+| Metric Type | Metric Name | Baseline | Target (60 Days Post-Launch) |
+|:---|:---|:---:|:---:|
+| **Primary (North Star)** | User Task Completion Rate | 42% | **$\ge 75\%$** |
+| **Secondary (Speed)** | Time to First Value (TTFV) | 4.2 days | **$< 24$ hours** |
+| **Guardrail (Quality)** | P99 API Latency / Error Rate | 120ms / 0.1% | **$< 200$ms / $< 0.1\%$** |
 
 ---
 
-## 📅 8. Follow-ups & Open Questions
-- [ ] [Question/Task A]
+## 5. Dependencies & Technical Considerations
+- **Upstream Dependencies**: [Services, APIs, or design components required].
+- **Downstream Impact**: [Data pipeline, analytics, or CRM sync affected].
+- **Security & Compliance**: [RBAC permissions, audit logging, PII considerations].
 
 ---
 
-_Source Truth: [Link to Meeting Recap / Transcript]_
+## 6. Launch Gates & Rollout Strategy
+- [ ] **Alpha Gate**: 5 design-partner customers validated in staging environment.
+- [ ] **Beta Gate**: 20% canary traffic rollout with zero error spikes for 7 consecutive days.
+- [ ] **General Availability (GA)**: 100% rollout with updated documentation and sales enablement.

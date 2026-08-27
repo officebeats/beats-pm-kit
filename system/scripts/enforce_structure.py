@@ -27,18 +27,27 @@ from utils.filesystem import ensure_directory
 # Schema Definition: File Pattern -> Target Folder (Relative to Root)
 # This allows us to sweep the root and organize files based on their naming convention or type.
 MIGRATION_MAP: Dict[str, str] = {
-    # Documentation & Specs
+    # Documentation & Specs (kebab-case human-readable slugs & legacy)
+    "prd-*.md": "2. Products/specs",
     "PRD-*.md": "2. Products/specs",
+    "spec-*.md": "2. Products/specs",
     "SPEC-*.md": "2. Products/specs",
+    "feature-*.md": "2. Products/specs",
     
     # Meeting Notes & Transcripts
+    "transcript-*.md": "3. Meetings/transcripts",
     "TRANSCRIPT-*.md": "3. Meetings/transcripts",
+    "meeting-*.md": "3. Meetings/notes",
     "MEETING-*.md": "3. Meetings/notes",
+    "call-*.md": "3. Meetings/notes",
     "Call-*.md": "3. Meetings/notes",
     
-    # Trackers (Ensure they stay in 5. Trackers or subfolders)
+    # Trackers & Issues
+    "bug-*.md": "5. Trackers/bugs",
     "BUG-*.md": "5. Trackers/bugs",
-    "TASK-*.md": "5. Trackers", 
+    "task-*.md": "5. Trackers/tasks",
+    "TASK-*.md": "5. Trackers/tasks", 
+    "project-*.md": "5. Trackers/projects",
     "PROJECT-*.md": "5. Trackers/projects",
     
     # Artifacts
@@ -48,7 +57,6 @@ MIGRATION_MAP: Dict[str, str] = {
     "*.pdf": "0. Incoming/files",
     "*.csv": "0. Incoming/files",
 }
-
 IGNORE_LIST = [
     "README.md", "SETTINGS.md", "STATUS.md", "GEMINI.md", "SESSION_MEMORY.md",
     "requirements.txt", ".gitignore", ".gitattributes", ".antigravityignore",
