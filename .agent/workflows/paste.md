@@ -49,18 +49,15 @@ Use this fast path when:
 - No fresh Slack, Teams, Outlook, Calendar, Jira, or Confluence read is required.
 
 Fast-path steps:
-1. Extract status, owner, due date, dependency, source platform, participants, and exact follow-up date.
+1. Extract status, owner, due date, dependency, source platform, participants, and exact follow-up date into structured JSON.
 2. Search local trackers for a matching existing item before creating anything new.
-3. Read only `TASK_MASTER.md`, the matched task detail file(s), and relevant people profiles.
-4. Save the compact local evidence transcript/report when the screenshot represents communication evidence: `3. Meetings/chat-transcripts/{platform}/...` with a run entry in `3. Meetings/chat-transcripts/_manifest.json`, including the verbatim `Extracted Text` section. The attached-chat fast path does not stage anything in `0. Incoming/`.
-5. Capture display provenance for touched work: readable title, started date/source, latest progress source, and internal refs.
-6. Apply local tracker/profile updates.
-7. Refresh task health with targeted triage:
+3. Execute the automated communication intake pipeline in one call:
 
 ```bash
-python3 system/scripts/task_master_triage.py --apply --touched-task <TASK_ID>
+python3 system/scripts/communication_intake.py --payload '<STRUCTURED_JSON>'
 ```
 
+This atomically writes the communication transcript, run reports, canonical task notes, stakeholder profiles, workstream records, updates the manifest, rebuilds Task Master, and applies triage in <1 second with zero extra LLM tokens.
 Run the full `/paste` dual-path capture only when the user invokes `/paste`, asks to ingest the clipboard/drop zone, or the attached evidence is ambiguous enough that local capture/scanning is needed.
 
 ---

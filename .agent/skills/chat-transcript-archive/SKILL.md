@@ -86,7 +86,7 @@ Every saved communication transcript must include:
 - Issues and recommendations for MCP/connector gaps, read-state uncertainty, fallback bridge usage, duplicates skipped, or task routing conflicts.
 - Atlassian artifact paths written or skipped when referenced context capture runs.
 
-For user-provided screenshots, pasted email/chat snippets, or short exports: mark the read source as `user-provided evidence`; `Source References` may hold screenshot-visible metadata instead of connector URLs; do not run window calculation or connector reads just to satisfy this contract. Also add an `## Extracted Text` section: full visible text verbatim, privacy-redacted (`[REDACTED]`, `[ILLEGIBLE]`), so the evidence is reusable without the image. Connector/MCP reads keep the short-snippet rule.
+For user-provided screenshots or pasted chat snippets: run `python3 system/scripts/communication_intake.py --payload '<JSON>'` to generate transcripts, reports, task notes, and manifest entries in one call. Mark source as `user-provided evidence`. Add an `## Extracted Text` section with verbatim text (`[REDACTED]`) so evidence is reusable without the image. Connector reads keep the short-snippet rule.
 
 Use this Markdown shape:
 

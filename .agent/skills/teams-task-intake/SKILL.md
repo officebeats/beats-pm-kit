@@ -28,7 +28,7 @@ Go deeper into section 2 for the hard safety boundary and the `teams_bridge.py` 
 
 ## 1. Native Interface
 
-- **Inputs**: `/beats-teams` with a chat, channel, team/channel pair, person, thread, search query, time window, or configured Teams intake scope.
+- **Inputs**: `/beats-teams` with a chat, channel, team/channel pair, person, thread, search query, time window, or configured Teams intake scope; or user-provided screenshots / chat exports via `system/scripts/communication_intake.py`.
 - **Allowed Teams operations**: Read-only MS365 MCP/connector profile resolution, chat listing, unread chat listing, chat message reads, recent thread listing, team/channel resolution, channel message reads, and meeting transcript reads when available.
 - **Local files**: `SETTINGS.md`, `1. Company/ways-of-working.md`, `5. Trackers/TASK_MASTER.md`, `5. Trackers/tasks/`, optional `4. People/`, optional `2. Products/partners/`, and `3. Meetings/chat-transcripts/teams/`.
 

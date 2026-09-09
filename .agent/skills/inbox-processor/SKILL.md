@@ -25,25 +25,22 @@ description: The "Black Hole" for chaos. Aggressively extracts tasks from raw in
 Use this path when the user directly provides one screenshot, image, email/chat snippet, or transcript excerpt in the current turn and it contains a clear work signal.
 
 1. Do not run clipboard capture, drop-zone scans, connector reads, or source-system window calculation unless the user asks for fresh source-system retrieval.
-2. Extract the work signal in one pass: existing task ID or likely matching task, status change, blocker/dependency, owner, due date, source platform, sender, recipients, and follow-up date.
-3. Read only the local context needed to apply the update:
-   - `5. Trackers/TASK_MASTER.md`
-   - matched `5. Trackers/tasks/{ID}.md` files
-   - relevant `4. People/*.md` profiles when a stakeholder/dependency changed
-   - the transcript/archive contract only if a local evidence packet must be saved
-4. Save a compact local evidence packet when the input is communication evidence:
-   - `3. Meetings/chat-transcripts/{platform}/{YYYY-MM-DD}_{scope-slug}_{RUN_ID}.md`
-   - `3. Meetings/reports/{platform}-runs/{RUN_ID}.md`
-   - `3. Meetings/reports/chat-runs/{RUN_ID}.md`
-   - record the run in `3. Meetings/chat-transcripts/_manifest.json`
-5. Apply the local tracker updates.
-6. Run targeted task health refresh for the touched task IDs:
+2. Extract the work signal in one structured pass: platform, scope, sender, timestamp, message, candidate task title/owner/due/lane, stakeholder details, workstream, and peripheral signals.
+3. Execute the automated deterministic Python pipeline in one call:
 
 ```bash
-python3 system/scripts/task_master_triage.py --apply --touched-task <TASK_ID>
+python3 system/scripts/communication_intake.py --payload '<STRUCTURED_JSON>'
 ```
 
-This path preserves auditability while avoiding the heavyweight multi-platform intake workflow for evidence that is already present in the chat.
+The pipeline atomically:
+- Generates the communication transcript (`3. Meetings/chat-transcripts/{platform}/`)
+- Generates the platform and chat run reports (`3. Meetings/reports/`)
+- Creates or updates the canonical task note (`5. Trackers/tasks/`)
+- Creates or updates stakeholder profiles (`4. People/` and `4. People/PEOPLE.md`)
+- Creates or updates the workstream record (`5. Trackers/workstreams/`)
+- Records the intake run in `3. Meetings/chat-transcripts/_manifest.json`
+- Rebuilds Task Master, applies workstream MOC evidence links, and updates task triage
+- Returns structured JSON with preview links and ready-to-display workstream snapshot
 
 ### Phase 1: Ingest & Normalize
 Strip noise and normalize metadata.
