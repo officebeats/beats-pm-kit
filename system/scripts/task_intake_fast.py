@@ -36,7 +36,7 @@ TASK_MASTER_REL = Path("5. Trackers/TASK_MASTER.md")
 TASKS_REL = Path("5. Trackers/tasks")
 RAW_REL = Path("0. Incoming/raw")
 
-TASK_ID_RE = re.compile(r"\b[A-Z][A-Z0-9]+-\d{3,}[a-z]?\b")
+TASK_ID_RE = re.compile(r"\b[A-Za-z][A-Za-z0-9]+-(?:\d{1,}(?:-[a-z0-9]+)+|\d{3,}[a-z]?|[a-z0-9]+(?:-[a-z0-9]+)+)\b")
 DATE_RE = re.compile(r"\b20\d{2}-\d{2}-\d{2}\b")
 TASK_ROW_RE = re.compile(r"^\|(.+)\|$")
 

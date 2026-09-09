@@ -35,7 +35,7 @@ BOSS_REQUESTS = Path("5. Trackers/critical/boss-requests.md")
 SETTINGS = Path("SETTINGS.md")
 
 DATE_RE = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\b")
-TASK_ID_RE = re.compile(r"\b[A-Z][A-Z0-9]+-\d{3,}[a-z]?\b")
+TASK_ID_RE = re.compile(r"\b[A-Za-z][A-Za-z0-9]+-(?:\d{1,}(?:-[a-z0-9]+)+|\d{3,}[a-z]?|[a-z0-9]+(?:-[a-z0-9]+)+)\b")
 
 READ_ONLY_SOURCES = {
     "slack",

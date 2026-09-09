@@ -1,3 +1,7 @@
+---
+title: 'Boss Request Template'
+---
+
 # Boss Request Template
 
 ## Request Info

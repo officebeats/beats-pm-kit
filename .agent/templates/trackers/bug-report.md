@@ -1,3 +1,7 @@
+---
+title: '🐛 Bug Report Template'
+---
+
 # 🐛 Bug Report Template
 
 > **Usage**: Apply this when processing email threads or slack reports about defects.

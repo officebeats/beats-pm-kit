@@ -41,19 +41,63 @@ def normalize_command_name(text: str) -> str:
     return token.lstrip("/").strip()
 
 
-def is_git_ignored(path: Path, root: Path) -> bool:
-    """Return True when a path is explicitly ignored in this local checkout."""
+_GIT_IGNORE_CACHE: dict[tuple[Path, Path], bool] = {}
+
+
+def get_git_ignored_set(paths: list[Path], root: Path) -> set[Path]:
+    """Check a batch of paths against git-ignore in a single subprocess call."""
+    if not paths:
+        return set()
+    needed: list[Path] = []
+    ignored: set[Path] = set()
+    for p in paths:
+        key = (root, p)
+        if key in _GIT_IGNORE_CACHE:
+            if _GIT_IGNORE_CACHE[key]:
+                ignored.add(p)
+        else:
+            needed.append(p)
+    if not needed:
+        return ignored
+
     try:
+        encoded = b"\x00".join(str(p.relative_to(root)).encode("utf-8") for p in needed) + b"\x00"
         result = subprocess.run(
-            ["git", "check-ignore", "--quiet", str(path.relative_to(root))],
+            ["git", "check-ignore", "--stdin", "-z"],
+            input=encoded,
             cwd=root,
             check=False,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            capture_output=True,
+            timeout=10,
         )
-    except (OSError, ValueError):
-        return False
-    return result.returncode == 0
+        if result.returncode in (0, 1):
+            raw_ignored = {
+                entry.decode("utf-8", errors="replace")
+                for entry in result.stdout.split(b"\x00")
+                if entry
+            }
+            for p in needed:
+                rel = str(p.relative_to(root))
+                is_ign = rel in raw_ignored
+                _GIT_IGNORE_CACHE[(root, p)] = is_ign
+                if is_ign:
+                    ignored.add(p)
+        else:
+            for p in needed:
+                _GIT_IGNORE_CACHE[(root, p)] = False
+    except (OSError, ValueError, subprocess.SubprocessError):
+        for p in needed:
+            _GIT_IGNORE_CACHE[(root, p)] = False
+    return ignored
+
+
+def is_git_ignored(path: Path, root: Path) -> bool:
+    """Return True when a path is explicitly ignored in this local checkout."""
+    key = (root, path)
+    if key in _GIT_IGNORE_CACHE:
+        return _GIT_IGNORE_CACHE[key]
+    ignored = get_git_ignored_set([path], root)
+    return path in ignored
 
 
 def get_workflow_descriptions(root: Path | str | None = None):
@@ -65,8 +109,10 @@ def get_workflow_descriptions(root: Path | str | None = None):
     if not workflows_dir.is_dir():
         return workflow_meta
 
-    for path in sorted(workflows_dir.glob("*.md")):
-        if is_git_ignored(path, repo_root):
+    candidates = sorted(workflows_dir.glob("*.md"))
+    ignored = get_git_ignored_set(candidates, repo_root)
+    for path in candidates:
+        if path in ignored:
             continue
         description = ""
         text = path.read_text(encoding="utf-8")

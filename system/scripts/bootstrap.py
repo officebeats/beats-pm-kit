@@ -257,14 +257,14 @@ def next_steps(root: Path) -> list[str]:
     ]
 
 
-def print_human(phases: list[Phase]) -> None:
+def print_human(phases: list[Phase], root: Path = ROOT) -> None:
     print("Beats PM Kit bootstrap")
     for phase in phases:
         detail = f" - {phase.detail}" if phase.detail else ""
         print(f"[{phase.status}] {phase.name}{detail}")
     print("")
     print("Next steps:")
-    for step in next_steps():
+    for step in next_steps(root):
         print(f"- {step}")
 
 
@@ -282,6 +282,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--apply-obsidian", action="store_true", help="Apply local Obsidian direct-vault settings")
     parser.add_argument("--clean-root", action="store_true", help="Apply root cleaner instead of dry-run preview")
     parser.add_argument("--apply-upgrade", action="store_true", help="Back up and apply safe v11 Markdown-title migrations")
+    parser.add_argument("--fast", action="store_true", help="Fast bootstrap for immediate FTUE (skips heavy release-audit guards)")
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON")
     return parser.parse_args()
 
@@ -292,7 +293,7 @@ def main() -> int:
     phases: list[Phase] = []
 
     verify_repo(root, args.repo_url, phases)
-    upgrade_compatibility(root, phases, apply=args.apply_upgrade)
+    upgrade_compatibility(root, phases, apply=args.apply_upgrade or args.agent or args.non_interactive)
     if any(phase.status == "failed" for phase in phases):
         payload = {
             "agent": bool(args.agent),
@@ -304,7 +305,7 @@ def main() -> int:
         if args.json:
             print(json.dumps(payload, indent=2, sort_keys=True))
         else:
-            print_human(phases)
+            print_human(phases, root)
         return 1
     create_workspace(root, phases)
     seed_templates(root, phases)
@@ -319,8 +320,7 @@ def main() -> int:
         add_phase(phases, "git_hooks", "skipped", "--skip-hooks requested")
     else:
         install_hooks(root, phases)
-
-    run_health(root, phases, skip_guards=args.skip_guards)
+    run_health(root, phases, skip_guards=args.skip_guards or args.fast)
 
     if args.skip_obsidian:
         add_phase(phases, "obsidian", "skipped", "--skip-obsidian requested")
@@ -337,7 +337,7 @@ def main() -> int:
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
     else:
-        print_human(phases)
+        print_human(phases, root)
 
     return 1 if any(phase.status == "failed" for phase in phases) else 0
 

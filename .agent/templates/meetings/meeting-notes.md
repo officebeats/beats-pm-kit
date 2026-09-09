@@ -1,3 +1,7 @@
+---
+title: 'Meeting Notes Template'
+---
+
 # Meeting Notes Template
 
 ## Meeting Info

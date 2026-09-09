@@ -17,6 +17,7 @@ PUBLIC_ROOT_FILES = {
     "GEMINI.md",
     "OBSIDIAN.md",
     "README.md",
+    "START-HERE-FTUE.md",
     "VERSION",
     "install.sh",
 }

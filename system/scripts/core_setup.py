@@ -173,7 +173,7 @@ def run_memory_init() -> None:
     _initialize_tracker_file(
         root,
         get_config('trackers.decision_log'),
-        "# Strategic Decision Log\n\n> Immutable record of key product and architectural decisions.\n\n| Date | Decision | Context | Owner |\n|:---|:---|:---|:---|\n"
+        "---\ntitle: 'Strategic Decision Log'\n---\n\n# Strategic Decision Log\n\n> Immutable record of key product and architectural decisions.\n\n| Date | Decision | Context | Owner |\n|:---|:---|:---|:---|\n"
     )
 
     # 2. PEOPLE.md
@@ -182,7 +182,7 @@ def run_memory_init() -> None:
         _initialize_tracker_file(
             root,
             os.path.join(people_dir, "PEOPLE.md"),
-            "# People & Stakeholders\n\n> The Human Context. Who does what?\n\n| Name | Role | Context |\n|:---|:---|:---|\n"
+            "---\ntitle: 'People & Stakeholders'\n---\n\n# People & Stakeholders\n\n> The Human Context. Who does what?\n\n| Name | Role | Context |\n|:---|:---|:---|\n"
         )
 
     # 3. quote-index.md
@@ -191,14 +191,14 @@ def run_memory_init() -> None:
         _initialize_tracker_file(
             root,
             os.path.join(quote_dir, "quote-index.md"),
-            "# Quote Index\n\n> Grep-friendly archive of key verbatim quotes.\n\n| Date | Speaker | Quote | Source |\n|:---|:---|:---|:---|\n"
+            "---\ntitle: 'Quote Index'\n---\n\n# Quote Index\n\n> Grep-friendly archive of key verbatim quotes.\n\n| Date | Speaker | Quote | Source |\n|:---|:---|:---|:---|\n"
         )
 
     # 4. SESSION_MEMORY.md (Root)
     _initialize_tracker_file(
         root,
         "SESSION_MEMORY.md",
-        "# Session Memory\n> Last Known State registry.\n\nSystem Initialized. No previous session data.\n"
+        "---\ntitle: 'Session Memory'\n---\n\n# Session Memory\n> Last Known State registry.\n\nSystem Initialized. No previous session data.\n"
     )
 
 

@@ -1,3 +1,7 @@
+---
+title: '✨ Feature Request (PRD Lite)'
+---
+
 # ✨ Feature Request (PRD Lite)
 
 > **Usage**: For tracking new capabilities before full PRD scope.

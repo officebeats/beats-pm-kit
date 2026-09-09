@@ -1,3 +1,7 @@
+---
+title: 'Beats PM Kit Settings'
+---
+
 # Beats PM Kit Settings
 
 > Your personalized configuration. Run the FTUE in START-HERE-FTUE.md for guided setup.
@@ -14,15 +18,19 @@
 ## System
 
 - **Owner**: [Your Name]
-- **Role**: [Principal PM / Director / Group PM]
+- **Role**: [Principal PM / Director / Engagement Manager / Product Consultant]
+- **Organization Type**: [in-house / consulting]
+- **Consulting Firm**: [Optional: Consulting Firm or Agency name, e.g. Slalom, McKinsey, Independent]
 - **Timezone**: America/Chicago
 - **Version**: 3.2.1 (Meeting Intelligence)
 
 ---
 
-## 📂 Product Portfolio
+## 📂 Portfolio (Products & Client Engagements)
 
-> Define your products here. Antigravity uses this to route items automatically.
+> Define your products or client engagements here. Beats PM Kit uses this to route items automatically.
+> For in-house PMs: use Product Name, Alias, and Keywords.
+> For consulting PMs: map Client companies and their project engagements (stored under `8. Clients/`).
 
 | Product Name       | Alias   | Description / Keywords                       |
 | ------------------ | ------- | -------------------------------------------- |
@@ -30,14 +38,14 @@
 | **Web Portal**     | `web`   | Dashboard, admin panel, reporting, analytics |
 | **Data Platform**  | `data`  | API, backend, ingestion, pipeline, aws       |
 | **Internal Tools** | `tools` | CLI, scripts, support portal                 |
-
 ---
 
 ## Boss Configuration
 
-- **Name**: [Manager Name]
+- **Name**: [Manager Name / Consulting Partner]
 - **Alias**: [Nickname]
 - **Email**: [Optional]
+- **Client Sponsors**: [Optional: e.g. FinCorp: Jane Doe; HealthNet: Dan Lee]
 - **Max days without update**: 2
 - **Deadline warning**: 24 hours
 

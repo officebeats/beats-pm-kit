@@ -21,7 +21,7 @@ if str(ROOT) not in sys.path:
 from system.utils.markdown_tables import split_cells, strip_wikilinks  # noqa: E402
 
 
-TASK_ID_RE = re.compile(r"\b[A-Z][A-Z0-9]+-\d{3,}[a-z]?\b")
+TASK_ID_RE = re.compile(r"\b[A-Za-z][A-Za-z0-9]+-(?:\d{1,}(?:-[a-z0-9]+)+|\d{3,}[a-z]?|[a-z0-9]+(?:-[a-z0-9]+)+)\b")
 ISSUE_ID_RE = re.compile(r"\b[A-Z][A-Z0-9]+-\d{1,}[a-z]?\b")
 DATE_RE = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\b")
 HEADER_RE_TEMPLATE = r"^>\s+\*\*{label}:\*\*\s*(.+?)\s*$"

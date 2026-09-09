@@ -118,6 +118,33 @@ Confirm the launch cohort.
         self.assertIn("Review Peter''s Weekly Report", text)
         self.assertNotIn("''''", text)
 
+    def test_descriptive_task_id_and_flexible_resolution(self):
+        root = self.make_root()
+        tasks_dir = root / "5. Trackers" / "tasks"
+        descriptive_id = task_store.make_descriptive_task_id("Join Nate daily internal team call", prefix="PROP", number=1)
+        self.assertEqual(descriptive_id, "prop-001-join-nate-daily-internal-team")
+
+        task_path = tasks_dir / f"{descriptive_id}.md"
+        record = task_store.TaskRecord(
+            task_id=descriptive_id,
+            title="Join Nate daily internal team call",
+            path=task_path,
+        )
+        task_path.write_text(task_store.render_task(record, summary="Call summary", context="Context", next_action="Action", source="Notes"), encoding="utf-8")
+
+        # Test resolution by full ID, short ID, slug, and filename stem
+        by_full = task_store.task_by_id(root, "prop-001-join-nate-daily-internal-team")
+        self.assertIsNotNone(by_full)
+        self.assertEqual(by_full.title, "Join Nate daily internal team call")
+
+        by_short = task_store.task_by_id(root, "prop-001")
+        self.assertIsNotNone(by_short)
+        self.assertEqual(by_short.title, "Join Nate daily internal team call")
+
+        by_slug = task_store.task_by_id(root, "join-nate-daily")
+        self.assertIsNotNone(by_slug)
+        self.assertEqual(by_slug.title, "Join Nate daily internal team call")
+
 
 if __name__ == "__main__":
     unittest.main()

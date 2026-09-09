@@ -39,7 +39,7 @@ SUMMARY_SUFFIX = ".md"
 PACKETS_DIRNAME = "packets"
 RUNS_DIRNAME = "transcript-runs"
 TRANSCRIPT_RE = re.compile(r"^(?P<date>\d{4}-\d{2}-\d{2})_(?P<title>.+)\.txt$")
-TASK_ID_RE = re.compile(r"\b[A-Z][A-Z0-9]+-\d+[a-z]?\b")
+TASK_ID_RE = re.compile(r"\b[A-Za-z][A-Za-z0-9]+-(?:\d{1,}(?:-[a-z0-9]+)+|\d{1,}[a-z]?|[a-z0-9]+(?:-[a-z0-9]+)+)\b")
 
 
 def business_days_ago(n: int, today: dt.date | None = None) -> dt.date:

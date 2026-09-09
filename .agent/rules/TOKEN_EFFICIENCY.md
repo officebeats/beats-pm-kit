@@ -36,7 +36,7 @@ Never dump whole raw transcripts, oversized task ledgers, or entire repositories
 ---
 
 ## 2. Deterministic Prompt Prefix Caching (90% Cost & Latency Discount)
-All supported LLM providers (Anthropic Claude 3.5/3.7, Google Gemini 2.0/1.5, OpenAI GPT-4o) support **Prompt Prefix Caching**.
+All supported LLM providers support **Prompt Prefix Caching**.
 
 - **Invariant**: The system prefix (`product_identity`, `safety_boundaries`, `routing_contract`, and core rules) must remain strictly identical across turns.
 - **Dynamic Content**: Append dates, user inputs, and tool outputs strictly *after* the stable prefix.

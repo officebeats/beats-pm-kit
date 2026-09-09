@@ -34,7 +34,7 @@ MANAGED_START = "<!-- beats-task-index:start -->"
 MANAGED_END = "<!-- beats-task-index:end -->"
 TRELLO_HOTLIST_MARKERS = ("<!-- TRELLO_HOTLIST:BEGIN -->", "<!-- TRELLO_HOTLIST:END -->")
 TRIAGE_SUMMARY_MARKERS = ("<!-- TASK_TRIAGE_SUMMARY:BEGIN -->", "<!-- TASK_TRIAGE_SUMMARY:END -->")
-TASK_ID_RE = re.compile(r"\b[A-Z][A-Z0-9]+-\d{3,}[a-z]?\b")
+TASK_ID_RE = re.compile(r"\b[A-Za-z][A-Za-z0-9]+-(?:\d{1,}(?:-[a-z0-9]+)+|\d{3,}[a-z]?|[a-z0-9]+(?:-[a-z0-9]+)+)\b")
 CLOSED_STATUSES = {"done", "cancelled", "✅ done"}
 _GENERATED_LINE_RE = re.compile(r"^> Generated: .*$", flags=re.MULTILINE)
 
@@ -75,10 +75,34 @@ def human_slug(value: str, fallback: str = "task") -> str:
     value = re.sub(r"[^a-z0-9]+", "-", value).strip("-")
     return (re.sub(r"-{2,}", "-", value)[:80].strip("-") or fallback)
 
+def make_descriptive_task_id(title: str, prefix: str = "", number: int | str | None = None) -> str:
+    """Generate a human-readable, descriptive task ID.
 
-def unique_task_path(root: Path, title: str, current: Path | None = None) -> Path:
+    Example:
+      make_descriptive_task_id("Join Nate daily internal team call", prefix="PROP", number=1)
+      -> "prop-001-join-nate-daily-team-call"
+    """
+    clean_prefix = re.sub(r"[^A-Za-z0-9]", "", prefix).lower()
+    slug = human_slug(title)
+    slug_words = "-".join(slug.split("-")[:5])
+    num_str = f"{int(number):03d}" if isinstance(number, (int, str)) and str(number).isdigit() else str(number or "").strip()
+
+    parts = []
+    if clean_prefix:
+        parts.append(clean_prefix)
+    if num_str:
+        parts.append(num_str)
+    if slug_words:
+        parts.append(slug_words)
+    return "-".join(parts) or "task"
+
+
+def unique_task_path(root: Path, title: str, current: Path | None = None, prefix: str = "", number: int | str | None = None) -> Path:
     tasks_dir = root / TASKS_REL
-    base = human_slug(title)
+    if prefix:
+        base = make_descriptive_task_id(title, prefix=prefix, number=number)
+    else:
+        base = human_slug(title)
     candidate = tasks_dir / f"{base}.md"
     suffix = 2
     current_resolved = current.resolve() if current else None
@@ -205,9 +229,7 @@ def parse_task(path: Path) -> TaskRecord | None:
         task_id = _legacy_field(text, "Internal ID")
     if not task_id:
         match = TASK_ID_RE.search(text[:500]) or TASK_ID_RE.search(path.stem)
-        task_id = match.group(0) if match else ""
-    if not task_id:
-        return None
+        task_id = match.group(0) if match else path.stem
 
     def scalar(key: str, legacy: str, default: str = "") -> str:
         value = metadata.get(key, "")
@@ -270,7 +292,25 @@ def iter_tasks(root: Path = ROOT) -> Iterable[TaskRecord]:
 
 
 def task_by_id(root: Path, task_id: str) -> TaskRecord | None:
-    return next((task for task in iter_tasks(root) if task.task_id == task_id), None)
+    target = task_id.strip().lower()
+    all_tasks = list(iter_tasks(root))
+    # 1. Exact match on task_id or path.stem
+    for task in all_tasks:
+        if task.task_id.lower() == target or task.path.stem.lower() == target:
+            return task
+    # 2. Prefix match (e.g. "prop-001" matching "prop-001-join-nate-daily-team-call")
+    for task in all_tasks:
+        stem = task.path.stem.lower()
+        t_id = task.task_id.lower()
+        if t_id.startswith(f"{target}-") or stem.startswith(f"{target}-"):
+            return task
+        if target.startswith(f"{t_id}-") or target.startswith(f"{stem}-"):
+            return task
+    # 3. Substring match
+    for task in all_tasks:
+        if target in task.task_id.lower() or target in task.path.stem.lower():
+            return task
+    return None
 
 
 def _yaml_value(value: str) -> str:

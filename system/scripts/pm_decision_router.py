@@ -35,7 +35,7 @@ ROUTING_TARGETS = {
     "ask_user": ".agent/workflows/chat.md",
 }
 
-TASK_ID_RE = re.compile(r"\b[A-Z][A-Z0-9]+-\d{3,}[a-z]?\b")
+TASK_ID_RE = re.compile(r"\b[A-Za-z][A-Za-z0-9]+-(?:\d{1,}(?:-[a-z0-9]+)+|\d{3,}[a-z]?|[a-z0-9]+(?:-[a-z0-9]+)+)\b")
 
 SCOPE_TERMS = [
     "scope creep",
