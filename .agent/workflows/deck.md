@@ -41,10 +41,10 @@ Default output location is `0. Incoming/<deck-slug>/` unless the user provides a
 
 4. **Build artifacts**
    - Use the `deck-builder` skill.
-   - Prefer artifact-tool for editable PPTX generation.
-   - Generate PDF from a print-stable source.
-   - Generate a static responsive website when requested, with locked 16:9 slide frames, keyboard navigation, hash links, and print CSS.
-
+   - Generate the Markdown Ghost Deck `storyboard.md` following the Pyramid Principle & SCQA structure.
+   - Compile the 16:9 executive presentation package via `python3 system/scripts/mbb_deck_engine.py storyboard.md --output deck.html`.
+   - When `python-pptx` or `office_cli` is available, compile editable PPTX.
+   - Generate PDF from print-stable CSS (`@page { size: 16in 9in; margin: 0; }`).
 5. **Quality gates**
    - Render slide previews and a contact sheet.
    - Verify PPTX package integrity, PDF page count, and website responsive fold checks.

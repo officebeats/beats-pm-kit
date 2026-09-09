@@ -33,7 +33,7 @@ Each skill is a focused capability. The active index is regenerated from `.agent
 | `customer-interview-suite` | The complete qualitative research companion. Creates non-leading interview scripts, acts as an interview simulator, conducts deep Socratic interviews with ambiguity gating, and synthesizes transcripts. |
 | `daily-synth` | Daily briefing and planning with critical commitment preflight. |
 | `data-analytics` | Execute SQL, analyze funnels, and define success metrics. |
-| `deck-builder` | Build brand-agnostic MBB-style PPTX/PDF/static web presentation decks from source briefs, notes, and optional templates. Use for `/deck` or when a user wants a polished presentation package without company-specific private branding baked into the kit. |
+| `deck-builder` | Build brand-agnostic MBB-style (McKinsey, BCG, Bain) presentation decks from source briefs, notes, and optional templates. Generates executive-grade 16:9 presentations, ghost decks, and strategic narratives optimized for C-suite decision making. |
 | `deep-interview` | Run a structured, ambiguity-gated interview that turns an underspecified request into a decision-complete brief. |
 | `dependency-tracker` | Map, score, and visualize cross-team dependencies for programs and releases. |
 | `diagram-designer` | Editorial-quality architecture, flow, and strategy diagrams. Self-contained HTML + SVG. |

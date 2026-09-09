@@ -148,12 +148,34 @@ def get_full_email_body(subject_filter):
 
 
 
+def find_browser_automation_cli() -> str | None:
+    """Resolve agent-browser CLI dynamically from env, PATH, or standard locations."""
+    env_path = subprocess.os.environ.get("AGENT_BROWSER_PATH")
+    if env_path and subprocess.os.path.isfile(env_path) and subprocess.os.access(env_path, subprocess.os.X_OK):
+        return env_path
+    
+    import shutil
+    which_path = shutil.which("agent-browser")
+    if which_path:
+        return which_path
+    
+    from pathlib import Path
+    candidates = [
+        Path.home() / ".npm-global" / "bin" / "agent-browser",
+        Path("/usr/local/bin/agent-browser"),
+        Path("/opt/homebrew/bin/agent-browser"),
+        Path("/Applications/Orca.app/Contents/Resources/agent-browser-darwin-arm64"),
+    ]
+    for cand in candidates:
+        if cand.is_file() and subprocess.os.access(cand, subprocess.os.X_OK):
+            return str(cand)
+    return None
+
 def get_calendar_events_from_browser(days=14):
     """Fetch calendar events from active/authenticated Outlook Web session."""
-    agent_browser = "/Applications/Orca.app/Contents/Resources/agent-browser-darwin-arm64"
-    if not subprocess.os.path.exists(agent_browser):
+    agent_browser = find_browser_automation_cli()
+    if not agent_browser:
         return []
-    
     script = """
     (() => {
       const events = [];

@@ -1,65 +1,134 @@
 ---
 name: deck-builder
-description: Build brand-agnostic MBB-style PPTX/PDF/static web presentation decks from source briefs, notes, and optional templates. Use for `/deck` or when a user wants a polished presentation package without company-specific private branding baked into the kit.
+description: Build brand-agnostic MBB-style (McKinsey, BCG, Bain) presentation decks from source briefs, notes, and optional templates. Generates executive-grade 16:9 presentations, ghost decks, and strategic narratives optimized for C-suite decision making.
 ---
 
 # MBB Consulting Deck Builder
 
-Use this skill for repeatable, top-tier MBB-style (McKinsey, BCG, Bain) presentation deck creation that is brand-neutral by default, mathematically and logically structured, and optimized for executive decision-making.
+Use this skill to produce authentic, top-tier **MBB-grade (McKinsey, BCG, Bain)** presentations that are brand-neutral by default, logically airtight, data-dense, and built specifically for executive and board-level decision-making.
 
-## Operating Contract & Consulting Rigor
+---
 
-1. **Pyramid Principle & SCQA Storyline**:
-   - Start with the **Governing Thought** (the single core recommendation).
-   - Structure the executive narrative using **SCQA**: Situation (context), Complication (bottleneck/threat), Question (strategic choice), Answer (quantified solution).
-   - Write **Action Titles**: Every slide title must be a complete declarative sentence delivering the "So What?" (e.g., *"Enterprise self-serve onboarding reduces customer acquisition cost by 35% within 6 months"*, never a label like *"Onboarding Overview"*).
-   - Include a 1-sentence **bold context lead-in** bridging the title to the proof object.
+## 1. Operating Contract: Executive Rigor vs. Consumer Hype
 
-2. **Zero AI Fingerprint Guarantee**:
-   - Strictly ban generic AI presentation tropes: NO floating card grids with decorative emojis/icons, NO random gradient backdrops, NO empty filler bullet points.
-   - Every slide must feature **exactly ONE dominant hero proof object** taking up 70%+ of the visual slide canvas.
+```text
+┌──────────────────────────────────────────────┬──────────────────────────────────────────────┐
+│ ❌ STUPID CONSUMER / AI HYPE (BANNED)         │ ✅ AUTHENTIC MBB CONSULTING RIGOR (REQUIRED) │
+├──────────────────────────────────────────────┼──────────────────────────────────────────────┤
+│ Decorative emojis (🚀, 💡, 🔥, ✨) in titles │ Zero emojis. Professional monochrome & rules│
+│ Vague marketing fluff ("Revolutionizing...") │ Concrete financial metrics ($ ARR, bps, LTV) │
+│ Floating rounded pastel cards & gradients    │ High-contrast clean 16:9 grid alignment      │
+│ Wall-of-bullets that merely restate title    │ 1 Dominant Hero Proof Object (70%+ canvas)   │
+│ Label headings ("Overview", "Next Steps")    │ Complete declarative Action Titles (So What?)│
+│ Generic stock icons (gears, puzzle pieces)   │ Harvey Balls, Waterfalls, 2x2s, Issue Trees  │
+│ Unverifiable claims without attribution      │ Mandatory bottom Source Footnote on all slides│
+└──────────────────────────────────────────────┴──────────────────────────────────────────────┘
+```
 
-3. **Consulting Layout Archetype Library (70+ Patterns)**:
-   - **3-Column Structured Synthesis**: Context / Root Cause -> Strategic Lever -> Quantified Business Impact.
-   - **2x2 Prioritization Matrix**: Impact vs. Effort / Urgency vs. Importance with named quadrants.
-   - **Harvey Balls Evaluation Table**: Capability comparison across vendors or architectural options with filled/half/empty circle indicators.
-   - **Waterfall / Bridge Chart**: Visual bridge from Baseline Revenue -> Levers -> Target Revenue.
-   - **Horizontal Process Chevrons**: Milestone progression with stage gates, owners, and deliverables.
-   - **MECE Issue Tree**: Mutually Exclusive, Collectively Exhaustive diagnostic branch.
+### The Pyramid Principle & SCQA Structure
+1. **Governing Thought**: Every deck opens with the central thesis and recommendation in the first 60 seconds (Slide 1 Executive BLUF).
+2. **SCQA Narrative Spine**:
+   - **Situation**: Uncontroversial current context agreed upon by leadership.
+   - **Complication**: The internal friction, structural bottleneck, or external market shift creating urgency.
+   - **Question**: The core strategic choice facing leadership.
+   - **Answer**: The quantified, prioritized recommendation and business impact.
+3. **Horizontal Logic**: Reading only the slide Action Titles across the deck forms an unbroken, logically airtight executive briefing memo.
+4. **Vertical Logic**: Within each slide:
+   - **Action Title** = The Claim (complete declarative sentence).
+   - **Lead-In** = The Warrant (1 bold sentence explaining *why* the claim holds true).
+   - **Hero Proof Object** = The Empirical Evidence (the table, chart, matrix, or issue tree).
+   - **Footnote** = The Grounded Citation (source, methodology, sample size).
 
-4. **Human-Readable Output Workspace**:
-   - Always output into a descriptive kebab-case folder: `0. Incoming/[date-]deck-topic-slug/` (e.g. `0. Incoming/2026-08-26-q3-growth-strategy-deck/`).
+---
 
-## Default Deliverables
+## 2. The 6 Core MBB Layout Archetypes
 
-Unless specified otherwise:
-- **Editable PPTX** (validated OpenXML via `python-pptx` / `office_cli`)
-- **Print-ready PDF** (16:9 widescreen)
-- **Standalone Responsive HTML Contact Sheet / Web Slide Viewer**
-- **Markdown Ghost Deck / Slide Spine** (`storyboard.md`) with kicker, action title, lead-in, hero proof, and citation
-- **Source Notes & Provenance** (`source-notes.md`)
+Every slide must feature **exactly ONE dominant hero proof object** taking up 70%+ of the visual canvas:
 
-## End-to-End Workflow
+### Archetype 1: Harvey Balls Evaluation Matrix
+Used for capability assessments, vendor selections, and architectural trade-offs:
+- Columns: Criteria (e.g. Speed to Value, Engineering Effort, Operational Risk, 3-Yr NPV).
+- Rows: Strategic Options (Option A, Option B, Option C).
+- Indicators:
+  - `●` (Full / Superior): Complete capability with minimal friction.
+  - `◐` (Half / Moderate): Acceptable capability with manageable trade-offs.
+  - `○` (Empty / Inadequate): Missing capability or high structural risk.
+- Explicit recommendation column highlighting the dominant pathway.
 
-1. **Phase 1: Source Ingestion & Hypothesis Formation**
-   - Read all provided briefs, strategy notes, metrics, and PRDs.
-   - Formulate the governing hypothesis and validate against the source evidence.
+### Archetype 2: Financial Waterfall (Bridge Chart)
+Used to bridge baseline financial state to target business outcome:
+- Starting bar: Baseline ARR / Margin / Operating Costs.
+- Step bars: Quantified positive drivers (e.g. +$3.2M self-serve expansion) and negative frictions (e.g. -$1.0M churn).
+- Ending bar: Target ARR / Net Projected Impact with YoY % growth.
 
-2. **Phase 2: Storylining & Ghost Deck (Markdown First)**
-   - Write the slide spine in `storyboard.md` before generating slide layouts.
-   - Check each slide against the "So What?" test: Does the action title communicate a decisive insight without reading the body?
+### Archetype 3: 2x2 Strategic Prioritization Matrix
+Used for portfolio triage and capital allocation:
+- Horizontal Axis: Strategic Value / Defensibility (7 Powers).
+- Vertical Axis: Execution Complexity / Time-to-Impact.
+- Four named quadrants (e.g. "Core Bets", "Quick Wins", "Selective Experiments", "Do Not Pursue").
+- Explicitly plots initiatives as numbered nodes with callout keys.
 
-3. **Phase 3: Visual Grammar & Proof Object Construction**
-   - Widescreen 16:9 canvas with precise grid alignment.
-   - High-contrast executive color system: Canvas (Pure White `#FFFFFF`), Primary Anchor (Deep Navy `#0A192F` or Slate `#1E293B`), Intentional Accent (Amber `#D97706` or Emerald `#059669`), Structural Dividers (0.5pt Neutral Gray `#E2E8F0`).
-   - Typography: Clean sans-serif (Calibri / Arial / Inter), 20–24pt bold action title, 12–14pt lead-in, 10–12pt data callouts, 8–9pt bottom citation.
+### Archetype 4: 3-Column Structured Synthesis
+Used for diagnostic root-cause and strategic alignment:
+- **Column 1 (Root Cause / Context)**: The observed structural failure and empirical data.
+- **Column 2 (Strategic Intervention)**: The proposed policy, system, or architectural change.
+- **Column 3 (Quantified Business Outcome)**: Direct financial return, SLA improvement, or risk reduction.
 
-4. **Phase 4: Deterministic Generation & Validation**
-   - Generate the `.pptx` file using `python-pptx` or `office_cli`.
-   - Render slide previews, contact sheet, and confirm XML integrity.
-   - Verify that all data points, citations, and source references are grounded.
+### Archetype 5: Horizontal Stage-Gated Process Chevrons
+Used for executive execution roadmaps and governance:
+- Sequential phases with clear time horizons (e.g., Weeks 1–6, Weeks 7–14, Weeks 15–22).
+- Explicit **Go / No-Go Exit Criteria** per stage gate.
+- Assigned **Single-Threaded Executive Owners**.
 
-## Completion Response
+### Archetype 6: MECE Issue Tree
+Used for comprehensive diagnostic decomposition:
+- Root problem branch breaking down into mutually exclusive, collectively exhaustive sub-drivers.
+- Percentage allocation or weight per branch summing to 100%.
 
-Return clickable hyperlinks to the final PPTX, PDF, HTML viewer, and the Markdown storyboard.
+---
 
+## 3. Universal Portability & Execution Protocol
+
+Never assume proprietary software, specific desktop operating systems, or heavy external Python libraries (`python-pptx`, `office-cli`, `libreoffice`) are pre-installed.
+
+### Step 1: Ingest & Formulate Hypothesis
+1. Read user briefs, notes, PRDs, and financial models.
+2. Draft the slide spine in `storyboard.md` using the MBB Ghost Deck standard (`.agent/templates/decks/mbb-ghost-deck.md`).
+3. Audit every Action Title against the "So What?" test.
+
+### Step 2: Compile Self-Contained 16:9 Presentation Package
+Run the zero-dependency deterministic MBB deck engine:
+
+```bash
+python3 system/scripts/mbb_deck_engine.py \
+  0. Incoming/<deck-slug>/storyboard.md \
+  --output 0. Incoming/<deck-slug>/deck.html \
+  --title "<Executive Title>"
+```
+
+The engine automatically compiles:
+- Vector SVG Harvey Balls, Waterfalls, and structured tables.
+- Locked 16:9 widescreen canvas (1280x720 screen / 16in x 9in print-to-PDF).
+- Keyboard presentation navigation (Left, Right, Space, and `F` for full screen).
+- Zero external CDN or font dependencies (offline-ready on any machine).
+
+### Step 3: Optional PPTX Generation (When Available)
+If `python-pptx` or `office_cli` is positively detected in the environment:
+- Compile `.pptx` slides following the identical 16:9 layout grid.
+- Otherwise, deliver the standalone executive HTML package and notify the user that the presentation is ready for presentation or print-to-PDF.
+
+---
+
+## 4. Deliverable Package Structure
+
+Always emit the deliverable inside `0. Incoming/[date-]deck-topic-slug/`:
+
+```text
+0. Incoming/2026-09-09-enterprise-expansion-strategy/
+├── storyboard.md       # Markdown Ghost Deck (Action Titles, Lead-ins, Proof Objects, Citations)
+├── deck.html           # Self-contained 16:9 executive slide presentation (Printable to PDF)
+├── source-notes.md     # Empirical data provenance, calculations, and interview citations
+└── deck.pptx           # Editable presentation (when python-pptx is available)
+```
+
+Return clickable preview links to `storyboard.md` and `deck.html` upon completion.

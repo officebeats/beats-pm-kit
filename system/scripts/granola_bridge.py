@@ -27,12 +27,45 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 GRANOLA_TRANSCRIPTS_DIR = ROOT / "3. Meetings" / "transcripts" / "granola"
-GRANOLA_APP_DIR = Path.home() / "Library" / "Application Support" / "Granola"
+def get_granola_app_dir() -> Path:
+    """Resolve Granola app support directory across macOS, Windows, and Linux."""
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "Application Support" / "Granola"
+    elif sys.platform == "win32":
+        appdata = os.environ.get("APPDATA")
+        if appdata:
+            return Path(appdata) / "Granola"
+        return Path.home() / "AppData" / "Roaming" / "Granola"
+    else:
+        config_home = os.environ.get("XDG_CONFIG_HOME")
+        if config_home:
+            return Path(config_home) / "Granola"
+        return Path.home() / ".config" / "Granola"
+
+GRANOLA_APP_DIR = get_granola_app_dir()
 OFFICIAL_MCP_ENDPOINT = "https://mcp.granola.ai/mcp"
 
-def ensure_dirs():
-    GRANOLA_TRANSCRIPTS_DIR.mkdir(parents=True, exist_ok=True)
-
+def find_browser_automation_cli() -> str | None:
+    """Resolve agent-browser CLI across environment, PATH, or standard install locations."""
+    env_path = os.environ.get("AGENT_BROWSER_PATH")
+    if env_path and os.path.isfile(env_path) and os.access(env_path, os.X_OK):
+        return env_path
+    
+    import shutil
+    which_path = shutil.which("agent-browser")
+    if which_path:
+        return which_path
+    
+    candidates = [
+        Path.home() / ".npm-global" / "bin" / "agent-browser",
+        Path("/usr/local/bin/agent-browser"),
+        Path("/opt/homebrew/bin/agent-browser"),
+        Path("/Applications/Orca.app/Contents/Resources/agent-browser-darwin-arm64"),
+    ]
+    for cand in candidates:
+        if cand.is_file() and os.access(cand, os.X_OK):
+            return str(cand)
+    return None
 def sanitize_slug(text: str) -> str:
     cleaned = re.sub(r'[^a-zA-Z0-9]+', '-', text.lower()).strip('-')
     return cleaned[:80] or "meeting"
@@ -99,11 +132,11 @@ def fetch_web_note(url: str) -> dict[str, str] | None:
         return None
     doc_id = doc_id_match.group(1)
     
-    # Try agent-browser if installed, or fallback
-    agent_browser = Path("/Applications/Orca.app/Contents/Resources/agent-browser-darwin-arm64")
-    if agent_browser.exists():
+    # 1. Try browser automation CLI if available
+    agent_browser = find_browser_automation_cli()
+    if agent_browser:
         try:
-            cmd = [str(agent_browser), "eval", f"""
+            cmd = [agent_browser, "eval", f"""
                 (async () => {{
                     return {{
                         title: document.title,
@@ -112,7 +145,7 @@ def fetch_web_note(url: str) -> dict[str, str] | None:
                 }})()
             """]
             res = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
-            if res.returncode == 0 and res.stdout:
+            if res.returncode == 0 and res.stdout.strip():
                 data = json.loads(res.stdout)
                 return {
                     "title": data.get("title", f"Granola {doc_id}"),
@@ -123,8 +156,27 @@ def fetch_web_note(url: str) -> dict[str, str] | None:
         except Exception:
             pass
 
-    return None
+    # 2. Native HTTP fallback using standard Python urllib
+    try:
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"}
+        )
+        with urllib.request.urlopen(req, timeout=10) as response:
+            html_text = response.read().decode("utf-8", errors="replace")
+            # Strip tags for clean text fallback
+            clean_text = re.sub(r'<[^>]+>', ' ', html_text)
+            clean_text = re.sub(r'\s+', ' ', clean_text).strip()
+            return {
+                "title": f"Granola {doc_id}",
+                "content": clean_text[:4000],
+                "web_link": url,
+                "source": "granola-http"
+            }
+    except Exception as e:
+        print(f"Error fetching Granola web note: {e}", file=sys.stderr)
 
+    return None
 def save_transcript(data: dict[str, str]) -> Path:
     ensure_dirs()
     today = dt.date.today().isoformat()
