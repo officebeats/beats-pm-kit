@@ -83,7 +83,7 @@ Used for executive execution roadmaps and governance:
 ### Archetype 6: MECE Issue Tree
 Used for comprehensive diagnostic decomposition:
 - Root problem branch breaking down into mutually exclusive, collectively exhaustive sub-drivers.
-- Percentage allocation or weight per branch summing to 100%.
+- Percentage allocation or metric weight per branch summing to 100%.
 
 ---
 
@@ -119,7 +119,36 @@ If `python-pptx` or `office_cli` is positively detected in the environment:
 
 ---
 
-## 4. Deliverable Package Structure
+## 4. Mandatory Self-Enforcing Visual Inspection Gate
+
+An agent **MUST NEVER** mark a deck task complete or assume a deck is done without executing this two-stage visual inspection gate:
+
+### Stage 1: Automated Structural & Semantic Validation
+Execute the deterministic validator CLI:
+
+```bash
+python3 system/scripts/mbb_deck_engine.py --validate 0. Incoming/<deck-slug>/storyboard.md
+```
+
+The validator enforces zero-tolerance gates:
+- **Action Title Quality**: Rejects titles shorter than 5 words (labels) or longer than 135 characters (risk of 3-line wrap).
+- **Context Lead-in**: Rejects slides missing the 1-sentence bold context bridge.
+- **Source Footnote**: Rejects slides without an explicit empirical source attribution.
+- **Zero Consumer AI Hype**: Rejects banned marketing buzzwords ("revolutionizing", "disruptive", "supercharge", "unleash", "game-changer", etc.).
+- **Zero Janky Lines & Arrows**: Rejects ASCII art arrows (`-->`, `──>`, `==>`).
+- **Zero Emojis**: Rejects decorative emojis in titles, headers, or bullet points.
+
+### Stage 2: Visual Frame & Symmetry Verification
+- Open the compiled `deck.html` via browser automation or local viewer.
+- Capture screenshots of the rendered slides and inspect them visually against consulting quality criteria:
+  1. **Symmetry & Gutters**: Left and right margins must strictly match (64px / 64px). Header divider rules and footer baselines must align at identical vertical coordinates across every slide.
+  2. **Typography Scale**: Strict hierarchy (21px bold title, 13px bold lead-in, 12.5px body, 10.5px source footnote).
+  3. **Vector Cleanliness**: All process chevrons, waterfall bars, and matrix crosshairs must render as crisp SVG/CSS shapes—never ragged text approximations.
+  4. **Zero Text Overflow**: Ensure no card body clips, wraps unexpectedly, or bleeds outside container boundaries.
+
+---
+
+## 5. Deliverable Package Structure
 
 Always emit the deliverable inside `0. Incoming/[date-]deck-topic-slug/`:
 
