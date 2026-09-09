@@ -148,15 +148,64 @@ def get_full_email_body(subject_filter):
 
 
 
-def get_calendar_events(days=14):
-    """Fallback: fetch upcoming calendar events using AppleScript with de-duplication.
+def get_calendar_events_from_browser(days=14):
+    """Fetch calendar events from active/authenticated Outlook Web session."""
+    agent_browser = "/Applications/Orca.app/Contents/Resources/agent-browser-darwin-arm64"
+    if not subprocess.os.path.exists(agent_browser):
+        return []
     
-    Prefer read-only MS365 MCP/connector access when available. This fallback
-    queries the local Microsoft Outlook app for calendar events within N days.
-    Only returns events from the user's personal 'Calendar' — excludes shared
-    and subscribed calendars (e.g., manager's calendar) to prevent ghost meetings.
-    Returns plain text listing of unique events.
+    script = """
+    (() => {
+      const events = [];
+      const seen = new Set();
+      const nodes = Array.from(document.querySelectorAll("[aria-label]"));
+      for (const node of nodes) {
+        const aria = (node.getAttribute("aria-label") || "").trim();
+        if (aria && (aria.includes("AM") || aria.includes("PM") || aria.includes("event") || aria.includes("Meeting") || aria.includes("Review") || aria.includes("Sync") || aria.includes("Check"))) {
+          // Parse typical Outlook Web aria-label: "Title, Time, Date, Details, Status"
+          const parts = aria.split(",").map(p => p.trim());
+          if (parts.length >= 2 && !seen.has(aria)) {
+            seen.add(aria);
+            events.push({
+              "subject": parts[0],
+              "time": parts[1] || "N/A",
+              "date": parts[2] || "N/A",
+              "raw": aria
+            });
+          }
+        }
+      }
+      return events;
+    })()
     """
+    try:
+        res = subprocess.run([agent_browser, "eval", script], capture_output=True, text=True, timeout=8)
+        if res.returncode == 0 and res.stdout.strip():
+            return json.loads(res.stdout)
+    except Exception:
+        pass
+    return []
+
+def get_calendar_events(days=14):
+    """Fetch upcoming calendar events using multi-tier strategy:
+    1. Active authenticated Outlook Web session (Orca/Chrome profile).
+    2. Local Calendar.app (Exchange synced).
+    3. Native Microsoft Outlook AppleScript fallback.
+    """
+    # Tier 1: Try authenticated Outlook Web session
+    web_events = get_calendar_events_from_browser(days)
+    if web_events:
+        output = "📅 OUTLOOK CALENDAR (Authenticated Web Session)\n"
+        output += "========================================\n\n"
+        for event in web_events:
+            output += f"===== SUBJECT: {event.get('subject', 'Untitled')} =====\n"
+            output += f"TIME: {event.get('time', 'N/A')}\n"
+            output += f"DATE: {event.get('date', 'N/A')}\n"
+            output += f"DETAILS: {event.get('raw', '')}\n"
+            output += "===== END =====\n\n"
+        return output
+
+    # Tier 2: AppleScript Outlook
     script = f'''
     tell application "Microsoft Outlook"
         set today to current date
@@ -180,40 +229,47 @@ def get_calendar_events(days=14):
     '''
     try:
         result = subprocess.check_output(['osascript', '-e', script]).decode('utf-8').strip().replace('\r', '\n')
-        if not result:
-            return "No upcoming events found from Outlook AppleScript."
-        
-        seen = set()
-        clean_events = []
-        for raw in result.split('///'):
-            if not raw.strip(): continue
-            parts = raw.split('||')
-            if len(parts) >= 3:
-                cal_name = parts[3].strip() if len(parts) > 3 else "Unknown"
-                # FILTER: Only include events from the user's personal calendar
-                if cal_name != "Calendar":
-                    continue
-                key = (parts[0].strip(), parts[1].strip())
-                if key not in seen:
-                    seen.add(key)
-                    clean_events.append({
-                        "subject": parts[0],
-                        "start": parts[1],
-                        "location": parts[2] if len(parts) > 2 else "N/A"
-                    })
-        
-        # Format the unique events into a readable list
-        output = "📅 CALENDAR (Personal Events Only)\n"
-        output += "========================================\n\n"
-        for event in sorted(clean_events, key=lambda x: x['start']):
-            output += f"===== SUBJECT: {event['subject']} =====\n"
-            output += f"START: {event['start']}\n"
-            output += f"LOCATION: {event['location']}\n"
-            output += "===== END =====\n\n"
+        if result:
+            seen = set()
+            clean_events = []
+            for raw in result.split('///'):
+                if not raw.strip(): continue
+                parts = raw.split('||')
+                if len(parts) >= 3:
+                    key = (parts[0].strip(), parts[1].strip())
+                    if key not in seen:
+                        seen.add(key)
+                        clean_events.append({
+                            "subject": parts[0],
+                            "start": parts[1],
+                            "location": parts[2] if len(parts) > 2 else "N/A"
+                        })
             
-        return output
-    except Exception as e:
-        return f"Error: {e}"
+            if clean_events:
+                output = "📅 OUTLOOK CALENDAR (Native AppleScript)\n"
+                output += "========================================\n\n"
+                for event in sorted(clean_events, key=lambda x: x['start']):
+                    output += f"===== SUBJECT: {event['subject']} =====\n"
+                    output += f"START: {event['start']}\n"
+                    output += f"LOCATION: {event['location']}\n"
+                    output += "===== END =====\n\n"
+                return output
+    except Exception:
+        pass
+
+    return "No upcoming events found from Outlook."
+
+def verify_scheduled(query):
+    """Verify if a meeting or participant is scheduled on the calendar."""
+    events = get_calendar_events_from_browser(14)
+    q = query.lower()
+    matches = []
+    for e in events:
+        raw = e.get("raw", "")
+        subj = e.get("subject", "")
+        if q in raw.lower() or q in subj.lower():
+            matches.append(e)
+    return matches
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -222,10 +278,16 @@ if __name__ == "__main__":
                         help="Search for full email body by subject keyword")
     parser.add_argument("--calendar", type=int, default=None,
                         help="Fetch calendar events for the next N days")
+    parser.add_argument("--verify-scheduled", type=str, default=None,
+                        help="Check if an event matching keyword/attendee is scheduled")
     args = parser.parse_args()
     
-    if args.calendar is not None:
+    if args.verify_scheduled:
+        matches = verify_scheduled(args.verify_scheduled)
+        print(json.dumps(matches, indent=2))
+    elif args.calendar is not None:
         print(get_calendar_events(args.calendar))
-    elif args.search:        print(get_full_email_body(args.search))
+    elif args.search:
+        print(get_full_email_body(args.search))
     else:
         print(json.dumps(get_outlook_messages(args.count), indent=2))

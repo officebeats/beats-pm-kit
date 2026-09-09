@@ -41,9 +41,17 @@ def main():
 
     db_path = db_bridge.get_quill_db_path()
     if not db_path:
-        print("Quill DB not found.")
+        print_gray("Quill DB not found. Checking Granola bridge...")
+        try:
+            from system.scripts import granola_bridge
+            data = granola_bridge.get_active_app_notes()
+            if data:
+                saved = granola_bridge.save_transcript(data)
+                print_success(f"Fetched active Granola transcript: {saved.name}")
+                return
+        except Exception as ge:
+            print_gray(f"Granola bridge check: {ge}")
         return
-
     # Calculate threshold (approx 10 business days)
     threshold_dt = get_business_days_ago(10)
     threshold_ms = int(threshold_dt.timestamp() * 1000)
