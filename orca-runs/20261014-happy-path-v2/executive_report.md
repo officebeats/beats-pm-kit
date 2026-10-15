@@ -1,14 +1,15 @@
-# Executive Report — FeedX Happy Path V2 Full E2E & 4-Frame (B→I→R→A) Audit (`20261014-happy-path-v2`)
+# Executive Report — FeedX Happy Path V2 & Cross-Role Weight/Date Discrepancy Audit (2026-10-14)
 
-## Release Verdict: **CONDITIONAL GO**
-- **Core 6-Step E2E Happy Path (`Steps 0 → 6`)**: **PASS (6 / 6 Steps Proven)**
-- **Target Account & Feed**: `zzz Test QA FARM (Ernesto)` / `Cornmeal (QA Test) Ernesto`
-- **Target Order Lifecycle**:
-  1. **Step 0 (Pre-Flight Census)**: Verified `Cornmeal (QA Test) Ernesto` active in `/product-management`; inventoried `Unscheduled` (`25` rows, earliest `10/30/2026` `24t` + `10/30/2026` `10t`), `Pending` (`6` rows), `Confirmed` (`4` rows), `Delivered` (`15` rows). Selected collision-free future weekday **`11/20/2026`**.
-  2. **Step 1 (Farm Owner Order on `/schedule-order`)**: Staged `11/20/2026` (`5 Tons/day`, `Anytime`) on the `Cornmeal (QA Test) Ernesto` card (`24 Tons`) and clicked `Schedule Order` ONCE (`alert: "Saved successfully"`). Card immediately advanced to the next `Unscheduled` row (`10/30/2026`, `10 Tons` — `DEF-06`), `/home` November 2026 calendar added an orange `Pending confirmation` chip on `11/20/2026`, and Mill Admin `Unscheduled` auto-generated a new tail forecast row (`12/11/2026`, `24 Tons`).
-  3. **Step 2 (Mill Admin Confirm in `/order-management`)**: Verified new `Pending` row (`11/20/2026`, `24 Tons`), proved `DEF-03` (`Edit Order` modal pre-fills `11/19/2026`, `-1 day` shift; closed via `Cancel`), and transitioned inline `Status` dropdown `Pending → Confirmed` (`DEF-08`: silent update with zero toast until `F5` reload).
-  4. **Step 3 (Driver Deliver in Pounds)**: Signed in as `QA Test Driver (Ernesto)`, verified active stops increased `4 → 5` (including `11/20/2026`), proved `HYP-07` (blank weight blocked by `"Enter weight"`) and `HYP-06` (`Edit` button on confirmation screen preserves `49,000`), and submitted **`49,000 Pounds`** (`24.5 Tons`) ONCE (`alert: "Saved successfully"`). Active stops dropped `5 → 4` and Row 1 of Driver `/truck-driver/delivery-history` recorded `Cornmeal (QA Test) Ernesto | zzz Test QA FARM (Ernesto) | 10/14/2026 | 49,000`.
-  5. **Step 4 (Farm Owner `/order-history` Reconciliation)**: New row `Cornmeal (QA Test) Ernesto | 10/14/2026 | 24.5` appeared at **Row 5** on Page 1 (between `11/23/2026` and `11/19/2026` scheduled orders, proving `OBS-04` hidden `Scheduled Delivery Date` sort order).
-  6. **Step 5 (Farm Owner `/home`, `/my-feeds`, `/schedule-order` Reconciliation)**: `/home` calendar removed the `11/20/2026` `Pending confirmation` chip and added a 4th green `Delivered` chip on `10/14/2026` (`TODAY`); `/my-feeds` updated `Cornmeal (QA Test) Ernesto` `Weight Delivered` from **`0.39 Tons` → `24.5 Tons`** (`Last Delivery Date: 10/14/2026`); `/schedule-order` card remained bound to the next `Unscheduled` row (`10/30/2026`, `10 Tons`, `Last Delivery Date: N/A` — `OBS-06`).
-  7. **Step 6 (Mill Admin Post-Delivery Reconciliation)**: `Confirmed` dropped `5 → 4` (`11/20/2026` removed); `Delivered` increased `15 → 16` with Row 5 displaying **both** `Last Delivery Date = 10/14/2026` and `Scheduled Delivery Date = 11/20/2026` (`Weight Ordered: 24`, `Weight Delivered: 24.5`).
-- **Evidence Integrity (`AdvisorGate1` Gate 3)**: **56 PNG screenshots**, all > 45 KB, **0 duplicate MD5 hashes**.
+- **Overall Verdict:** **CONDITIONAL GO**
+- **Happy Path Spine (`Steps 0 -> 6`):** **6 / 6 PASS**
+- **Cross-Role Weight & Date Bug Tickets for Ahmed:** **12 Validated Tickets (`TICKET-01` to `TICKET-12`)** in `AHMED_BUG_TICKETS_WEIGHTS_AND_DATES.md` / `defects.md`
+- **Multi-Page Census Totals (`zzz Test QA FARM (Ernesto)`):**
+  - **Mill Admin `Unscheduled`:** **45 total rows across 2 pages** (`25` on Page 1 + `20` on Page 2)
+  - **Mill Admin `Pending`:** **6 rows** (Page 1 only; `7` rows during Step 1->2 transition)
+  - **Mill Admin `Confirmed`:** **4 rows** (Page 1 only; `5` rows during Step 2->3 transition)
+  - **Mill Admin `Delivered`:** **16 rows** (Page 1 only; increased `15 -> 16` after Step 3 delivery, including a pre-existing historical `11/19/2026` Cornmeal row delivered on `10/11/2026` at Row 6)
+  - **Farm Owner `/order-history`:** **16 total rows across 2 pages** (`10` on Page 1 + `6` on Page 2)
+  - **Driver `/truck-driver/delivery-history`:** **15 total rows across 2 pages** (`10` on Page 1 + `5` on Page 2)
+- **Evidence Integrity:** **73 unique PNG screenshots (`0` duplicate MD5 hashes)**.
+
+See `AHMED_BUG_TICKETS_WEIGHTS_AND_DATES.md` and `FeedX_Happy_Path_V2_Execution_Report_2026-10-14.html` for full side-by-side tables and 4-frame (`B -> I -> R -> A`) visual proofs.
