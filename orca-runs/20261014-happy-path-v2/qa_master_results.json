@@ -1,0 +1,49 @@
+{
+  "job_id": "20261014-happy-path-v2",
+  "date": "2026-10-14",
+  "verdict": "CONDITIONAL_GO",
+  "happy_path_steps_passed": 6,
+  "happy_path_steps_total": 6,
+  "total_screenshots": 56,
+  "unique_md5_hashes": 56,
+  "duplicate_md5_count": 0,
+  "min_screenshot_bytes": 45697,
+  "target_farm": "zzz Test QA FARM (Ernesto)",
+  "target_feed": "Cornmeal (QA Test) Ernesto",
+  "scheduled_delivery_date": "11/20/2026",
+  "actual_delivery_date": "10/14/2026",
+  "weight_ordered_tons": 24,
+  "weight_delivered_pounds": 49000,
+  "weight_delivered_tons": 24.5,
+  "auto_generated_unscheduled_forecast_date": "12/11/2026",
+  "reproduced_tier1_defects": [
+    "DEF-03",
+    "DEF-04",
+    "DEF-06",
+    "DEF-08"
+  ],
+  "verified_observations": [
+    "OBS-01",
+    "OBS-02",
+    "OBS-03",
+    "OBS-04",
+    "OBS-05",
+    "OBS-06",
+    "OBS-07"
+  ],
+  "proven_exploratory_hypotheses": [
+    "HYP-01",
+    "HYP-02",
+    "HYP-03",
+    "HYP-06",
+    "HYP-07",
+    "HYP-08"
+  ],
+  "historical_tier2_defects": [
+    "DEF-02",
+    "DEF-05",
+    "DEF-07",
+    "DEF-09",
+    "DEF-12"
+  ]
+}
